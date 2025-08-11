@@ -58,6 +58,7 @@ desktop.ini
 logs/
 temp/
 tmp/
+temp.txt
 *.tmp
 *.bak
 *.backup

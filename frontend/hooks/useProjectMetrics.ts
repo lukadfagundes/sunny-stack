@@ -52,7 +52,7 @@ export function useProjectMetrics() {
   const [socket, setSocket] = useState<Socket | null>(null)
   
   useEffect(() => {
-    const socketInstance = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3001', {
+    const socketInstance = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:8000', {
       transports: ['websocket']
     })
     
