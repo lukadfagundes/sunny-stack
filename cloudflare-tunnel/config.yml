@@ -1,0 +1,124 @@
+# Cloudflare Tunnel Configuration for Sunny AI Platform
+# sunny-stack.com production deployment
+# Version: 2.0-sentient
+
+tunnel: bbe0403e-ca90-4dbd-b9cb-f9e08d66754b
+credentials-file: C:\Users\lukaf\.cloudflared\bbe0403e-ca90-4dbd-b9cb-f9e08d66754b.json
+
+# Ingress rules for Sunny AI Platform
+ingress:
+  # API routes - Backend (FastAPI on port 8000)
+  - hostname: sunny-stack.com
+    path: /api/*
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      noTLSVerify: false
+      connectTimeout: 30s
+      
+  # MCP endpoints for Claude integration
+  - hostname: sunny-stack.com
+    path: /api/mcp/*
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      noTLSVerify: false
+      connectTimeout: 30s
+      
+  # WebSocket support for real-time features
+  - hostname: sunny-stack.com
+    path: /ws/*
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      noTLSVerify: false
+      
+  # Health check endpoint
+  - hostname: sunny-stack.com
+    path: /health
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      
+  # Authentication endpoints
+  - hostname: sunny-stack.com
+    path: /auth/*
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      
+  # Admin API routes
+  - hostname: sunny-stack.com
+    path: /admin/api/*
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      
+  # Documentation endpoints
+  - hostname: sunny-stack.com
+    path: /docs
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      
+  - hostname: sunny-stack.com
+    path: /redoc
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      
+  # Main Sunny frontend (Next.js on port 3000)
+  - hostname: sunny-stack.com
+    service: http://localhost:3000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      noTLSVerify: false
+      
+  # NavigatorCore subdomain (for future client projects)
+  - hostname: navigators-core.sunny-stack.com
+    service: http://localhost:3000
+    originRequest:
+      httpHostHeader: navigators-core.sunny-stack.com
+      noTLSVerify: false
+      
+  # www subdomain redirect to main
+  - hostname: www.sunny-stack.com
+    service: http://localhost:3000
+    originRequest:
+      httpHostHeader: sunny-stack.com
+      noTLSVerify: false
+      
+  # API subdomain (alternative API access)
+  - hostname: api.sunny-stack.com
+    service: http://localhost:8000
+    originRequest:
+      httpHostHeader: api.sunny-stack.com
+      noTLSVerify: false
+      
+  # MCP subdomain (dedicated MCP endpoint)
+  - hostname: mcp.sunny-stack.com
+    service: http://localhost:8000
+    path: /api/mcp/*
+    originRequest:
+      httpHostHeader: mcp.sunny-stack.com
+      noTLSVerify: false
+      
+  # Catch-all 404 for undefined routes
+  - service: http_status:404
+
+# Tunnel configuration settings
+originRequest:
+  connectTimeout: 30s
+  tlsTimeout: 30s
+  tcpKeepAlive: 30s
+  noHappyEyeballs: false
+  keepAliveConnections: 100
+  keepAliveTimeout: 90s
+  http2Origin: true
+  
+# Logging configuration
+logLevel: info
+logFile: C:\Sunny\cloudflare-tunnel\tunnel.log
+
+# Metrics configuration (optional)
+metrics: localhost:2000

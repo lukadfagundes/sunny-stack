@@ -1,0 +1,39 @@
+{
+  "name": "sunny-ai-platform",
+  "version": "2.0.0",
+  "description": "The world's first self-improving AI consulting platform",
+  "main": "src/worker.js",
+  "scripts": {
+    "deploy": "wrangler deploy --env production",
+    "dev": "wrangler dev",
+    "deploy:windows": "deploy.bat",
+    "deploy:unix": "bash deploy.sh",
+    "verify": "bash verify-deployment.sh",
+    "verify:windows": "verify-deployment.bat",
+    "tail": "wrangler tail --env production",
+    "db:init": "wrangler d1 execute sunny-production --file=./database/schema.sql --env production",
+    "secret:master": "wrangler secret put MASTER_PASSWORD --env production",
+    "secret:jwt": "wrangler secret put JWT_SECRET --env production",
+    "secret:anthropic": "wrangler secret put ANTHROPIC_API_KEY --env production"
+  },
+  "keywords": [
+    "ai",
+    "consulting",
+    "cloudflare",
+    "workers",
+    "self-improvement",
+    "mcp",
+    "claude"
+  ],
+  "author": "Sunny AI Consulting (luka@sunny-stack.com)",
+  "license": "Proprietary",
+  "dependencies": {
+    "hono": "^3.11.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

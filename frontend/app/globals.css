@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 37 98% 53%;
+    --primary-foreground: 45 100% 11%;
+    --secondary: 45 100% 96%;
+    --secondary-foreground: 45 95% 23%;
+    --muted: 45 20% 96%;
+    --muted-foreground: 45 8% 45%;
+    --accent: 37 98% 93%;
+    --accent-foreground: 37 98% 23%;
+  }
+}
+
+@layer components {
+  .sunny-glow {
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
+  }
+  
+  .sunny-gradient {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  }
+  
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .terminal-font {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  }
+}

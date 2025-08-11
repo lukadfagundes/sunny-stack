@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - sunny-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://sunny:sunny123@postgres:5432/sunny_db
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - sunny-network
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=sunny
+      - POSTGRES_PASSWORD=sunny123
+      - POSTGRES_DB=sunny_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sunny-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - sunny-network
+
+  websocket:
+    build:
+      context: ./websocket
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - sunny-network
+
+networks:
+  sunny-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

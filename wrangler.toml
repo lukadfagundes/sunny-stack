@@ -1,0 +1,43 @@
+name = "sunny-ai-platform"
+main = "src/worker.js"
+compatibility_date = "2024-08-10"
+node_compat = true
+
+[env.production]
+name = "sunny-production"
+route = { pattern = "sunny-stack.com/*", zone_name = "sunny-stack.com" }
+
+[vars]
+ENVIRONMENT = "production"
+NODE_ENV = "production"
+DOMAIN = "sunny-stack.com"
+BASE_URL = "https://sunny-stack.com"
+
+# Cloudflare KV for sessions and cache
+[[kv_namespaces]]
+binding = "SUNNY_KV"
+preview_id = "sunny-kv-preview"
+id = "sunny-kv-production"
+
+# Cloudflare D1 for database
+[[d1_databases]]
+binding = "SUNNY_DB"
+database_name = "sunny-production"
+database_id = "sunny-d1-production"
+
+# Durable Objects for WebSocket
+[[durable_objects.bindings]]
+name = "SUNNY_WEBSOCKET"
+class_name = "SunnyWebSocketHandler"
+script_name = "sunny-ai-platform"
+
+# Rate limiting
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1"
+simple = { limit = 100, period = 60 }
+
+# Analytics Engine
+[[analytics_engine_datasets]]
+binding = "SUNNY_ANALYTICS"
