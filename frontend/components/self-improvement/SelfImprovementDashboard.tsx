@@ -275,7 +275,7 @@ export default function SelfImprovementDashboard() {
             </p>
             <p className="flex items-start">
               <span className="mr-2">🤖</span>
-              <span>AI-powered code improvements via Claude Code integration</span>
+              <span>Automated code improvements and optimization</span>
             </p>
             <p className="flex items-start">
               <span className="mr-2">📈</span>

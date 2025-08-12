@@ -50,7 +50,7 @@ export default function UserManagement() {
   ]
 
   const applications = [
-    { id: 'sunny', name: 'Sunny Platform', icon: '🌟' },
+    { id: 'sunny', name: 'Sunny Stack', icon: '🌟' },
     { id: 'navigatorcore', name: 'NavigatorCore', icon: '🚀' },
     { id: 'client_demo', name: 'Client Demo', icon: '🎯' },
     { id: 'test_environment', name: 'Test Environment', icon: '🧪' },

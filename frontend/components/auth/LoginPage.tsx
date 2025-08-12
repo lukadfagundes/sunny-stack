@@ -3,9 +3,11 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Lock, Mail, Shield, AlertCircle, Loader2, Sun } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [mfaCode, setMfaCode] = useState('')
@@ -19,44 +21,68 @@ export default function LoginPage() {
     setError('')
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          mfa_code: mfaCode || undefined,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.detail || 'Login failed')
+      console.log('🔧 [LOGIN] Attempting login for:', email)
+      
+      // Use the AuthContext login function which handles everything
+      const authSuccess = await login(email, password, mfaCode || undefined)
+      
+      if (!authSuccess) {
+        // Check if MFA is required (login returns false for MFA)
+        if (!requiresMFA) {
+          setRequiresMFA(true)
+          setIsLoading(false)
+          return
+        }
+        console.error('🚨 [LOGIN] Authentication failed')
+        throw new Error('Authentication failed')
       }
-
-      if (data.requires_mfa && !requiresMFA) {
-        setRequiresMFA(true)
-        setIsLoading(false)
-        return
+      
+      // Get user data from localStorage (set by AuthContext login)
+      const storedUser = localStorage.getItem('user')
+      let userData = null
+      
+      if (storedUser) {
+        try {
+          userData = JSON.parse(storedUser)
+        } catch (e) {
+          console.error('🚨 [LOGIN] Failed to parse user data')
+        }
       }
-
-      // Cookies are now set by the API route
+      
       // Route based on user role and permissions
       const redirectUrl = new URLSearchParams(window.location.search).get('redirect')
       
+      // Debug logging
+      console.log('🔐 [LOGIN] Login successful:', {
+        hasUser: !!userData,
+        userEmail: userData?.email,
+        userRole: userData?.role,
+        isMaster: userData?.is_master,
+        appAccess: userData?.app_access
+      })
+      
+      // Validate user object exists
+      if (!userData) {
+        console.error('🚨 [LOGIN] User object missing after authentication')
+        throw new Error('Authentication state invalid - user data missing')
+      }
+      
+      console.log('✅ [LOGIN] Successful login, redirecting user:', userData.email)
+      
       if (redirectUrl) {
         router.push(redirectUrl)
-      } else if (data.user.is_master) {
-        router.push('/admin')
-      } else if (data.user.app_access?.includes('sunny')) {
-        router.push('/dashboard')
-      } else if (data.user.app_access?.includes('client_demo')) {
+      } else if (userData.is_master === true) {
+        console.log('🎯 [LOGIN] Master admin detected, redirecting to HUD')
+        router.push('/hud')  // Admin goes to HUD
+      } else if (userData.app_access?.includes('sunny')) {
+        console.log('🎯 [LOGIN] User has sunny access, redirecting to HUD')
+        router.push('/hud')  // Changed from /dashboard to /hud
+      } else if (userData.app_access?.includes('client_demo')) {
+        console.log('🎯 [LOGIN] Demo user detected, redirecting to demo')
         router.push('/demo')
       } else {
-        router.push('/dashboard')
+        console.log('🎯 [LOGIN] Default redirect to HUD')
+        router.push('/hud')  // Default to HUD instead of dashboard
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during login')
@@ -65,7 +91,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-400 via-orange-500 to-amber-600 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,8 +108,8 @@ export default function LoginPage() {
           >
             <Sun className="w-12 h-12 text-white" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-gray-800">Sunny Platform</h1>
-          <p className="text-gray-600 mt-2">AI-Powered Software Consulting</p>
+          <h1 className="text-3xl font-bold text-gray-800">Sunny Stack</h1>
+          <p className="text-gray-600 mt-2">Secure Sign In</p>
         </div>
 
         {/* Login Form */}
@@ -101,7 +127,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 placeholder="you@company.com"
                 required
                 disabled={requiresMFA}
@@ -122,7 +148,7 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 placeholder="••••••••"
                 required
                 disabled={requiresMFA}
@@ -148,7 +174,7 @@ export default function LoginPage() {
                   type="text"
                   value={mfaCode}
                   onChange={(e) => setMfaCode(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                   placeholder="Enter 6-digit code"
                   maxLength={6}
                   pattern="[0-9]{6}"
@@ -183,7 +209,7 @@ export default function LoginPage() {
             className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all ${
               isLoading
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                : 'bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700'
             }`}
           >
             {isLoading ? (
@@ -200,14 +226,14 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
-            Secure authentication powered by Sunny
+            Secure authentication system
           </p>
           <div className="mt-4 flex justify-center space-x-4">
-            <a href="/reset-password" className="text-sm text-purple-600 hover:text-purple-700">
+            <a href="/reset-password" className="text-sm text-orange-600 hover:text-orange-700">
               Forgot password?
             </a>
             <span className="text-gray-400">•</span>
-            <a href="#" className="text-sm text-purple-600 hover:text-purple-700">
+            <a href="#" className="text-sm text-orange-600 hover:text-orange-700">
               Contact admin
             </a>
           </div>
@@ -219,6 +245,11 @@ export default function LoginPage() {
             <Shield className="h-4 w-4 mr-1" />
             <span>256-bit encryption • SOC 2 compliant</span>
           </div>
+        </div>
+        
+        {/* Subtle Cola Records credit */}
+        <div className="mt-4 text-center">
+          <p className="text-xs text-gray-400">powered by Cola Records</p>
         </div>
       </motion.div>
     </div>

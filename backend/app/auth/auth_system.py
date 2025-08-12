@@ -55,15 +55,24 @@ class SecureAuthSystem:
     """
     
     def __init__(self):
-        self.users_db_path = Path("data/users.json")
-        self.sessions_db_path = Path("data/sessions.json")
-        self.audit_log_path = Path("data/auth_audit.json")
+        # Use absolute paths to ensure database is found regardless of where backend is run from
+        # Backend runs from C:\Sunny\backend, but data is in C:\Sunny\data
+        base_path = Path(__file__).parent.parent.parent.parent  # Go up to C:\Sunny
+        print(f"[AUTH_SYSTEM] Base path resolved to: {base_path}")
+        
+        self.users_db_path = base_path / "data" / "users.json"
+        self.sessions_db_path = base_path / "data" / "sessions.json"
+        self.audit_log_path = base_path / "data" / "auth_audit.json"
+        
+        print(f"[AUTH_SYSTEM] Users database path: {self.users_db_path}")
+        print(f"[AUTH_SYSTEM] Database exists: {self.users_db_path.exists()}")
         
         # Initialize master admin account
         self._initialize_master_admin()
         
-        # Load users database
+        # Load users database - ALWAYS reload from disk
         self.users = self._load_users()
+        print(f"[AUTH_SYSTEM] Loaded users on init: {list(self.users.keys())}")
         self.sessions = {}
         self.mfa_codes = {}
         
@@ -97,9 +106,19 @@ class SecureAuthSystem:
     
     def _load_users(self) -> Dict:
         """Load users from database"""
+        print(f"[AUTH_SYSTEM] Loading users from: {self.users_db_path}")
         if self.users_db_path.exists():
-            with open(self.users_db_path, 'r') as f:
-                return json.load(f)
+            try:
+                with open(self.users_db_path, 'r') as f:
+                    users = json.load(f)
+                    print(f"[AUTH_SYSTEM] Loaded {len(users)} users from database")
+                    print(f"[AUTH_SYSTEM] Users in database: {list(users.keys())}")
+                    return users
+            except Exception as e:
+                print(f"[ERROR] [AUTH_SYSTEM] Error loading users database: {e}")
+                return {}
+        else:
+            print(f"[WARNING] [AUTH_SYSTEM] Users database not found at: {self.users_db_path}")
         return {}
     
     def _save_users(self):
@@ -113,7 +132,25 @@ class SecureAuthSystem:
     
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """Verify a password against hash"""
-        return pwd_context.verify(plain_password, hashed_password)
+        try:
+            print(f"[AUTH_SYSTEM] Verifying password...")
+            print(f"[AUTH_SYSTEM] Password type: {type(plain_password)}, Hash type: {type(hashed_password)}")
+            
+            # Ensure password is string and encode properly
+            if isinstance(plain_password, bytes):
+                plain_password = plain_password.decode('utf-8')
+            
+            # Verify using passlib
+            result = pwd_context.verify(plain_password, hashed_password)
+            print(f"[AUTH_SYSTEM] Password verification result: {result}")
+            return result
+            
+        except Exception as e:
+            print(f"[ERROR] [AUTH_SYSTEM] Password verification error: {e}")
+            print(f"[AUTH_SYSTEM] Error type: {type(e)}")
+            import traceback
+            print(f"[AUTH_SYSTEM] Stack trace: {traceback.format_exc()}")
+            return False
     
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None):
         """Create JWT access token"""
@@ -137,36 +174,106 @@ class SecureAuthSystem:
     
     async def authenticate_user(self, email: str, password: str) -> Optional[Dict]:
         """Authenticate a user"""
-        await debug("AUTH", f"Authentication attempt for {email}")
-        
-        user = self.users.get(email)
-        if not user:
-            await debug("AUTH", f"User not found: {email}")
-            await self._audit_log("login_failed", {"email": email, "reason": "user_not_found"})
-            return None
-        
-        if not self.verify_password(password, user["password_hash"]):
-            await debug("AUTH", f"Invalid password for {email}")
-            await self._audit_log("login_failed", {"email": email, "reason": "invalid_password"})
-            return None
-        
-        if not user.get("is_active", True):
-            await debug("AUTH", f"Inactive user attempted login: {email}")
-            await self._audit_log("login_failed", {"email": email, "reason": "account_inactive"})
-            return None
-        
-        # Check expiration for temporary users
-        if user.get("expires_at"):
-            expiry = datetime.fromisoformat(user["expires_at"])
-            if datetime.now(timezone.utc) > expiry:
-                await debug("AUTH", f"Expired user attempted login: {email}")
-                await self._audit_log("login_failed", {"email": email, "reason": "account_expired"})
+        try:
+            print(f"[INFO] [AUTH_SYSTEM] Authentication attempt for: {email}")
+            print(f"[DATA] [AUTH_SYSTEM] Current users in memory: {list(self.users.keys())}")
+            print(f"[TARGET] [AUTH_SYSTEM] Total users loaded: {len(self.users)}")
+            
+            # Ensure email is string
+            email = str(email).lower().strip()
+            print(f"[EMAIL] [AUTH_SYSTEM] Normalized email: {email}")
+            
+            debug("AUTH", f"Authentication attempt for {email}")
+            
+            # Try to get user from memory
+            user = self.users.get(email)
+            if not user:
+                # Try reloading users from disk in case the database was updated
+                print(f"[AUTH_SYSTEM] User not found in memory, reloading from disk...")
+                try:
+                    self.users = self._load_users()
+                    user = self.users.get(email)
+                except Exception as load_error:
+                    print(f"[ERROR] [AUTH_SYSTEM] Error reloading users: {load_error}")
+                    return None
+                
+                if not user:
+                    print(f"[ERROR] [AUTH_SYSTEM] User not found in database: {email}")
+                    print(f"[DEBUG] [AUTH_SYSTEM] Available users: {list(self.users.keys())}")
+                    debug("AUTH", f"User not found: {email}")
+                    try:
+                        await self._audit_log("login_failed", {"email": email, "reason": "user_not_found"})
+                    except:
+                        pass  # Don't fail auth due to audit log error
+                    return None
+            
+            print(f" [AUTH_SYSTEM] User found in database: {email}")
+            print(f"[DATA] [AUTH_SYSTEM] User data keys: {list(user.keys())}")
+            
+            # Verify password with error handling
+            try:
+                password_hash = user.get("password_hash")
+                if not password_hash:
+                    print(f"[ERROR] [AUTH_SYSTEM] No password hash found for user: {email}")
+                    return None
+                
+                if not self.verify_password(password, password_hash):
+                    print(f"[ERROR] [AUTH_SYSTEM] Invalid password for: {email}")
+                    debug("AUTH", f"Invalid password for {email}")
+                    try:
+                        await self._audit_log("login_failed", {"email": email, "reason": "invalid_password"})
+                    except:
+                        pass  # Don't fail auth due to audit log error
+                    return None
+                    
+            except Exception as pwd_error:
+                print(f"[ERROR] [AUTH_SYSTEM] Password verification exception: {pwd_error}")
                 return None
-        
-        await debug("AUTH", f"Successful authentication for {email}")
-        await self._audit_log("login_success", {"email": email, "role": user["role"]})
-        
-        return user
+            
+            print(f" [AUTH_SYSTEM] Password verified for: {email}")
+            
+            # Check if user is active
+            if not user.get("is_active", True):
+                print(f"[ERROR] [AUTH_SYSTEM] Inactive user attempted login: {email}")
+                debug("AUTH", f"Inactive user attempted login: {email}")
+                try:
+                    await self._audit_log("login_failed", {"email": email, "reason": "account_inactive"})
+                except:
+                    pass
+                return None
+            
+            # Check expiration for temporary users
+            if user.get("expires_at"):
+                try:
+                    expiry = datetime.fromisoformat(user["expires_at"])
+                    if datetime.now(timezone.utc) > expiry:
+                        print(f"[ERROR] [AUTH_SYSTEM] Expired user attempted login: {email}")
+                        debug("AUTH", f"Expired user attempted login: {email}")
+                        try:
+                            await self._audit_log("login_failed", {"email": email, "reason": "account_expired"})
+                        except:
+                            pass
+                        return None
+                except Exception as date_error:
+                    print(f"[WARNING] [AUTH_SYSTEM] Error checking expiration: {date_error}")
+                    # Continue if date parsing fails
+            
+            print(f" [AUTH_SYSTEM] All checks passed for: {email}")
+            debug("AUTH", f"Successful authentication for {email}")
+            
+            try:
+                await self._audit_log("login_success", {"email": email, "role": user.get("role", "unknown")})
+            except:
+                pass  # Don't fail auth due to audit log error
+            
+            return user
+            
+        except Exception as e:
+            print(f"[ERROR] [AUTH_SYSTEM] Authentication error: {e}")
+            print(f"[DEBUG] [AUTH_SYSTEM] Error type: {type(e)}")
+            import traceback
+            print(f"[TRACE] [AUTH_SYSTEM] Stack trace: {traceback.format_exc()}")
+            return None
     
     async def generate_mfa_code(self, email: str) -> str:
         """Generate MFA code for user"""
@@ -176,7 +283,7 @@ class SecureAuthSystem:
             "expires_at": datetime.now(timezone.utc) + timedelta(minutes=MFA_CODE_EXPIRE_MINUTES)
         }
         
-        await debug("AUTH", f"MFA code generated for {email}")
+        debug("AUTH", f"MFA code generated for {email}")
         # In production, send this via email/SMS
         return code
     
@@ -192,7 +299,7 @@ class SecureAuthSystem:
         
         if stored["code"] == code:
             del self.mfa_codes[email]
-            await debug("AUTH", f"MFA verification successful for {email}")
+            debug("AUTH", f"MFA verification successful for {email}")
             return True
         
         return False
@@ -237,7 +344,7 @@ class SecureAuthSystem:
         self.users[email] = user_data
         self._save_users()
         
-        await debug("AUTH", f"Temporary user created: {email} by {created_by}")
+        debug("AUTH", f"Temporary user created: {email} by {created_by}")
         await self._audit_log("temp_user_created", {
             "email": email,
             "role": role,
@@ -267,9 +374,15 @@ class SecureAuthSystem:
             print(f"[AUTH_SYSTEM] Looking for user: {email}")
             user = self.users.get(email)
             if not user:
-                print(f"[AUTH_SYSTEM] User not found in database: {email}")
-                print(f"[AUTH_SYSTEM] Available users: {list(self.users.keys())}")
-                return None
+                # Try reloading users from disk in case the database was updated
+                print(f"[AUTH_SYSTEM] User not found in memory, reloading from disk...")
+                self.users = self._load_users()
+                user = self.users.get(email)
+                
+                if not user:
+                    print(f"[AUTH_SYSTEM] User not found in database: {email}")
+                    print(f"[AUTH_SYSTEM] Available users: {list(self.users.keys())}")
+                    return None
             
             # Check if user is still active
             if not user.get("is_active", True):
@@ -353,7 +466,7 @@ class SecureAuthSystem:
         self.users[email].update(updates)
         self._save_users()
         
-        await debug("AUTH", f"User updated: {email}")
+        debug("AUTH", f"User updated: {email}")
         await self._audit_log("user_updated", {"email": email, "updates": list(updates.keys())})
         
         return True
@@ -365,7 +478,7 @@ class SecureAuthSystem:
         
         # Don't allow deactivating master admin
         if self.users[email].get("role") == UserRole.MASTER_ADMIN:
-            await debug("AUTH", f"Attempted to deactivate master admin: {email}")
+            debug("AUTH", f"Attempted to deactivate master admin: {email}")
             return False
         
         self.users[email]["is_active"] = False
@@ -373,7 +486,7 @@ class SecureAuthSystem:
         self.users[email]["deactivated_by"] = deactivated_by
         self._save_users()
         
-        await debug("AUTH", f"User deactivated: {email} by {deactivated_by}")
+        debug("AUTH", f"User deactivated: {email} by {deactivated_by}")
         await self._audit_log("user_deactivated", {
             "email": email,
             "deactivated_by": deactivated_by
@@ -406,30 +519,35 @@ class SecureAuthSystem:
     
     async def _audit_log(self, event_type: str, details: Dict):
         """Log authentication events for audit"""
-        if not self.audit_log_path.exists():
-            self.audit_log_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            if not self.audit_log_path.exists():
+                self.audit_log_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(self.audit_log_path, 'w') as f:
+                    json.dump([], f)
+            
+            # Load existing logs
+            with open(self.audit_log_path, 'r') as f:
+                logs = json.load(f)
+            
+            # Add new log entry
+            log_entry = {
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "event_type": event_type,
+                "details": details
+            }
+            logs.append(log_entry)
+            
+            # Keep only last 10000 entries
+            if len(logs) > 10000:
+                logs = logs[-10000:]
+            
+            # Save logs
             with open(self.audit_log_path, 'w') as f:
-                json.dump([], f)
-        
-        # Load existing logs
-        with open(self.audit_log_path, 'r') as f:
-            logs = json.load(f)
-        
-        # Add new log entry
-        log_entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "event_type": event_type,
-            "details": details
-        }
-        logs.append(log_entry)
-        
-        # Keep only last 10000 entries
-        if len(logs) > 10000:
-            logs = logs[-10000:]
-        
-        # Save logs
-        with open(self.audit_log_path, 'w') as f:
-            json.dump(logs, f, indent=2)
+                json.dump(logs, f, indent=2)
+                
+        except Exception as e:
+            print(f"[WARNING] [AUTH_SYSTEM] Audit log error (non-critical): {e}")
+            # Don't fail the operation due to audit log errors
     
     async def get_audit_logs(self, limit: int = 100) -> List[Dict]:
         """Get recent audit logs"""

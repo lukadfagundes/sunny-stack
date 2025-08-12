@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generate Sunny Stack Icons</title>
+</head>
+<body>
+    <h1>Sunny Stack Icon Generator</h1>
+    <p>Use this page to generate PNG icons from the SVG</p>
+    
+    <!-- Display SVG at different sizes -->
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; background: #f0f0f0; padding: 20px;">
+        <div>
+            <h3>16x16 (favicon)</h3>
+            <img src="favicon.svg" width="16" height="16" style="border: 1px solid #ccc;">
+        </div>
+        <div>
+            <h3>32x32 (favicon)</h3>
+            <img src="favicon.svg" width="32" height="32" style="border: 1px solid #ccc;">
+        </div>
+        <div>
+            <h3>180x180 (Apple Touch)</h3>
+            <img src="favicon.svg" width="180" height="180" style="border: 1px solid #ccc;">
+        </div>
+        <div>
+            <h3>192x192 (Android)</h3>
+            <img src="favicon.svg" width="192" height="192" style="border: 1px solid #ccc;">
+        </div>
+        <div>
+            <h3>512x512 (Android)</h3>
+            <img src="favicon.svg" width="512" height="512" style="border: 1px solid #ccc;">
+        </div>
+    </div>
+    
+    <script>
+        // Function to generate PNG from SVG
+        function generatePNG(size) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = size;
+            canvas.height = size;
+            
+            const img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, size, size);
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `icon-${size}x${size}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            };
+            img.src = 'favicon.svg';
+        }
+        
+        // Add download buttons
+        const sizes = [16, 32, 180, 192, 512];
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.margin = '20px';
+        
+        sizes.forEach(size => {
+            const button = document.createElement('button');
+            button.textContent = `Download ${size}x${size} PNG`;
+            button.style.margin = '5px';
+            button.style.padding = '10px';
+            button.onclick = () => generatePNG(size);
+            buttonContainer.appendChild(button);
+        });
+        
+        document.body.appendChild(buttonContainer);
+    </script>
+</body>
+</html>

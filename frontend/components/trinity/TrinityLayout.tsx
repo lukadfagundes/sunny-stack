@@ -7,11 +7,18 @@ import UserMenu from '@/components/auth/UserMenu'
 import ClaudeWebPanel from './ClaudeWebPanel'
 import ProjectMonitor from './ProjectMonitor'
 import ClaudeCodeTerminal from './ClaudeCodeTerminal'
+import ColaRecordsHUD from './ColaRecordsHUD'
+import NavigatorHelm from '../navigator/NavigatorHelm'
 
 export default function TrinityLayout() {
   const { session, startSession, endSession } = useSessionManager()
   const { isAuthenticated } = useAuth()
   const [activeProject, setActiveProject] = useState<string | null>(null)
+  
+  const handleProjectSwitch = (projectId: string) => {
+    setActiveProject(projectId)
+    console.log(`Switched to project: ${projectId}`)
+  }
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
@@ -73,31 +80,51 @@ export default function TrinityLayout() {
         </div>
       )}
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 h-[calc(100vh-80px)]">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ClaudeWebPanel />
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <ProjectMonitor activeProject={activeProject} setActiveProject={setActiveProject} />
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-        >
-          <ClaudeCodeTerminal projectId={activeProject} />
-        </motion.div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 h-[calc(100vh-140px)]">
+        {activeProject === 'navigator-helm' ? (
+          // Navigator's Helm View
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="lg:col-span-3"
+          >
+            <NavigatorHelm isActive={true} />
+          </motion.div>
+        ) : (
+          // Default Trinity View
+          <>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ClaudeWebPanel />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              <ProjectMonitor activeProject={activeProject} setActiveProject={setActiveProject} />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <ClaudeCodeTerminal projectId={activeProject} />
+            </motion.div>
+          </>
+        )}
       </div>
+      
+      {/* Cola Records HUD */}
+      <ColaRecordsHUD 
+        onProjectSwitch={handleProjectSwitch}
+        currentProject={activeProject}
+      />
     </div>
   )
 }

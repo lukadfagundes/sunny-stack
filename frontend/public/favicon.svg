@@ -1,0 +1,31 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle for better visibility -->
+  <circle cx="50" cy="50" r="48" fill="#FFF8DC" opacity="0.9"/>
+  
+  <!-- Golden sun circle (main body) -->
+  <circle cx="50" cy="50" r="22" fill="#FFD700"/>
+  
+  <!-- Inner glow effect -->
+  <circle cx="50" cy="50" r="18" fill="#FFEB3B" opacity="0.8"/>
+  
+  <!-- Sun rays (8 symmetrical rays) -->
+  <!-- Top ray -->
+  <rect x="47" y="10" width="6" height="15" rx="3" fill="#FFA500"/>
+  <!-- Top-right ray -->
+  <rect x="70" y="25" width="6" height="15" rx="3" fill="#FFA500" transform="rotate(45 73 32.5)"/>
+  <!-- Right ray -->
+  <rect x="75" y="47" width="15" height="6" rx="3" fill="#FFA500"/>
+  <!-- Bottom-right ray -->
+  <rect x="70" y="60" width="6" height="15" rx="3" fill="#FFA500" transform="rotate(-45 73 67.5)"/>
+  <!-- Bottom ray -->
+  <rect x="47" y="75" width="6" height="15" rx="3" fill="#FFA500"/>
+  <!-- Bottom-left ray -->
+  <rect x="24" y="60" width="6" height="15" rx="3" fill="#FFA500" transform="rotate(45 27 67.5)"/>
+  <!-- Left ray -->
+  <rect x="10" y="47" width="15" height="6" rx="3" fill="#FFA500"/>
+  <!-- Top-left ray -->
+  <rect x="24" y="25" width="6" height="15" rx="3" fill="#FFA500" transform="rotate(-45 27 32.5)"/>
+  
+  <!-- Central highlight for depth -->
+  <circle cx="45" cy="45" r="8" fill="#FFF8DC" opacity="0.4"/>
+</svg>

@@ -5,6 +5,6 @@ export default function Login() {
 }
 
 export const metadata = {
-  title: 'Login - Sunny Platform',
-  description: 'Secure login to Sunny AI-Powered Software Consulting Platform',
+  title: 'Login - Sunny Stack',
+  description: 'Secure login to Sunny Stack professional development platform',
 }

@@ -48,6 +48,7 @@ def create_database_init_sql():
     
     sql_content = """-- Sunny Platform Database Initialization
 -- DEBUG DB: PostgreSQL setup script
+-- Navigator's Helm tables included
 
 -- Create database if not exists
 -- Run as postgres superuser:

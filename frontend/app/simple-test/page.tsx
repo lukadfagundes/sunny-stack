@@ -34,7 +34,7 @@ export default function SimpleTest() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-gray-800">🌟 Sunny Platform - System Check</h1>
+        <h1 className="text-4xl font-bold mb-8 text-gray-800">🌟 Sunny Stack - System Check</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Frontend Status */}
@@ -96,8 +96,8 @@ export default function SimpleTest() {
             <a href="/login" className="p-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all">
               🔐 Login Page
             </a>
-            <a href="/dashboard" className="p-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all">
-              📊 Dashboard
+            <a href="/hud" className="p-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all">
+              🥤 Cola Records HUD
             </a>
             <a href="/test" className="p-4 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg hover:shadow-lg transition-all">
               🧪 Test Page

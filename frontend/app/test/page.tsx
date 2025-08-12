@@ -30,7 +30,7 @@ export default function TestPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Sunny Platform - Connection Test</h1>
+        <h1 className="text-3xl font-bold mb-8">Sunny Stack - Connection Test</h1>
         
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Frontend Status</h2>
@@ -72,7 +72,7 @@ export default function TestPage() {
           <div className="space-y-2">
             <a href="/" className="block text-blue-600 hover:underline">→ Landing Page</a>
             <a href="/login" className="block text-blue-600 hover:underline">→ Login Page</a>
-            <a href="/dashboard" className="block text-blue-600 hover:underline">→ Dashboard</a>
+            <a href="/hud" className="block text-blue-600 hover:underline">→ Cola Records HUD</a>
             <a href="/admin" className="block text-blue-600 hover:underline">→ Admin Panel</a>
           </div>
         </div>

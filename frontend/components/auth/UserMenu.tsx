@@ -123,12 +123,12 @@ export default function UserMenu() {
                 <button
                   onClick={() => {
                     setIsOpen(false)
-                    router.push('/dashboard')
+                    router.push('/hud')
                   }}
                   className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-900 transition-colors flex items-center gap-3"
                 >
-                  <span>📊</span>
-                  <span>Dashboard</span>
+                  <span>🥤</span>
+                  <span>Cola Records HUD</span>
                 </button>
 
                 <button

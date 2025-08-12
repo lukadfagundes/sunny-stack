@@ -1,0 +1,66 @@
+[
+  {
+    "timestamp": "2025-08-12T13:47:30.048474+00:00",
+    "event_type": "login_success",
+    "details": {
+      "email": "luka@sunny-stack.com",
+      "role": "master_admin"
+    }
+  },
+  {
+    "timestamp": "2025-08-12T13:47:30.278563+00:00",
+    "event_type": "login_failed",
+    "details": {
+      "email": "luka@sunny-stack.com",
+      "reason": "invalid_password"
+    }
+  },
+  {
+    "timestamp": "2025-08-12T13:47:30.287045+00:00",
+    "event_type": "login_failed",
+    "details": {
+      "email": "fake@example.com",
+      "reason": "user_not_found"
+    }
+  },
+  {
+    "timestamp": "2025-08-12T13:53:08.552410+00:00",
+    "event_type": "login_success",
+    "details": {
+      "email": "luka@sunny-stack.com",
+      "role": "master_admin"
+    }
+  },
+  {
+    "timestamp": "2025-08-12T13:56:42.425923+00:00",
+    "event_type": "login_success",
+    "details": {
+      "email": "luka@sunny-stack.com",
+      "role": "master_admin"
+    }
+  },
+  {
+    "timestamp": "2025-08-12T14:02:08.315470+00:00",
+    "event_type": "login_success",
+    "details": {
+      "email": "luka@sunny-stack.com",
+      "role": "master_admin"
+    }
+  },
+  {
+    "timestamp": "2025-08-12T16:33:27.101730+00:00",
+    "event_type": "login_success",
+    "details": {
+      "email": "luka@sunny-stack.com",
+      "role": "master_admin"
+    }
+  },
+  {
+    "timestamp": "2025-08-12T16:48:16.602730+00:00",
+    "event_type": "login_success",
+    "details": {
+      "email": "luka@sunny-stack.com",
+      "role": "master_admin"
+    }
+  }
+]

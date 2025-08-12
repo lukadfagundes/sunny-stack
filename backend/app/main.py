@@ -18,7 +18,7 @@ logging.basicConfig(
 app_logger = logging.getLogger("sunny_main")
 app_logger.info(f"🚀 SUNNY PLATFORM STARTING [{datetime.now().isoformat()}]")
 
-from .routes import claude_integration, project_management, client_analysis, proposal_engine, metrics_tracking, self_improvement_api, auth_routes, app_router, auth, security_monitor
+from .routes import claude_integration, project_management, client_analysis, proposal_engine, metrics_tracking, self_improvement_api, auth_routes, app_router, auth, security_monitor, navigator_helm, test_json
 from .auth import google_oauth
 from .utils.debug_helper import debug, debug_decorator
 from .websocket_server import create_socketio_app, sio
@@ -59,6 +59,36 @@ app = FastAPI(
     redirect_slashes=False
 )
 app_logger.info("✅ FastAPI app created with redirect_slashes=False")
+
+# Global exception handler to ensure proper JSON responses
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    """Ensure HTTP exceptions return valid JSON"""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": str(exc.detail)}
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    """Ensure validation errors return valid JSON"""
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()}
+    )
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request, exc):
+    """Catch-all for unexpected errors"""
+    app_logger.error(f"Unexpected error: {str(exc)}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error", "error": str(exc)}
+    )
 
 # SECURITY MIDDLEWARE STACK - Order matters!
 # 1. Bot Protection - First line of defense (TEMPORARILY DISABLED FOR TESTING)
@@ -143,8 +173,8 @@ async def emergency_access_logging(request, call_next):
     return response
 
 # Authentication routes (no auth required for login)
-app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(auth_routes.router, prefix="/api/auth", tags=["Authentication"])
+# app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])  # OLD AUTH - DISABLED
+app.include_router(auth_routes.router, prefix="/api/auth", tags=["Authentication"])  # NEW SECURE AUTH SYSTEM
 app.include_router(app_router.router, prefix="", tags=["Application Router"])
 
 # Google OAuth routes for MCP authentication
@@ -159,6 +189,12 @@ app.include_router(proposal_engine.router, prefix="/api/proposals", tags=["Propo
 app.include_router(metrics_tracking.router, prefix="/api/metrics", tags=["Metrics Tracking"])
 app.include_router(self_improvement_api.router, prefix="/api/self-improvement", tags=["Self Improvement"])
 app.include_router(security_monitor.router, tags=["Security Monitoring"])
+
+# Navigator's Helm Integration
+app.include_router(navigator_helm.router, prefix="/api", tags=["Navigator's Helm"])
+
+# Test JSON endpoints (temporary for debugging)
+app.include_router(test_json.router, prefix="/api/test", tags=["Testing"])
 
 @app.get("/")
 @debug_decorator("API")

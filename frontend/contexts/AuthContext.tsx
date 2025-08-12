@@ -38,12 +38,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = async () => {
     try {
+      console.log('🔧 [AUTH_CONTEXT] Checking authentication state')
+      
       const token = localStorage.getItem('access_token')
+      const storedUser = localStorage.getItem('user')
+      
+      // First, try to restore from localStorage
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser)
+          console.log('🎯 [AUTH_CONTEXT] Restored user from localStorage:', userData.email)
+          setUser(userData)
+          setIsLoading(false)
+          return
+        } catch (e) {
+          console.error('🚨 [AUTH_CONTEXT] Failed to parse stored user data')
+          localStorage.removeItem('user')
+        }
+      }
+      
       if (!token) {
+        console.log('🔧 [AUTH_CONTEXT] No token found, user not authenticated')
         setIsLoading(false)
         return
       }
 
+      // Try to validate token with backend
       const response = await fetch('/api/auth/me', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -52,15 +72,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.ok) {
         const userData = await response.json()
+        console.log('✅ [AUTH_CONTEXT] User validated from API:', userData.email)
         setUser(userData)
+        localStorage.setItem('user', JSON.stringify(userData))
       } else {
+        console.log('🚨 [AUTH_CONTEXT] Token validation failed, clearing storage')
         // Token invalid, clear storage
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
         localStorage.removeItem('user')
       }
     } catch (error) {
-      console.error('Auth check failed:', error)
+      console.error('🚨 [AUTH_CONTEXT] Auth check failed:', error)
+      // If API call fails, try to use stored user data
+      const storedUser = localStorage.getItem('user')
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser)
+          console.log('🔧 [AUTH_CONTEXT] Using cached user data after API failure:', userData.email)
+          setUser(userData)
+        } catch (e) {
+          console.error('🚨 [AUTH_CONTEXT] Failed to parse cached user data')
+        }
+      }
     } finally {
       setIsLoading(false)
     }
