@@ -6,6 +6,21 @@ import { ArrowRight, Zap, Brain, Code2, Sparkles } from 'lucide-react'
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+      {/* TEST BANNER - Repository Verification */}
+      <div style={{
+        backgroundColor: '#ff0000',
+        color: '#ffffff',
+        padding: '20px',
+        textAlign: 'center',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        border: '5px solid #ffff00',
+        margin: '20px',
+        position: 'relative',
+        zIndex: 9999
+      }}>
+        🚀 TESTING: lukadfagundes/sunny-ai-platform Repository - {new Date().toLocaleTimeString()} 🚀
+      </div>
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
       
       <nav className="relative z-10 px-6 py-4">
