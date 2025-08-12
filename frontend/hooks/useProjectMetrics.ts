@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { io, Socket } from 'socket.io-client'
+import { wsManager } from '@/lib/websocket-manager'
 
 interface Project {
   id: string
@@ -49,28 +49,26 @@ export function useProjectMetrics() {
   })
   
   const [realTimeUpdates, setRealTimeUpdates] = useState<RealTimeUpdate[]>([])
-  const [socket, setSocket] = useState<Socket | null>(null)
   
   useEffect(() => {
-    const socketInstance = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:8000', {
-      transports: ['websocket']
-    })
+    // Initialize WebSocket connection through manager
+    wsManager.getSocket()
     
-    socketInstance.on('connect', () => {
+    const handleConnect = () => {
       console.log('Connected to real-time updates')
-    })
+    }
     
-    socketInstance.on('project-update', (data: Partial<Project>) => {
+    const handleProjectUpdate = (data: Partial<Project>) => {
       setProjects(prev => prev.map(p => 
         p.id === data.id ? { ...p, ...data } : p
       ))
-    })
+    }
     
-    socketInstance.on('metrics-update', (data: Partial<Metrics>) => {
+    const handleMetricsUpdate = (data: Partial<Metrics>) => {
       setMetrics(prev => ({ ...prev, ...data }))
-    })
+    }
     
-    socketInstance.on('real-time-update', (update: RealTimeUpdate) => {
+    const handleRealTimeUpdate = (update: RealTimeUpdate) => {
       setRealTimeUpdates(prev => [
         {
           ...update,
@@ -82,12 +80,20 @@ export function useProjectMetrics() {
         },
         ...prev
       ].slice(0, 50))
-    })
+    }
     
-    setSocket(socketInstance)
+    // Register event listeners
+    wsManager.on('ws:connected', handleConnect)
+    wsManager.on('project-update', handleProjectUpdate)
+    wsManager.on('metrics-update', handleMetricsUpdate)
+    wsManager.on('real-time-update', handleRealTimeUpdate)
     
     return () => {
-      socketInstance.disconnect()
+      // Cleanup event listeners
+      wsManager.off('ws:connected', handleConnect)
+      wsManager.off('project-update', handleProjectUpdate)
+      wsManager.off('metrics-update', handleMetricsUpdate)
+      wsManager.off('real-time-update', handleRealTimeUpdate)
     }
   }, [])
   

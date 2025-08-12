@@ -11,7 +11,11 @@ import secrets
 import json
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 from ..utils.debug_helper import debug
+
+# Load environment variables
+load_dotenv()
 
 # Security Configuration
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", secrets.token_urlsafe(32))
@@ -19,6 +23,9 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 MFA_CODE_EXPIRE_MINUTES = 5
+
+# Debug logging
+print(f"[AUTH_SYSTEM.PY] JWT_SECRET_KEY loaded: {SECRET_KEY[:20]}..." if len(SECRET_KEY) > 20 else f"[AUTH_SYSTEM.PY] JWT_SECRET_KEY: {SECRET_KEY}")
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -248,14 +255,20 @@ class SecureAuthSystem:
     async def verify_token(self, token: str) -> Optional[Dict]:
         """Verify JWT token and return user data"""
         try:
+            print(f"[AUTH_SYSTEM] Verifying token with SECRET_KEY: {SECRET_KEY[:20]}...")
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            print(f"[AUTH_SYSTEM] Token payload decoded: {payload}")
             email: str = payload.get("sub")
             
             if email is None:
+                print(f"[AUTH_SYSTEM] No 'sub' claim in token payload")
                 return None
             
+            print(f"[AUTH_SYSTEM] Looking for user: {email}")
             user = self.users.get(email)
             if not user:
+                print(f"[AUTH_SYSTEM] User not found in database: {email}")
+                print(f"[AUTH_SYSTEM] Available users: {list(self.users.keys())}")
                 return None
             
             # Check if user is still active
@@ -271,7 +284,7 @@ class SecureAuthSystem:
             return user
             
         except JWTError as e:
-            await debug("AUTH", f"Token verification failed: {str(e)}")
+            debug("AUTH", f"Token verification failed: {str(e)}")
             return None
     
     async def get_user_permissions(self, email: str) -> Dict:

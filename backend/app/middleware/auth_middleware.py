@@ -5,22 +5,26 @@ Protects API routes with JWT authentication
 
 from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.responses import JSONResponse
 from typing import Optional, List
 
 from ..auth.auth_system import auth_system
 from ..utils.debug_helper import debug
 
-# Routes that don't require authentication
+# Routes that don't require authentication - STRICT LIST
 PUBLIC_ROUTES = [
     "/",
     "/health",
+    "/api/health",  # Add API health endpoint
     "/api/auth/login",
+    "/api/auth/request-reset",  # Allow password reset
+    "/api/auth/verify-reset",   # Allow password reset verification
+    "/api/auth/reset-password",  # Allow password setting
     "/api/auth/health",
-    "/docs",
-    "/openapi.json",
-    "/redoc",
-    "/api/mcp/status",  # Temporarily public for testing
-    "/api/mcp/health"   # Temporarily public for testing
+    # Remove docs in production for security
+    # "/docs",
+    # "/openapi.json",
+    # "/redoc",
 ]
 
 # Routes that require specific permissions
@@ -29,7 +33,6 @@ PERMISSION_MAP = {
     "/api/analysis": ["analytics.read"],
     "/api/proposals": ["projects.read"],
     "/api/metrics": ["analytics.read"],
-    "/api/mcp": ["mcp.access"],
     "/api/self-improvement": ["admin"]
 }
 
@@ -47,13 +50,19 @@ class AuthMiddleware:
             response = await call_next(request)
             return response
         
+        # SPECIAL HANDLING: Auth verify endpoints handle their own validation
+        # The verify endpoints need to receive the token to validate it themselves
+        if request.url.path in ["/api/auth/verify", "/api/auth/verify-token"]:
+            response = await call_next(request)
+            return response
+        
         # Extract token from Authorization header
         authorization = request.headers.get("Authorization")
         if not authorization or not authorization.startswith("Bearer "):
-            await debug("AUTH_MIDDLEWARE", f"No valid auth header for {request.url.path}")
-            raise HTTPException(
+            debug("AUTH_MIDDLEWARE", f"No valid auth header for {request.url.path}")
+            return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Missing or invalid authorization header",
+                content={"detail": "Missing or invalid authorization header"},
                 headers={"WWW-Authenticate": "Bearer"}
             )
         
@@ -62,19 +71,19 @@ class AuthMiddleware:
         # Verify token
         user = await auth_system.verify_token(token)
         if not user:
-            await debug("AUTH_MIDDLEWARE", f"Invalid token for {request.url.path}")
-            raise HTTPException(
+            debug("AUTH_MIDDLEWARE", f"Invalid token for {request.url.path}")
+            return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid or expired token",
+                content={"detail": "Invalid or expired token"},
                 headers={"WWW-Authenticate": "Bearer"}
             )
         
         # Check route-specific permissions
         if not await self._check_route_permissions(request.url.path, user):
-            await debug("AUTH_MIDDLEWARE", f"Permission denied for {user['email']} to {request.url.path}")
-            raise HTTPException(
+            debug("AUTH_MIDDLEWARE", f"Permission denied for {user['email']} to {request.url.path}")
+            return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Insufficient permissions for this resource"
+                content={"detail": "Insufficient permissions for this resource"}
             )
         
         # Attach user to request state
@@ -86,9 +95,11 @@ class AuthMiddleware:
     
     def _is_public_route(self, path: str) -> bool:
         """Check if route is public"""
+        # Check explicit public routes
         for public_route in PUBLIC_ROUTES:
             if path == public_route or path.startswith(f"{public_route}/"):
                 return True
+        
         return False
     
     async def _check_route_permissions(self, path: str, user: dict) -> bool:

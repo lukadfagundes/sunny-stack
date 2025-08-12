@@ -1,19 +1,33 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 import uvicorn
 from contextlib import asynccontextmanager
 import os
+import logging
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import asyncio
 
-from .routes import claude_integration, project_management, client_analysis, proposal_engine, metrics_tracking, mcp_api, self_improvement_api, auth_routes, app_router
+# 🔧 DEBUG: Setup comprehensive logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+app_logger = logging.getLogger("sunny_main")
+app_logger.info(f"🚀 SUNNY PLATFORM STARTING [{datetime.now().isoformat()}]")
+
+from .routes import claude_integration, project_management, client_analysis, proposal_engine, metrics_tracking, self_improvement_api, auth_routes, app_router, auth, security_monitor
+from .auth import google_oauth
 from .utils.debug_helper import debug, debug_decorator
 from .websocket_server import create_socketio_app, sio
-from .services.mcp_service import mcp_service
 from .services.self_analysis import safe_self_improvement_orchestrator
 from .middleware.auth_middleware import auth_middleware
+from .middleware.ip_whitelist import IPWhitelistMiddleware
+from .middleware.bot_protection import BotProtectionMiddleware
+from .middleware.rate_limiter import RateLimiterMiddleware
+from .middleware.emergency_access_logger import emergency_logger
 
 load_dotenv()
 
@@ -28,9 +42,6 @@ async def daily_self_improvement():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     debug("STARTUP", "Sunny backend initializing", version="1.0.0")
-    # Initialize MCP service
-    await mcp_service.start_service()
-    debug("STARTUP", "MCP service initialized successfully")
     
     # Daily self-improvement will be enabled after Claude Code integration
     # asyncio.create_task(daily_self_improvement())
@@ -39,37 +50,106 @@ async def lifespan(app: FastAPI):
     yield
     debug("SHUTDOWN", "Sunny backend shutting down")
 
+# CRITICAL: Disable slash redirects to prevent /api/mcp -> /api/mcp/ redirect
 app = FastAPI(
     title="Sunny Consulting Platform API",
     description="AI-Powered Software Consulting Backend",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    redirect_slashes=False
 )
+app_logger.info("✅ FastAPI app created with redirect_slashes=False")
+
+# SECURITY MIDDLEWARE STACK - Order matters!
+# 1. Bot Protection - First line of defense (TEMPORARILY DISABLED FOR TESTING)
+# app.add_middleware(
+#     BotProtectionMiddleware,
+#     rate_limit_window=60,
+#     rate_limit_max_requests=100,
+#     block_duration=3600  # 1 hour block for malicious IPs
+# )
+
+# 2. Rate Limiting - Prevent abuse (TEMPORARILY DISABLED FOR TESTING)
+# app.add_middleware(
+#     RateLimiterMiddleware,
+#     enable_adaptive=True,
+#     block_duration=300  # 5 minute blocks for rate limit violations
+# )
+
+# 3. CORS - Configure allowed origins
+# Get environment-based origins
+PRODUCTION_MODE = os.getenv("PRODUCTION_MODE", "false").lower() == "true"
+
+if PRODUCTION_MODE:
+    # Production origins
+    allowed_origins = [
+        "https://sunny-stack.com",
+        "https://www.sunny-stack.com",
+        "https://*.sunny-stack.com",  # Allow all subdomains
+    ]
+else:
+    # Development origins - allow localhost and production for testing
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://localhost:3001",  
+        "http://localhost:3002",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",  
+        "http://127.0.0.1:3002",
+        "https://sunny-stack.com",
+        "https://www.sunny-stack.com",
+        "https://*.sunny-stack.com",  # Allow all subdomains
+    ]
+
+# CORS Configuration with debugging
+app_logger.info(f"🌐 CORS ORIGINS: {allowed_origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:3001",  
-        "http://localhost:3002",  # Add support for port 3002
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001",  
-        "http://127.0.0.1:3002",  # Add support for 127.0.0.1:3002
-        "https://sunny-stack.com"
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],  # Includes x-api-key
+    expose_headers=["X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset", "content-type"],
+    max_age=3600
+)
+app_logger.info("✅ CORS middleware configured with credentials support")
+
+# 4. IP Whitelist - Optional extra security layer
+# MCP paths removed - they need public access
+app.add_middleware(
+    IPWhitelistMiddleware,
+    protected_paths=["/api/admin", "/api/self-improvement"]
 )
 
-# Add authentication middleware
+# 5. Authentication - Final authorization check
 @app.middleware("http")
 async def add_auth_middleware(request, call_next):
     return await auth_middleware(request, call_next)
 
+# EMERGENCY ACCESS LOGGING - Track all access during development mode
+@app.middleware("http")
+async def emergency_access_logging(request, call_next):
+    """Log all access attempts during emergency mode"""
+    # Log the incoming request
+    await emergency_logger.log_access(request)
+    
+    # Process the request
+    response = await call_next(request)
+    
+    # Log with response status
+    await emergency_logger.log_access(request, response.status_code)
+    
+    return response
+
 # Authentication routes (no auth required for login)
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(app_router.router, prefix="", tags=["Application Router"])
+
+# Google OAuth routes for MCP authentication
+app.include_router(google_oauth.router, prefix="/api/oauth/google", tags=["OAuth"])
+
 
 # Protected API routes
 app.include_router(claude_integration.router, prefix="/api/claude", tags=["Claude Integration"])
@@ -77,8 +157,8 @@ app.include_router(project_management.router, prefix="/api/projects", tags=["Pro
 app.include_router(client_analysis.router, prefix="/api/analysis", tags=["Client Analysis"])
 app.include_router(proposal_engine.router, prefix="/api/proposals", tags=["Proposal Engine"])
 app.include_router(metrics_tracking.router, prefix="/api/metrics", tags=["Metrics Tracking"])
-app.include_router(mcp_api.router, prefix="/api/mcp", tags=["MCP Connector"])
 app.include_router(self_improvement_api.router, prefix="/api/self-improvement", tags=["Self Improvement"])
+app.include_router(security_monitor.router, tags=["Security Monitoring"])
 
 @app.get("/")
 @debug_decorator("API")
@@ -94,7 +174,6 @@ async def root():
             "analysis": "/api/analysis",
             "proposals": "/api/proposals",
             "metrics": "/api/metrics",
-            "mcp": "/api/mcp",
             "self_improvement": "/api/self-improvement"
         }
     }
@@ -107,6 +186,17 @@ async def health_check():
         "status": "healthy",
         "timestamp": datetime.now().isoformat()
     }
+
+
+app_logger.info("🎯 SUNNY PLATFORM INITIALIZATION COMPLETE")
+
+
+@app.get("/emergency/access-logs")
+@debug_decorator("API")
+async def get_emergency_access_logs():
+    """Get summary of all access during emergency mode"""
+    return emergency_logger.get_access_summary()
+
 
 # Create the complete ASGI app with Socket.IO
 asgi_app = create_socketio_app(app)

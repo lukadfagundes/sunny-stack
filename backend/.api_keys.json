@@ -1,0 +1,14 @@
+{
+  "a0a4c2ec4825fa2f930c07293e8e8234997d55acbb3094529000df800100ac64": {
+    "name": "claude_ai_mcp",
+    "description": "Default API key for Claude.ai MCP connector",
+    "created_at": "2025-08-11T01:26:20.264551",
+    "expires_at": "2026-08-11T01:26:20.264572",
+    "permissions": [
+      "mcp.*"
+    ],
+    "last_used": "2025-08-11T01:31:59.820800",
+    "usage_count": 3,
+    "active": true
+  }
+}

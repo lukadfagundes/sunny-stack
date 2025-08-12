@@ -1,8 +1,17 @@
 // API configuration with proper backend URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// In production, use relative URLs to avoid CORS issues when behind the same domain
+const getApiBaseUrl = () => {
+  // If we're in the browser and on production domain, use relative URLs
+  if (typeof window !== 'undefined' && window.location.hostname === 'sunny-stack.com') {
+    return '' // Empty string means relative URLs (same origin)
+  }
+  // Otherwise use the configured API URL or default to localhost
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+}
 
 export const apiClient = {
   async get(endpoint: string) {
+    const API_BASE_URL = getApiBaseUrl() // Get URL dynamically for each request
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'GET',
       headers: {
@@ -19,6 +28,7 @@ export const apiClient = {
   },
   
   async post(endpoint: string, data?: any) {
+    const API_BASE_URL = getApiBaseUrl() // Get URL dynamically for each request
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: {
@@ -36,6 +46,7 @@ export const apiClient = {
   },
 
   async put(endpoint: string, data?: any) {
+    const API_BASE_URL = getApiBaseUrl() // Get URL dynamically for each request
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'PUT',
       headers: {
@@ -53,6 +64,7 @@ export const apiClient = {
   },
 
   async delete(endpoint: string) {
+    const API_BASE_URL = getApiBaseUrl() // Get URL dynamically for each request
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'DELETE',
       headers: {
@@ -69,49 +81,6 @@ export const apiClient = {
   }
 }
 
-// MCP-specific API calls
-export const mcpApi = {
-  async getStatus() {
-    return apiClient.get('/api/mcp/status')
-  },
-  
-  async getLogs(count = 50, category?: string, level?: string) {
-    const params = new URLSearchParams()
-    params.append('count', count.toString())
-    if (category) params.append('category', category)
-    if (level) params.append('level', level)
-    
-    return apiClient.get(`/api/mcp/logs?${params.toString()}`)
-  },
-  
-  async getProjectStructure(maxDepth = 3) {
-    return apiClient.get(`/api/mcp/project/structure?max_depth=${maxDepth}`)
-  },
-  
-  async readFile(filePath: string) {
-    return apiClient.get(`/api/mcp/project/file?file_path=${encodeURIComponent(filePath)}`)
-  },
-  
-  async analyzeErrors(timeframeMinutes = 30) {
-    return apiClient.get(`/api/mcp/errors/analysis?timeframe_minutes=${timeframeMinutes}`)
-  },
-  
-  async monitorPerformance(durationSeconds = 30) {
-    return apiClient.post('/api/mcp/performance/monitor', { duration_seconds: durationSeconds })
-  },
-
-  async executeTools(toolName: string, parameters: any = {}) {
-    return apiClient.post('/api/mcp/tools/execute', { tool_name: toolName, parameters })
-  },
-
-  async getHealth() {
-    return apiClient.get('/api/mcp/health')
-  },
-
-  async addLogEntry(category: string, description: string, metrics: any = {}) {
-    return apiClient.post('/api/mcp/log', { category, description, metrics })
-  }
-}
 
 // Claude Integration API
 export const claudeApi = {

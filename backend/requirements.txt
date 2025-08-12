@@ -9,6 +9,7 @@ python-jose[cryptography]==3.3.0
 python-multipart==0.0.6
 bcrypt==4.1.2
 email-validator==2.1.0
+PyJWT==2.10.1
 
 # Database & Storage (simplified for now)
 sqlalchemy==2.0.23
@@ -30,3 +31,6 @@ psutil>=5.9.0
 
 # Development & Debugging
 rich>=13.0.0
+
+# Version Control & File Management
+GitPython>=3.1.40

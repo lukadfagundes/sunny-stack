@@ -8,7 +8,6 @@ import ast
 import subprocess
 
 from ..utils.debug_helper import debug
-from ..services.mcp_service import mcp_service
 from .claude_code_orchestrator import claude_code_orchestrator
 
 class ProposalPriority(str, Enum):

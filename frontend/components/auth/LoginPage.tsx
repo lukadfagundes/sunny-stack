@@ -43,20 +43,20 @@ export default function LoginPage() {
         return
       }
 
-      // Store tokens
-      localStorage.setItem('access_token', data.access_token)
-      localStorage.setItem('refresh_token', data.refresh_token)
-      localStorage.setItem('user', JSON.stringify(data.user))
-
+      // Cookies are now set by the API route
       // Route based on user role and permissions
-      if (data.user.is_master) {
+      const redirectUrl = new URLSearchParams(window.location.search).get('redirect')
+      
+      if (redirectUrl) {
+        router.push(redirectUrl)
+      } else if (data.user.is_master) {
         router.push('/admin')
-      } else if (data.user.app_access.includes('sunny')) {
+      } else if (data.user.app_access?.includes('sunny')) {
         router.push('/dashboard')
-      } else if (data.user.app_access.includes('client_demo')) {
+      } else if (data.user.app_access?.includes('client_demo')) {
         router.push('/demo')
       } else {
-        router.push('/app/sunny')
+        router.push('/dashboard')
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during login')
@@ -203,7 +203,7 @@ export default function LoginPage() {
             Secure authentication powered by Sunny
           </p>
           <div className="mt-4 flex justify-center space-x-4">
-            <a href="#" className="text-sm text-purple-600 hover:text-purple-700">
+            <a href="/reset-password" className="text-sm text-purple-600 hover:text-purple-700">
               Forgot password?
             </a>
             <span className="text-gray-400">•</span>

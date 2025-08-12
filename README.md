@@ -64,6 +64,34 @@ cp .env.example .env
 
 ### Running Locally
 
+#### 🚀 Quick Start (Git Bash - Recommended)
+
+```bash
+# Start all services with one command
+./startup-sunny.sh
+
+# Check status
+./status-sunny.sh
+
+# Stop services
+./stop-sunny.sh
+```
+
+#### Development Utilities (Git Bash)
+
+```bash
+# Quick development commands
+./dev-sunny.sh restart     # Restart all services
+./dev-sunny.sh backend     # Restart backend only
+./dev-sunny.sh frontend    # Restart frontend only
+./dev-sunny.sh logs        # View recent logs
+./dev-sunny.sh test-auth   # Test authentication
+./dev-sunny.sh git-status  # Show git status
+./dev-sunny.sh clean       # Clean build artifacts
+```
+
+#### Traditional Windows Method
+
 ```bash
 # Start all services (Windows)
 .\STARTUP_SUNNY.bat

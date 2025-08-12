@@ -2,13 +2,15 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useSessionManager } from '@/hooks/useSessionManager'
+import { useAuth } from '@/contexts/AuthContext'
+import UserMenu from '@/components/auth/UserMenu'
 import ClaudeWebPanel from './ClaudeWebPanel'
 import ProjectMonitor from './ProjectMonitor'
 import ClaudeCodeTerminal from './ClaudeCodeTerminal'
-import MCPStatusIndicator from './MCPStatusIndicator'
 
 export default function TrinityLayout() {
   const { session, startSession, endSession } = useSessionManager()
+  const { isAuthenticated } = useAuth()
   const [activeProject, setActiveProject] = useState<string | null>(null)
   
   return (
@@ -19,7 +21,11 @@ export default function TrinityLayout() {
             <span className="text-3xl">☀️</span> Sunny Trinity
           </h1>
           <div className="flex items-center gap-4">
-            {session.active ? (
+            {/* User Menu - Shows when authenticated */}
+            {isAuthenticated && <UserMenu />}
+            
+            {/* Session Management */}
+            {(session && session.active) ? (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -38,7 +44,7 @@ export default function TrinityLayout() {
               </motion.div>
             ) : (
               <button 
-                onClick={startSession}
+                onClick={() => startSession()}
                 className="px-6 py-2 bg-amber-900 text-yellow-100 rounded-lg hover:bg-amber-800 transition-colors shadow-md"
               >
                 Start Development Session
@@ -47,6 +53,25 @@ export default function TrinityLayout() {
           </div>
         </div>
       </header>
+      
+      {/* Authentication Status Bar */}
+      {isAuthenticated ? (
+        <div className="bg-green-600 text-white px-4 py-2 shadow-lg">
+          <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
+            <span className="text-lg">🔐</span>
+            <span className="font-medium">Secure Session Active</span>
+            <span className="text-sm opacity-90">| JWT Authentication Enabled</span>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-yellow-600 text-white px-4 py-2 shadow-lg">
+          <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
+            <span className="text-lg">⚠️</span>
+            <span className="font-medium">Not Authenticated</span>
+            <span className="text-sm opacity-90">| Please sign in to access all features</span>
+          </div>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 h-[calc(100vh-80px)]">
         <motion.div
@@ -73,9 +98,6 @@ export default function TrinityLayout() {
           <ClaudeCodeTerminal projectId={activeProject} />
         </motion.div>
       </div>
-      
-      {/* MCP Status Indicator */}
-      <MCPStatusIndicator />
     </div>
   )
 }

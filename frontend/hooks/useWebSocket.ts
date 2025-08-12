@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
-import { io, Socket } from 'socket.io-client'
+import { useEffect, useState, useCallback } from 'react'
+import { wsManager } from '@/lib/websocket-manager'
 
 interface WebSocketMessage {
   type: string
@@ -8,71 +8,74 @@ interface WebSocketMessage {
 }
 
 export function useWebSocket() {
-  const [socket, setSocket] = useState<Socket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [messages, setMessages] = useState<WebSocketMessage[]>([])
-  const socketRef = useRef<Socket | null>(null)
 
   useEffect(() => {
-    // Connect to backend WebSocket
-    const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-    const newSocket = io(socketUrl, {
-      transports: ['websocket', 'polling'],
-      upgrade: true,
-      rememberUpgrade: true
-    })
+    // Initialize WebSocket connection
+    const socket = wsManager.getSocket()
+    setIsConnected(wsManager.isConnected())
 
-    newSocket.on('connect', () => {
-      console.log('✅ WebSocket connected:', newSocket.id)
+    const handleConnect = () => {
+      console.log('✅ WebSocket connected')
       setIsConnected(true)
-    })
+    }
 
-    newSocket.on('disconnect', () => {
+    const handleDisconnect = () => {
       console.log('❌ WebSocket disconnected')
       setIsConnected(false)
-    })
+    }
 
-    newSocket.on('connection_status', (data) => {
+    const handleConnectionStatus = (data: any) => {
       console.log('📡 Connection status:', data)
-    })
+    }
 
-    newSocket.on('claude_code_progress', (data) => {
+    const handleClaudeProgress = (data: any) => {
       setMessages(prev => [...prev, {
         type: 'claude_code_progress',
         data,
         timestamp: new Date().toISOString()
       }])
-    })
+    }
 
-    newSocket.on('claude_code_status', (data) => {
+    const handleClaudeStatus = (data: any) => {
       setMessages(prev => [...prev, {
         type: 'claude_code_status',
         data,
         timestamp: new Date().toISOString()
       }])
-    })
+    }
 
-    newSocket.on('project_update', (data) => {
+    const handleProjectUpdate = (data: any) => {
       setMessages(prev => [...prev, {
         type: 'project_update',
         data,
         timestamp: new Date().toISOString()
       }])
-    })
+    }
 
-    socketRef.current = newSocket
-    setSocket(newSocket)
+    // Register event listeners
+    wsManager.on('ws:connected', handleConnect)
+    wsManager.on('ws:disconnected', handleDisconnect)
+    wsManager.on('connection_status', handleConnectionStatus)
+    wsManager.on('claude_code_progress', handleClaudeProgress)
+    wsManager.on('claude_code_status', handleClaudeStatus)
+    wsManager.on('project_update', handleProjectUpdate)
     
     return () => {
-      newSocket.close()
+      // Cleanup event listeners
+      wsManager.off('ws:connected', handleConnect)
+      wsManager.off('ws:disconnected', handleDisconnect)
+      wsManager.off('connection_status', handleConnectionStatus)
+      wsManager.off('claude_code_progress', handleClaudeProgress)
+      wsManager.off('claude_code_status', handleClaudeStatus)
+      wsManager.off('project_update', handleProjectUpdate)
     }
   }, [])
 
   const sendMessage = useCallback((event: string, data: any) => {
-    if (socketRef.current && isConnected) {
-      socketRef.current.emit(event, data)
-    }
-  }, [isConnected])
+    wsManager.send(event, data)
+  }, [])
 
   const executeClaudeCode = useCallback((prompt: string, projectId: string = 'default') => {
     sendMessage('claude_code_execute', {
@@ -86,7 +89,7 @@ export function useWebSocket() {
   }, [])
 
   return {
-    socket,
+    socket: wsManager.getSocket(),
     isConnected,
     messages,
     sendMessage,

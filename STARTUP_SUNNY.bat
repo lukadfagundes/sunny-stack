@@ -1,321 +1,363 @@
 @echo off
-cls
+setlocal enabledelayedexpansion
+title Sunny Platform Startup - Production Mode
 color 0A
-echo ================================================================
-echo 🌟 STARTING SUNNY AI CONSULTING PLATFORM - PRODUCTION MODE 🌟
-echo ================================================================
+cls
+
+echo.
+echo ==============================================================
+echo                 SUNNY AI PLATFORM STARTUP                    
+echo ==============================================================
+echo                 sunny-stack.com Production Deployment
+echo ==============================================================
+echo.
 echo Timestamp: %date% %time%
 echo.
 
 REM Create logs directory if it doesn't exist
-if not exist "logs" mkdir logs
-set LOGFILE=logs\startup_%date:~-4,4%%date:~-10,2%%date:~-7,2%_%time:~0,2%%time:~3,2%%time:~6,2%.log
+if not exist "C:\Sunny\logs" mkdir "C:\Sunny\logs"
+
+REM Set log file with clean timestamp
+set LOGFILE=C:\Sunny\logs\startup_%date:~-4%%date:~3,2%%date:~0,2%_%time:~0,2%%time:~3,2%%time:~6,2%.log
 set LOGFILE=%LOGFILE: =0%
-
-echo [DEBUG] Starting Sunny platform startup sequence... >> %LOGFILE%
-echo [DEBUG] Current directory: %CD% >> %LOGFILE%
-echo [DEBUG] User: %USERNAME% >> %LOGFILE%
-echo [DEBUG] System: %COMPUTERNAME% >> %LOGFILE%
-
-echo [STEP 1] Pre-flight checks and cleanup...
-echo ===============================================
-echo [DEBUG] Checking current running processes...
-
-REM Check what's currently running
-echo Current Node.js processes:
-tasklist | findstr node.exe
-echo Current Python processes:  
-tasklist | findstr python.exe
-echo Current Cloudflared processes:
-tasklist | findstr cloudflared.exe
+echo Logging to: %LOGFILE%
 echo.
 
-echo [DEBUG] Stopping any existing processes...
+echo =============================================== >> %LOGFILE%
+echo SUNNY PLATFORM STARTUP - %date% %time% >> %LOGFILE%
+echo =============================================== >> %LOGFILE%
+
+REM ===================================================================
+REM STEP 1: ENVIRONMENT VALIDATION
+REM ===================================================================
+echo [STEP 1/8] ENVIRONMENT VALIDATION
+echo ============================================
+echo Checking critical components...
+
+REM Check Python
+python --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Python not found in PATH!
+    echo ERROR: Python not found >> %LOGFILE%
+    echo Please install Python 3.9+ and add to PATH
+    pause
+    exit /b 1
+)
+echo ✓ Python found
+
+REM Check Node.js
+node --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Node.js not found in PATH!
+    echo ERROR: Node.js not found >> %LOGFILE%
+    echo Please install Node.js 18+ and add to PATH
+    pause
+    exit /b 1
+)
+echo ✓ Node.js found
+
+REM Check Cloudflared
+cloudflared --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Cloudflared not found in PATH!
+    echo ERROR: Cloudflared not found >> %LOGFILE%
+    echo Please install Cloudflared and add to PATH
+    pause
+    exit /b 1
+)
+echo ✓ Cloudflared found
+
+REM Check directories
+if not exist "C:\Sunny\backend" (
+    echo ERROR: Backend directory not found!
+    echo ERROR: Backend directory missing >> %LOGFILE%
+    pause
+    exit /b 1
+)
+echo ✓ Backend directory found
+
+if not exist "C:\Sunny\frontend" (
+    echo ERROR: Frontend directory not found!
+    echo ERROR: Frontend directory missing >> %LOGFILE%
+    pause
+    exit /b 1
+)
+echo ✓ Frontend directory found
+
+if not exist "C:\Sunny\backend\venv" (
+    echo ERROR: Python virtual environment not found!
+    echo ERROR: Virtual environment missing >> %LOGFILE%
+    echo Run: cd backend && python -m venv venv
+    pause
+    exit /b 1
+)
+echo ✓ Virtual environment found
+
+if not exist "C:\Sunny\frontend\node_modules" (
+    echo WARNING: Node modules not found, will install...
+    echo WARNING: Node modules missing >> %LOGFILE%
+    cd /d C:\Sunny\frontend
+    echo Installing frontend dependencies...
+    npm install
+    cd /d C:\Sunny
+)
+echo ✓ Node modules verified
+
+echo.
+echo Environment validation complete!
+echo Environment validation passed >> %LOGFILE%
+echo.
+
+REM ===================================================================
+REM STEP 2: PROCESS CLEANUP
+REM ===================================================================
+echo [STEP 2/8] PROCESS CLEANUP
+echo ============================================
+echo Stopping any existing processes...
+
+taskkill /F /IM python.exe >nul 2>&1
+if %errorlevel% equ 0 (
+    echo ✓ Stopped existing Python processes
+    echo Stopped Python processes >> %LOGFILE%
+    timeout /t 2 /nobreak >nul
+)
+
 taskkill /F /IM cloudflared.exe >nul 2>&1
 if %errorlevel% equ 0 (
-    echo ✅ Stopped existing cloudflared processes
-    echo [DEBUG] Stopped cloudflared processes >> %LOGFILE%
-) else (
-    echo ⚠️  No cloudflared processes to stop
-    echo [DEBUG] No cloudflared processes found >> %LOGFILE%
+    echo ✓ Stopped existing Cloudflared processes
+    echo Stopped Cloudflared processes >> %LOGFILE%
+    timeout /t 2 /nobreak >nul
 )
 
 taskkill /F /IM node.exe >nul 2>&1
 if %errorlevel% equ 0 (
-    echo ✅ Stopped existing Node.js processes
-    echo [DEBUG] Stopped Node.js processes >> %LOGFILE%
-) else (
-    echo ⚠️  No Node.js processes to stop
-    echo [DEBUG] No Node.js processes found >> %LOGFILE%
+    echo ✓ Stopped existing Node.js processes
+    echo Stopped Node.js processes >> %LOGFILE%
+    timeout /t 2 /nobreak >nul
 )
 
-taskkill /F /IM python.exe >nul 2>&1
-if %errorlevel% equ 0 (
-    echo ✅ Stopped existing Python processes
-    echo [DEBUG] Stopped Python processes >> %LOGFILE%
-) else (
-    echo ⚠️  No Python processes to stop
-    echo [DEBUG] No Python processes found >> %LOGFILE%
-)
-
-echo ✅ Process cleanup complete
+echo Process cleanup complete!
+echo Process cleanup complete >> %LOGFILE%
 echo.
 
-echo [STEP 2] Environment validation...
-echo ==================================
-echo [DEBUG] Validating directory structure...
-
-REM Check critical directories
-if exist "backend" (
-    echo ✅ Backend directory found
-    echo [DEBUG] Backend directory exists >> %LOGFILE%
-) else (
-    echo ❌ Backend directory missing!
-    echo [ERROR] Backend directory missing >> %LOGFILE%
-    goto :error
-)
-
-if exist "frontend" (
-    echo ✅ Frontend directory found
-    echo [DEBUG] Frontend directory exists >> %LOGFILE%
-) else (
-    echo ❌ Frontend directory missing!
-    echo [ERROR] Frontend directory missing >> %LOGFILE%
-    goto :error
-)
-
-if exist "backend\venv" (
-    echo ✅ Python virtual environment found
-    echo [DEBUG] Virtual environment exists >> %LOGFILE%
-) else (
-    echo ❌ Python virtual environment missing!
-    echo [ERROR] Virtual environment missing >> %LOGFILE%
-    goto :error
-)
-
-if exist "frontend\package.json" (
-    echo ✅ Frontend package.json found
-    echo [DEBUG] package.json exists >> %LOGFILE%
-) else (
-    echo ❌ Frontend package.json missing!
-    echo [ERROR] package.json missing >> %LOGFILE%
-    goto :error
-)
-
-echo ✅ Environment validation passed
-echo.
-
-echo [STEP 3] Cloudflare Tunnel Configuration Check...
-echo ================================================
-echo [DEBUG] Using Sunny-specific tunnel configuration...
-
-if exist "C:\Users\lukaf\.cloudflared\sunny-config.yml" (
-    echo ✅ Sunny tunnel configuration found
-    echo [DEBUG] Found sunny-config.yml >> %LOGFILE%
-    set TUNNEL_CONFIG=C:\Users\lukaf\.cloudflared\sunny-config.yml
-    set TUNNEL_NAME=sunny-ai-platform
-) else (
-    echo ❌ Sunny tunnel configuration missing!
-    echo [ERROR] sunny-config.yml not found >> %LOGFILE%
-    echo.
-    echo Please ensure sunny-config.yml exists in C:\Users\lukaf\.cloudflared\
-    goto :error
-)
-
-echo [DEBUG] Using tunnel config: %TUNNEL_CONFIG%
-echo [DEBUG] Tunnel name: %TUNNEL_NAME%
-echo [DEBUG] Config path: %TUNNEL_CONFIG% >> %LOGFILE%
-
-echo [STEP 4] Starting Cloudflare Tunnel (MUST BE FIRST)...
-echo ===================================
-echo 🌐 Connecting Sunny to sunny-stack.com...
-echo [DEBUG] Starting tunnel with config: %TUNNEL_CONFIG%
-
-start "Sunny Cloudflare Tunnel" cmd /k "echo 🌐 TUNNEL CONNECTING TO CLOUDFLARE... && echo [DEBUG] Config: %TUNNEL_CONFIG% && cloudflared tunnel --config %TUNNEL_CONFIG% run && echo [ERROR] Tunnel failed to connect! && pause"
-
-echo ✅ Tunnel startup command issued
-echo [DEBUG] Tunnel startup initiated >> %LOGFILE%
-echo.
-
-echo [STEP 5] Waiting for tunnel connection...
-echo ======================================
-echo [DEBUG] Waiting 15 seconds for tunnel to establish connection...
-timeout /t 15 /nobreak >nul
-
-echo [DEBUG] Checking tunnel status...
-cloudflared tunnel list 2>&1 >> %LOGFILE%
-echo.
-
-echo [STEP 6] Starting Sunny Backend (Port 8000)...
+REM ===================================================================
+REM STEP 3: CLOUDFLARE TUNNEL (FIRST - WITH CONFIG)
+REM ===================================================================
+echo [STEP 3/8] STARTING CLOUDFLARE TUNNEL (FIRST - Foundation)
 echo ============================================
-echo [DEBUG] Attempting to start Sunny backend...
+echo 🌐 Starting Cloudflare Tunnel with ingress configuration...
+echo Starting Cloudflare tunnel >> %LOGFILE%
 
-cd backend
-if %errorlevel% neq 0 (
-    echo ❌ Failed to change to backend directory
-    echo [ERROR] Cannot cd to backend >> %LOGFILE%
-    goto :error
+REM Check for tunnel configuration
+if not exist "C:\Users\lukaf\.cloudflared\trinity-config.yml" (
+    echo ❌ ERROR: Tunnel configuration not found!
+    echo ERROR: trinity-config.yml missing >> %LOGFILE%
+    echo Expected at: C:\Users\lukaf\.cloudflared\trinity-config.yml
+    pause
+    exit /b 1
 )
 
-echo 📊 Initializing Sunny Backend with MCP integration...
-echo [DEBUG] Starting backend in new window...
-start "Sunny Backend" cmd /k "echo 🔥 SUNNY BACKEND STARTING... && echo [DEBUG] Activating virtual environment... && .\venv\Scripts\activate && echo [DEBUG] Starting uvicorn server... && python -m uvicorn app.main:asgi_app --reload --port 8000 --host 0.0.0.0 && echo [ERROR] Backend failed to start! && pause"
+echo ✓ Using configuration: trinity-config.yml
+echo 📝 Ingress rules will route traffic to backend services
+start "SUNNY TUNNEL - Cloudflare" cmd /k "echo ======================================== && echo 🌐 CLOUDFLARE TUNNEL STARTING && echo ======================================== && echo Starting with config file to prevent 503 errors... && echo [%date% %time%] Tunnel starting >> logs/tunnel.log && cloudflared tunnel --config C:\Users\lukaf\.cloudflared\trinity-config.yml run trinity-dashboard"
 
-cd ..
-echo ✅ Backend startup command issued
-echo [DEBUG] Backend startup initiated >> %LOGFILE%
+echo Tunnel startup initiated with config
+echo Tunnel command issued with config >> %LOGFILE%
+
+REM Wait for tunnel to establish connections
+echo ⏱️ Waiting for tunnel to establish connections (15 seconds)...
+for /l %%i in (15,-1,1) do (
+    <nul set /p "=."
+    timeout /t 1 /nobreak >nul
+)
+echo.
+echo ✓ Tunnel should now be ready to route traffic
 echo.
 
-echo [STEP 7] Waiting for backend initialization...
-echo ==========================================
-echo [DEBUG] Waiting 10 seconds for backend to initialize...
-timeout /t 10 /nobreak >nul
+REM ===================================================================
+REM STEP 4: BACKEND STARTUP (SECOND - Services)
+REM ===================================================================
+echo [STEP 4/8] STARTING BACKEND (Port 8000)
+echo ============================================
+echo 🔧 Starting FastAPI backend...
+echo Starting backend >> %LOGFILE%
 
-echo [DEBUG] Testing backend connectivity...
-curl -s http://localhost:8000/health >nul 2>&1
-if %errorlevel% equ 0 (
-    echo ✅ Backend is responding on port 8000
-    echo [DEBUG] Backend responding on port 8000 >> %LOGFILE%
-) else (
-    echo ⚠️  Backend not yet responding (may still be starting)
-    echo [DEBUG] Backend not responding, waiting 5 more seconds... >> %LOGFILE%
-    timeout /t 5 /nobreak >nul
-    curl -s http://localhost:8000/health >nul 2>&1
-    if %errorlevel% equ 0 (
-        echo ✅ Backend now responding
-        echo [DEBUG] Backend now responding >> %LOGFILE%
-    ) else (
-        echo ⚠️  Backend still not responding - continuing anyway
-        echo [WARNING] Backend not responding, continuing >> %LOGFILE%
+cd /d "C:\Sunny\backend"
+
+REM Activate virtual environment and start backend
+start "SUNNY BACKEND - Port 8000" cmd /k "echo ======================================== && echo 🔧 SUNNY BACKEND STARTING && echo ======================================== && call venv\Scripts\activate.bat && echo Virtual environment activated && echo [%date% %time%] Backend starting >> ../logs/backend.log && python -m uvicorn app.main:asgi_app --host 0.0.0.0 --port 8000 --reload"
+
+cd /d "C:\Sunny"
+echo Backend startup initiated
+echo Backend command issued >> %LOGFILE%
+
+REM Wait for backend to fully initialize with health checks
+echo ⏱️ Waiting for backend to initialize (20 seconds)...
+for /l %%i in (20,-1,1) do (
+    <nul set /p "=."
+    timeout /t 1 /nobreak >nul
+)
+echo.
+
+REM Test backend health with retries
+echo 🔧 Testing backend health...
+set BACKEND_READY=0
+for /l %%i in (1,1,5) do (
+    if !BACKEND_READY! equ 0 (
+        curl -s -o nul -w "" http://localhost:8000/health
+        if !errorlevel! equ 0 (
+            echo ✅ Backend is healthy and responding!
+            echo Backend health check passed >> %LOGFILE%
+            set BACKEND_READY=1
+        ) else (
+            echo ⏱️ Backend not ready, retry %%i/5...
+            timeout /t 3 /nobreak >nul
+        )
     )
 )
-echo.
 
-echo [STEP 8] Starting Sunny Frontend (Port 3000)...
-echo ============================================
-echo [DEBUG] Attempting to start Sunny frontend on port 3000...
-
-cd frontend
-if %errorlevel% neq 0 (
-    echo ❌ Failed to change to frontend directory
-    echo [ERROR] Cannot cd to frontend >> %LOGFILE%
-    goto :error
+if %BACKEND_READY% equ 0 (
+    echo ❌ ERROR: Backend is not responding after retries!
+    echo ERROR: Backend not responding >> %LOGFILE%
+    echo Check the backend window for errors
+    pause
 )
-
-echo 🎨 Initializing Sunny Trinity Interface on port 3000...
-echo [DEBUG] Starting frontend on port 3000 in new window...
-start "Sunny Frontend" cmd /k "echo 🚀 SUNNY FRONTEND STARTING ON PORT 3000... && echo [DEBUG] Checking npm dependencies... && npm run dev -- --port 3000 && echo [ERROR] Frontend failed to start! && pause"
-
-cd ..
-echo ✅ Frontend startup command issued for port 3000
-echo [DEBUG] Frontend startup initiated >> %LOGFILE%
 echo.
 
-echo [STEP 9] Waiting for frontend build...
-echo ======================================
-echo [DEBUG] Waiting 15 seconds for frontend to build...
-timeout /t 15 /nobreak >nul
-
-echo [DEBUG] Testing frontend connectivity on port 3000...
-curl -s http://localhost:3000 >nul 2>&1
+REM Test tunnel connectivity to backend
+echo 🌐 Testing tunnel-to-backend connectivity...
+curl -s -o nul -w "" -m 10 https://sunny-stack.com/api/health
 if %errorlevel% equ 0 (
-    echo ✅ Frontend is responding on port 3000
-    echo [DEBUG] Frontend responding on port 3000 >> %LOGFILE%
+    echo ✅ Tunnel is connected and routing to backend!
+    echo Tunnel connectivity verified >> %LOGFILE%
 ) else (
-    echo ⚠️  Frontend not yet responding (may still be building)
-    echo [DEBUG] Frontend not responding, waiting 10 more seconds... >> %LOGFILE%
-    timeout /t 10 /nobreak >nul
-    curl -s http://localhost:3000 >nul 2>&1
-    if %errorlevel% equ 0 (
-        echo ✅ Frontend now responding on port 3000
-        echo [DEBUG] Frontend now responding on port 3000 >> %LOGFILE%
-    ) else (
-        echo ⚠️  Frontend still not responding - continuing anyway
-        echo [WARNING] Frontend not responding on port 3000, continuing >> %LOGFILE%
-    )
+    echo ⚠️ WARNING: Tunnel-to-backend connectivity pending...
+    echo Tunnel may still be establishing routes...
+    echo Tunnel connectivity pending >> %LOGFILE%
 )
 echo.
 
-echo [STEP 10] DEPLOYMENT VERIFICATION
-echo ================================
-echo [DEBUG] Running comprehensive verification...
-echo.
-echo 🌐 SUNNY AI CONSULTING PLATFORM STATUS:
-echo ----------------------------------------
-echo ✅ Backend:    http://localhost:8000
-echo ✅ Frontend:   http://localhost:3000
-echo ✅ Production: https://sunny-stack.com
-echo ✅ MCP API:    https://sunny-stack.com/api/mcp
-echo ✅ Health:     https://sunny-stack.com/api/health
-echo ✅ Admin:      https://sunny-stack.com/api/auth/login
-echo.
-echo 🎯 CLIENT PROJECTS:
-echo ------------------
-echo ✅ NavigatorCore: https://navigators-core.sunny-stack.com
+REM ===================================================================
+REM STEP 5: FRONTEND STARTUP (LAST - Needs Backend)
+REM ===================================================================
+echo [STEP 5/8] STARTING FRONTEND (Port 3000)
+echo ============================================
+echo 🎨 Starting Next.js frontend (after backend is ready)...
+echo Starting frontend >> %LOGFILE%
+
+cd /d "C:\Sunny\frontend"
+
+REM Start frontend
+start "SUNNY FRONTEND - Port 3000" cmd /k "echo ======================================== && echo 🎨 SUNNY FRONTEND STARTING && echo ======================================== && echo Waiting for backend before starting... && timeout /t 5 /nobreak && echo [%date% %time%] Frontend starting >> ../logs/frontend.log && npm run dev"
+
+cd /d "C:\Sunny"
+echo Frontend startup initiated (with backend wait)
+echo Frontend command issued >> %LOGFILE%
+
+REM Wait for frontend to compile
+echo ⏱️ Waiting for frontend to compile (25 seconds)...
+for /l %%i in (25,-1,1) do (
+    <nul set /p "=."
+    timeout /t 1 /nobreak >nul
+)
 echo.
 
-echo [STEP 11] Testing production endpoints...
-echo ======================================
-echo [DEBUG] Testing production connectivity...
-timeout /t 5 /nobreak >nul
+REM Test frontend
+echo Testing frontend...
+curl -s -o nul -w "" http://localhost:3000
+if %errorlevel% equ 0 (
+    echo ✓ Frontend is responding!
+    echo Frontend responding >> %LOGFILE%
+) else (
+    echo WARNING: Frontend not yet ready (still compiling)
+    echo Frontend not ready >> %LOGFILE%
+)
+echo.
 
-echo Testing main site...
-curl -s -o nul -w "Response Code: %%{http_code}\n" -m 10 https://sunny-stack.com 2>&1
-echo [DEBUG] Main site test completed >> %LOGFILE%
+REM ===================================================================
+REM STEP 6: API CONNECTIVITY TEST
+REM ===================================================================
+echo [STEP 6/8] TESTING API CONNECTIVITY
+echo ============================================
+echo Verifying API endpoints...
 
-echo Testing API health...
-curl -s -o nul -w "Response Code: %%{http_code}\n" -m 10 https://sunny-stack.com/api/health 2>&1
-echo [DEBUG] API health test completed >> %LOGFILE%
+REM Test local API
+echo Testing local API endpoint...
+curl -s -o nul -w "Local API: %%{http_code}\n" http://localhost:8000/health
+echo Local API test complete >> %LOGFILE%
 
-echo Testing MCP endpoint...
-curl -s -o nul -w "Response Code: %%{http_code}\n" -m 10 https://sunny-stack.com/api/mcp/status 2>&1
-echo [DEBUG] MCP endpoint test completed >> %LOGFILE%
+REM Test production API
+echo Testing production API endpoint...
+curl -s -o nul -w "Production API: %%{http_code}\n" -m 10 https://sunny-stack.com/api/health
+echo Production API test complete >> %LOGFILE%
 
 echo.
-echo ================================================================
-echo 🎉 SUNNY AI CONSULTING PLATFORM STARTUP COMPLETE! 🎉
-echo ================================================================
-echo.
-echo 📊 SERVICE STATUS (Started in correct order):
-echo   1. Tunnel Process: Check "Sunny Cloudflare Tunnel" window
-echo   2. Backend Process: Check "Sunny Backend" window
-echo   3. Frontend Process: Check "Sunny Frontend" window
-echo.
-echo 📋 MANAGEMENT COMMANDS:
-echo   - View Logs: type %LOGFILE%
-echo   - Debug Tunnel: .\debug_sunny_tunnel.bat
-echo   - Restart Everything: .\RESTART_SUNNY.bat
-echo   - Stop Everything: .\STOP_SUNNY.bat
-echo.
-echo 🚨 IF ISSUES OCCUR:
-echo   - Check process windows for error messages
-echo   - Run .\enhanced_debug.bat for diagnostics
-echo   - Check startup log: %LOGFILE%
-echo.
-echo ⚡ Your AI consulting platform should now be accessible!
-echo ================================================================
-echo [DEBUG] Startup sequence completed at %date% %time% >> %LOGFILE%
 
-goto :end
+REM ===================================================================
+REM STEP 7: COMPREHENSIVE HEALTH CHECK
+REM ===================================================================
+echo [STEP 7/8] COMPREHENSIVE HEALTH CHECK
+echo ============================================
+echo Running full system diagnostics...
+echo.
 
-:error
-echo.
-echo ================================================================
-echo ❌ STARTUP FAILED
-echo ================================================================
-echo [ERROR] Startup failed at %date% %time% >> %LOGFILE%
-echo Check the error messages above and the log file: %LOGFILE%
-echo.
-echo Common solutions:
-echo 1. Ensure you're in the correct directory (C:\Sunny)
-echo 2. Check that backend\venv exists
-echo 3. Verify frontend\package.json exists
-echo 4. Run .\enhanced_debug.bat for diagnostics
-echo.
-pause
-exit /b 1
+echo SERVICE STATUS:
+echo --------------
+curl -s -o nul -w "" http://localhost:8000/health
+if %errorlevel% equ 0 (echo ✓ Backend API:     ONLINE [Port 8000]) else (echo ✗ Backend API:     OFFLINE)
 
-:end
+curl -s -o nul -w "" http://localhost:3000
+if %errorlevel% equ 0 (echo ✓ Frontend:        ONLINE [Port 3000]) else (echo ✗ Frontend:        OFFLINE)
+
+curl -s -o nul -w "" -m 5 https://sunny-stack.com
+if %errorlevel% equ 0 (echo ✓ Public Access:   ONLINE [sunny-stack.com]) else (echo ✗ Public Access:   OFFLINE)
+
+curl -s -o nul -w "" -m 5 https://sunny-stack.com/api/auth/health
+if %errorlevel% equ 0 (echo ✓ Auth System:     ONLINE) else (echo ✗ Auth System:     OFFLINE)
+
 echo.
-echo Press any key to continue monitoring...
+echo Full health check complete >> %LOGFILE%
+
+REM ===================================================================
+REM STEP 8: FINAL STATUS REPORT
+REM ===================================================================
+echo [STEP 8/8] STARTUP COMPLETE
+echo ============================================
+echo.
+echo ==============================================================
+echo                    SUNNY PLATFORM READY!                     
+echo ==============================================================
+echo.
+echo ACCESS POINTS:
+echo -------------
+echo   Local Dashboard:  http://localhost:3000
+echo   Production Site:  https://sunny-stack.com
+echo   Backend API:      https://sunny-stack.com/api
+echo   Health Check:     https://sunny-stack.com/api/health
+echo.
+echo SERVICE WINDOWS:
+echo ---------------
+echo   1. SUNNY BACKEND - Port 8000 (FastAPI)
+echo   2. SUNNY TUNNEL - Cloudflare (Check connection status)
+echo   3. SUNNY FRONTEND - Port 3000 (Check compilation)
+echo.
+echo DEBUGGING:
+echo ---------
+echo   Logs Directory:   C:\Sunny\logs\
+echo   Startup Log:      %LOGFILE%
+echo   Backend Log:      C:\Sunny\logs\backend.log
+echo   Frontend Log:     C:\Sunny\logs\frontend.log
+echo   Tunnel Log:       C:\Sunny\logs\tunnel.log
+echo.
+echo 🎆 AUTHENTICATION SYSTEM:
+echo ------------------------
+echo   Admin Login: luka@sunny-stack.com
+echo   Auth Status: ACTIVE with JWT tokens
+echo   Session Management: Secure with refresh tokens
+echo.
+echo ==============================================================
+echo Startup completed at %date% %time% >> %LOGFILE%
+echo ==============================================================
+echo.
+echo Press any key to exit this window (services will continue running)...
 pause >nul
