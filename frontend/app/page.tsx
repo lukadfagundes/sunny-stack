@@ -19,7 +19,7 @@ export default function LandingPage() {
         position: 'relative',
         zIndex: 9999
       }}>
-        🚀 TESTING: lukadfagundes/sunny-ai-platform Repository - {new Date().toLocaleTimeString()} 🚀
+        🚀 TESTING: lukadfagundes/sunny-ai-platform Repository - VERIFIED ROUTING ✅ 🚀
       </div>
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
       

@@ -201,8 +201,8 @@ cleanup_on_exit() {
     exit 0
 }
 
-# Set trap for graceful shutdown
-trap cleanup_on_exit SIGINT SIGTERM EXIT
+# Set trap for graceful shutdown (only on interrupt, not normal exit)
+trap cleanup_on_exit SIGINT SIGTERM
 
 echo ""
 log "🌟 ========================================" $PURPLE
@@ -458,7 +458,11 @@ report_status() {
 }
 
 # Monitor services with better error handling
-log "📊 Services are running. Monitoring for issues..." $GREEN
+log "📊 Services are running. Press Ctrl+C to stop..." $GREEN
+log "🔄 Monitoring services every 30 seconds..." $BLUE
+echo ""
+
+# Keep the script running indefinitely
 while true; do
     sleep 30
     
@@ -469,15 +473,17 @@ while true; do
     
     if [[ "$tunnel_ok" == "no" ]] || [[ "$backend_ok" == "no" ]] || [[ "$frontend_ok" == "no" ]]; then
         log "⚠️  Service issue detected:" $YELLOW
-        [[ "$tunnel_ok" == "no" ]] && log "  🌐 Tunnel: STOPPED" $RED
-        [[ "$backend_ok" == "no" ]] && log "  ⚡ Backend: STOPPED" $RED
-        [[ "$frontend_ok" == "no" ]] && log "  🎨 Frontend: STOPPED" $RED
+        [[ "$tunnel_ok" == "no" ]] && log "  🌐 Tunnel: STOPPED - may need restart" $RED
+        [[ "$backend_ok" == "no" ]] && log "  ⚡ Backend: STOPPED - may need restart" $RED
+        [[ "$frontend_ok" == "no" ]] && log "  🎨 Frontend: STOPPED - may need restart" $RED
         
         # Show full status report
         report_status
         
         log "📋 Use ./status-sunny.sh to check status" $BLUE
         log "🔄 Use ./dev-sunny.sh restart to restart all" $BLUE
-        break
+        log "🔧 Services will continue monitoring..." $YELLOW
+        echo ""
+        # Don't break - keep monitoring
     fi
 done
