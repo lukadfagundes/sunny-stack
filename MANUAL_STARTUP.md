@@ -27,4 +27,4 @@ cloudflared tunnel --config C:/Users/lukaf/.cloudflared/trinity-config.yml run t
 ## Notes:
 - Each command should run in a separate terminal
 - Services will keep running until you press Ctrl+C
-- No auto-shutdown issues with manual start
+- No auto-shutdown issues with manual start 
