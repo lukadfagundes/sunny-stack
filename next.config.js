@@ -4,6 +4,12 @@ const nextConfig = {
   trailingSlash: true,
   images: {
     unoptimized: true
+  },
+  eslint: {
+    dirs: ['app', 'components', 'lib']
+  },
+  typescript: {
+    ignoreBuildErrors: false
   }
 }
 
