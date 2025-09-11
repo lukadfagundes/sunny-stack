@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Claude Code Technical Context - Sunny Stack Platform
 
 ## 🚀 PROJECT STATUS AND CONFIGURATION
@@ -250,78 +251,34 @@ ingress:
   - service: http_status:404
 =======
 # CLAUDE.md - Sunny Stack AI Platform Technical Context
+=======
+# CLAUDE.md - Sunny Stack Portfolio Technical Context
+>>>>>>> dev
 
-## 🚀 PROJECT IDENTIFICATION
+## 🎯 PROJECT OVERVIEW
 
-**Project Name**: Sunny Stack AI Platform  
-**Domain**: sunny-stack.com  
-**Version**: 2.0.0  
-**Status**: Production Live  
-**Primary Developer**: Luke (luka@sunny-stack.com)  
-**AI Assistant**: Claude Code  
+**Project Name**: Sunny Stack Portfolio
+**Purpose**: Professional web development portfolio showcasing projects, skills, and services
+**Status**: Active Development
+**Version**: 1.0.0
+**Repository**: sunny-stack
+**Live URL**: [To be deployed]
+
+### Project Mission
+Create a high-performance, visually stunning portfolio website that demonstrates advanced web development capabilities while maintaining perfect accessibility, SEO, and user experience standards using the Trinity Method v7.0 methodology.
 
 ---
 
 ## 🏗️ TECHNICAL ARCHITECTURE
 
-### FRONTEND STACK (Port 3000)
-```typescript
-const frontendStack = {
-    framework: "Next.js 15.0.0",
-    language: "TypeScript 5.0",
-    react: "19.0.0",
-    styling: {
-        primary: "Tailwind CSS 3.4.0",
-        animations: "Framer Motion 11.0.0"
-    },
-    stateManagement: {
-        global: "Zustand 5.0.0",
-        server: "@tanstack/react-query 5.0.0"
-    },
-    realtime: "socket.io-client 4.7.0",
-    ui: {
-        icons: "lucide-react 0.400.0",
-        charts: "recharts 2.8.0"
-    },
-    auth: "next-auth 5.0.0-beta.22",
-    routing: "Next.js App Router"
-};
-```
+### Core Technology Stack
 
-### BACKEND STACK (Port 8000)
-```python
-backend_stack = {
-    "framework": "FastAPI 0.104.1",
-    "server": "Uvicorn 0.24.0",
-    "language": "Python 3.11+",
-    "authentication": {
-        "passwords": "passlib[bcrypt] 1.7.4",
-        "tokens": "python-jose[cryptography] 3.3.0",
-        "jwt": "PyJWT 2.10.1"
-    },
-    "database": {
-        "orm": "SQLAlchemy 2.0.23",
-        "migrations": "Alembic (planned)"
-    },
-    "ai_integration": {
-        "anthropic": "anthropic>=0.40.0",
-        "openai": "openai>=1.0.0"
-    },
-    "realtime": {
-        "websocket": "python-socketio[asyncio] 5.10.0",
-        "async": "websockets 12.0"
-    },
-    "utilities": {
-        "env": "python-dotenv 1.0.0",
-        "yaml": "pyyaml>=6.0",
-        "http": "requests>=2.31.0",
-        "files": "aiofiles>=23.0.0",
-        "monitoring": "psutil>=5.9.0",
-        "logging": "rich>=13.0.0"
-    }
-}
-```
+#### Frontend Framework
+- **Next.js 15.0.0**: Latest App Router architecture for optimal performance
+- **React 19.0.0**: Cutting-edge React with concurrent features
+- **TypeScript 5.5.0**: Type-safe development with latest features
 
+<<<<<<< HEAD
 ### INFRASTRUCTURE STACK
 ```yaml
 infrastructure:
@@ -354,9 +311,19 @@ infrastructure:
     production: "PostgreSQL (planned)"
 >>>>>>> dev
 ```
+=======
+#### Styling & Animation
+- **Tailwind CSS 3.4.0**: Utility-first CSS framework
+- **Framer Motion 11.0.0**: Professional animations and transitions
+- **PostCSS 8.4.0**: CSS processing with Autoprefixer 10.4.0
+>>>>>>> dev
 
----
+#### Development Tools
+- **ESLint 9.0.0**: Code quality enforcement
+- **Next.js ESLint Config 15.0.0**: Framework-specific linting rules
+- **TypeScript Compiler**: Strict type checking enabled
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ## 🚀 OPERATIONAL MODES
 
@@ -400,140 +367,166 @@ if (DEBUG) {
 }
 =======
 ## 📁 PROJECT STRUCTURE
+=======
+#### Third-Party Integrations
+- **Resend 6.0.3**: Transactional email service for contact forms
+- **jsPDF 3.0.2**: Client-side PDF generation for resume downloads
+- **html2canvas 1.4.1**: HTML to canvas conversion for PDF generation
+- **Lucide React 0.400.0**: Modern icon library
+
+### Project Structure
+>>>>>>> dev
 
 ```
 sunny-stack/
-├── frontend/                    # Next.js application
-│   ├── app/                    # App router pages
-│   │   ├── api/               # API routes
-│   │   ├── auth/              # Authentication pages
-│   │   └── (dashboard)/       # Dashboard routes
-│   ├── components/            
-│   │   ├── trinity/           # Trinity-specific components
-│   │   ├── ui/               # Reusable UI components
-│   │   └── layouts/          # Layout components
-│   ├── lib/                   # Utilities and helpers
-│   │   ├── api.ts            # API client
-│   │   ├── auth.ts           # Auth utilities
-│   │   └── utils.ts          # Helper functions
-│   ├── hooks/                 # Custom React hooks
-│   ├── stores/                # Zustand stores
-│   └── styles/                # Global styles
-│
-├── backend/                    # FastAPI application
-│   ├── app/                   # Main application
-│   │   ├── routes/           # API endpoints
-│   │   ├── models/           # SQLAlchemy models
-│   │   ├── schemas/          # Pydantic schemas
-│   │   ├── services/         # Business logic
-│   │   ├── auth/             # Authentication
-│   │   └── websocket/        # WebSocket handlers
-│   ├── data/                  # Data storage
-│   ├── tests/                 # Test files
-│   └── main.py               # Application entry
-│
-├── infrastructure/            # Infrastructure config
-│   ├── cloudflare/           # CF Workers & config
-│   ├── docker/               # Docker configs
-│   └── scripts/              # Deployment scripts
-│
-├── trinity/                   # Trinity Method docs
-│   ├── Knowledge Base/       # Core documentation
-│   └── investigations/       # Investigation logs
-│
-└── projects/                  # Multi-project workspace
-    ├── navigators-helm/      # Industrial platform
-    ├── rinoa/                # Equipment platform
-    └── cola-records/         # Management HUD
+├── app/                        # Next.js App Router
+│   ├── layout.tsx             # Root layout with providers
+│   ├── page.tsx               # Homepage
+│   ├── not-found.tsx          # 404 error page
+│   ├── about/                 # About section
+│   │   └── page.tsx
+│   ├── portfolio/             # Portfolio showcase
+│   │   └── page.tsx
+│   ├── resume/                # Resume section
+│   │   └── page.tsx
+│   ├── quote/                 # Quote calculator
+│   │   └── page.tsx
+│   ├── contact/               # Contact form
+│   │   └── page.tsx
+│   └── api/                   # API routes
+│       ├── contact/           # Contact form handler
+│       │   └── route.ts
+│       └── send/              # Email sending endpoint
+│           └── route.ts
+├── components/                 # React components
+│   ├── layout/               # Layout components
+│   ├── ui/                   # UI components
+│   ├── sections/             # Page sections
+│   └── shared/               # Shared components
+├── lib/                       # Utility functions
+│   ├── utils.ts              # Helper functions
+│   ├── constants.ts          # App constants
+│   └── types.ts              # TypeScript types
+├── styles/                    # Global styles
+│   └── globals.css           # Global CSS with Tailwind
+├── public/                    # Static assets
+│   ├── images/               # Image assets
+│   ├── fonts/                # Custom fonts
+│   └── icons/                # Icon assets
+├── content/                   # Content data
+│   ├── projects.json         # Portfolio projects
+│   ├── skills.json           # Skills data
+│   └── experience.json       # Work experience
+└── trinity/                   # Trinity Method documentation
+    ├── Co-Pilot-Instructions.md
+    ├── CLAUDE.md (this file)
+    ├── Session-Start.md
+    ├── Session-End.md
+    ├── knowledge-base/
+    │   ├── ARCHITECTURE.md
+    │   ├── Trinity.md
+    │   ├── ISSUES.md
+    │   ├── To-do.md
+    │   ├── Chat-Log.md
+    │   └── Session-Knowledge-Retention.md
+    └── investigations/
+        └── prior-investigations/
+```
+
+### Architecture Patterns
+
+#### Component Architecture
+- **Server Components**: Default for static content and data fetching
+- **Client Components**: Used for interactivity and browser APIs
+- **Hybrid Approach**: Optimal balance between SSR and client-side features
+
+#### State Management
+- **React Hooks**: useState, useEffect, useContext for local state
+- **Context API**: Global state for theme, user preferences
+- **URL State**: Search params for filters and navigation state
+
+#### Data Flow
+- **Server-Side**: Initial data fetching in server components
+- **Client-Side**: Dynamic updates and user interactions
+- **API Routes**: Backend logic for forms and external services
+
+#### Performance Optimizations
+- **Static Generation**: Pre-rendered pages for optimal performance
+- **Dynamic Imports**: Code splitting for faster initial loads
+- **Image Optimization**: Next.js Image component with lazy loading
+- **Font Optimization**: Next.js font optimization with variable fonts
+
+---
+
+## 🔧 OPERATIONAL MODES
+
+### Development Mode
+```bash
+npm run dev
+# Runs on http://localhost:3000
+# Hot Module Replacement enabled
+# Error overlay active
+# Source maps enabled
+```
+
+### Production Mode
+```bash
+npm run build && npm start
+# Optimized production build
+# Minified and compressed
+# Static optimization applied
+# Error boundaries active
+```
+
+### Testing Mode
+```bash
+npm run test
+# Unit tests with Jest
+# Component testing with React Testing Library
+# E2E tests with Playwright
+# Coverage reports generated
+```
+
+### Type Checking Mode
+```bash
+npm run type-check
+# TypeScript strict mode
+# No implicit any
+# Strict null checks
+# Unused variables check
 ```
 
 ---
 
-## 🔧 DEVELOPMENT ENVIRONMENT
+## 📊 CURRENT DEVELOPMENT STATUS
 
-### LOCAL DEVELOPMENT SETUP
-```bash
-# Frontend Development (Git Bash)
-cd frontend
-npm install
-# DO NOT RUN: npm run dev (Luke manages servers)
+### Completed Features
+- ✅ Project structure setup with Next.js 15
+- ✅ TypeScript configuration with strict mode
+- ✅ Tailwind CSS integration with custom config
+- ✅ Basic routing structure with App Router
+- ✅ Component architecture foundation
+- ✅ API routes setup for contact and email
+- ✅ Trinity Method v7.0 documentation structure
 
-# Backend Development (Git Bash)
-cd backend
-pip install -r requirements.txt
-# DO NOT RUN: uvicorn main:app (Luke manages servers)
+### In Progress
+- 🔄 Portfolio section implementation
+- 🔄 Contact form with Resend integration
+- 🔄 Resume PDF generation feature
+- 🔄 Quote calculator functionality
+- 🔄 Responsive design optimization
+- 🔄 Animation implementations with Framer Motion
 
-# Infrastructure (Git Bash)
-npm install -g wrangler
-# Configuration managed by Luke
-```
+### Pending Features
+- ⏳ Blog section with MDX support
+- ⏳ Dark mode toggle with system preference
+- ⏳ Analytics integration
+- ⏳ SEO optimization with metadata
+- ⏳ PWA capabilities
+- ⏳ Internationalization (i18n)
+- ⏳ Admin dashboard for content management
 
-### SERVICE MANAGEMENT (LUKE'S RESPONSIBILITY)
-```bash
-# Start all services
-./startup-sunny.sh
-
-# Check status
-./status-sunny.sh
-
-# Stop all services
-./stop-sunny.sh
-
-# Development utilities
-./dev-sunny.sh restart    # Restart all
-./dev-sunny.sh backend    # Restart backend only
-./dev-sunny.sh frontend   # Restart frontend only
-```
-
-### ENVIRONMENT VARIABLES
-```env
-# Frontend (.env.local)
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_WS_URL=ws://localhost:8000
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=[secret]
-
-# Backend (.env)
-DATABASE_URL=sqlite:///./data/sunny.db
-JWT_SECRET=[secret]
-JWT_ALGORITHM=HS256
-JWT_EXPIRATION_MINUTES=1440
-ANTHROPIC_API_KEY=[key]
-OPENAI_API_KEY=[key]
-MASTER_PASSWORD=[password]
-
-# Cloudflare (wrangler.toml)
-name = "sunny-ai-platform"
-compatibility_date = "2024-01-01"
-main = "src/worker.js"
-```
-
----
-
-## 🚨 CRITICAL OPERATIONAL RULES
-
-### CLAUDE CODE RESTRICTIONS
-```markdown
-## NEVER DO THESE (Session Killers):
-❌ Starting ANY servers (npm run dev, uvicorn, etc.)
-❌ Running long-lived processes
-❌ Executing deployment commands
-❌ Managing service lifecycle
-❌ Monitoring running processes
-
-## ALWAYS DO THESE:
-✅ File creation and modification
-✅ Code implementation and updates
-✅ Git operations (add, commit, push)
-✅ Documentation updates
-✅ Static analysis and linting
-✅ Configuration file updates
-```
-
-### SERVER MANAGEMENT PROTOCOL
-```markdown
-## Division of Responsibilities:
-
+<<<<<<< HEAD
 ### Claude Code Handles:
 - Writing code and components
 - Updating configurations
@@ -1337,6 +1330,14 @@ async def add_security_headers(request: Request, call_next):
     return response
 >>>>>>> dev
 ```
+=======
+### Known Issues
+- 🐛 Console warnings from development mode
+- 🐛 Hydration warnings in certain components
+- 🐛 Performance optimization needed for images
+- 🐛 Form validation edge cases
+- 🐛 Mobile menu animation glitches
+>>>>>>> dev
 
 ---
 
@@ -1417,85 +1418,128 @@ async def add_security_headers(request: Request, call_next):
 =======
 ## 🚀 DEPLOYMENT CONFIGURATION
 
-### CLOUDFLARE DEPLOYMENT
-```toml
-# wrangler.toml
-name = "sunny-ai-platform"
-type = "javascript"
-account_id = "[ACCOUNT_ID]"
-workers_dev = false
-route = "sunny-stack.com/*"
-zone_id = "[ZONE_ID]"
+### Environment Variables
+```env
+# Email Service
+RESEND_API_KEY=            # Resend API key for email
+FROM_EMAIL=                 # Sender email address
+TO_EMAIL=                   # Recipient email address
 
-[env.production]
-name = "sunny-production"
-vars = { ENVIRONMENT = "production" }
+# Analytics (Future)
+NEXT_PUBLIC_GA_ID=          # Google Analytics ID
+NEXT_PUBLIC_GTM_ID=         # Google Tag Manager ID
 
-[[d1_databases]]
-binding = "DB"
-database_name = "sunny-production"
-database_id = "[DATABASE_ID]"
+# API Configuration
+NEXT_PUBLIC_API_URL=        # API endpoint URL
+API_RATE_LIMIT=             # Rate limiting configuration
 
-[[r2_buckets]]
-binding = "STORAGE"
-bucket_name = "sunny-storage"
+# Feature Flags
+ENABLE_BLOG=                # Enable blog section
+ENABLE_ANALYTICS=           # Enable analytics tracking
+ENABLE_PWA=                 # Enable PWA features
 ```
 
-### DOCKER CONFIGURATION
-```dockerfile
-# Frontend Dockerfile
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+### Build Configuration
+```javascript
+// next.config.js
+module.exports = {
+  reactStrictMode: true,
+  swcMinify: true,
+  images: {
+    domains: ['localhost'],
+    formats: ['image/avif', 'image/webp'],
+  },
+  experimental: {
+    appDir: true,
+  },
+};
+```
 
-FROM node:20-alpine
-WORKDIR /app
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package*.json ./
-RUN npm ci --production
-EXPOSE 3000
-CMD ["npm", "start"]
+### Deployment Targets
+- **Vercel**: Primary deployment platform (recommended)
+- **Netlify**: Alternative static hosting
+- **AWS Amplify**: Enterprise deployment option
+- **Docker**: Containerized deployment
 
-# Backend Dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+---
+
+## 🔒 SECURITY PROTOCOLS
+
+### Input Validation
+- All form inputs sanitized before processing
+- SQL injection prevention in data handling
+- XSS protection through React's default escaping
+- CSRF tokens for form submissions
+
+### API Security
+- Rate limiting on all endpoints
+- CORS configuration for API routes
+- Environment variable protection
+- API key rotation schedule
+
+### Content Security Policy
+```typescript
+// Recommended CSP headers
+const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: `
+      default-src 'self';
+      script-src 'self' 'unsafe-eval' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https:;
+      font-src 'self' data:;
+    `.replace(/\n/g, ''),
+  },
+  {
+    key: 'X-Frame-Options',
+    value: 'DENY',
+  },
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
+  },
+];
 ```
 
 ---
 
-## 📝 SESSION REQUIREMENTS
+## 🎨 DESIGN SYSTEM
 
-### PRE-SESSION CHECKLIST
-```markdown
-Before starting any development session:
-- [ ] Read current CLAUDE.md for context
-- [ ] Review recent Chat-Log.md entries
-- [ ] Check To-do.md for priorities
-- [ ] Load project-specific context
-- [ ] Verify no servers are running
-- [ ] Confirm Git branch is correct
+### Color Palette
+```css
+/* Primary Colors */
+--primary-50: #eff6ff;
+--primary-500: #3b82f6;
+--primary-900: #1e3a8a;
+
+/* Neutral Colors */
+--gray-50: #f9fafb;
+--gray-500: #6b7280;
+--gray-900: #111827;
+
+/* Semantic Colors */
+--success: #10b981;
+--warning: #f59e0b;
+--error: #ef4444;
+--info: #3b82f6;
 ```
 
-### DURING SESSION PROTOCOL
-```markdown
-During active development:
-- [ ] Follow Trinity Method investigation process
-- [ ] Add comprehensive debugging to all code
-- [ ] Test complete user workflows
-- [ ] Document all decisions
-- [ ] Update relevant documentation
-- [ ] Commit changes with descriptive messages
+### Typography Scale
+```css
+/* Font Sizes */
+--text-xs: 0.75rem;     /* 12px */
+--text-sm: 0.875rem;    /* 14px */
+--text-base: 1rem;      /* 16px */
+--text-lg: 1.125rem;    /* 18px */
+--text-xl: 1.25rem;     /* 20px */
+--text-2xl: 1.5rem;     /* 24px */
+--text-3xl: 1.875rem;   /* 30px */
+--text-4xl: 2.25rem;    /* 36px */
+--text-5xl: 3rem;       /* 48px */
 ```
 
+<<<<<<< HEAD
 ### POST-SESSION REQUIREMENTS
 ```markdown
 After completing development:
@@ -1506,10 +1550,35 @@ After completing development:
 - [ ] Provide session summary to Luke
 - [ ] Note any server restart requirements
 >>>>>>> dev
+=======
+### Spacing System
+```css
+/* Spacing Scale (rem) */
+--space-0: 0;          /* 0px */
+--space-1: 0.25rem;    /* 4px */
+--space-2: 0.5rem;     /* 8px */
+--space-4: 1rem;       /* 16px */
+--space-6: 1.5rem;     /* 24px */
+--space-8: 2rem;       /* 32px */
+--space-12: 3rem;      /* 48px */
+--space-16: 4rem;      /* 64px */
+--space-20: 5rem;      /* 80px */
+```
+
+### Breakpoints
+```css
+/* Responsive Breakpoints */
+--screen-sm: 640px;   /* Mobile landscape */
+--screen-md: 768px;   /* Tablet */
+--screen-lg: 1024px;  /* Desktop */
+--screen-xl: 1280px;  /* Large desktop */
+--screen-2xl: 1536px; /* Extra large */
+>>>>>>> dev
 ```
 
 ---
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ## 📚 REFERENCE COMMANDS
 
@@ -1540,19 +1609,25 @@ tail -f logs/backend.log
 grep "ERROR" logs/*.log
 =======
 ## 🎯 SUCCESS METRICS
+=======
+## 📈 PERFORMANCE TARGETS
+>>>>>>> dev
 
-### CODE QUALITY METRICS
-```yaml
-Coverage:
-  Unit Tests: ">80%"
-  Integration Tests: ">70%"
-  E2E Tests: ">60%"
+### Core Web Vitals
+- **LCP (Largest Contentful Paint)**: < 2.5s
+- **FID (First Input Delay)**: < 100ms
+- **CLS (Cumulative Layout Shift)**: < 0.1
+- **FCP (First Contentful Paint)**: < 1.8s
+- **TTI (Time to Interactive)**: < 3.8s
 
-Performance:
-  Frontend Build: "<30s"
-  Backend Startup: "<5s"
-  Test Suite: "<60s"
+### Bundle Size Targets
+- **Initial JS**: < 100KB (gzipped)
+- **Initial CSS**: < 20KB (gzipped)
+- **Total Page Weight**: < 500KB
+- **Image Optimization**: 85% compression
+- **Font Loading**: < 100ms
 
+<<<<<<< HEAD
 Quality:
   TypeScript Strict: true
   Python Type Hints: "100%"
@@ -1577,59 +1652,294 @@ User Experience:
   Success Rate: ">99.9%"
   Satisfaction: ">4.5/5"
 >>>>>>> dev
+=======
+### Performance Monitoring
+```typescript
+// Performance monitoring setup
+export function monitorPerformance() {
+  // Core Web Vitals
+  if (typeof window !== 'undefined') {
+    // LCP
+    new PerformanceObserver((entryList) => {
+      const entries = entryList.getEntries();
+      const lastEntry = entries[entries.length - 1];
+      console.log('[PERFORMANCE] LCP:', lastEntry.renderTime || lastEntry.loadTime);
+    }).observe({ type: 'largest-contentful-paint', buffered: true });
+    
+    // FID
+    new PerformanceObserver((entryList) => {
+      const entries = entryList.getEntries();
+      entries.forEach((entry) => {
+        console.log('[PERFORMANCE] FID:', entry.processingStart - entry.startTime);
+      });
+    }).observe({ type: 'first-input', buffered: true });
+    
+    // CLS
+    let clsValue = 0;
+    new PerformanceObserver((entryList) => {
+      const entries = entryList.getEntries();
+      entries.forEach((entry) => {
+        if (!entry.hadRecentInput) {
+          clsValue += entry.value;
+          console.log('[PERFORMANCE] CLS:', clsValue);
+        }
+      });
+    }).observe({ type: 'layout-shift', buffered: true });
+  }
+}
+>>>>>>> dev
 ```
 
 ---
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 **Claude Code Technical Context - Sunny Stack Platform**
 **Trinity Method v7.0 Implementation**
 **Last Updated: Current Session**
 =======
 ## 🔄 CONTINUOUS IMPROVEMENT
+=======
+## 🧪 TESTING STRATEGY
+>>>>>>> dev
 
-### WEEKLY REVIEW CHECKLIST
-```markdown
-## Technical Debt Review:
-- [ ] Identify code that needs refactoring
-- [ ] Document technical debt items
-- [ ] Prioritize improvements
-- [ ] Plan migration strategies
+### Unit Testing
+```typescript
+// Component testing example
+import { render, screen, fireEvent } from '@testing-library/react';
+import { ContactForm } from '@/components/ContactForm';
 
-## Performance Review:
-- [ ] Analyze performance metrics
-- [ ] Identify bottlenecks
-- [ ] Plan optimizations
-- [ ] Implement improvements
-
-## Security Review:
-- [ ] Check for vulnerabilities
-- [ ] Update dependencies
-- [ ] Review access controls
-- [ ] Audit API endpoints
+describe('ContactForm', () => {
+  it('should validate email format', () => {
+    render(<ContactForm />);
+    const emailInput = screen.getByLabelText('Email');
+    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+    expect(screen.getByText('Invalid email format')).toBeInTheDocument();
+  });
+});
 ```
 
-### PATTERN DOCUMENTATION
-```markdown
-## Successful Patterns to Replicate:
-1. Component composition for reusability
-2. API response caching strategy
-3. Optimistic UI updates
-4. Error boundary implementation
-5. WebSocket reconnection logic
+### Integration Testing
+```typescript
+// API route testing
+import { POST } from '@/app/api/contact/route';
 
-## Anti-Patterns to Avoid:
-1. Prop drilling beyond 2 levels
-2. Synchronous database calls
-3. Unhandled promise rejections
-4. Memory leaks in subscriptions
-5. Hardcoded configuration values
+describe('Contact API', () => {
+  it('should send email successfully', async () => {
+    const request = new Request('http://localhost:3000/api/contact', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: 'Test User',
+        email: 'test@example.com',
+        message: 'Test message',
+      }),
+    });
+    
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+  });
+});
+```
+
+### E2E Testing
+```typescript
+// Playwright E2E test
+import { test, expect } from '@playwright/test';
+
+test('complete user journey', async ({ page }) => {
+  await page.goto('/');
+  await expect(page).toHaveTitle(/Sunny Stack Portfolio/);
+  
+  // Navigate to portfolio
+  await page.click('text=Portfolio');
+  await expect(page).toHaveURL('/portfolio');
+  
+  // Test contact form
+  await page.click('text=Contact');
+  await page.fill('[name="name"]', 'Test User');
+  await page.fill('[name="email"]', 'test@example.com');
+  await page.fill('[name="message"]', 'Test message');
+  await page.click('button[type="submit"]');
+  await expect(page.locator('.success-message')).toBeVisible();
+});
 ```
 
 ---
 
+<<<<<<< HEAD
 **Sunny Stack AI Platform - Technical Context Document**
 **Last Updated**: 2025-09-09
 **Maintained By**: Claude Code + Luke
 **Trinity Method**: v7.0 Implementation
+>>>>>>> dev
+=======
+## 🔄 DEVELOPMENT WORKFLOW
+
+### Git Workflow
+```bash
+# Branch naming convention
+feature/[feature-name]     # New features
+fix/[bug-description]       # Bug fixes
+refactor/[component-name]   # Code refactoring
+docs/[doc-update]          # Documentation
+test/[test-description]     # Testing updates
+
+# Commit message format
+feat: Add new feature
+fix: Resolve bug issue
+refactor: Improve code structure
+docs: Update documentation
+test: Add test coverage
+style: Format code
+perf: Optimize performance
+```
+
+### Code Review Checklist
+- [ ] Investigation documented
+- [ ] Tests written and passing
+- [ ] TypeScript types proper
+- [ ] Performance verified
+- [ ] Accessibility checked
+- [ ] Mobile responsive
+- [ ] Documentation updated
+- [ ] No console errors
+
+### Release Process
+1. **Development**: Feature branch development
+2. **Testing**: Comprehensive testing suite
+3. **Review**: Code review and approval
+4. **Staging**: Deploy to staging environment
+5. **QA**: Quality assurance testing
+6. **Production**: Deploy to production
+7. **Monitor**: Performance and error monitoring
+
+---
+
+## 🎯 OPERATIONAL INTELLIGENCE
+
+### Quick Commands
+```bash
+# Development
+npm run dev              # Start development server
+npm run build           # Build production bundle
+npm run start           # Start production server
+npm run lint            # Run ESLint
+npm run type-check      # Run TypeScript check
+
+# Testing
+npm run test            # Run test suite
+npm run test:watch      # Run tests in watch mode
+npm run test:coverage   # Generate coverage report
+npm run test:e2e        # Run E2E tests
+
+# Analysis
+npm run analyze         # Analyze bundle size
+npm run lighthouse      # Run Lighthouse audit
+```
+
+### Debugging Tips
+```typescript
+// Enable verbose logging
+if (process.env.NODE_ENV === 'development') {
+  console.log('[DEBUG] Verbose logging enabled');
+  
+  // Log all API requests
+  if (typeof window !== 'undefined') {
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      console.log('[API] Request:', args);
+      const response = await originalFetch(...args);
+      console.log('[API] Response:', response.status);
+      return response;
+    };
+  }
+}
+
+// Component render tracking
+export function useRenderTracking(componentName: string) {
+  const renderCount = useRef(0);
+  useEffect(() => {
+    renderCount.current += 1;
+    console.log(`[RENDER] ${componentName} rendered ${renderCount.current} times`);
+  });
+}
+```
+
+### Performance Profiling
+```typescript
+// Profile component performance
+export function ProfiledComponent({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const startTime = performance.now();
+    
+    return () => {
+      const endTime = performance.now();
+      console.log(`[PROFILE] Component lifecycle: ${endTime - startTime}ms`);
+    };
+  }, []);
+  
+  return <>{children}</>;
+}
+```
+
+---
+
+## 📚 KNOWLEDGE BASE REFERENCES
+
+### Internal Documentation
+- `/trinity/Co-Pilot-Instructions.md` - Development protocols
+- `/trinity/knowledge-base/ARCHITECTURE.md` - System architecture
+- `/trinity/knowledge-base/Trinity.md` - Trinity Method implementation
+- `/trinity/knowledge-base/ISSUES.md` - Known issues and resolutions
+- `/trinity/knowledge-base/To-do.md` - Development roadmap
+
+### External Resources
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://react.dev)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Framer Motion Documentation](https://www.framer.com/motion)
+
+### API Documentation
+- [Resend API](https://resend.com/docs)
+- [Next.js API Routes](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
+
+---
+
+## 🚨 CRITICAL OPERATIONAL NOTES
+
+### Current Priorities
+1. **Performance Optimization**: Achieve 95+ Lighthouse score
+2. **Mobile Experience**: Perfect responsive design
+3. **SEO Implementation**: Meta tags and structured data
+4. **Accessibility**: WCAG AAA compliance
+5. **Testing Coverage**: >80% code coverage
+
+### Active Investigations
+- Performance bottlenecks in portfolio section
+- Hydration mismatch in client components
+- Bundle size optimization strategies
+- Image loading performance
+- Animation performance on mobile
+
+### Session Requirements
+- Always start with `/trinity/Session-Start.md`
+- Document all changes in chat log
+- Update knowledge retention after significant discoveries
+- End with `/trinity/Session-End.md`
+
+### Emergency Protocols
+- Console error crisis: Stop, assess, fix systematically
+- Performance degradation: Profile, identify, optimize
+- Build failure: Check types, lint, dependencies
+- Deployment failure: Verify env vars, check logs
+
+---
+
+**CLAUDE.md - Sunny Stack Portfolio Technical Context**
+**Last Updated**: [Session Date]
+**Trinity Method Version**: v7.0
+**Project Phase**: Active Development
+
+**This document serves as the primary technical reference for Claude Code operations on the Sunny Stack Portfolio project.**
 >>>>>>> dev

@@ -1,1069 +1,773 @@
-# ARCHITECTURE.md - Sunny Stack AI Platform System Architecture
+# ARCHITECTURE - Sunny Stack Portfolio System Design
 
 ## 🏗️ SYSTEM ARCHITECTURE OVERVIEW
 
-**The Sunny Stack AI Platform is a full-stack web application built with modern technologies, featuring a Next.js frontend, FastAPI backend, and Cloudflare edge infrastructure.**
+**This document provides a comprehensive technical architecture analysis of the Sunny Stack Portfolio project, serving as the authoritative reference for all architectural decisions and patterns.**
 
 ---
 
-## 🎨 ARCHITECTURAL PRINCIPLES
+## 📐 HIGH-LEVEL ARCHITECTURE
 
-### CORE DESIGN PRINCIPLES
-```yaml
-Separation of Concerns:
-  - Clear frontend/backend separation
-  - API-first design philosophy
-  - Microservices-ready architecture
-  - Domain-driven design patterns
-
-Scalability:
-  - Horizontal scaling capability
-  - Edge computing with Cloudflare
-  - Async processing with FastAPI
-  - Optimistic UI updates
-
-Security:
-  - JWT-based authentication
-  - Role-based access control
-  - API rate limiting (planned)
-  - Input validation at all layers
-
-Performance:
-  - Server-side rendering (Next.js)
-  - API response caching
-  - Database query optimization
-  - CDN asset delivery
-
-Developer Experience:
-  - TypeScript for type safety
-  - Comprehensive debugging
-  - Hot module replacement
-  - Automated testing
+### System Architecture Diagram
 ```
+┌─────────────────────────────────────────────────────────────────┐
+│                         CLIENT BROWSER                          │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │                    Next.js Application                   │  │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌──────────────┐   │  │
+│  │  │   App Router │  │ React 19.0  │  │  TypeScript  │   │  │
+│  │  └─────────────┘  └─────────────┘  └──────────────┘   │  │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌──────────────┐   │  │
+│  │  │ Tailwind CSS│  │Framer Motion│  │  Components  │   │  │
+│  │  └─────────────┘  └─────────────┘  └──────────────┘   │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      API ROUTES (Next.js)                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐    │
+│  │   /contact   │  │    /send     │  │     /quote       │    │
+│  └──────────────┘  └──────────────┘  └──────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     EXTERNAL SERVICES                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐    │
+│  │    Resend    │  │   Vercel     │  │    Analytics     │    │
+│  │  Email API   │  │   Hosting    │  │    (Future)      │    │
+│  └──────────────┘  └──────────────┘  └──────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Technology Stack Layers
+
+#### 1. Presentation Layer
+- **Framework**: Next.js 15.0.0 with App Router
+- **UI Library**: React 19.0.0
+- **Styling**: Tailwind CSS 3.4.0
+- **Animations**: Framer Motion 11.0.0
+- **Icons**: Lucide React 0.400.0
+
+#### 2. Application Layer
+- **Language**: TypeScript 5.5.0
+- **State Management**: React Hooks & Context API
+- **Routing**: Next.js File-based App Router
+- **Data Fetching**: Server Components & Client Components
+
+#### 3. API Layer
+- **API Routes**: Next.js Route Handlers
+- **Email Service**: Resend API
+- **PDF Generation**: jsPDF & html2canvas
+- **Validation**: Zod (planned)
+
+#### 4. Infrastructure Layer
+- **Hosting**: Vercel (planned)
+- **CDN**: Vercel Edge Network
+- **Analytics**: Google Analytics (planned)
+- **Monitoring**: Vercel Analytics (planned)
 
 ---
 
-## 🔧 TECHNOLOGY STACK DETAILS
+## 🗂️ PROJECT STRUCTURE ARCHITECTURE
 
-### FRONTEND ARCHITECTURE
-```typescript
-// Next.js 15.0 Application Structure
-const frontendArchitecture = {
-    // Core Framework
-    framework: {
-        name: "Next.js",
-        version: "15.0.0",
-        renderingStrategy: "Hybrid SSR/SSG/CSR",
-        router: "App Router (app/)",
-        features: [
-            "Server Components",
-            "Client Components",
-            "API Routes",
-            "Middleware",
-            "Edge Runtime"
-        ]
-    },
-    
-    // State Management Architecture
-    stateManagement: {
-        global: {
-            library: "Zustand 5.0",
-            pattern: "Flux-inspired",
-            features: ["DevTools", "Persistence", "Middleware"]
-        },
-        server: {
-            library: "@tanstack/react-query 5.0",
-            pattern: "Server State Cache",
-            features: ["Caching", "Synchronization", "Mutations"]
-        },
-        local: {
-            approach: "React State/Context",
-            hooks: ["useState", "useReducer", "useContext"]
-        }
-    },
-    
-    // Component Architecture
-    componentStructure: {
-        pattern: "Atomic Design",
-        levels: {
-            atoms: "Basic UI elements (buttons, inputs)",
-            molecules: "Simple components (forms, cards)",
-            organisms: "Complex components (headers, sections)",
-            templates: "Page layouts",
-            pages: "Route components"
-        },
-        organization: {
-            "/components/ui": "Reusable UI components",
-            "/components/trinity": "Business logic components",
-            "/components/layouts": "Layout wrappers",
-            "/app": "Route pages and API routes"
-        }
-    },
-    
-    // Styling Architecture
-    styling: {
-        framework: "Tailwind CSS 3.4",
-        approach: "Utility-first",
-        customization: "tailwind.config.js",
-        animations: "Framer Motion 11.0",
-        themes: "CSS variables + Tailwind"
-    },
-    
-    // Data Fetching Patterns
-    dataFetching: {
-        patterns: [
-            "Server Components (RSC)",
-            "Client-side with React Query",
-            "API Routes for backend proxy",
-            "WebSocket for real-time"
-        ],
-        caching: {
-            static: "ISR (Incremental Static Regeneration)",
-            dynamic: "React Query cache",
-            cdn: "Cloudflare edge caching"
-        }
-    }
-};
+### Directory Structure with Responsibilities
+
 ```
-
-### BACKEND ARCHITECTURE
-```python
-# FastAPI Application Structure
-backend_architecture = {
-    # Core Framework
-    "framework": {
-        "name": "FastAPI",
-        "version": "0.104.1",
-        "server": "Uvicorn",
-        "async": True,
-        "features": [
-            "Automatic API documentation",
-            "Type validation with Pydantic",
-            "Async/await support",
-            "WebSocket support",
-            "Dependency injection"
-        ]
-    },
-    
-    # Application Structure
-    "structure": {
-        "pattern": "Domain-Driven Design",
-        "layers": {
-            "routes": "API endpoint definitions",
-            "services": "Business logic layer",
-            "models": "Data models (SQLAlchemy)",
-            "schemas": "API schemas (Pydantic)",
-            "repositories": "Data access layer"
-        },
-        "organization": {
-            "app/routes/": "HTTP endpoints",
-            "app/services/": "Business logic",
-            "app/models/": "Database models",
-            "app/schemas/": "Request/Response schemas",
-            "app/auth/": "Authentication logic",
-            "app/websocket/": "Real-time handlers"
-        }
-    },
-    
-    # Database Architecture
-    "database": {
-        "orm": "SQLAlchemy 2.0",
-        "pattern": "Repository Pattern",
-        "migrations": "Alembic (planned)",
-        "connections": {
-            "development": "SQLite",
-            "production": "PostgreSQL (planned)",
-            "edge": "Cloudflare D1"
-        },
-        "optimization": [
-            "Connection pooling",
-            "Query optimization",
-            "Eager loading",
-            "Caching layer"
-        ]
-    },
-    
-    # Authentication Architecture
-    "authentication": {
-        "strategy": "JWT Bearer Tokens",
-        "implementation": {
-            "passwords": "Bcrypt hashing",
-            "tokens": "python-jose",
-            "validation": "OAuth2PasswordBearer",
-            "refresh": "Refresh token rotation"
-        },
-        "flow": [
-            "User provides credentials",
-            "Validate against database",
-            "Generate JWT token pair",
-            "Return access + refresh tokens",
-            "Validate on each request"
-        ]
-    },
-    
-    # API Design
-    "api_design": {
-        "style": "RESTful",
-        "versioning": "URL path (/api/v1/)",
-        "documentation": "OpenAPI/Swagger",
-        "standards": {
-            "naming": "snake_case",
-            "http_methods": ["GET", "POST", "PUT", "DELETE", "PATCH"],
-            "status_codes": "Standard HTTP codes",
-            "pagination": "Limit/Offset pattern"
-        }
-    }
-}
-```
-
-### INFRASTRUCTURE ARCHITECTURE
-```yaml
-# Cloudflare Edge Infrastructure
-infrastructure:
-  edge_computing:
-    provider: "Cloudflare"
-    services:
-      workers:
-        runtime: "V8 Isolates"
-        language: "JavaScript/TypeScript"
-        limits:
-          cpu: "10ms per request"
-          memory: "128MB"
-          requests: "100k/day (free)"
-      
-      d1_database:
-        type: "SQLite at the edge"
-        replication: "Global"
-        consistency: "Eventual"
-        access: "Workers API"
-      
-      r2_storage:
-        type: "Object storage"
-        compatibility: "S3 API"
-        pricing: "No egress fees"
-        access: "Workers API"
-      
-      kv_storage:
-        type: "Key-Value store"
-        replication: "Global"
-        consistency: "Eventual"
-        ttl: "Configurable"
-  
-  networking:
-    tunnel:
-      name: "trinity"
-      protocol: "HTTP/2"
-      encryption: "TLS 1.3"
-      routing:
-        - hostname: "sunny-stack.com"
-          service: "http://localhost:3000"
-        - path: "/api/*"
-          service: "http://localhost:8000"
-        - path: "/ws/*"
-          service: "ws://localhost:8000"
-    
-    dns:
-      provider: "Cloudflare"
-      records:
-        - type: "CNAME"
-          name: "sunny-stack.com"
-          value: "trinity.cfargotunnel.com"
-    
-    cdn:
-      caching_rules:
-        - match: "*.js|*.css|*.png|*.jpg"
-          cache: "1 year"
-        - match: "/api/*"
-          cache: "no-cache"
-        - match: "/"
-          cache: "5 minutes"
+sunny-stack/
+│
+├── app/                           # Next.js App Router (Routes & Pages)
+│   ├── layout.tsx                # Root layout with providers and metadata
+│   ├── page.tsx                  # Homepage (Server Component)
+│   ├── not-found.tsx             # 404 error handling
+│   ├── error.tsx                 # Error boundary (planned)
+│   ├── loading.tsx               # Loading states (planned)
+│   │
+│   ├── (routes)/                 # Route groups for organization
+│   │   ├── about/
+│   │   │   └── page.tsx         # About page (Server Component)
+│   │   ├── portfolio/
+│   │   │   ├── page.tsx         # Portfolio listing (Server Component)
+│   │   │   └── [id]/            # Dynamic routes (planned)
+│   │   │       └── page.tsx     # Individual project pages
+│   │   ├── resume/
+│   │   │   └── page.tsx         # Resume display with PDF export
+│   │   ├── quote/
+│   │   │   └── page.tsx         # Quote calculator (Client Component)
+│   │   └── contact/
+│   │       └── page.tsx         # Contact form (Hybrid Component)
+│   │
+│   └── api/                      # API Route Handlers
+│       ├── contact/
+│       │   └── route.ts         # Contact form processing
+│       ├── send/
+│       │   └── route.ts         # Email sending via Resend
+│       └── quote/
+│           └── route.ts         # Quote calculation (planned)
+│
+├── components/                    # React Components Library
+│   ├── layout/                  # Layout components
+│   │   ├── Header.tsx           # Site header with navigation
+│   │   ├── Footer.tsx           # Site footer with links
+│   │   ├── Navigation.tsx       # Main navigation component
+│   │   └── MobileMenu.tsx       # Mobile navigation menu
+│   │
+│   ├── ui/                      # UI components (atoms)
+│   │   ├── Button.tsx           # Reusable button component
+│   │   ├── Card.tsx             # Card component
+│   │   ├── Input.tsx            # Form input component
+│   │   ├── Modal.tsx            # Modal dialog component
+│   │   └── Spinner.tsx          # Loading spinner
+│   │
+│   ├── sections/                # Page sections (molecules)
+│   │   ├── HeroSection.tsx      # Homepage hero section
+│   │   ├── PortfolioGrid.tsx    # Portfolio projects grid
+│   │   ├── SkillsSection.tsx    # Skills showcase
+│   │   ├── ContactForm.tsx      # Contact form component
+│   │   └── TestimonialsSection.tsx # Client testimonials
+│   │
+│   └── shared/                  # Shared components (organisms)
+│       ├── SEO.tsx              # SEO meta tags component
+│       ├── Analytics.tsx        # Analytics wrapper
+│       └── ThemeProvider.tsx    # Theme context provider
+│
+├── lib/                          # Utility Functions & Libraries
+│   ├── utils/                   # Utility functions
+│   │   ├── cn.ts               # Class name utility
+│   │   ├── format.ts           # Formatting utilities
+│   │   └── validation.ts       # Validation functions
+│   │
+│   ├── hooks/                   # Custom React hooks
+│   │   ├── useDebounce.ts      # Debounce hook
+│   │   ├── useLocalStorage.ts  # Local storage hook
+│   │   └── useMediaQuery.ts    # Media query hook
+│   │
+│   ├── constants/              # Application constants
+│   │   ├── config.ts           # App configuration
+│   │   ├── routes.ts           # Route definitions
+│   │   └── theme.ts            # Theme constants
+│   │
+│   └── types/                  # TypeScript type definitions
+│       ├── index.ts            # Main type exports
+│       ├── api.ts              # API types
+│       └── components.ts       # Component prop types
+│
+├── styles/                      # Global Styles
+│   ├── globals.css             # Global CSS with Tailwind
+│   └── components/             # Component-specific styles
+│       └── animations.css      # Animation classes
+│
+├── public/                      # Static Assets
+│   ├── images/                 # Image assets
+│   │   ├── projects/          # Project screenshots
+│   │   ├── profile/           # Profile images
+│   │   └── icons/             # Icon images
+│   ├── fonts/                  # Custom fonts
+│   └── documents/              # Downloadable documents
+│
+├── content/                     # Content Data
+│   ├── projects.json           # Portfolio projects data
+│   ├── skills.json             # Skills and technologies
+│   ├── experience.json         # Work experience data
+│   └── testimonials.json       # Client testimonials
+│
+└── trinity/                     # Trinity Method Documentation
+    ├── Co-Pilot-Instructions.md
+    ├── CLAUDE.md
+    ├── Session-Start.md
+    ├── Session-End.md
+    ├── knowledge-base/
+    │   ├── ARCHITECTURE.md (this file)
+    │   ├── Trinity.md
+    │   ├── ISSUES.md
+    │   ├── To-do.md
+    │   ├── Chat-Log.md
+    │   └── Session-Knowledge-Retention.md
+    └── investigations/
+        └── prior-investigations/
 ```
 
 ---
 
 ## 🔄 DATA FLOW ARCHITECTURE
 
-### REQUEST LIFECYCLE
-```mermaid
-graph TD
-    A[User Browser] -->|HTTPS| B[Cloudflare Edge]
-    B -->|Tunnel| C[Cloudflare Tunnel]
-    C -->|Route| D{Router}
-    D -->|Static/Pages| E[Next.js Frontend :3000]
-    D -->|API Calls| F[FastAPI Backend :8000]
-    D -->|WebSocket| G[Socket.IO :8000]
-    
-    E -->|API Request| F
-    E -->|WS Connect| G
-    
-    F -->|Query| H[SQLAlchemy ORM]
-    H -->|SQL| I[Database]
-    
-    F -->|AI Request| J[Anthropic API]
-    F -->|Cache| K[Redis/Memory]
-    
-    G -->|Events| L[Event Handlers]
-    L -->|Broadcast| M[Connected Clients]
+### Request/Response Flow
+
+```
+User Request → Next.js Router → Route Handler → Component Tree → Response
+
+1. Browser Request
+   ↓
+2. Next.js Middleware (if any)
+   ↓
+3. App Router Resolution
+   ↓
+4. Layout Components Load
+   ↓
+5. Page Component Renders
+   ↓
+6. Data Fetching (if Server Component)
+   ↓
+7. Client Hydration (if needed)
+   ↓
+8. Interactive State Ready
 ```
 
-### STATE MANAGEMENT FLOW
+### Component Data Flow
+
+#### Server Components (Default)
 ```typescript
-// Frontend State Management Architecture
-const stateFlow = {
-    // 1. User Action
-    userInteraction: "Button Click / Form Submit",
+// Server Component Pattern
+async function ServerComponent() {
+    // Data fetched on server
+    const data = await fetchData();
     
-    // 2. Local State Update (Optimistic)
-    localUpdate: {
-        store: "Zustand",
-        action: "setOptimisticState",
-        immediate: true
-    },
-    
-    // 3. API Call
-    apiCall: {
-        client: "React Query",
-        method: "mutation",
-        endpoint: "/api/resource"
-    },
-    
-    // 4. Backend Processing
-    backendProcessing: {
-        validation: "Pydantic",
-        business: "Service Layer",
-        database: "SQLAlchemy",
-        response: "JSON"
-    },
-    
-    // 5. State Reconciliation
-    reconciliation: {
-        success: "Confirm optimistic update",
-        failure: "Rollback + show error",
-        cache: "Invalidate React Query"
-    },
-    
-    // 6. UI Update
-    uiUpdate: {
-        rerender: "React components",
-        notifications: "Toast messages",
-        navigation: "Router updates"
-    }
-};
+    // Rendered on server
+    return <div>{data}</div>;
+}
 ```
 
-### AUTHENTICATION FLOW
-```python
-# Authentication & Authorization Flow
-auth_flow = {
-    # 1. Login Request
-    "login": {
-        "endpoint": "POST /api/auth/login",
-        "payload": {"email": "string", "password": "string"},
-        "validation": "Pydantic schema"
-    },
+#### Client Components
+```typescript
+// Client Component Pattern
+'use client';
+
+function ClientComponent() {
+    // Runs in browser
+    const [state, setState] = useState();
     
-    # 2. Credential Verification
-    "verification": {
-        "fetch_user": "SELECT * FROM users WHERE email = ?",
-        "verify_password": "bcrypt.checkpw(password, hashed)",
-        "check_active": "user.is_active == True"
-    },
+    useEffect(() => {
+        // Client-side effects
+    }, []);
     
-    # 3. Token Generation
-    "token_generation": {
-        "access_token": {
-            "payload": {"sub": "user_id", "exp": "15 minutes"},
-            "algorithm": "HS256",
-            "secret": "JWT_SECRET"
-        },
-        "refresh_token": {
-            "payload": {"sub": "user_id", "exp": "7 days"},
-            "algorithm": "HS256",
-            "secret": "JWT_REFRESH_SECRET"
-        }
-    },
-    
-    # 4. Response
-    "response": {
-        "access_token": "eyJ...",
-        "refresh_token": "eyJ...",
-        "token_type": "bearer",
-        "user": {"id": 1, "email": "user@example.com"}
-    },
-    
-    # 5. Subsequent Requests
-    "protected_request": {
-        "header": "Authorization: Bearer <access_token>",
-        "validation": "decode_jwt(token)",
-        "user_loading": "get_current_user(token_payload)",
-        "authorization": "check_permissions(user, resource)"
-    }
+    return <div>{/* Interactive UI */}</div>;
 }
+```
+
+### State Management Architecture
+
+#### Local State (Component Level)
+```typescript
+// useState for local component state
+const [isOpen, setIsOpen] = useState(false);
+```
+
+#### Shared State (Context API)
+```typescript
+// Context for cross-component state
+const ThemeContext = createContext<ThemeContextType>();
+
+export function ThemeProvider({ children }) {
+    const [theme, setTheme] = useState('light');
+    
+    return (
+        <ThemeContext.Provider value={{ theme, setTheme }}>
+            {children}
+        </ThemeContext.Provider>
+    );
+}
+```
+
+#### URL State (Search Params)
+```typescript
+// URL state for filters and navigation
+const searchParams = useSearchParams();
+const filter = searchParams.get('filter');
 ```
 
 ---
 
-## 📦 MODULE ARCHITECTURE
+## 🎨 COMPONENT ARCHITECTURE
 
-### FRONTEND MODULES
-```typescript
-// Module Organization and Dependencies
-const moduleArchitecture = {
-    // Core Modules
-    core: {
-        "/lib/api.ts": {
-            purpose: "API client wrapper",
-            dependencies: ["fetch", "react-query"],
-            exports: ["apiClient", "useApi"]
-        },
-        "/lib/auth.ts": {
-            purpose: "Authentication utilities",
-            dependencies: ["next-auth", "jwt"],
-            exports: ["useAuth", "requireAuth", "getSession"]
-        },
-        "/lib/utils.ts": {
-            purpose: "Utility functions",
-            dependencies: [],
-            exports: ["cn", "formatDate", "debounce"]
-        }
-    },
-    
-    // Feature Modules
-    features: {
-        "/stores/user.ts": {
-            purpose: "User state management",
-            dependencies: ["zustand"],
-            exports: ["useUserStore"]
-        },
-        "/stores/project.ts": {
-            purpose: "Project state management",
-            dependencies: ["zustand"],
-            exports: ["useProjectStore"]
-        },
-        "/hooks/useWebSocket.ts": {
-            purpose: "WebSocket connection hook",
-            dependencies: ["socket.io-client"],
-            exports: ["useWebSocket"]
-        }
-    },
-    
-    // Component Modules
-    components: {
-        "/components/ui/": {
-            purpose: "Reusable UI components",
-            pattern: "Presentational components",
-            examples: ["Button", "Input", "Card", "Modal"]
-        },
-        "/components/trinity/": {
-            purpose: "Business components",
-            pattern: "Container components",
-            examples: ["TrinityLayout", "Dashboard", "ProjectView"]
-        }
-    }
-};
+### Component Hierarchy
+
+```
+App Layout
+├── Header
+│   ├── Logo
+│   ├── Navigation
+│   │   ├── NavLink
+│   │   └── MobileMenu
+│   └── ThemeToggle
+├── Main Content
+│   ├── Page Component
+│   │   ├── HeroSection
+│   │   ├── ContentSections
+│   │   └── CTASection
+│   └── Sidebar (if applicable)
+└── Footer
+    ├── FooterLinks
+    ├── SocialLinks
+    └── Copyright
 ```
 
-### BACKEND MODULES
-```python
-# Module Organization and Dependencies
-module_architecture = {
-    # Core Modules
-    "core": {
-        "app/config.py": {
-            "purpose": "Configuration management",
-            "dependencies": ["pydantic", "os"],
-            "exports": ["Settings", "get_settings"]
-        },
-        "app/database.py": {
-            "purpose": "Database connection",
-            "dependencies": ["sqlalchemy"],
-            "exports": ["engine", "SessionLocal", "get_db"]
-        },
-        "app/dependencies.py": {
-            "purpose": "Shared dependencies",
-            "dependencies": ["fastapi"],
-            "exports": ["get_current_user", "require_admin"]
-        }
-    },
-    
-    # Feature Modules
-    "features": {
-        "app/auth/": {
-            "jwt.py": "JWT token handling",
-            "password.py": "Password hashing",
-            "oauth2.py": "OAuth2 flow",
-            "dependencies.py": "Auth dependencies"
-        },
-        "app/routes/": {
-            "auth.py": "Authentication endpoints",
-            "users.py": "User management",
-            "projects.py": "Project endpoints",
-            "admin.py": "Admin endpoints"
-        },
-        "app/services/": {
-            "user_service.py": "User business logic",
-            "project_service.py": "Project logic",
-            "ai_service.py": "AI integration",
-            "email_service.py": "Email handling"
-        }
-    },
-    
-    # Data Modules
-    "data": {
-        "app/models/": {
-            "user.py": "User SQLAlchemy model",
-            "project.py": "Project model",
-            "session.py": "Session model",
-            "base.py": "Base model class"
-        },
-        "app/schemas/": {
-            "user.py": "User Pydantic schemas",
-            "project.py": "Project schemas",
-            "auth.py": "Auth schemas",
-            "common.py": "Shared schemas"
-        }
-    }
+### Component Design Patterns
+
+#### 1. Atomic Design Structure
+- **Atoms**: Basic UI elements (Button, Input, Label)
+- **Molecules**: Simple component groups (FormField, Card)
+- **Organisms**: Complex components (ContactForm, Navigation)
+- **Templates**: Page layouts (DefaultLayout, BlogLayout)
+- **Pages**: Complete pages (HomePage, PortfolioPage)
+
+#### 2. Composition Pattern
+```typescript
+// Component composition for flexibility
+function Card({ children, className }) {
+    return (
+        <div className={cn("card", className)}>
+            {children}
+        </div>
+    );
 }
+
+function CardHeader({ children }) {
+    return <div className="card-header">{children}</div>;
+}
+
+function CardBody({ children }) {
+    return <div className="card-body">{children}</div>;
+}
+
+// Usage
+<Card>
+    <CardHeader>Title</CardHeader>
+    <CardBody>Content</CardBody>
+</Card>
+```
+
+#### 3. Render Props Pattern
+```typescript
+// Render props for flexible rendering
+function DataFetcher({ render }) {
+    const [data, setData] = useState(null);
+    
+    useEffect(() => {
+        fetchData().then(setData);
+    }, []);
+    
+    return render(data);
+}
+
+// Usage
+<DataFetcher render={(data) => <div>{data}</div>} />
 ```
 
 ---
 
-## 🔌 INTEGRATION ARCHITECTURE
+## 🚀 PERFORMANCE ARCHITECTURE
 
-### EXTERNAL SERVICE INTEGRATIONS
+### Optimization Strategies
+
+#### 1. Static Generation (Default)
+```typescript
+// Pages are pre-rendered at build time
+export default function StaticPage() {
+    return <div>Pre-rendered content</div>;
+}
+```
+
+#### 2. Dynamic Rendering
+```typescript
+// Pages rendered on-demand
+export const dynamic = 'force-dynamic';
+
+export default async function DynamicPage() {
+    const data = await fetchLatestData();
+    return <div>{data}</div>;
+}
+```
+
+#### 3. Streaming & Suspense
+```typescript
+// Progressive rendering with Suspense
+import { Suspense } from 'react';
+
+export default function StreamingPage() {
+    return (
+        <div>
+            <StaticContent />
+            <Suspense fallback={<Loading />}>
+                <SlowComponent />
+            </Suspense>
+        </div>
+    );
+}
+```
+
+### Code Splitting Architecture
+
+#### 1. Route-based Splitting
+```typescript
+// Automatic with App Router
+// Each route is a separate bundle
+```
+
+#### 2. Component-based Splitting
+```typescript
+// Dynamic imports for heavy components
+const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
+    loading: () => <Spinner />,
+    ssr: false
+});
+```
+
+### Image Optimization Architecture
+
+```typescript
+// Next.js Image component with optimization
+import Image from 'next/image';
+
+<Image
+    src="/image.jpg"
+    alt="Description"
+    width={800}
+    height={600}
+    priority={isAboveFold}
+    placeholder="blur"
+    blurDataURL={blurDataUrl}
+/>
+```
+
+### Font Optimization Architecture
+
+```typescript
+// Next.js font optimization
+import { Inter } from 'next/font/google';
+
+const inter = Inter({
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--font-inter'
+});
+```
+
+---
+
+## 🔒 SECURITY ARCHITECTURE
+
+### Security Layers
+
+#### 1. Input Validation
+```typescript
+// Zod schema validation
+const contactSchema = z.object({
+    name: z.string().min(2).max(100),
+    email: z.string().email(),
+    message: z.string().min(10).max(1000)
+});
+
+function validateInput(data: unknown) {
+    return contactSchema.parse(data);
+}
+```
+
+#### 2. Output Sanitization
+```typescript
+// React automatically escapes output
+// Additional sanitization for user content
+import DOMPurify from 'isomorphic-dompurify';
+
+function sanitizeHTML(dirty: string) {
+    return DOMPurify.sanitize(dirty);
+}
+```
+
+#### 3. CSRF Protection
+```typescript
+// CSRF token generation and validation
+function generateCSRFToken() {
+    return crypto.randomUUID();
+}
+
+function validateCSRFToken(token: string) {
+    return token === session.csrfToken;
+}
+```
+
+#### 4. Rate Limiting
+```typescript
+// API route rate limiting
+const rateLimiter = new Map();
+
+export async function POST(request: Request) {
+    const ip = request.headers.get('x-forwarded-for');
+    
+    if (rateLimiter.get(ip) > 10) {
+        return new Response('Too Many Requests', { status: 429 });
+    }
+    
+    // Process request
+}
+```
+
+### Security Headers
+
+```typescript
+// Security headers configuration
+const securityHeaders = [
+    {
+        key: 'X-DNS-Prefetch-Control',
+        value: 'on'
+    },
+    {
+        key: 'Strict-Transport-Security',
+        value: 'max-age=63072000; includeSubDomains; preload'
+    },
+    {
+        key: 'X-Frame-Options',
+        value: 'SAMEORIGIN'
+    },
+    {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff'
+    },
+    {
+        key: 'Referrer-Policy',
+        value: 'origin-when-cross-origin'
+    }
+];
+```
+
+---
+
+## 🧪 TESTING ARCHITECTURE
+
+### Testing Pyramid
+
+```
+        ┌─────┐
+        │ E2E │      - Full user journeys
+       ┌┴─────┴┐
+       │ Integ │     - API & component integration
+      ┌┴───────┴┐
+      │  Unit   │    - Individual functions/components
+     └───────────┘
+```
+
+### Testing Strategy
+
+#### 1. Unit Tests (Jest + React Testing Library)
+```typescript
+// Component unit test
+describe('Button', () => {
+    it('renders with correct text', () => {
+        render(<Button>Click me</Button>);
+        expect(screen.getByText('Click me')).toBeInTheDocument();
+    });
+});
+```
+
+#### 2. Integration Tests
+```typescript
+// API integration test
+describe('Contact API', () => {
+    it('sends email successfully', async () => {
+        const response = await fetch('/api/contact', {
+            method: 'POST',
+            body: JSON.stringify(validData)
+        });
+        expect(response.status).toBe(200);
+    });
+});
+```
+
+#### 3. E2E Tests (Playwright)
+```typescript
+// End-to-end test
+test('complete contact flow', async ({ page }) => {
+    await page.goto('/contact');
+    await page.fill('[name="name"]', 'John Doe');
+    await page.fill('[name="email"]', 'john@example.com');
+    await page.fill('[name="message"]', 'Test message');
+    await page.click('button[type="submit"]');
+    await expect(page.locator('.success')).toBeVisible();
+});
+```
+
+---
+
+## 📦 BUILD & DEPLOYMENT ARCHITECTURE
+
+### Build Pipeline
+
+```
+1. Source Code
+   ↓
+2. TypeScript Compilation
+   ↓
+3. Next.js Build
+   ↓
+4. Static Optimization
+   ↓
+5. Bundle Optimization
+   ↓
+6. Image Optimization
+   ↓
+7. Output (.next folder)
+```
+
+### Deployment Architecture
+
+#### Vercel Deployment (Recommended)
 ```yaml
-integrations:
-  anthropic_api:
-    purpose: "AI model integration"
-    sdk: "anthropic-python"
-    authentication: "API Key"
-    endpoints:
-      - "Messages API"
-      - "Completions API"
-    error_handling:
-      - "Retry with exponential backoff"
-      - "Fallback responses"
-      - "Rate limit management"
-  
-  openai_api:
-    purpose: "Alternative AI provider"
-    sdk: "openai-python"
-    authentication: "API Key"
-    models:
-      - "GPT-4"
-      - "GPT-3.5-turbo"
-    features:
-      - "Function calling"
-      - "Embeddings"
-  
-  email_service:
-    purpose: "Transactional emails"
-    provider: "SendGrid (planned)"
-    authentication: "API Key"
-    templates:
-      - "Welcome email"
-      - "Password reset"
-      - "Notifications"
-  
-  payment_processor:
-    purpose: "Subscription handling"
-    provider: "Stripe (planned)"
-    authentication: "Secret Key"
-    features:
-      - "Subscription management"
-      - "Payment processing"
-      - "Webhook handling"
+Build Command: npm run build
+Output Directory: .next
+Install Command: npm install
+Development Command: npm run dev
+
+Environment Variables:
+- RESEND_API_KEY
+- FROM_EMAIL
+- TO_EMAIL
 ```
 
-### INTERNAL SERVICE COMMUNICATION
-```typescript
-// Service Communication Patterns
-const communicationPatterns = {
-    // REST API Communication
-    rest: {
-        pattern: "Request-Response",
-        protocol: "HTTP/HTTPS",
-        format: "JSON",
-        authentication: "Bearer Token",
-        example: {
-            request: {
-                method: "POST",
-                url: "/api/projects",
-                headers: {
-                    "Authorization": "Bearer <token>",
-                    "Content-Type": "application/json"
-                },
-                body: {
-                    name: "New Project",
-                    description: "Project description"
-                }
-            },
-            response: {
-                status: 201,
-                body: {
-                    id: 1,
-                    name: "New Project",
-                    created_at: "2024-01-01T00:00:00Z"
-                }
-            }
-        }
-    },
-    
-    // WebSocket Communication
-    websocket: {
-        pattern: "Pub-Sub",
-        protocol: "WS/WSS",
-        format: "JSON",
-        library: "Socket.IO",
-        events: {
-            client_to_server: [
-                "join_room",
-                "leave_room",
-                "send_message",
-                "update_status"
-            ],
-            server_to_client: [
-                "message_received",
-                "user_joined",
-                "user_left",
-                "status_updated"
-            ]
-        }
-    },
-    
-    // Event-Driven (Future)
-    eventDriven: {
-        pattern: "Event Sourcing",
-        broker: "Redis/RabbitMQ (planned)",
-        format: "JSON",
-        topics: [
-            "user.created",
-            "project.updated",
-            "payment.processed"
-        ]
-    }
-};
+#### Docker Deployment (Alternative)
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
 ```
 
 ---
 
-## 🛡️ SECURITY ARCHITECTURE
+## 🔄 CI/CD ARCHITECTURE
 
-### SECURITY LAYERS
-```python
-security_architecture = {
-    # Application Security
-    "application": {
-        "authentication": {
-            "method": "JWT Bearer",
-            "storage": "httpOnly cookies + memory",
-            "rotation": "Refresh token rotation",
-            "expiry": "15min access, 7d refresh"
-        },
-        "authorization": {
-            "model": "RBAC (Role-Based)",
-            "roles": ["admin", "user", "viewer"],
-            "permissions": "Resource-based",
-            "enforcement": "Decorator pattern"
-        },
-        "validation": {
-            "input": "Pydantic schemas",
-            "output": "Response models",
-            "sql": "Parameterized queries",
-            "files": "Type/size validation"
-        }
-    },
-    
-    # Network Security
-    "network": {
-        "transport": "TLS 1.3",
-        "tunnel": "Cloudflare encrypted",
-        "cors": {
-            "origins": ["https://sunny-stack.com"],
-            "credentials": True,
-            "methods": ["GET", "POST", "PUT", "DELETE"]
-        },
-        "headers": {
-            "X-Content-Type-Options": "nosniff",
-            "X-Frame-Options": "DENY",
-            "X-XSS-Protection": "1; mode=block",
-            "Strict-Transport-Security": "max-age=31536000"
-        }
-    },
-    
-    # Data Security
-    "data": {
-        "encryption": {
-            "at_rest": "Database encryption",
-            "in_transit": "TLS encryption",
-            "passwords": "Bcrypt hashing",
-            "sensitive": "AES-256 (planned)"
-        },
-        "privacy": {
-            "pii": "Minimal collection",
-            "gdpr": "Compliance planned",
-            "retention": "Policy-based",
-            "deletion": "Soft + hard delete"
-        }
-    },
-    
-    # Infrastructure Security
-    "infrastructure": {
-        "edge": "Cloudflare WAF",
-        "ddos": "Cloudflare protection",
-        "rate_limiting": "API throttling",
-        "monitoring": {
-            "logs": "Centralized logging",
-            "alerts": "Security events",
-            "audit": "Access trails"
-        }
-    }
-}
-```
+### Continuous Integration
 
----
-
-## 🚀 DEPLOYMENT ARCHITECTURE
-
-### DEPLOYMENT PIPELINE
 ```yaml
-deployment:
-  environments:
-    development:
-      frontend: "localhost:3000"
-      backend: "localhost:8000"
-      database: "SQLite local"
-      tunnel: "Development tunnel"
-    
-    staging:
-      frontend: "staging.sunny-stack.com"
-      backend: "api-staging.sunny-stack.com"
-      database: "PostgreSQL staging"
-      tunnel: "Staging tunnel"
-    
-    production:
-      frontend: "sunny-stack.com"
-      backend: "api.sunny-stack.com"
-      database: "PostgreSQL production"
-      tunnel: "Production tunnel"
-  
-  ci_cd:
-    version_control: "Git"
-    branching:
-      main: "Production branch"
-      dev: "Development branch"
-      feature: "Feature branches"
-    
-    pipeline:
-      - step: "Code commit"
-        action: "Git push"
-      - step: "CI checks"
-        action: "Linting, type checking"
-      - step: "Testing"
-        action: "Unit, integration tests"
-      - step: "Build"
-        action: "Production build"
-      - step: "Deploy"
-        action: "Cloudflare deployment"
-  
-  containerization:
-    frontend:
-      base: "node:20-alpine"
-      build: "Next.js production"
-      size: "~150MB"
-    
-    backend:
-      base: "python:3.11-slim"
-      build: "FastAPI + deps"
-      size: "~200MB"
-    
-    orchestration:
-      local: "Docker Compose"
-      production: "Kubernetes (future)"
+# GitHub Actions workflow
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm ci
+      - run: npm run type-check
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
 ```
 
-### SCALING ARCHITECTURE
-```typescript
-// Scaling Strategy
-const scalingArchitecture = {
-    // Horizontal Scaling
-    horizontal: {
-        frontend: {
-            strategy: "CDN distribution",
-            provider: "Cloudflare",
-            locations: "Global edge nodes",
-            caching: "Static asset caching"
-        },
-        backend: {
-            strategy: "Load balancing",
-            instances: "Multiple containers",
-            distribution: "Round-robin",
-            state: "Stateless design"
-        },
-        database: {
-            strategy: "Read replicas",
-            writes: "Primary instance",
-            reads: "Replica pool",
-            sharding: "Future consideration"
-        }
-    },
-    
-    // Vertical Scaling
-    vertical: {
-        compute: {
-            cpu: "Auto-scaling",
-            memory: "Dynamic allocation",
-            storage: "Expandable volumes"
-        }
-    },
-    
-    // Performance Optimization
-    optimization: {
-        frontend: [
-            "Code splitting",
-            "Lazy loading",
-            "Image optimization",
-            "Bundle optimization"
-        ],
-        backend: [
-            "Query optimization",
-            "Connection pooling",
-            "Caching layer",
-            "Async processing"
-        ],
-        infrastructure: [
-            "Edge caching",
-            "Compression",
-            "HTTP/2",
-            "WebSocket pooling"
-        ]
-    }
-};
-```
+### Continuous Deployment
 
----
-
-## 📊 MONITORING ARCHITECTURE
-
-### OBSERVABILITY STACK
-```python
-monitoring_architecture = {
-    # Logging
-    "logging": {
-        "frontend": {
-            "console": "Development",
-            "sentry": "Production errors",
-            "analytics": "User behavior"
-        },
-        "backend": {
-            "structured": "JSON logging",
-            "levels": ["DEBUG", "INFO", "WARNING", "ERROR"],
-            "rotation": "Daily rotation",
-            "retention": "30 days"
-        }
-    },
-    
-    # Metrics
-    "metrics": {
-        "application": {
-            "response_time": "P50, P95, P99",
-            "error_rate": "4xx, 5xx rates",
-            "throughput": "Requests per second",
-            "saturation": "CPU, memory usage"
-        },
-        "business": {
-            "user_activity": "DAU, MAU",
-            "feature_usage": "Adoption rates",
-            "conversion": "Funnel metrics",
-            "retention": "User retention"
-        }
-    },
-    
-    # Tracing
-    "tracing": {
-        "distributed": "Request correlation",
-        "spans": "Operation timing",
-        "context": "Propagation headers",
-        "visualization": "Trace timeline"
-    },
-    
-    # Alerting
-    "alerting": {
-        "channels": ["Email", "Slack", "PagerDuty"],
-        "rules": {
-            "critical": "Service down",
-            "high": "Error rate spike",
-            "medium": "Performance degradation",
-            "low": "Capacity warnings"
-        }
-    }
-}
-```
-
----
-
-## 🔄 EVOLUTION ROADMAP
-
-### ARCHITECTURAL EVOLUTION
-```markdown
-## Current State (v2.0)
-- Monolithic frontend (Next.js)
-- Monolithic backend (FastAPI)
-- SQLite database
-- Basic authentication
-- Cloudflare tunnel
-
-## Short-term Goals (Q1 2025)
-- [ ] Implement Redis caching
-- [ ] Add email service integration
-- [ ] Implement rate limiting
-- [ ] Add comprehensive testing
-- [ ] Set up CI/CD pipeline
-
-## Medium-term Goals (Q2-Q3 2025)
-- [ ] Migrate to PostgreSQL
-- [ ] Implement microservices for specific domains
-- [ ] Add message queue (RabbitMQ/Redis)
-- [ ] Implement GraphQL API
-- [ ] Add monitoring stack (Prometheus/Grafana)
-
-## Long-term Vision (Q4 2025+)
-- [ ] Kubernetes orchestration
-- [ ] Service mesh (Istio)
-- [ ] Event sourcing architecture
-- [ ] CQRS pattern implementation
-- [ ] Multi-region deployment
-```
-
-### TECHNICAL DEBT REGISTRY
 ```yaml
-technical_debt:
-  high_priority:
-    - item: "Add comprehensive error handling"
-      impact: "User experience"
-      effort: "Medium"
-      deadline: "Q1 2025"
-    
-    - item: "Implement proper logging"
-      impact: "Debugging capability"
-      effort: "Low"
-      deadline: "Q1 2025"
-  
-  medium_priority:
-    - item: "Refactor component structure"
-      impact: "Maintainability"
-      effort: "High"
-      deadline: "Q2 2025"
-    
-    - item: "Add integration tests"
-      impact: "Quality assurance"
-      effort: "Medium"
-      deadline: "Q2 2025"
-  
-  low_priority:
-    - item: "Optimize bundle size"
-      impact: "Performance"
-      effort: "Medium"
-      deadline: "Q3 2025"
-    
-    - item: "Standardize coding patterns"
-      impact: "Developer experience"
-      effort: "Low"
-      deadline: "Q3 2025"
+# Vercel deployment
+name: Deploy
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: vercel/action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
 ```
 
 ---
 
-## 📐 DESIGN PATTERNS
+## 🎯 ARCHITECTURE DECISIONS RECORD (ADR)
 
-### FRONTEND PATTERNS
-```typescript
-// Common Design Patterns Used
-const designPatterns = {
-    // Container/Presentational Pattern
-    containerPattern: {
-        container: "Handles logic and state",
-        presentational: "Handles rendering",
-        example: {
-            container: "UserContainer.tsx",
-            presentational: "UserView.tsx"
-        }
-    },
-    
-    // Custom Hook Pattern
-    customHookPattern: {
-        purpose: "Reusable logic extraction",
-        naming: "use[Feature]",
-        examples: ["useAuth", "useApi", "useWebSocket"]
-    },
-    
-    // Compound Component Pattern
-    compoundPattern: {
-        purpose: "Flexible component APIs",
-        example: {
-            parent: "<Card>",
-            children: ["<Card.Header>", "<Card.Body>", "<Card.Footer>"]
-        }
-    },
-    
-    // Provider Pattern
-    providerPattern: {
-        purpose: "Cross-component state sharing",
-        implementation: "React Context",
-        examples: ["AuthProvider", "ThemeProvider"]
-    }
-};
-```
+### ADR-001: Next.js App Router
+**Status**: Accepted
+**Context**: Need modern React framework with SSR/SSG capabilities
+**Decision**: Use Next.js 15 with App Router
+**Consequences**: Better performance, simpler mental model, React 19 support
 
-### BACKEND PATTERNS
-```python
-# Common Design Patterns Used
-design_patterns = {
-    # Repository Pattern
-    "repository_pattern": {
-        "purpose": "Abstract data access",
-        "implementation": "Repository classes",
-        "example": {
-            "interface": "IUserRepository",
-            "concrete": "SQLAlchemyUserRepository"
-        }
-    },
-    
-    # Service Layer Pattern
-    "service_pattern": {
-        "purpose": "Business logic encapsulation",
-        "implementation": "Service classes",
-        "example": "UserService, ProjectService"
-    },
-    
-    # Dependency Injection
-    "dependency_injection": {
-        "purpose": "Loose coupling",
-        "implementation": "FastAPI Depends",
-        "example": "Depends(get_db), Depends(get_current_user)"
-    },
-    
-    # Factory Pattern
-    "factory_pattern": {
-        "purpose": "Object creation abstraction",
-        "implementation": "Factory functions",
-        "example": "create_access_token, create_user"
-    },
-    
-    # Strategy Pattern
-    "strategy_pattern": {
-        "purpose": "Algorithm selection",
-        "implementation": "Strategy classes",
-        "example": "AuthenticationStrategy, CacheStrategy"
-    }
-}
-```
+### ADR-002: Tailwind CSS for Styling
+**Status**: Accepted
+**Context**: Need rapid UI development with consistent design
+**Decision**: Use Tailwind CSS utility-first approach
+**Consequences**: Smaller CSS bundle, faster development, learning curve for team
+
+### ADR-003: TypeScript Strict Mode
+**Status**: Accepted
+**Context**: Need type safety and better developer experience
+**Decision**: Enable TypeScript strict mode
+**Consequences**: More robust code, earlier error detection, slightly slower development
+
+### ADR-004: Resend for Email
+**Status**: Accepted
+**Context**: Need reliable transactional email service
+**Decision**: Use Resend API for email delivery
+**Consequences**: Simple integration, good deliverability, additional service dependency
+
+### ADR-005: Vercel for Hosting
+**Status**: Proposed
+**Context**: Need reliable hosting with Next.js optimization
+**Decision**: Deploy to Vercel platform
+**Consequences**: Optimal Next.js performance, automatic deployments, vendor lock-in
 
 ---
 
-**Sunny Stack AI Platform - System Architecture Document**
-**Version**: 2.0.0
-**Last Updated**: 2025-09-09
-**Trinity Method**: v7.0 Implementation
+## 📈 SCALABILITY CONSIDERATIONS
 
-**Architecture Principle**: Build for today, design for tomorrow, architect for scale.
+### Horizontal Scaling
+- Stateless application design
+- Edge function compatibility
+- CDN integration for static assets
+- Database connection pooling (future)
+
+### Vertical Scaling
+- Code splitting for reduced bundle size
+- Lazy loading for heavy components
+- Image optimization and responsive images
+- Efficient caching strategies
+
+### Performance Budgets
+- Initial JS: <100KB gzipped
+- Initial CSS: <20KB gzipped
+- LCP: <2.5s
+- FID: <100ms
+- CLS: <0.1
+
+---
+
+## 🔮 FUTURE ARCHITECTURE ENHANCEMENTS
+
+### Planned Improvements
+1. **Internationalization (i18n)**
+   - Multi-language support
+   - Locale-based routing
+   - Content translation system
+
+2. **CMS Integration**
+   - Headless CMS for content management
+   - Dynamic content updates
+   - Content versioning
+
+3. **Advanced Analytics**
+   - User behavior tracking
+   - Performance monitoring
+   - Error tracking with Sentry
+
+4. **PWA Capabilities**
+   - Service worker implementation
+   - Offline functionality
+   - Push notifications
+
+5. **Database Integration**
+   - PostgreSQL for data persistence
+   - Prisma ORM for type-safe queries
+   - Redis for caching
+
+---
+
+**ARCHITECTURE.md - Sunny Stack Portfolio System Design**
+**Last Updated**: [Session Date]
+**Architecture Version**: 1.0.0
+**Trinity Method**: v7.0
+
+**This document serves as the authoritative source for all architectural decisions and patterns in the Sunny Stack Portfolio project.**
