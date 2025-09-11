@@ -8,6 +8,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Sunny Stack brand colors
+        sunny: {
+          red: '#DC2626',      // Vibrant red
+          darkRed: '#991B1B',  // Deep red accent
+          gold: '#FCD34D',     // Golden yellow
+          orange: '#FB923C',   // Warm orange
+          brown: '#92400E',    // Rich brown
+          cream: '#FEF3C7',    // Soft cream
+          sky: '#7DD3FC',      // Sky blue
+          ocean: '#0284C7',    // Deep blue
+        },
+        // System colors
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
@@ -33,6 +45,10 @@ const config: Config = {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
+      },
+      backgroundImage: {
+        'sunny-gradient': 'linear-gradient(135deg, #FCD34D 0%, #FB923C 50%, #DC2626 100%)',
+        'ocean-gradient': 'linear-gradient(180deg, #7DD3FC 0%, #0284C7 100%)',
       },
     },
   },
