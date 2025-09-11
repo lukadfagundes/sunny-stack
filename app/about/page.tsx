@@ -181,7 +181,7 @@ export default function About() {
               Want to chat about code, One Piece theories, or the best waterfalls in Oregon?
             </p>
             <a 
-              href="mailto:luka@sunnystack.com"
+              href="mailto:luka@sunny-stack.com"
               className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
               <Code2 className="w-5 h-5" />

@@ -108,14 +108,14 @@ export default function Resume() {
           </div>
 
           {/* Section Tabs */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-4 mb-8 relative z-10">
             {sections.map((section) => {
               const Icon = section.icon
               return (
                 <button
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 ${
+                  className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 cursor-pointer ${
                     activeSection === section.id
                       ? 'bg-sunny-red text-white shadow-lg'
                       : 'bg-white/90 text-sunny-brown hover:bg-sunny-gold/20'
