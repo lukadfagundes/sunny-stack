@@ -95,12 +95,12 @@ export async function POST(request: Request) {
       to: ['luka@sunny-stack.com'],
       subject: subject,
       html: emailHtml,
-      reply_to: isGuidedForm ? body.email : body.contactEmail,
+      replyTo: isGuidedForm ? body.email : body.contactEmail,
     })
     
     console.log('Email sent successfully:', data)
     
-    return NextResponse.json({ success: true, id: data.id })
+    return NextResponse.json({ success: true, id: data.data?.id || 'email-sent' })
   } catch (error) {
     console.error('Error sending email:', error)
     return NextResponse.json(
