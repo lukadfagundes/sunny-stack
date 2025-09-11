@@ -1,9 +1,0 @@
-Claude.ai MCP API Key
-=====================
-
-API Key: PcsnCUSBespo36qMo3PQI66nX5RCC-JeM9zOIfMPpjA
-Key ID: 9ac82f2e
-Expires: 2026-08-11T01:08:18.860718
-
-Add this to your Claude.ai MCP configuration:
-X-API-Key: PcsnCUSBespo36qMo3PQI66nX5RCC-JeM9zOIfMPpjA

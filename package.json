@@ -1,39 +1,37 @@
 {
-  "name": "sunny-ai-platform",
-  "version": "2.0.0",
-  "description": "The world's first self-improving AI consulting platform",
-  "main": "src/worker.js",
+  "name": "sunny-stack-portfolio",
+  "version": "1.0.0",
+  "description": "Professional development portfolio showcasing Trinity Method",
+  "private": true,
   "scripts": {
-    "deploy": "wrangler deploy --env production",
-    "dev": "wrangler dev",
-    "deploy:windows": "deploy.bat",
-    "deploy:unix": "bash deploy.sh",
-    "verify": "bash verify-deployment.sh",
-    "verify:windows": "verify-deployment.bat",
-    "tail": "wrangler tail --env production",
-    "db:init": "wrangler d1 execute sunny-production --file=./database/schema.sql --env production",
-    "secret:master": "wrangler secret put MASTER_PASSWORD --env production",
-    "secret:jwt": "wrangler secret put JWT_SECRET --env production",
-    "secret:anthropic": "wrangler secret put ANTHROPIC_API_KEY --env production"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "export": "next build"
   },
-  "keywords": [
-    "ai",
-    "consulting",
-    "cloudflare",
-    "workers",
-    "self-improvement",
-    "mcp",
-    "claude"
-  ],
-  "author": "Sunny AI Consulting (luka@sunny-stack.com)",
-  "license": "Proprietary",
   "dependencies": {
-    "hono": "^3.11.0"
+    "framer-motion": "^11.0.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.2",
+    "lucide-react": "^0.400.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^3.4.0"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.0.0",
+    "postcss": "^8.4.0",
+    "typescript": "^5.5.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.17.0"
   }
 }
