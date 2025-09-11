@@ -27,7 +27,7 @@ export default function About() {
                 My journey to Salem, OR has been quite the adventure. Born in Reno, moved to and raised in Louisiana 
                 from 2001-2020, with a 4 year stint in Texas, I finally found my home in the beautiful Pacific Northwest in 2024. 
                 And yes, I got married here too! My wife and I actually hiked to Abiqua Falls right after our 
-                ceremony – because nothing says "just married" like a gorgeous Oregon waterfall hike.
+                ceremony, because nothing says "just married" like a gorgeous Oregon waterfall hike.
               </p>
 
               <p className="text-sunny-brown/80 mb-4">
@@ -62,7 +62,7 @@ export default function About() {
                 <h3 className="font-bold text-sunny-darkRed">Based In</h3>
               </div>
               <p className="text-sm text-sunny-brown/70">
-                Salem, Oregon – where the waterfalls are plenty and the nature is stunning
+                Salem, Oregon, where the waterfalls are plenty and the nature is stunning
               </p>
             </div>
 
@@ -73,7 +73,7 @@ export default function About() {
                 <h3 className="font-bold text-sunny-darkRed">Cat Dad</h3>
               </div>
               <p className="text-sm text-sunny-brown/70">
-                Aly & AJ – one's a plastic-eating cuddle bug, the other's wanted for tax evasion
+                Aly & AJ, one's a plastic-eating cuddle bug, the other's wanted for tax evasion
               </p>
             </div>
 
@@ -153,7 +153,7 @@ export default function About() {
               src="/images/waterfall-photo.jpg.jpg"
               alt="Luka and his wife at Abiqua Falls"
               fill
-              className="object-cover"
+              className="object-cover md:object-center object-[25%_center]"
               priority
             />
           </div>

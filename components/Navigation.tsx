@@ -94,7 +94,7 @@ export default function Navigation() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-sunny-brown/10">
+          <div className="md:hidden py-4 border-t border-sunny-brown/10 bg-white/95 backdrop-blur-md">
             <div className="flex flex-col gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon
