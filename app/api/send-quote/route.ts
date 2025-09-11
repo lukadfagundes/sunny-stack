@@ -7,11 +7,44 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 console.log('Resend initialized with API key:', process.env.RESEND_API_KEY ? 'Key present' : 'KEY MISSING!')
 
+interface GuidedFormData {
+  formType: 'guided'
+  name: string
+  email: string
+  company?: string
+  projectType: string
+  projectDescription: string
+  features: string[]
+  timeline: string
+  budget: string
+}
+
+interface TechnicalFormData {
+  formType: 'technical'
+  contactName: string
+  contactEmail: string
+  companyName?: string
+  projectName: string
+  projectType: string
+  projectDescription: string
+  targetAudience?: string
+  techStack?: string
+  features: string
+  integrations?: string
+  hostingPreference?: string
+  timeline: string
+  budget: string
+  designStatus?: string
+  additionalNotes?: string
+}
+
+type FormData = GuidedFormData | TechnicalFormData
+
 export async function POST(request: Request) {
   console.log('API Route called - starting email send process')
   
   try {
-    const body = await request.json()
+    const body: FormData = await request.json()
     console.log('Request body received:', { ...body, email: '***', contactEmail: '***' })
     
     // Determine which type of form was submitted
@@ -89,18 +122,32 @@ export async function POST(request: Request) {
       `
     }
     
+    // Determine the reply-to email based on form type
+    const replyToEmail = body.formType === 'guided' 
+      ? (body as GuidedFormData).email 
+      : (body as TechnicalFormData).contactEmail
+
     // Send the email using Resend
-    const data = await resend.emails.send({
+    const response = await resend.emails.send({
       from: 'Sunny Stack Forms <forms@sunny-stack.com>', // Using your verified domain
       to: ['luka@sunny-stack.com'],
       subject: subject,
       html: emailHtml,
-      reply_to: isGuidedForm ? body.email : body.contactEmail,
+      replyTo: replyToEmail,
     })
     
-    console.log('Email sent successfully:', data)
+    console.log('Email sent successfully:', response)
     
-    return NextResponse.json({ success: true, id: data.id })
+    // Check if the response has data property (successful send)
+    if (response.data) {
+      return NextResponse.json({ success: true, id: response.data.id })
+    } else {
+      console.error('Email send failed:', response.error)
+      return NextResponse.json(
+        { error: 'Failed to send email', details: response.error },
+        { status: 500 }
+      )
+    }
   } catch (error) {
     console.error('Error sending email:', error)
     return NextResponse.json(
