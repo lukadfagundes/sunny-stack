@@ -82,9 +82,45 @@ export default function Quote() {
   }
 
   const handleSubmit = async () => {
-    // TODO: Implement form submission
-    console.log('Submitting form:', formData)
-    alert('Form submission coming soon! For now, please email luka@sunny-stack.com')
+    try {
+      const response = await fetch('/api/send-quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          formType: 'guided'
+        }),
+      })
+      
+      if (response.ok) {
+        alert('Thank you! Your project request has been sent. I\'ll get back to you within 24 hours.')
+        // Reset form or redirect
+        setMode('selection')
+        setCurrentStep(0)
+        setFormData({
+          name: '',
+          email: '',
+          company: '',
+          projectType: '',
+          projectDescription: '',
+          features: [],
+          timeline: '',
+          budget: '',
+          hasDesign: '',
+          needsBackend: '',
+          needsAuth: '',
+          integrations: '',
+          specialRequirements: ''
+        })
+      } else {
+        throw new Error('Failed to send')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('There was an error sending your request. Please email luka@sunny-stack.com directly.')
+    }
   }
 
   const downloadTechnicalDoc = () => {
@@ -338,9 +374,48 @@ I'll review your requirements and get back to you within 24 hours with:
     )
   }
 
-  const handleTechnicalSubmit = () => {
-    console.log('Technical form:', technicalForm)
-    alert('Technical form submission coming soon! For now, please email luka@sunny-stack.com')
+  const handleTechnicalSubmit = async () => {
+    try {
+      const response = await fetch('/api/send-quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...technicalForm,
+          formType: 'technical'
+        }),
+      })
+      
+      if (response.ok) {
+        alert('Thank you! Your technical requirements have been sent. I\'ll review them and get back to you within 24 hours with a detailed quote.')
+        // Reset form
+        setTechnicalView('choice')
+        setTechnicalForm({
+          contactName: '',
+          contactEmail: '',
+          companyName: '',
+          projectName: '',
+          projectType: '',
+          projectDescription: '',
+          targetAudience: '',
+          primaryGoals: '',
+          techStack: '',
+          hostingPreference: '',
+          budget: '',
+          timeline: '',
+          features: '',
+          integrations: '',
+          designStatus: '',
+          additionalNotes: ''
+        })
+      } else {
+        throw new Error('Failed to send')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('There was an error sending your requirements. Please email luka@sunny-stack.com directly.')
+    }
   }
 
   // Technical Mode

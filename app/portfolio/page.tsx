@@ -1,4 +1,4 @@
-import { Sparkles, Rocket } from 'lucide-react'
+import { Sparkles, Rocket, Compass } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Portfolio() {
@@ -54,6 +54,21 @@ export default function Portfolio() {
                 </Link>
               </div>
             </div>
+          </div>
+          
+          {/* Hidden Easter Egg - Get Lost Button */}
+          <div className="mt-8 text-center">
+            <p className="text-xs text-sunny-brown/40 mb-2">
+              Psst... want to test my error handling?
+            </p>
+            <Link
+              href="/three-sword-style/secret-technique/oni-giri"
+              className="inline-flex items-center gap-2 text-sunny-brown/60 hover:text-sunny-red transition-colors group"
+              title="Definitely the right way"
+            >
+              <Compass className="w-4 h-4 group-hover:animate-spin" />
+              <span className="text-sm">Take the scenic route</span>
+            </Link>
           </div>
         </div>
       </div>
