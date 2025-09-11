@@ -22,6 +22,7 @@ export default function Navigation() {
     { href: '/', label: 'Home', icon: Code2 },
     { href: '/about', label: 'About', icon: User },
     { href: '/showcase', label: 'Showcase', icon: Briefcase },
+    { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
     { href: '/resume', label: 'Resume', icon: FileText },
   ]
 

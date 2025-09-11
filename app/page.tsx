@@ -108,13 +108,13 @@ export default function Home() {
 
           {/* Call to Action */}
           <div className="text-center mt-12">
-            <p className="text-sunny-brown/70 mb-4">Interested in working together?</p>
-            <a 
-              href="mailto:luka@sunnystack.com"
+            <p className="text-sunny-brown/70 mb-4">Have a cool project in mind?</p>
+            <Link 
+              href="/quote"
               className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
-              Get In Touch
-            </a>
+              Let's Talk About It
+            </Link>
           </div>
         </div>
       </div>

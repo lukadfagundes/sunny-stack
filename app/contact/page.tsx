@@ -26,20 +26,20 @@ export default function Contact() {
               
               <div className="space-y-4">
                 <a 
-                  href="mailto:luka@sunnystack.com"
+                  href="mailto:luka@sunny-stack.com"
                   className="flex items-start gap-3 group hover:text-sunny-red transition-colors"
                 >
                   <Mail className="w-5 h-5 text-sunny-red mt-1" />
                   <div>
                     <p className="font-medium">Email</p>
                     <p className="text-sm text-sunny-brown/70 group-hover:text-sunny-red">
-                      luka@sunnystack.com
+                      luka@sunny-stack.com
                     </p>
                   </div>
                 </a>
 
                 <a 
-                  href="tel:318-332-9700"
+                  href="tel:+13183329700"
                   className="flex items-start gap-3 group hover:text-sunny-red transition-colors"
                 >
                   <Phone className="w-5 h-5 text-sunny-red mt-1" />
@@ -116,23 +116,23 @@ export default function Contact() {
             
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h3 className="font-bold text-sunny-red mb-3">Ideal Opportunities</h3>
+                <h3 className="font-bold text-sunny-red mb-3">Ideal Projects</h3>
                 <ul className="space-y-2 text-sunny-brown/80">
                   <li className="flex items-start gap-2">
                     <span className="text-sunny-gold mt-1">•</span>
-                    <span>Full-stack development roles</span>
+                    <span>Freelance development contracts</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-sunny-gold mt-1">•</span>
-                    <span>Frontend-focused positions with React/Next.js</span>
+                    <span>Full-stack web applications</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-sunny-gold mt-1">•</span>
-                    <span>Projects involving AI/ML integration</span>
+                    <span>MVP development & prototyping</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-sunny-gold mt-1">•</span>
-                    <span>Remote or hybrid positions</span>
+                    <span>Remote collaboration only</span>
                   </li>
                 </ul>
               </div>
@@ -167,12 +167,12 @@ export default function Contact() {
               Ready to Work Together?
             </h2>
             <p className="text-sunny-brown/80 mb-6 max-w-2xl mx-auto">
-              Whether you have a full-time position, contract work, or just want to chat about 
-              potential opportunities, I'm always happy to connect.
+              Looking for a freelance developer to bring your project to life? 
+              Let's discuss how I can help build your next web application or integrate cutting-edge AI solutions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
-                href="mailto:luka@sunnystack.com"
+                href="mailto:luka@sunny-stack.com"
                 className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
               >
                 <Mail className="w-5 h-5" />

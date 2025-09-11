@@ -51,7 +51,7 @@ export const generateResumePDF = () => {
   yPosition += 6;
   
   doc.setFontSize(10);
-  const contactInfo = 'Salem, OR | 318-332-9700 | luka@sunnystack.com | sunnystack.com';
+  const contactInfo = 'Salem, OR | 318-332-9700 | luka@sunny-stack.com | sunny-stack.com';
   const contactWidth = doc.getTextWidth(contactInfo);
   doc.text(contactInfo, (pageWidth - contactWidth) / 2, yPosition);
   doc.setTextColor(0, 0, 0);
