@@ -133,7 +133,7 @@ export async function POST(request: Request) {
       to: ['luka@sunny-stack.com'],
       subject: subject,
       html: emailHtml,
-      replyTo: replyToEmail,
+      reply_to: replyToEmail,
     })
     
     console.log('Email sent successfully:', response)
