@@ -185,7 +185,7 @@ export default function Quote() {
         const errorData = await response.json()
         if (errorData.validationErrors) {
           const errors: ValidationErrors = {}
-          errorData.validationErrors.forEach((error: any) => {
+          errorData.validationErrors.forEach((error: { field: string; message: string }) => {
             errors[error.field] = error.message
           })
           setGuidedErrors(errors)
@@ -559,7 +559,7 @@ I'll review your requirements and get back to you within 24 hours with:
         const errorData = await response.json()
         if (errorData.validationErrors) {
           const errors: ValidationErrors = {}
-          errorData.validationErrors.forEach((error: any) => {
+          errorData.validationErrors.forEach((error: { field: string; message: string }) => {
             errors[error.field] = error.message
           })
           setTechnicalErrors(errors)
@@ -1225,7 +1225,6 @@ I'll review your requirements and get back to you within 24 hours with:
                 {guidedErrors.timeline && (
                   <p className="text-red-500 text-sm mt-2">{guidedErrors.timeline}</p>
                 )}
-                </div>
               </div>
             )}
 
@@ -1262,7 +1261,6 @@ I'll review your requirements and get back to you within 24 hours with:
                 {guidedErrors.budget && (
                   <p className="text-red-500 text-sm mt-2">{guidedErrors.budget}</p>
                 )}
-                </div>
               </div>
             )}
 
