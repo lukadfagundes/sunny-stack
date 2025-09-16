@@ -1,17 +1,31 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronRight, Download, Send, Code2, Users, Sparkles, ArrowLeft, ArrowRight, FileText, Zap } from 'lucide-react'
+import { ChevronRight, Download, Send, Code2, Users, ArrowLeft, ArrowRight, FileText } from 'lucide-react'
 
 type FormMode = 'selection' | 'guided' | 'technical'
 type ProjectType = 'website' | 'webapp' | 'desktop' | 'mobile' | 'ecommerce' | 'other'
 type Timeline = 'asap' | '1month' | '3months' | 'flexible'
 type Budget = 'under5k' | '5k-10k' | '10k-25k' | '25k+'
 
+// Validation helper functions
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email.trim())
+}
+
+interface ValidationErrors {
+  [key: string]: string
+}
+
 export default function Quote() {
   const [mode, setMode] = useState<FormMode>('selection')
   const [currentStep, setCurrentStep] = useState(0)
   const [technicalView, setTechnicalView] = useState<'choice' | 'form' | 'download'>('choice')
+
+  // Validation states
+  const [guidedErrors, setGuidedErrors] = useState<ValidationErrors>({})
+  const [technicalErrors, setTechnicalErrors] = useState<ValidationErrors>({})
   
   // Technical form state
   const [technicalForm, setTechnicalForm] = useState({
@@ -67,8 +81,52 @@ export default function Quote() {
     'review'
   ]
 
+  const validateGuidedStep = (step: string): boolean => {
+    const errors: ValidationErrors = {}
+
+    if (step === 'contact') {
+      if (!formData.name.trim()) {
+        errors.name = 'Name is required'
+      } else if (formData.name.length > 50) {
+        errors.name = 'Name must be 50 characters or less'
+      }
+
+      if (!formData.email.trim()) {
+        errors.email = 'Email is required'
+      } else if (!isValidEmail(formData.email)) {
+        errors.email = 'Please enter a valid email address'
+      }
+
+      if (formData.company && formData.company.length > 50) {
+        errors.company = 'Company name must be 50 characters or less'
+      }
+    } else if (step === 'projectType') {
+      if (!formData.projectType) {
+        errors.projectType = 'Please select a project type'
+      }
+    } else if (step === 'description') {
+      if (!formData.projectDescription.trim()) {
+        errors.projectDescription = 'Project description is required'
+      } else if (formData.projectDescription.length > 1000) {
+        errors.projectDescription = 'Project description must be 1000 characters or less'
+      }
+    } else if (step === 'timeline') {
+      if (!formData.timeline) {
+        errors.timeline = 'Please select a timeline'
+      }
+    } else if (step === 'budget') {
+      if (!formData.budget) {
+        errors.budget = 'Please select a budget range'
+      }
+    }
+
+    setGuidedErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const handleNext = () => {
-    if (currentStep < guidedSteps.length - 1) {
+    const currentStepName = guidedSteps[currentStep]
+    if (validateGuidedStep(currentStepName) && currentStep < guidedSteps.length - 1) {
       setCurrentStep(currentStep + 1)
     }
   }
@@ -82,6 +140,14 @@ export default function Quote() {
   }
 
   const handleSubmit = async () => {
+    // Validate all steps before submission
+    const allStepsValid = guidedSteps.slice(0, -1).every(step => validateGuidedStep(step))
+
+    if (!allStepsValid) {
+      alert('Please correct the validation errors before submitting.')
+      return
+    }
+
     try {
       const response = await fetch('/api/send-quote', {
         method: 'POST',
@@ -93,7 +159,7 @@ export default function Quote() {
           formType: 'guided'
         }),
       })
-      
+
       if (response.ok) {
         alert('Thank you! Your project request has been sent. I\'ll get back to you within 24 hours.')
         // Reset form or redirect
@@ -114,7 +180,16 @@ export default function Quote() {
           integrations: '',
           specialRequirements: ''
         })
+        setGuidedErrors({})
       } else {
+        const errorData = await response.json()
+        if (errorData.validationErrors) {
+          const errors: ValidationErrors = {}
+          errorData.validationErrors.forEach((error: any) => {
+            errors[error.field] = error.message
+          })
+          setGuidedErrors(errors)
+        }
         throw new Error('Failed to send')
       }
     } catch (error) {
@@ -373,7 +448,78 @@ I'll review your requirements and get back to you within 24 hours with:
     )
   }
 
+  const validateTechnicalForm = (): boolean => {
+    const errors: ValidationErrors = {}
+
+    // Required field validations
+    if (!technicalForm.contactName.trim()) {
+      errors.contactName = 'Contact name is required'
+    } else if (technicalForm.contactName.length > 50) {
+      errors.contactName = 'Contact name must be 50 characters or less'
+    }
+
+    if (!technicalForm.contactEmail.trim()) {
+      errors.contactEmail = 'Email is required'
+    } else if (!isValidEmail(technicalForm.contactEmail)) {
+      errors.contactEmail = 'Please enter a valid email address'
+    }
+
+    if (technicalForm.companyName && technicalForm.companyName.length > 50) {
+      errors.companyName = 'Company name must be 50 characters or less'
+    }
+
+    if (!technicalForm.projectName.trim()) {
+      errors.projectName = 'Project name is required'
+    } else if (technicalForm.projectName.length > 50) {
+      errors.projectName = 'Project name must be 50 characters or less'
+    }
+
+    if (!technicalForm.projectType) {
+      errors.projectType = 'Project type is required'
+    }
+
+    if (!technicalForm.projectDescription.trim()) {
+      errors.projectDescription = 'Project description is required'
+    } else if (technicalForm.projectDescription.length > 1000) {
+      errors.projectDescription = 'Project description must be 1000 characters or less'
+    }
+
+    if (technicalForm.targetAudience && technicalForm.targetAudience.length > 1000) {
+      errors.targetAudience = 'Target audience must be 1000 characters or less'
+    }
+
+    if (!technicalForm.features.trim()) {
+      errors.features = 'Features & functionality is required'
+    } else if (technicalForm.features.length > 1000) {
+      errors.features = 'Features & functionality must be 1000 characters or less'
+    }
+
+    if (technicalForm.integrations && technicalForm.integrations.length > 1000) {
+      errors.integrations = 'Integrations must be 1000 characters or less'
+    }
+
+    if (!technicalForm.timeline) {
+      errors.timeline = 'Timeline is required'
+    }
+
+    if (!technicalForm.budget) {
+      errors.budget = 'Budget range is required'
+    }
+
+    if (technicalForm.additionalNotes && technicalForm.additionalNotes.length > 1000) {
+      errors.additionalNotes = 'Additional notes must be 1000 characters or less'
+    }
+
+    setTechnicalErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const handleTechnicalSubmit = async () => {
+    if (!validateTechnicalForm()) {
+      alert('Please correct the validation errors before submitting.')
+      return
+    }
+
     try {
       const response = await fetch('/api/send-quote', {
         method: 'POST',
@@ -385,7 +531,7 @@ I'll review your requirements and get back to you within 24 hours with:
           formType: 'technical'
         }),
       })
-      
+
       if (response.ok) {
         alert('Thank you! Your technical requirements have been sent. I\'ll review them and get back to you within 24 hours with a detailed quote.')
         // Reset form
@@ -408,7 +554,16 @@ I'll review your requirements and get back to you within 24 hours with:
           designStatus: '',
           additionalNotes: ''
         })
+        setTechnicalErrors({})
       } else {
+        const errorData = await response.json()
+        if (errorData.validationErrors) {
+          const errors: ValidationErrors = {}
+          errorData.validationErrors.forEach((error: any) => {
+            errors[error.field] = error.message
+          })
+          setTechnicalErrors(errors)
+        }
         throw new Error('Failed to send')
       }
     } catch (error) {
@@ -445,8 +600,15 @@ I'll review your requirements and get back to you within 24 hours with:
                           type="text"
                           value={technicalForm.contactName}
                           onChange={(e) => setTechnicalForm({...technicalForm, contactName: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                            technicalErrors.contactName ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
+                          maxLength={50}
+                          required
                         />
+                        {technicalErrors.contactName && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.contactName}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-sunny-brown mb-1">Email *</label>
@@ -454,8 +616,15 @@ I'll review your requirements and get back to you within 24 hours with:
                           type="email"
                           value={technicalForm.contactEmail}
                           onChange={(e) => setTechnicalForm({...technicalForm, contactEmail: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                            technicalErrors.contactEmail ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
+                          pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+                          required
                         />
+                        {technicalErrors.contactEmail && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.contactEmail}</p>
+                        )}
                       </div>
                     </div>
                     <div className="mt-4">
@@ -464,8 +633,14 @@ I'll review your requirements and get back to you within 24 hours with:
                         type="text"
                         value={technicalForm.companyName}
                         onChange={(e) => setTechnicalForm({...technicalForm, companyName: e.target.value})}
-                        className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                        className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                          technicalErrors.companyName ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                        }`}
+                        maxLength={50}
                       />
+                      {technicalErrors.companyName && (
+                        <p className="text-red-500 text-sm mt-1">{technicalErrors.companyName}</p>
+                      )}
                     </div>
                   </div>
 
@@ -479,15 +654,25 @@ I'll review your requirements and get back to you within 24 hours with:
                           type="text"
                           value={technicalForm.projectName}
                           onChange={(e) => setTechnicalForm({...technicalForm, projectName: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                            technicalErrors.projectName ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
+                          maxLength={50}
+                          required
                         />
+                        {technicalErrors.projectName && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.projectName}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-sunny-brown mb-1">Project Type *</label>
                         <select
                           value={technicalForm.projectType}
                           onChange={(e) => setTechnicalForm({...technicalForm, projectType: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                            technicalErrors.projectType ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
+                          required
                         >
                           <option value="">Select type...</option>
                           <option value="website">Website</option>
@@ -498,15 +683,25 @@ I'll review your requirements and get back to you within 24 hours with:
                           <option value="api">API/Backend Service</option>
                           <option value="other">Other</option>
                         </select>
+                        {technicalErrors.projectType && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.projectType}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-sunny-brown mb-1">Project Description *</label>
                         <textarea
                           value={technicalForm.projectDescription}
                           onChange={(e) => setTechnicalForm({...technicalForm, projectDescription: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none h-24 resize-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none h-24 resize-none ${
+                            technicalErrors.projectDescription ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
                           placeholder="Describe your project goals and vision..."
+                          maxLength={1000}
+                          required
                         />
+                        {technicalErrors.projectDescription && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.projectDescription}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-sunny-brown mb-1">Target Audience</label>
@@ -514,9 +709,15 @@ I'll review your requirements and get back to you within 24 hours with:
                           type="text"
                           value={technicalForm.targetAudience}
                           onChange={(e) => setTechnicalForm({...technicalForm, targetAudience: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                            technicalErrors.targetAudience ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
                           placeholder="Who will use this application?"
+                          maxLength={1000}
                         />
+                        {technicalErrors.targetAudience && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.targetAudience}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -533,6 +734,7 @@ I'll review your requirements and get back to you within 24 hours with:
                           onChange={(e) => setTechnicalForm({...technicalForm, techStack: e.target.value})}
                           className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
                           placeholder="e.g., React, Node.js, PostgreSQL (leave blank if no preference)"
+                          maxLength={1000}
                         />
                       </div>
                       <div>
@@ -540,18 +742,31 @@ I'll review your requirements and get back to you within 24 hours with:
                         <textarea
                           value={technicalForm.features}
                           onChange={(e) => setTechnicalForm({...technicalForm, features: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none h-24 resize-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none h-24 resize-none ${
+                            technicalErrors.features ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
                           placeholder="List all required features and functionality..."
+                          maxLength={1000}
+                          required
                         />
+                        {technicalErrors.features && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.features}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-sunny-brown mb-1">Third-Party Integrations</label>
                         <textarea
                           value={technicalForm.integrations}
                           onChange={(e) => setTechnicalForm({...technicalForm, integrations: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none h-20 resize-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none h-20 resize-none ${
+                            technicalErrors.integrations ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
                           placeholder="List any APIs, services, or platforms to integrate with..."
+                          maxLength={1000}
                         />
+                        {technicalErrors.integrations && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.integrations}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-sunny-brown mb-1">Hosting Preference</label>
@@ -580,7 +795,10 @@ I'll review your requirements and get back to you within 24 hours with:
                         <select
                           value={technicalForm.timeline}
                           onChange={(e) => setTechnicalForm({...technicalForm, timeline: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                            technicalErrors.timeline ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
+                          required
                         >
                           <option value="">Select timeline...</option>
                           <option value="asap">ASAP (Rush)</option>
@@ -589,13 +807,19 @@ I'll review your requirements and get back to you within 24 hours with:
                           <option value="3-6months">3-6 Months</option>
                           <option value="flexible">Flexible</option>
                         </select>
+                        {technicalErrors.timeline && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.timeline}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-sunny-brown mb-1">Budget Range *</label>
                         <select
                           value={technicalForm.budget}
                           onChange={(e) => setTechnicalForm({...technicalForm, budget: e.target.value})}
-                          className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                          className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                            technicalErrors.budget ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                          }`}
+                          required
                         >
                           <option value="">Select budget...</option>
                           <option value="under5k">Under $5,000</option>
@@ -604,6 +828,9 @@ I'll review your requirements and get back to you within 24 hours with:
                           <option value="25k-50k">$25,000 - $50,000</option>
                           <option value="50k+">$50,000+</option>
                         </select>
+                        {technicalErrors.budget && (
+                          <p className="text-red-500 text-sm mt-1">{technicalErrors.budget}</p>
+                        )}
                       </div>
                     </div>
                     <div className="mt-4">
@@ -628,15 +855,20 @@ I'll review your requirements and get back to you within 24 hours with:
                     <textarea
                       value={technicalForm.additionalNotes}
                       onChange={(e) => setTechnicalForm({...technicalForm, additionalNotes: e.target.value})}
-                      className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none h-24 resize-none"
+                      className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none h-24 resize-none ${
+                        technicalErrors.additionalNotes ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                      }`}
                       placeholder="Any other requirements, constraints, or information..."
+                      maxLength={1000}
                     />
+                    {technicalErrors.additionalNotes && (
+                      <p className="text-red-500 text-sm mt-1">{technicalErrors.additionalNotes}</p>
+                    )}
                   </div>
 
                   <button
                     onClick={handleTechnicalSubmit}
-                    disabled={!technicalForm.contactName || !technicalForm.contactEmail || !technicalForm.projectName || !technicalForm.projectType || !technicalForm.projectDescription || !technicalForm.features || !technicalForm.timeline || !technicalForm.budget}
-                    className="w-full bg-sunny-ocean hover:bg-sunny-ocean/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
+                    className="w-full bg-sunny-ocean hover:bg-sunny-ocean/90 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
                   >
                     <Send className="w-5 h-5 inline mr-2" />
                     Submit Technical Requirements
@@ -763,36 +995,56 @@ I'll review your requirements and get back to you within 24 hours with:
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-sunny-brown mb-1">Your Name</label>
+                    <label className="block text-sm font-medium text-sunny-brown mb-1">Your Name *</label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                      className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                        guidedErrors.name ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                      }`}
                       placeholder="John Doe"
+                      maxLength={50}
+                      required
                     />
+                    {guidedErrors.name && (
+                      <p className="text-red-500 text-sm mt-1">{guidedErrors.name}</p>
+                    )}
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-sunny-brown mb-1">Email</label>
+                    <label className="block text-sm font-medium text-sunny-brown mb-1">Email *</label>
                     <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                      className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                        guidedErrors.email ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                      }`}
                       placeholder="john@example.com"
+                      pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+                      required
                     />
+                    {guidedErrors.email && (
+                      <p className="text-red-500 text-sm mt-1">{guidedErrors.email}</p>
+                    )}
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-sunny-brown mb-1">Company (Optional)</label>
                     <input
                       type="text"
                       value={formData.company}
                       onChange={(e) => setFormData({...formData, company: e.target.value})}
-                      className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none"
+                      className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none ${
+                        guidedErrors.company ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                      }`}
                       placeholder="Awesome Corp"
+                      maxLength={50}
                     />
+                    {guidedErrors.company && (
+                      <p className="text-red-500 text-sm mt-1">{guidedErrors.company}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -820,6 +1072,8 @@ I'll review your requirements and get back to you within 24 hours with:
                       className={`p-4 rounded-lg border-2 transition-all text-left ${
                         formData.projectType === type.value
                           ? 'border-sunny-red bg-sunny-red/10'
+                          : guidedErrors.projectType
+                          ? 'border-red-500 hover:border-red-400'
                           : 'border-sunny-gold/30 hover:border-sunny-gold'
                       }`}
                     >
@@ -828,6 +1082,9 @@ I'll review your requirements and get back to you within 24 hours with:
                     </button>
                   ))}
                 </div>
+                {guidedErrors.projectType && (
+                  <p className="text-red-500 text-sm mt-2">{guidedErrors.projectType}</p>
+                )}
               </div>
             )}
 
@@ -839,13 +1096,20 @@ I'll review your requirements and get back to you within 24 hours with:
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-sunny-brown mb-1">Project Description</label>
+                  <label className="block text-sm font-medium text-sunny-brown mb-1">Project Description *</label>
                   <textarea
                     value={formData.projectDescription}
                     onChange={(e) => setFormData({...formData, projectDescription: e.target.value})}
-                    className="w-full px-4 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none h-32 resize-none"
+                    className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none h-32 resize-none ${
+                      guidedErrors.projectDescription ? 'border-red-500 focus:border-red-500' : 'border-sunny-gold/30 focus:border-sunny-red'
+                    }`}
                     placeholder="I want to build an app that helps people track their daily water intake. It should send reminders and show progress..."
+                    maxLength={1000}
+                    required
                   />
+                  {guidedErrors.projectDescription && (
+                    <p className="text-red-500 text-sm mt-1">{guidedErrors.projectDescription}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -907,17 +1171,18 @@ I'll review your requirements and get back to you within 24 hours with:
                               const otherFeatures = formData.features.filter(f => !f.startsWith('Other:'))
                               if (e.target.value) {
                                 setFormData({
-                                  ...formData, 
+                                  ...formData,
                                   features: [...otherFeatures, `Other: ${e.target.value}`]
                                 })
                               } else {
                                 setFormData({
-                                  ...formData, 
+                                  ...formData,
                                   features: otherFeatures
                                 })
                               }
                             }}
                             className="w-full px-3 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none text-sm"
+                            maxLength={1000}
                           />
                         </div>
                       )}
@@ -947,6 +1212,8 @@ I'll review your requirements and get back to you within 24 hours with:
                       className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
                         formData.timeline === option.value
                           ? 'border-sunny-red bg-sunny-red/10'
+                          : guidedErrors.timeline
+                          ? 'border-red-500 hover:border-red-400'
                           : 'border-sunny-gold/30 hover:border-sunny-gold'
                       }`}
                     >
@@ -954,6 +1221,10 @@ I'll review your requirements and get back to you within 24 hours with:
                       <div className="text-sm text-sunny-brown/60">{option.description}</div>
                     </button>
                   ))}
+                </div>
+                {guidedErrors.timeline && (
+                  <p className="text-red-500 text-sm mt-2">{guidedErrors.timeline}</p>
+                )}
                 </div>
               </div>
             )}
@@ -978,6 +1249,8 @@ I'll review your requirements and get back to you within 24 hours with:
                       className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
                         formData.budget === option.value
                           ? 'border-sunny-red bg-sunny-red/10'
+                          : guidedErrors.budget
+                          ? 'border-red-500 hover:border-red-400'
                           : 'border-sunny-gold/30 hover:border-sunny-gold'
                       }`}
                     >
@@ -985,6 +1258,10 @@ I'll review your requirements and get back to you within 24 hours with:
                       <div className="text-sm text-sunny-brown/60">{option.description}</div>
                     </button>
                   ))}
+                </div>
+                {guidedErrors.budget && (
+                  <p className="text-red-500 text-sm mt-2">{guidedErrors.budget}</p>
+                )}
                 </div>
               </div>
             )}
@@ -1036,13 +1313,7 @@ I'll review your requirements and get back to you within 24 hours with:
               <div className="flex justify-end mt-8">
                 <button
                   onClick={handleNext}
-                  disabled={
-                    (guidedSteps[currentStep] === 'contact' && (!formData.name || !formData.email)) ||
-                    (guidedSteps[currentStep] === 'projectType' && !formData.projectType) ||
-                    (guidedSteps[currentStep] === 'timeline' && !formData.timeline) ||
-                    (guidedSteps[currentStep] === 'budget' && !formData.budget)
-                  }
-                  className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-2 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
+                  className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-2 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
                 >
                   Continue
                   <ArrowRight className="w-4 h-4" />
