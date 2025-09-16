@@ -118,7 +118,6 @@ export default function Quote() {
         throw new Error('Failed to send')
       }
     } catch (error) {
-      console.error('Error:', error)
       alert('There was an error sending your request. Please email luka@sunny-stack.com directly.')
     }
   }
@@ -413,7 +412,6 @@ I'll review your requirements and get back to you within 24 hours with:
         throw new Error('Failed to send')
       }
     } catch (error) {
-      console.error('Error:', error)
       alert('There was an error sending your requirements. Please email luka@sunny-stack.com directly.')
     }
   }
