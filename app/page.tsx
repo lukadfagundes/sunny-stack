@@ -1,4 +1,4 @@
-import { Code2, Rocket, Github, ExternalLink, Star, User } from 'lucide-react'
+import { Code2, Rocket, Star } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Home() {
