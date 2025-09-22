@@ -151,3 +151,9 @@ openapi_test.json
 local_config/
 *.local.*
 nul
+
+# Trinity Method deployment files
+trinity/
+.claude/
+CLAUDE.md
+trinity-method-source/
