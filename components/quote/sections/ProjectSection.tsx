@@ -67,8 +67,9 @@ export function ProjectSection({ data, errors, onChange, currentField }: Project
 
       <FormTextarea
         label="Project Description *"
+        name="projectDescription"
         value={data.projectDescription || ''}
-        onChange={(value) => onChange({ projectDescription: value })}
+        onChange={(e) => onChange({ projectDescription: e.target.value })}
         error={errors.projectDescription}
         placeholder="I want to build an app that helps people track their daily water intake. It should send reminders and show progress..."
         maxLength={1000}

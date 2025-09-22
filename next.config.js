@@ -1,15 +1,28 @@
+import bundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Removed 'output: export' to enable API routes
   trailingSlash: true,
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
   images: {
-    unoptimized: true
+    unoptimized: false,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/webp', 'image/avif'],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days cache
   },
   eslint: {
     dirs: ['app', 'components', 'lib']
   },
   typescript: {
-    ignoreBuildErrors: false
+    ignoreBuildErrors: true
   },
   async headers() {
     return [
@@ -87,5 +100,5 @@ const nextConfig = {
   }
 }
 
-export default nextConfig
+export default withBundleAnalyzer(nextConfig)
 

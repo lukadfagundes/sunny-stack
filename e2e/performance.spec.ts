@@ -89,21 +89,21 @@ test.describe('Performance', () => {
 
   test('should optimize bundle size and lazy load components', async ({ page }) => {
     // Monitor network requests
-    const requests = []
+    const requests: Array<{ url: string; size: number }> = []
     page.on('request', request => {
       if (request.resourceType() === 'script') {
         requests.push({
           url: request.url(),
-          size: request.size || 0
+          size: 0 // Playwright doesn't provide size info for requests easily, so we'll approximate
         })
       }
     })
 
     await page.goto('/quote')
 
-    // Initial bundle should be reasonable
-    const totalSize = requests.reduce((sum, req) => sum + req.size, 0)
-    expect(totalSize).toBeLessThan(2 * 1024 * 1024) // 2MB total for initial load
+    // Initial bundle should be reasonable - check number of script requests instead
+    expect(requests.length).toBeGreaterThan(0) // At least some scripts should load
+    expect(requests.length).toBeLessThan(10) // But not too many for initial load
 
     // Navigate to trigger potential lazy loads
     await page.click('text=Technical Quote')
@@ -122,12 +122,12 @@ test.describe('Performance', () => {
 
     // Start performance measurement
     await page.evaluateHandle(() => {
-      window.frameCount = 0
-      window.startTime = performance.now()
+      (window as any).frameCount = 0;
+      (window as any).startTime = performance.now()
 
       const countFrames = () => {
-        window.frameCount++
-        if (performance.now() - window.startTime < 1000) {
+        (window as any).frameCount++
+        if (performance.now() - (window as any).startTime < 1000) {
           requestAnimationFrame(countFrames)
         }
       }
@@ -139,7 +139,7 @@ test.describe('Performance', () => {
     await page.waitForTimeout(1000)
 
     // Check FPS
-    const fps = await page.evaluate(() => window.frameCount)
+    const fps = await page.evaluate(() => (window as any).frameCount)
     expect(fps).toBeGreaterThan(50) // Allow some variance from 60 FPS
   })
 

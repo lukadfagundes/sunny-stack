@@ -500,7 +500,7 @@ export async function POST(request: Request) {
         { status: 500 }
       )
     }
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to send email' },
       { status: 500 }

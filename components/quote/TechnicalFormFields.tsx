@@ -25,12 +25,12 @@ export default function TechnicalFormFields({
   onBack
 }: TechnicalFormFieldsProps) {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
+    <div className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto pt-8">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-sunny-brown hover:text-sunny-red transition-colors mb-6"
+            className="flex items-center gap-2 text-sunny-brown hover:text-sunny-red transition-colors mb-6 focus-visible:ring-2 focus-visible:ring-sunny-red focus-visible:ring-offset-2 focus:outline-none rounded-md px-2 py-1"
           >
             <ArrowLeft className="w-4 h-4" />
             Back
@@ -55,12 +55,12 @@ export default function TechnicalFormFields({
               {/* Additional Notes */}
               <NotesField formData={formData} errors={errors} onFieldChange={onFieldChange} />
 
-              <FormErrors errors={Object.values(errors).filter(Boolean)} />
+              <FormErrors errors={errors} />
 
               <button
                 onClick={onSubmit}
                 disabled={isSubmitting}
-                className="w-full bg-sunny-ocean hover:bg-sunny-ocean/90 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-sunny-ocean hover:bg-sunny-ocean/90 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-sunny-ocean focus-visible:ring-offset-2 focus:outline-none"
               >
                 <Send className="w-5 h-5 inline mr-2" />
                 {isSubmitting ? 'Submitting...' : 'Submit Technical Requirements'}
@@ -69,7 +69,7 @@ export default function TechnicalFormFields({
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
 
@@ -86,17 +86,19 @@ function ContactFields({ formData, errors, onFieldChange }: ComponentFieldsProps
       <div className="grid md:grid-cols-2 gap-4">
         <FormField
           label="Full Name *"
+          name="contactName"
           value={formData.contactName}
-          onChange={(value) => onFieldChange('contactName', value)}
+          onChange={(e) => onFieldChange('contactName', e.target.value)}
           error={errors.contactName}
           required
           maxLength={50}
         />
         <FormField
           label="Email *"
+          name="contactEmail"
           type="email"
           value={formData.contactEmail}
-          onChange={(value) => onFieldChange('contactEmail', value)}
+          onChange={(e) => onFieldChange('contactEmail', e.target.value)}
           error={errors.contactEmail}
           required
         />
@@ -104,8 +106,9 @@ function ContactFields({ formData, errors, onFieldChange }: ComponentFieldsProps
       <div className="mt-4">
         <FormField
           label="Company Name"
+          name="companyName"
           value={formData.companyName}
-          onChange={(value) => onFieldChange('companyName', value)}
+          onChange={(e) => onFieldChange('companyName', e.target.value)}
           error={errors.companyName}
           maxLength={50}
         />
@@ -121,16 +124,18 @@ function ProjectFields({ formData, errors, onFieldChange }: ComponentFieldsProps
       <div className="space-y-4">
         <FormField
           label="Project Name *"
+          name="projectName"
           value={formData.projectName}
-          onChange={(value) => onFieldChange('projectName', value)}
+          onChange={(e) => onFieldChange('projectName', e.target.value)}
           error={errors.projectName}
           required
           maxLength={50}
         />
         <FormSelect
           label="Project Type *"
+          name="projectType"
           value={formData.projectType}
-          onChange={(value) => onFieldChange('projectType', value)}
+          onChange={(e) => onFieldChange('projectType', e.target.value)}
           error={errors.projectType}
           required
           options={[
@@ -146,8 +151,9 @@ function ProjectFields({ formData, errors, onFieldChange }: ComponentFieldsProps
         />
         <FormTextarea
           label="Project Description *"
+          name="projectDescription"
           value={formData.projectDescription}
-          onChange={(value) => onFieldChange('projectDescription', value)}
+          onChange={(e) => onFieldChange('projectDescription', e.target.value)}
           error={errors.projectDescription}
           placeholder="Describe your project goals and vision..."
           required
@@ -156,8 +162,9 @@ function ProjectFields({ formData, errors, onFieldChange }: ComponentFieldsProps
         />
         <FormField
           label="Target Audience"
+          name="targetAudience"
           value={formData.targetAudience}
-          onChange={(value) => onFieldChange('targetAudience', value)}
+          onChange={(e) => onFieldChange('targetAudience', e.target.value)}
           error={errors.targetAudience}
           placeholder="Who will use this application?"
           maxLength={1000}
@@ -174,15 +181,17 @@ function TechnicalFields({ formData, errors, onFieldChange }: ComponentFieldsPro
       <div className="space-y-4">
         <FormField
           label="Preferred Tech Stack"
+          name="techStack"
           value={formData.techStack}
-          onChange={(value) => onFieldChange('techStack', value)}
+          onChange={(e) => onFieldChange('techStack', e.target.value)}
           placeholder="e.g., React, Node.js, PostgreSQL (leave blank if no preference)"
           maxLength={1000}
         />
         <FormTextarea
           label="Features & Functionality *"
+          name="features"
           value={formData.features}
-          onChange={(value) => onFieldChange('features', value)}
+          onChange={(e) => onFieldChange('features', e.target.value)}
           error={errors.features}
           placeholder="List all required features and functionality..."
           required
@@ -191,8 +200,9 @@ function TechnicalFields({ formData, errors, onFieldChange }: ComponentFieldsPro
         />
         <FormTextarea
           label="Third-Party Integrations"
+          name="integrations"
           value={formData.integrations}
-          onChange={(value) => onFieldChange('integrations', value)}
+          onChange={(e) => onFieldChange('integrations', e.target.value)}
           error={errors.integrations}
           placeholder="List any APIs, services, or platforms to integrate with..."
           maxLength={1000}
@@ -200,8 +210,9 @@ function TechnicalFields({ formData, errors, onFieldChange }: ComponentFieldsPro
         />
         <FormSelect
           label="Hosting Preference"
+          name="hostingPreference"
           value={formData.hostingPreference}
-          onChange={(value) => onFieldChange('hostingPreference', value)}
+          onChange={(e) => onFieldChange('hostingPreference', e.target.value)}
           options={[
             { value: '', label: 'Select preference...' },
             { value: 'cloud', label: 'Cloud (AWS, Google Cloud, Azure)' },
@@ -223,8 +234,9 @@ function LogisticsFields({ formData, errors, onFieldChange }: ComponentFieldsPro
       <div className="grid md:grid-cols-2 gap-4">
         <FormSelect
           label="Timeline *"
+          name="timeline"
           value={formData.timeline}
-          onChange={(value) => onFieldChange('timeline', value)}
+          onChange={(e) => onFieldChange('timeline', e.target.value)}
           error={errors.timeline}
           required
           options={[
@@ -238,8 +250,9 @@ function LogisticsFields({ formData, errors, onFieldChange }: ComponentFieldsPro
         />
         <FormSelect
           label="Budget Range *"
+          name="budget"
           value={formData.budget}
-          onChange={(value) => onFieldChange('budget', value)}
+          onChange={(e) => onFieldChange('budget', e.target.value)}
           error={errors.budget}
           required
           options={[
@@ -255,8 +268,9 @@ function LogisticsFields({ formData, errors, onFieldChange }: ComponentFieldsPro
       <div className="mt-4">
         <FormSelect
           label="Design Status"
+          name="designStatus"
           value={formData.designStatus}
-          onChange={(value) => onFieldChange('designStatus', value)}
+          onChange={(e) => onFieldChange('designStatus', e.target.value)}
           options={[
             { value: '', label: 'Select status...' },
             { value: 'completed', label: 'Design Completed' },
@@ -275,8 +289,9 @@ function NotesField({ formData, errors, onFieldChange }: ComponentFieldsProps) {
     <div>
       <FormTextarea
         label="Additional Notes"
+        name="additionalNotes"
         value={formData.additionalNotes}
-        onChange={(value) => onFieldChange('additionalNotes', value)}
+        onChange={(e) => onFieldChange('additionalNotes', e.target.value)}
         error={errors.additionalNotes}
         placeholder="Any other requirements, constraints, or information..."
         maxLength={1000}

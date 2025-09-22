@@ -18,7 +18,6 @@ export function isValidEmail(email: string): boolean {
 
 // Phone validation helper
 export function isValidPhone(phone: string): boolean {
-  const phoneRegex = /^\+?[\d\s\-\(\)]+$/
   const cleaned = phone.replace(/\D/g, '')
   return cleaned.length >= 10 && cleaned.length <= 15
 }

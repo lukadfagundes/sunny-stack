@@ -33,13 +33,15 @@ export function TimelineSection({ data, errors, onChange }: TimelineSectionProps
           <button
             key={option.value}
             onClick={() => onChange({ timeline: option.value })}
-            className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+            className={`w-full p-4 rounded-lg border-2 transition-all text-left focus-visible:ring-2 focus-visible:ring-sunny-red focus-visible:ring-offset-2 focus:outline-none ${
               data.timeline === option.value
                 ? 'border-sunny-red bg-sunny-red/10'
                 : errors.timeline
                 ? 'border-red-500 hover:border-red-400'
                 : 'border-sunny-gold/30 hover:border-sunny-gold'
             }`}
+            aria-pressed={data.timeline === option.value}
+            aria-describedby={errors.timeline ? 'timeline-error' : undefined}
           >
             <div className="font-medium text-sunny-darkRed">{option.label}</div>
             <div className="text-sm text-sunny-brown/60">{option.description}</div>
@@ -47,7 +49,7 @@ export function TimelineSection({ data, errors, onChange }: TimelineSectionProps
         ))}
       </div>
       {errors.timeline && (
-        <p className="text-red-500 text-sm mt-2">{errors.timeline}</p>
+        <p id="timeline-error" className="text-red-500 text-sm mt-2" role="alert" aria-live="polite">{errors.timeline}</p>
       )}
     </div>
   )

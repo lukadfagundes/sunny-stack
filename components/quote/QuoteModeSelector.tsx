@@ -19,7 +19,7 @@ export default function QuoteModeSelector({ onModeSelect }: QuoteModeSelectorPro
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
+    <div className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto pt-8">
           <div className="text-center mb-12">
@@ -37,7 +37,7 @@ export default function QuoteModeSelector({ onModeSelect }: QuoteModeSelectorPro
             {/* Guided Option */}
             <button
               onClick={() => handleSelect('guided')}
-              className="bg-white/90 backdrop-blur rounded-xl shadow-xl p-8 text-left hover:shadow-2xl transition-all transform hover:scale-105 border-2 border-transparent hover:border-sunny-gold/30 group"
+              className="bg-white/90 backdrop-blur rounded-xl shadow-xl p-8 text-left hover:shadow-2xl transition-all transform hover:scale-105 border-2 border-transparent hover:border-sunny-gold/30 group focus-visible:ring-2 focus-visible:ring-sunny-red focus-visible:ring-offset-2 focus:outline-none focus-visible:border-sunny-gold/50"
               aria-label="Start guided quote process"
             >
               <div className="flex items-center gap-3 mb-4">
@@ -57,7 +57,7 @@ export default function QuoteModeSelector({ onModeSelect }: QuoteModeSelectorPro
             {/* Technical Option */}
             <button
               onClick={() => handleSelect('technical')}
-              className="bg-white/90 backdrop-blur rounded-xl shadow-xl p-8 text-left hover:shadow-2xl transition-all transform hover:scale-105 border-2 border-transparent hover:border-sunny-ocean/30 group"
+              className="bg-white/90 backdrop-blur rounded-xl shadow-xl p-8 text-left hover:shadow-2xl transition-all transform hover:scale-105 border-2 border-transparent hover:border-sunny-ocean/30 group focus-visible:ring-2 focus-visible:ring-sunny-ocean focus-visible:ring-offset-2 focus:outline-none focus-visible:border-sunny-ocean/50"
               aria-label="Start technical quote process"
             >
               <div className="flex items-center gap-3 mb-4">
@@ -76,6 +76,6 @@ export default function QuoteModeSelector({ onModeSelect }: QuoteModeSelectorPro
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
