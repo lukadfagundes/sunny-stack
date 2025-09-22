@@ -156,13 +156,6 @@ test.describe('Guided Quote Form', () => {
     // Navigate through all steps quickly
     const steps = [
       () => page.click('text=Continue'),
-<<<<<<< HEAD
-      () => page.click('text=Website') && page.click('text=Continue'),
-      () => page.fill('textarea[name="projectDescription"]', 'Test') && page.click('text=Continue'),
-      () => page.click('text=User accounts/login') && page.click('text=Continue'),
-      () => page.click('text=Within 1 month') && page.click('text=Continue'),
-      () => page.click('text=$5,000 - $10,000') && page.click('text=Continue')
-=======
       async () => {
         await page.click('text=Website');
         await page.click('text=Continue');
@@ -183,7 +176,6 @@ test.describe('Guided Quote Form', () => {
         await page.click('text=$5,000 - $10,000');
         await page.click('text=Continue');
       }
->>>>>>> dev
     ]
 
     for (const step of steps) {

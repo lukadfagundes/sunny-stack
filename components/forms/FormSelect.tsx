@@ -44,7 +44,7 @@ export default function FormSelect({
         value={value}
         onChange={onChange}
         className={`
-          w-full px-3 py-2 border rounded-lg
+          w-full px-3 py-2 border rounded-lg bg-white text-gray-900
           transition-colors duration-200
           ${error
             ? 'border-red-500 focus:border-red-500 focus:ring-red-500 focus-visible:ring-2 focus-visible:ring-red-500'

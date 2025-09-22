@@ -4,7 +4,7 @@ import { useState, lazy, Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import { ArrowRight, Send } from 'lucide-react'
 import { TrinityDebugger } from '@/lib/trinity-debug'
-import { validateGuidedForm } from '@/lib/quote-validation'
+import { validateGuidedForm, validateGuidedStep } from '@/lib/quote-validation'
 import { useMultiStepForm } from '@/hooks/useMultiStepForm'
 import type { GuidedFormData } from '@/lib/quote-types'
 
@@ -72,7 +72,8 @@ export default function GuidedQuoteForm({ onBack, onComplete }: GuidedQuoteFormP
   const validateCurrentStep = (): boolean => {
     debug.info('validateCurrentStep', 'Validating current step', { step: guidedSteps[currentStep] })
 
-    const validation = validateGuidedForm(formData)
+    // Validate only the current step, not the entire form
+    const validation = validateGuidedStep(guidedSteps[currentStep], formData)
 
     if (!validation.isValid) {
       setErrors(validation.errors)
