@@ -25,8 +25,9 @@ export function ContactSection({ data, errors, onChange }: ContactSectionProps) 
       <div className="space-y-4">
         <FormField
           label="Your Name *"
+          name="name"
           value={data.name || ''}
-          onChange={(value) => onChange({ name: value })}
+          onChange={(e) => onChange({ name: e.target.value })}
           error={errors.name}
           placeholder="John Doe"
           maxLength={50}
@@ -35,9 +36,10 @@ export function ContactSection({ data, errors, onChange }: ContactSectionProps) 
 
         <FormField
           label="Email *"
+          name="email"
           type="email"
           value={data.email || ''}
-          onChange={(value) => onChange({ email: value })}
+          onChange={(e) => onChange({ email: e.target.value })}
           error={errors.email}
           placeholder="john@example.com"
           required
@@ -45,8 +47,9 @@ export function ContactSection({ data, errors, onChange }: ContactSectionProps) 
 
         <FormField
           label="Company (Optional)"
+          name="company"
           value={data.company || ''}
-          onChange={(value) => onChange({ company: value })}
+          onChange={(e) => onChange({ company: e.target.value })}
           error={errors.company}
           placeholder="Awesome Corp"
           maxLength={50}

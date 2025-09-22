@@ -157,3 +157,22 @@ trinity/
 .claude/
 CLAUDE.md
 trinity-method-source/
+
+# Testing Artifacts
+playwright-report/
+test-results/
+e2e/screenshots/
+e2e/videos/
+.nyc_output/
+playwright/.cache/
+
+# TypeScript Build Info
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Build Analysis
+.next/analyze/
+build-output.txt
+
+# Additional Test Coverage
+*.lcov

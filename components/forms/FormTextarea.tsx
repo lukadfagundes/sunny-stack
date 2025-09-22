@@ -2,7 +2,7 @@
 
 import { ChangeEvent } from 'react'
 
-interface FormTextareaProps {
+export interface FormTextareaProps {
   label: string
   name: string
   value: string
@@ -12,6 +12,7 @@ interface FormTextareaProps {
   placeholder?: string
   rows?: number
   className?: string
+  maxLength?: number
 }
 
 export default function FormTextarea({
@@ -23,7 +24,8 @@ export default function FormTextarea({
   required = false,
   placeholder,
   rows = 4,
-  className = ''
+  className = '',
+  maxLength
 }: FormTextareaProps) {
   return (
     <div className={className}>
@@ -40,20 +42,21 @@ export default function FormTextarea({
         onChange={onChange}
         placeholder={placeholder}
         rows={rows}
+        maxLength={maxLength}
         className={`
           w-full px-3 py-2 border rounded-lg
           transition-colors duration-200
           ${error
-            ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-            : 'border-sunny-gold/30 hover:border-sunny-gold focus:border-sunny-red focus:ring-sunny-red'
+            ? 'border-red-500 focus:border-red-500 focus:ring-red-500 focus-visible:ring-2 focus-visible:ring-red-500'
+            : 'border-sunny-gold/30 hover:border-sunny-gold focus:border-sunny-red focus:ring-sunny-red focus-visible:ring-2 focus-visible:ring-sunny-red'
           }
-          focus:outline-none focus:ring-2 focus:ring-opacity-20
+          focus:outline-none focus:ring-2 focus:ring-opacity-20 focus-visible:ring-opacity-50
         `}
         aria-invalid={!!error}
         aria-describedby={error ? `${name}-error` : undefined}
       />
       {error && (
-        <p id={`${name}-error`} className="text-red-500 text-sm mt-1">
+        <p id={`${name}-error`} className="text-red-500 text-sm mt-1" role="alert" aria-live="polite">
           {error}
         </p>
       )}

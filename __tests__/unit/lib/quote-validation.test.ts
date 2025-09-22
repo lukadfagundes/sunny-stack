@@ -153,10 +153,10 @@ describe('Quote Validation', () => {
       const invalidForm = {
         name: '',
         email: 'not-an-email',
-        projectType: '',
+        projectType: '' as const,
         projectDescription: 'Short',
-        timeline: '',
-        budget: ''
+        timeline: '' as const,
+        budget: '' as const
       }
 
       const result = validateGuidedForm(invalidForm)

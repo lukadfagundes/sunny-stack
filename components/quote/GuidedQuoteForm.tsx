@@ -1,21 +1,34 @@
 'use client'
 
-import { useState } from 'react'
-import { ArrowLeft, ArrowRight, Send } from 'lucide-react'
+import { useState, lazy, Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import { ArrowRight, Send } from 'lucide-react'
 import { TrinityDebugger } from '@/lib/trinity-debug'
 import { validateGuidedForm } from '@/lib/quote-validation'
 import { useMultiStepForm } from '@/hooks/useMultiStepForm'
-import QuoteProgress from './QuoteProgress'
-import {
-  ContactSection,
-  ProjectSection,
-  TimelineSection,
-  BudgetSection,
-  RequirementsSection
-} from './sections'
-import type { GuidedFormData, ValidationResult } from '@/lib/quote-types'
+import type { GuidedFormData } from '@/lib/quote-types'
 
 const debug = new TrinityDebugger('GuidedQuoteForm')
+
+// Section loader component
+const SectionLoader = () => (
+  <div className="animate-pulse">
+    <div className="h-8 w-3/4 bg-sunny-gold/20 rounded mb-4"></div>
+    <div className="h-4 w-1/2 bg-sunny-gold/20 rounded"></div>
+  </div>
+)
+
+// Dynamic imports for form sections - loaded on demand
+const QuoteProgress = dynamic(() => import('./QuoteProgress'), {
+  loading: () => <div className="h-2 bg-sunny-gold/20 rounded animate-pulse" />,
+  ssr: true
+})
+
+const ContactSection = lazy(() => import('./sections').then(mod => ({ default: mod.ContactSection })))
+const ProjectSection = lazy(() => import('./sections').then(mod => ({ default: mod.ProjectSection })))
+const TimelineSection = lazy(() => import('./sections').then(mod => ({ default: mod.TimelineSection })))
+const BudgetSection = lazy(() => import('./sections').then(mod => ({ default: mod.BudgetSection })))
+const RequirementsSection = lazy(() => import('./sections').then(mod => ({ default: mod.RequirementsSection })))
 
 interface GuidedQuoteFormProps {
   onBack: () => void
@@ -140,56 +153,50 @@ export default function GuidedQuoteForm({ onBack, onComplete }: GuidedQuoteFormP
   const renderStepContent = () => {
     const stepName = guidedSteps[currentStep]
 
-    switch (stepName) {
-      case 'contact':
-        return (
+    return (
+      <Suspense fallback={<SectionLoader />}>
+        {stepName === 'contact' && (
           <ContactSection
             data={formData}
             errors={errors}
             onChange={(updates) => setFormData({ ...formData, ...updates })}
           />
-        )
+        )}
 
-      case 'projectType':
-      case 'description':
-        return (
+        {(stepName === 'projectType' || stepName === 'description') && (
           <ProjectSection
             data={formData}
             errors={errors}
             onChange={(updates) => setFormData({ ...formData, ...updates })}
             currentField={stepName}
           />
-        )
+        )}
 
-      case 'features':
-        return (
+        {stepName === 'features' && (
           <RequirementsSection
             data={formData}
             errors={errors}
             onChange={(updates) => setFormData({ ...formData, ...updates })}
           />
-        )
+        )}
 
-      case 'timeline':
-        return (
+        {stepName === 'timeline' && (
           <TimelineSection
             data={formData}
             errors={errors}
             onChange={(updates) => setFormData({ ...formData, ...updates })}
           />
-        )
+        )}
 
-      case 'budget':
-        return (
+        {stepName === 'budget' && (
           <BudgetSection
             data={formData}
             errors={errors}
             onChange={(updates) => setFormData({ ...formData, ...updates })}
           />
-        )
+        )}
 
-      case 'review':
-        return (
+        {stepName === 'review' && (
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl font-bold text-sunny-darkRed mb-2">Perfect! Let's review</h2>
@@ -224,21 +231,19 @@ export default function GuidedQuoteForm({ onBack, onComplete }: GuidedQuoteFormP
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="w-full bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-sunny-red focus-visible:ring-offset-2 focus:outline-none"
             >
               <Send className="w-5 h-5 inline mr-2" />
               {isSubmitting ? 'Sending...' : 'Send My Project Request'}
             </button>
           </div>
-        )
-
-      default:
-        return null
-    }
+        )}
+      </Suspense>
+    )
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
+    <div className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto pt-8">
           <QuoteProgress
@@ -254,7 +259,7 @@ export default function GuidedQuoteForm({ onBack, onComplete }: GuidedQuoteFormP
               <div className="flex justify-end mt-8">
                 <button
                   onClick={handleNext}
-                  className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-2 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
+                  className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-2 px-6 rounded-full shadow-lg hover:shadow-xl transition-all focus-visible:ring-2 focus-visible:ring-sunny-red focus-visible:ring-offset-2 focus:outline-none"
                 >
                   Continue
                   <ArrowRight className="w-4 h-4" />
@@ -264,6 +269,6 @@ export default function GuidedQuoteForm({ onBack, onComplete }: GuidedQuoteFormP
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

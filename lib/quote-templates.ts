@@ -164,7 +164,7 @@ _[Any other specific requirements or considerations?]_
 *Thank you for choosing Sunny Stack for your development needs!*`
 }
 
-export function formatGuidedEmailHtml(data: any): string {
+export function formatGuidedEmailHtml(data: unknown): string {
   return `
     <h2>New Project Request (Guided Form)</h2>
 
@@ -192,7 +192,7 @@ export function formatGuidedEmailHtml(data: any): string {
   `
 }
 
-export function formatTechnicalEmailHtml(data: any): string {
+export function formatTechnicalEmailHtml(data: unknown): string {
   return `
     <h2>Technical Requirements Submission</h2>
 

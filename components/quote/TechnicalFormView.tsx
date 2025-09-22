@@ -20,7 +20,7 @@ export default function TechnicalFormView({ onSelectForm, onBack }: TechnicalFor
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
+    <div className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto pt-8">
           <button
@@ -89,6 +89,6 @@ export default function TechnicalFormView({ onSelectForm, onBack }: TechnicalFor
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

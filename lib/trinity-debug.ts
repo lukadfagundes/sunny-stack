@@ -9,7 +9,7 @@ export class TrinityDebugger {
     this.enabled = process.env.NODE_ENV === 'development'
   }
 
-  entry(functionName: string, params?: any) {
+  entry(functionName: string, params?: unknown) {
     if (this.enabled) {
       console.log(`[ENTRY] ${functionName}`, {
         params,
@@ -21,7 +21,7 @@ export class TrinityDebugger {
     }
   }
 
-  success(functionName: string, result?: any) {
+  success(functionName: string, result?: unknown) {
     if (this.enabled) {
       console.log(`[SUCCESS] ${functionName}`, {
         result,
@@ -41,7 +41,7 @@ export class TrinityDebugger {
     })
   }
 
-  warning(functionName: string, message: string, data?: any) {
+  warning(functionName: string, message: string, data?: unknown) {
     if (this.enabled) {
       console.warn(`[WARNING] ${functionName}`, {
         message,
@@ -52,7 +52,7 @@ export class TrinityDebugger {
     }
   }
 
-  info(functionName: string, message: string, data?: any) {
+  info(functionName: string, message: string, data?: unknown) {
     if (this.enabled) {
       console.log(`[INFO] ${functionName}`, {
         message,
@@ -76,7 +76,7 @@ export class TrinityDebugger {
     }
   }
 
-  stateChange(functionName: string, oldState: any, newState: any) {
+  stateChange(functionName: string, oldState: unknown, newState: unknown) {
     if (this.enabled) {
       console.log(`[STATE] ${functionName}`, {
         oldState,
@@ -87,7 +87,7 @@ export class TrinityDebugger {
     }
   }
 
-  apiCall(endpoint: string, method: string, data?: any) {
+  apiCall(endpoint: string, method: string, data?: unknown) {
     if (this.enabled) {
       console.log(`[API] ${method} ${endpoint}`, {
         data,
@@ -97,7 +97,7 @@ export class TrinityDebugger {
     }
   }
 
-  apiResponse(endpoint: string, status: number, response?: any) {
+  apiResponse(endpoint: string, status: number, response?: unknown) {
     if (this.enabled) {
       console.log(`[API RESPONSE] ${endpoint}`, {
         status,
@@ -108,7 +108,7 @@ export class TrinityDebugger {
     }
   }
 
-  validation(fieldName: string, value: any, isValid: boolean, error?: string) {
+  validation(fieldName: string, value: unknown, isValid: boolean, error?: string) {
     if (this.enabled) {
       console.log(`[VALIDATION] ${fieldName}`, {
         value,

@@ -79,7 +79,7 @@ export function RequirementsSection({ data, onChange }: RequirementsSectionProps
                   (feature === 'Other' && data.features?.some(f => f.startsWith('Other:')))
                 }
                 onChange={() => handleFeatureToggle(feature)}
-                className="w-5 h-5 text-sunny-red rounded border-2 border-sunny-gold/30"
+                className="w-5 h-5 text-sunny-red rounded border-2 border-sunny-gold/30 focus-visible:ring-2 focus-visible:ring-sunny-red focus-visible:ring-offset-2"
               />
               <span className="text-sunny-brown">{feature}</span>
             </label>
@@ -91,7 +91,7 @@ export function RequirementsSection({ data, onChange }: RequirementsSectionProps
                   placeholder="Please describe what else you need..."
                   value={getOtherValue()}
                   onChange={(e) => handleOtherFeatureChange(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none text-sm"
+                  className="w-full px-3 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none focus-visible:ring-2 focus-visible:ring-sunny-red focus-visible:ring-offset-1 text-sm"
                   maxLength={1000}
                 />
               </div>

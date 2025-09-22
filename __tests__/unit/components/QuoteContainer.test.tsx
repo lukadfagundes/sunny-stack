@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import QuoteContainer from '@/components/quote/QuoteContainer'
 
@@ -38,54 +38,100 @@ jest.mock('@/components/quote/TechnicalQuoteForm', () => {
 })
 
 describe('QuoteContainer', () => {
-  it('renders mode selector initially', () => {
-    render(<QuoteContainer />)
+  it('renders mode selector initially', async () => {
+    await act(async () => {
+      render(<QuoteContainer />)
+      // Wait for dynamic imports to resolve
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
     expect(screen.getByTestId('mode-selector')).toBeInTheDocument()
   })
 
-  it('switches to guided form when guided mode is selected', () => {
-    render(<QuoteContainer />)
+  it('switches to guided form when guided mode is selected', async () => {
+    await act(async () => {
+      render(<QuoteContainer />)
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
-    fireEvent.click(screen.getByText('Select Guided'))
+    await act(async () => {
+      fireEvent.click(screen.getByText('Select Guided'))
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
     expect(screen.getByTestId('guided-form')).toBeInTheDocument()
     expect(screen.queryByTestId('mode-selector')).not.toBeInTheDocument()
   })
 
-  it('switches to technical form when technical mode is selected', () => {
-    render(<QuoteContainer />)
+  it('switches to technical form when technical mode is selected', async () => {
+    await act(async () => {
+      render(<QuoteContainer />)
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
-    fireEvent.click(screen.getByText('Select Technical'))
+    await act(async () => {
+      fireEvent.click(screen.getByText('Select Technical'))
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
     expect(screen.getByTestId('technical-form')).toBeInTheDocument()
     expect(screen.queryByTestId('mode-selector')).not.toBeInTheDocument()
   })
 
-  it('returns to mode selector when back is clicked from guided form', () => {
-    render(<QuoteContainer />)
+  it('returns to mode selector when back is clicked from guided form', async () => {
+    await act(async () => {
+      render(<QuoteContainer />)
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
-    fireEvent.click(screen.getByText('Select Guided'))
-    fireEvent.click(screen.getByText('Back from Guided'))
+    await act(async () => {
+      fireEvent.click(screen.getByText('Select Guided'))
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Back from Guided'))
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
     expect(screen.getByTestId('mode-selector')).toBeInTheDocument()
     expect(screen.queryByTestId('guided-form')).not.toBeInTheDocument()
   })
 
-  it('returns to mode selector when complete is clicked from guided form', () => {
-    render(<QuoteContainer />)
+  it('returns to mode selector when complete is clicked from guided form', async () => {
+    await act(async () => {
+      render(<QuoteContainer />)
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
-    fireEvent.click(screen.getByText('Select Guided'))
-    fireEvent.click(screen.getByText('Complete Guided'))
+    await act(async () => {
+      fireEvent.click(screen.getByText('Select Guided'))
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Complete Guided'))
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
     expect(screen.getByTestId('mode-selector')).toBeInTheDocument()
     expect(screen.queryByTestId('guided-form')).not.toBeInTheDocument()
   })
 
-  it('returns to mode selector when back is clicked from technical form', () => {
-    render(<QuoteContainer />)
+  it('returns to mode selector when back is clicked from technical form', async () => {
+    await act(async () => {
+      render(<QuoteContainer />)
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
-    fireEvent.click(screen.getByText('Select Technical'))
-    fireEvent.click(screen.getByText('Back from Technical'))
+    await act(async () => {
+      fireEvent.click(screen.getByText('Select Technical'))
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Back from Technical'))
+      await new Promise(resolve => setTimeout(resolve, 100))
+    })
 
     expect(screen.getByTestId('mode-selector')).toBeInTheDocument()
     expect(screen.queryByTestId('technical-form')).not.toBeInTheDocument()

@@ -16,7 +16,14 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+<<<<<<< HEAD
     "test:e2e:debug": "playwright test --debug"
+=======
+    "test:e2e:debug": "playwright test --debug",
+    "analyze": "ANALYZE=true npm run build",
+    "analyze:server": "ANALYZE=true BUNDLE_ANALYZE=server npm run build",
+    "analyze:browser": "ANALYZE=true BUNDLE_ANALYZE=browser npm run build"
+>>>>>>> dev
   },
   "dependencies": {
     "framer-motion": "^11.0.0",
@@ -33,6 +40,10 @@
     "@axe-core/playwright": "^4.10.2",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.0.0",
+<<<<<<< HEAD
+=======
+    "@next/bundle-analyzer": "^15.5.3",
+>>>>>>> dev
     "@playwright/test": "^1.55.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
