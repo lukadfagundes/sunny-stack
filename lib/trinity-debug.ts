@@ -52,6 +52,17 @@ export class TrinityDebugger {
     }
   }
 
+  info(functionName: string, message: string, data?: any) {
+    if (this.enabled) {
+      console.log(`[INFO] ${functionName}`, {
+        message,
+        data,
+        timestamp: Date.now(),
+        module: this.module
+      })
+    }
+  }
+
   performance(functionName: string, startTime: number) {
     const duration = Date.now() - startTime
     if (this.enabled && duration > 100) {

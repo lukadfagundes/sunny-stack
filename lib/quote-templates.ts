@@ -274,3 +274,98 @@ export function downloadMarkdownFile(content: string, filename: string): void {
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
 }
+
+// Function to download technical requirements template
+export function downloadTechnicalTemplate() {
+  const markdownContent = `# Technical Requirements Document
+## Sunny Stack Development
+
+**Contact:** Luka Fagundes
+**Email:** luka@sunny-stack.com
+**Website:** sunny-stack.com
+
+---
+
+## 1. Contact Information
+
+**Full Name:**
+_[Your name]_
+
+**Email:**
+_[Your email]_
+
+**Company Name:**
+_[Your company]_
+
+---
+
+## 2. Project Overview
+
+**Project Name:**
+_[Project name]_
+
+**Project Type:**
+- [ ] Website (Marketing site, portfolio, blog)
+- [ ] Web Application (Interactive app, SaaS, dashboard)
+- [ ] Desktop Application (Windows, Mac, Linux)
+- [ ] Mobile Application (iOS, Android, cross-platform)
+- [ ] E-Commerce Platform (Online store, marketplace)
+- [ ] API/Backend Service
+- [ ] Other: _[Specify]_
+
+**Project Description:**
+_[Provide a detailed description of your project, its purpose, and main objectives]_
+
+---
+
+## 3. Technical Requirements
+
+**Preferred Technology Stack:**
+_[e.g., React, Node.js, PostgreSQL - or leave blank for recommendations]_
+
+**Required Features & Functionality:**
+- [ ] User authentication/authorization
+- [ ] Payment processing
+- [ ] Email notifications
+- [ ] File uploads/downloads
+- [ ] Search functionality
+- [ ] Admin dashboard
+- [ ] Analytics/reporting
+- [ ] Real-time updates
+- [ ] Mobile responsive design
+- [ ] Other: _[List additional features]_
+
+---
+
+## 4. Project Logistics
+
+**Timeline:**
+- [ ] ASAP (Rush delivery)
+- [ ] 1 month
+- [ ] 2-3 months
+- [ ] 3-6 months
+- [ ] Flexible
+
+**Budget Range:**
+- [ ] Under $5,000
+- [ ] $5,000 - $10,000
+- [ ] $10,000 - $25,000
+- [ ] $25,000 - $50,000
+- [ ] $50,000+
+
+---
+
+## Submission Instructions
+
+Please save this completed document and email it to:
+**luka@sunny-stack.com**
+
+Subject Line: **Technical Requirements - [Your Project Name]**
+
+---
+
+*Thank you for choosing Sunny Stack for your development needs!*
+`
+
+  downloadMarkdownFile(markdownContent, 'sunny-stack-technical-requirements.md')
+}
