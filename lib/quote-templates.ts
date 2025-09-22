@@ -1,5 +1,7 @@
 // lib/quote-templates.ts - Document templates for quote forms
 
+import type { GuidedFormData, TechnicalFormData } from './quote-types'
+
 export function generateTechnicalDocument(): string {
   return `# Technical Requirements Document
 ## Sunny Stack Development
@@ -164,7 +166,7 @@ _[Any other specific requirements or considerations?]_
 *Thank you for choosing Sunny Stack for your development needs!*`
 }
 
-export function formatGuidedEmailHtml(data: unknown): string {
+export function formatGuidedEmailHtml(data: GuidedFormData): string {
   return `
     <h2>New Project Request (Guided Form)</h2>
 
@@ -180,7 +182,7 @@ export function formatGuidedEmailHtml(data: unknown): string {
 
     <h3>Features Requested</h3>
     <ul>
-      ${data.features.map((feature: string) => `<li>${feature}</li>`).join('')}
+      ${data.features.map((feature) => `<li>${feature}</li>`).join('')}
     </ul>
 
     <h3>Project Logistics</h3>
@@ -192,7 +194,7 @@ export function formatGuidedEmailHtml(data: unknown): string {
   `
 }
 
-export function formatTechnicalEmailHtml(data: unknown): string {
+export function formatTechnicalEmailHtml(data: TechnicalFormData): string {
   return `
     <h2>Technical Requirements Submission</h2>
 

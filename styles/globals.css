@@ -8,10 +8,15 @@
   margin: 0;
 }
 
-html,
+html {
+  overflow-x: hidden;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  overscroll-behavior-y: contain; /* Prevent bounce scrolling on mobile */
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
