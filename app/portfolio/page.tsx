@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function Portfolio() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20">
+    <main className="bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20" style={{ minHeight: '100dvh' }}>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto pt-8">
           {/* Header */}
@@ -57,7 +57,7 @@ export default function Portfolio() {
           </div>
           
           {/* Hidden Easter Egg - Get Lost Button */}
-          <div className="mt-8 text-center">
+          <div className="mt-8 pb-8 text-center">
             <p className="text-xs text-sunny-brown/40 mb-2">
               Psst... want to test my error handling?
             </p>
@@ -70,6 +70,9 @@ export default function Portfolio() {
               <span className="text-sm">Take the scenic route</span>
             </Link>
           </div>
+
+          {/* Mobile scroll buffer - ensures content is scrollable on all devices */}
+          <div className="md:hidden h-32" aria-hidden="true"></div>
         </div>
       </div>
     </main>
