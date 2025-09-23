@@ -122,7 +122,170 @@ Valuable knowledge gained during a session is lost when the session ends, requir
 
 ---
 
-## HIGH SEVERITY ISSUES
+## MOBILE-SPECIFIC CRITICAL ISSUES (NEW)
+
+### Mobile Viewport Height Issues
+**Stack**: CSS, Next.js, React
+**Frequency**: High on mobile devices
+**Severity**: Critical (affects mobile UX)
+
+#### Problem Description
+Mobile browsers handle viewport height differently than desktop, causing layout issues with 100vh on mobile devices due to dynamic UI elements (address bar, navigation).
+
+#### Investigation Approach
+1. Test on actual mobile devices or Chrome DevTools mobile emulation
+2. Check for 100vh usage in CSS/styles
+3. Verify layout behavior during scroll
+4. Test landscape/portrait orientation changes
+5. Check for proper dynamic viewport height handling
+
+#### Resolution Pattern
+```css
+/* Pattern 1: Use dynamic viewport height */
+.full-height {
+  height: 100dvh; /* Dynamic viewport height */
+  min-height: 100vh; /* Fallback for unsupported browsers */
+}
+
+/* Pattern 2: CSS custom properties approach */
+:root {
+  --vh: 1vh;
+}
+
+.full-height {
+  height: calc(var(--vh, 1vh) * 100);
+}
+```
+
+```typescript
+// Pattern 3: JavaScript dynamic calculation
+useEffect(() => {
+  const updateVH = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
+  updateVH();
+  window.addEventListener('resize', updateVH);
+  window.addEventListener('orientationchange', updateVH);
+
+  return () => {
+    window.removeEventListener('resize', updateVH);
+    window.removeEventListener('orientationchange', updateVH);
+  };
+}, []);
+```
+
+#### Prevention Measures
+- Always test mobile viewport during development
+- Use dynamic viewport units (dvh, dvw) when available
+- Implement proper orientation change handling
+- Test on multiple mobile devices and browsers
+
+### Mobile Touch Target Size Issues
+**Stack**: CSS, React, Next.js
+**Frequency**: Medium
+**Severity**: Critical (accessibility compliance)
+
+#### Problem Description
+Interactive elements too small for mobile touch interaction, failing WCAG accessibility guidelines and causing poor mobile UX.
+
+#### Investigation Approach
+1. Measure touch target sizes in mobile emulation
+2. Check for minimum 44px touch targets
+3. Test with finger/thumb interaction simulation
+4. Verify spacing between interactive elements
+5. Check accessibility audit results
+
+#### Resolution Pattern
+```css
+/* Ensure minimum touch target sizes */
+button, a, input[type="checkbox"], input[type="radio"] {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+}
+
+/* Add sufficient spacing between touch targets */
+.touch-targets > * + * {
+  margin-top: 8px;
+}
+```
+
+#### Prevention Measures
+- Include touch target size checks in mobile testing protocol
+- Use design system with predefined mobile-friendly sizes
+- Regular accessibility audits during development
+
+---
+
+## CONFLICT-RELATED CRITICAL ISSUES (NEW)
+
+### Git Merge Conflicts in Package Files
+**Stack**: npm, Git, Next.js
+**Frequency**: High during team development
+**Severity**: Critical (blocks development)
+
+#### Problem Description
+Merge conflicts in package.json, package-lock.json, or other configuration files can break dependency resolution and build processes.
+
+#### Investigation Approach
+1. Check for conflict markers (<<<<<<, =======, >>>>>>>)
+2. Verify package.json syntax validity
+3. Test npm install after conflict resolution
+4. Check for dependency version mismatches
+5. Verify build process still works
+
+#### Resolution Pattern
+```bash
+# Detection commands
+grep -E "<<<<<<|======|>>>>>>" package.json
+grep -E "<<<<<<|======|>>>>>>" package-lock.json
+
+# Verification after resolution
+npm install
+npm run build
+npm run type-check
+```
+
+#### Prevention Measures
+- Run conflict detection before all work orders
+- Never manually edit package-lock.json
+- Use exact dependency versions where possible
+- Regular dependency audits
+
+### Configuration File Conflicts
+**Stack**: TypeScript, ESLint, Next.js config
+**Frequency**: Medium
+**Severity**: High (affects development tools)
+
+#### Problem Description
+Conflicts in configuration files can break development tools, type checking, and build processes.
+
+#### Investigation Approach
+1. Check all .config files for conflict markers
+2. Verify configuration syntax after resolution
+3. Test development server startup
+4. Verify linting and type checking work
+5. Check for conflicting configuration options
+
+#### Resolution Pattern
+```bash
+# Detection for configuration files
+find . -name "*.config.*" -exec grep -l "<<<<<<\|======\|>>>>>>" {} \;
+
+# Verification commands
+npm run dev          # Test development server
+npm run type-check   # Verify TypeScript config
+npm run lint         # Verify ESLint config
+```
+
+#### Prevention Measures
+- Include configuration files in conflict detection protocol
+- Backup working configurations before major changes
+- Use consistent formatting in configuration files
+
+---## HIGH SEVERITY ISSUES
 
 ### React useEffect Cleanup Missing
 **Stack**: React, React Native, Next.js

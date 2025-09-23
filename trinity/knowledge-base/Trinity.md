@@ -25,7 +25,46 @@ For Sunny Stack using Next.js, all investigations must include:
    - Server-side vs client-side rendering decisions
    - API route security and rate limiting verification
    - Static generation vs dynamic rendering trade-offs
+### Mobile-First Requirements (NEW)
+**MANDATORY for all UI-related work orders:**
 
+For Sunny Stack development, mobile-first testing and verification is required:
+
+1. **Mobile Viewport Testing**
+   - Test on device emulation (iPhone 12/13/14, Android devices)
+   - Verify responsive breakpoints (320px, 768px, 1024px, 1440px)
+   - Test landscape and portrait orientations
+   - Validate touch target sizes (minimum 44px for interactive elements)
+
+2. **Mobile Browser Compatibility**
+   - iOS Safari (current and previous version)
+   - Chrome Mobile (Android)
+   - Samsung Internet (Android)
+   - Firefox Mobile (where applicable)
+
+3. **Mobile-Specific Technical Requirements**
+   - Dynamic viewport height handling (100dvh vs 100vh)
+   - Mobile performance impact assessment (< 3s initial load on 3G)
+   - Touch interaction verification (tap, swipe, pinch-to-zoom disabled where appropriate)
+   - Mobile-specific accessibility verification (screen reader compatibility)
+
+4. **Mobile Testing Protocol**
+   ```bash
+   # Required mobile testing commands for Sunny Stack
+   npm run dev                    # Start development server
+   # Open Chrome DevTools
+   # Switch to device emulation mode
+   # Test on iPhone 12, iPad, Android devices
+   # Verify all features work with touch interactions
+   # Check Core Web Vitals on mobile emulation
+   ```
+
+5. **Mobile Performance Standards**
+   - Mobile LCP < 2.5s (stricter than desktop)
+   - Mobile FID < 100ms with touch interactions
+   - Mobile CLS < 0.1 during scrolling and orientation changes
+   - Mobile-specific bundle size optimization
+   - Proper mobile image optimization with Next.js Image
 ### Sunny Stack PERFORMANCE STANDARDS
 
 #### Technology-Specific Baselines
