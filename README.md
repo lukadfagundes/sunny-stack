@@ -17,7 +17,6 @@ A high-performance portfolio website built with the latest web technologies. Fea
 ### ✨ Key Features
 
 - **Responsive Design** - Seamless experience across all devices
-- **Dark/Light Mode** - Automatic theme detection with manual toggle
 - **Performance Optimized** - Lightning-fast load times with Next.js 15
 - **Type-Safe** - Full TypeScript implementation for reliability
 - **Modern UI** - Clean, professional interface with Tailwind CSS
@@ -147,8 +146,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Luka D. Fagundes**
 
 - GitHub: [@lukadfagundes](https://github.com/lukadfagundes)
-- LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-- Portfolio: [Your Portfolio URL](https://your-portfolio-url.com)
+- Portfolio: [www.sunny-stack.com](https://www.sunny-stack.com)
 
 ## 🙏 Acknowledgments
 
