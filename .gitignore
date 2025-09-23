@@ -157,6 +157,10 @@ trinity/
 .claude/
 CLAUDE.md
 trinity-method-source/
+ARCHITECTURE.md
+ISSUES.md
+To-do.md
+Trinity.md
 
 # Testing Artifacts
 playwright-report/

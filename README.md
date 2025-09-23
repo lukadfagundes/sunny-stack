@@ -1,268 +1,161 @@
-# ☀️ Sunny Stack
+# Sunny Stack Portfolio
 
-> Professional Software Development - powered by Cola Records
+![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Next.js](https://img.shields.io/badge/Next.js-15.0-black)
+![React](https://img.shields.io/badge/React-19.0-61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4)
+![Node.js](https://img.shields.io/badge/Node.js-20+-339933)
+![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen)
 
-## 🌟 Recent Major Updates
+A modern, responsive portfolio website showcasing professional web development projects and skills.
 
-### Landing Page Transformation (2025-08-12)
-Complete rebrand from AI consulting platform to professional software development company:
-- Professional service positioning for client acquisition
-- Thousand Sunny visual branding (golden/orange theme)
-- Strategic AI advantage concealment (competitive edge protection)
-- Premium developer contractor positioning
+## 🚀 Overview
 
-## 🌟 Overview
+A high-performance portfolio website built with the latest web technologies. Features a clean, modern design with smooth animations, fully responsive layouts, and optimized for both desktop and mobile experiences.
 
-Sunny Stack is a professional software development company specializing in custom web applications and modern technology solutions. Powered by Cola Records, we deliver high-quality software with rapid development cycles and professional expertise.
+### ✨ Key Features
 
-## 🚀 Live Platform
+- **Responsive Design** - Seamless experience across all devices
+- **Dark/Light Mode** - Automatic theme detection with manual toggle
+- **Performance Optimized** - Lightning-fast load times with Next.js 15
+- **Type-Safe** - Full TypeScript implementation for reliability
+- **Modern UI** - Clean, professional interface with Tailwind CSS
+- **Contact Forms** - Integrated contact and quote request systems
+- **SEO Ready** - Optimized meta tags and structured data
+- **Accessibility** - WCAG AA compliant
 
-**Production URL**: https://sunny-stack.com
-
-## 🏗️ Architecture
+## 🛠️ Technology Stack
 
 ### Frontend
-- **Framework**: Next.js 14 with Trinity Interface
-- **Port**: 3000
-- **Features**: Real-time MCP status, project management, client dashboards
-- **UI**: Modern, responsive design with dark/light themes
+- **Framework:** Next.js 15.0 (App Router)
+- **UI Library:** React 19.0
+- **Language:** TypeScript 5.5
+- **Styling:** Tailwind CSS 3.4
+- **Fonts:** Geist Font Family
 
-### Backend  
-- **Framework**: FastAPI with async support
-- **Port**: 8000
-- **Features**: MCP connector, JWT authentication, business logic APIs
-- **Database**: SQLite with migration support
+### Development Tools
+- **Package Manager:** npm
+- **Linting:** ESLint
+- **Testing:** Jest & React Testing Library
+- **E2E Testing:** Playwright
+- **Build Tool:** Webpack (via Next.js)
 
-### Infrastructure
-- **Deployment**: Cloudflare Tunnel (secure, no exposed ports)
-- **Domain**: sunny-stack.com
-- **Monitoring**: Real-time MCP integration with system metrics
-- **Security**: JWT authentication, role-based access control
+### Deployment
+- **Platform:** Vercel
+- **CI/CD:** Automated via Vercel
+- **Analytics:** Vercel Analytics (optional)
 
-## 🔧 Development Setup
+## 📦 Installation
 
 ### Prerequisites
-- Python 3.9+
-- Node.js 18+
-- npm or yarn
-- Git
-- Cloudflare account (for deployment)
+- Node.js 20.0 or higher
+- npm 10.0 or higher
 
-### Installation
+### Setup Instructions
 
-```bash
-# Clone repository
-git clone https://github.com/[username]/sunny-stack.git
-cd sunny-stack
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/lukadfagundes/sunny-stack.git
+   cd sunny-stack
+   ```
 
-# Backend setup
-cd backend
-python -m venv venv
-venv\Scripts\activate      # Windows
-source venv/bin/activate   # macOS/Linux
-pip install -r requirements.txt
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-# Frontend setup
-cd ../frontend
-npm install
+3. Set up environment variables:
+   ```bash
+   cp .env.local.example .env.local
+   # Edit .env.local with your configuration
+   ```
 
-# Environment configuration
-cp .env.example .env
-# Configure your API keys and settings in .env
-```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-### Running Locally
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-#### 🚀 Quick Start (Git Bash - Recommended)
+### Available Scripts
 
 ```bash
-# Start all services with one command
-./startup-sunny.sh
-
-# Check status
-./status-sunny.sh
-
-# Stop services
-./stop-sunny.sh
+npm run dev          # Start development server
+npm run build        # Build for production
+npm start            # Start production server
+npm run lint         # Run ESLint
+npm test            # Run unit tests
+npm run test:e2e    # Run E2E tests
+npm run type-check  # Run TypeScript compiler check
 ```
 
-#### Development Utilities (Git Bash)
+## 📂 Project Structure
 
-```bash
-# Quick development commands
-./dev-sunny.sh restart     # Restart all services
-./dev-sunny.sh backend     # Restart backend only
-./dev-sunny.sh frontend    # Restart frontend only
-./dev-sunny.sh logs        # View recent logs
-./dev-sunny.sh test-auth   # Test authentication
-./dev-sunny.sh git-status  # Show git status
-./dev-sunny.sh clean       # Clean build artifacts
+```
+sunny-stack/
+├── app/                 # Next.js app directory
+│   ├── api/            # API routes
+│   ├── (routes)/       # Page components
+│   └── layout.tsx      # Root layout
+├── components/         # Reusable React components
+│   ├── forms/         # Form components
+│   └── ui/            # UI components
+├── lib/               # Utility functions and helpers
+├── hooks/             # Custom React hooks
+├── styles/            # Global styles
+├── public/            # Static assets
+├── __tests__/         # Unit tests
+└── e2e/              # End-to-end tests
 ```
 
-#### Traditional Windows Method
+## 🌟 Features
 
-```bash
-# Start all services (Windows)
-.\STARTUP_SUNNY.bat
+### Pages
+- **Home** - Welcome page with hero section
+- **About** - Professional background and skills
+- **Portfolio** - Project showcase with filtering
+- **Resume** - Downloadable CV/Resume
+- **Contact** - Get in touch form
+- **Quote** - Project quotation system
 
-# Or individually (IMPORTANT: Follow this order):
-# 1. Start Cloudflare Tunnel
-cloudflared tunnel --config C:\Users\lukaf\.cloudflared\sunny-config.yml run
-
-# 2. Start Backend (wait for tunnel connection)
-cd backend && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# 3. Start Frontend (after backend is ready)
-cd frontend && npm run dev -- --port 3000
-```
-
-**⚠️ CRITICAL**: Services must start in order: Tunnel → Backend → Frontend
-
-## 🌐 Deployment
-
-The platform uses Cloudflare Tunnel for secure, zero-trust deployment:
-
-```bash
-# Deploy to production
-.\deploy_sunny_production.bat
-
-# Verify deployment
-.\verify_deployment.bat
-```
-
-## 🔌 MCP Integration
-
-Sunny features Model Context Protocol integration for real-time AI collaboration:
-
-- **Status Endpoint**: `/api/mcp/status`
-- **Health Check**: `/api/mcp/health`
-- **Capabilities**:
-  - Live system monitoring
-  - Debug log access
-  - Project file reading
-  - Error pattern analysis
-  - Performance metrics
-  - Real-time collaboration
-
-## 📊 API Documentation
-
-When running locally:
-- **Interactive API Docs**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-- **Health Check**: http://localhost:8000/health
-- **MCP Status**: http://localhost:8000/api/mcp/status
-
-## 🛠️ Management Scripts
-
-### Core Scripts
-- `STARTUP_SUNNY.bat` - Full production startup (correct service order)
-- `STOP_SUNNY.bat` - Graceful shutdown of all services
-- `RESTART_SUNNY.bat` - Restart all services
-
-### Diagnostics
-- `check_status.bat` - System health check
-- `enhanced_debug.bat` - Comprehensive debugging
-- `diagnose_mcp_error.bat` - MCP service diagnostics
-- `verify_deployment.bat` - Production verification
-
-### Utilities
-- `repair_mcp_service.bat` - Fix MCP service issues
-- `test_mcp_authenticated.bat` - Test MCP with auth
-- `setup_github.bat` - Initialize Git repository
-
-## 🎯 Features
-
-### For Consultants
-- **Project Management**: Track client projects and deliverables
-- **Proposal Engine**: AI-powered proposal generation
-- **Client Analytics**: Deep insights and recommendations
-- **Metrics Tracking**: Performance and success metrics
-
-### For Clients
-- **NavigatorCore Integration**: Seamless API integration
-- **Real-time Updates**: Live project status and progress
-- **Secure Access**: Role-based authentication
-- **Performance Monitoring**: Track optimization metrics
-
-### For AI Partners
-- **MCP Connector**: Real-time system access
-- **Debug Logs**: Complete visibility into operations
-- **Self-Improvement**: Continuous learning and optimization
-- **Error Analysis**: Pattern recognition and prevention
-
-## 🔐 Security
-
-- JWT-based authentication
-- Role-based access control (RBAC)
-- Secure environment variables
-- Cloudflare Tunnel encryption
-- No exposed ports to internet
+### Technical Features
+- Server-side rendering (SSR) for optimal performance
+- Static site generation (SSG) where applicable
+- Dynamic imports for code splitting
+- Image optimization with Next.js Image
+- Font optimization with next/font
+- SEO optimization with metadata API
+- Progressive Web App (PWA) ready
 
 ## 🤝 Contributing
 
-We welcome contributions to advance AI-human collaboration:
+While this is a personal portfolio project, suggestions and feedback are welcome! Feel free to:
 
-### Areas of Interest
-- Client integration patterns
-- Performance optimizations
-- Security enhancements
-- Documentation improvements
-- Testing coverage
-- UI/UX improvements
-
-### Development Workflow
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📁 Project Structure
-
-```
-sunny-ai-platform/
-├── frontend/           # Next.js frontend application
-│   ├── app/           # App router pages
-│   ├── components/    # React components
-│   └── public/        # Static assets
-├── backend/           # FastAPI backend service
-│   ├── app/          # Application code
-│   │   ├── routes/   # API endpoints
-│   │   ├── services/ # Business logic
-│   │   └── utils/    # Utilities
-│   └── venv/         # Python virtual environment
-├── scripts/          # Management scripts
-├── docs/            # Documentation
-└── .cloudflared/    # Tunnel configuration
-```
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-MIT License - Open for innovation and collaboration
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🌟 Vision
+## 👤 Author
 
-Sunny represents the evolution of consulting services - where human creativity and strategic thinking combine with AI intelligence and 24/7 monitoring to deliver unprecedented value to clients.
+**Luka D. Fagundes**
 
-### Our Mission
-Transform how businesses leverage AI by creating seamless human-AI collaboration that delivers:
-- **24/7 Availability**: AI partners never sleep
-- **Human Expertise**: Strategic thinking and creativity
-- **Real-time Insights**: Instant analysis and recommendations
-- **Continuous Improvement**: Self-optimizing platform
+- GitHub: [@lukadfagundes](https://github.com/lukadfagundes)
+- LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
+- Portfolio: [Your Portfolio URL](https://your-portfolio-url.com)
 
-## 📞 Contact
+## 🙏 Acknowledgments
 
-For questions, partnerships, or support:
-- **Platform**: https://sunny-stack.com
-- **Documentation**: See `/docs` folder
-- **Issues**: GitHub Issues
+- Next.js team for the amazing framework
+- Vercel for hosting and deployment
+- Open source community for invaluable resources
 
 ---
 
-**The future of consulting is here.** ☀️🚀
-
-*Built with passion for the next generation of AI-powered business services.*
-
-
-Test, Same Fweak, Same Bwaincell
+Built with ❤️ by Luka D. Fagundes © 2024
