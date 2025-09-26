@@ -156,4 +156,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Built with ❤️ by Luka D. Fagundes © 2024
+Built with ❤️ by Luka D. Fagundes © 2025
