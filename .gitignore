@@ -67,7 +67,6 @@ temp.txt
 *~
 
 # IDE files
-.vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
@@ -154,7 +153,6 @@ nul
 
 # Trinity Method deployment files
 trinity/
-.claude/
 CLAUDE.md
 trinity-method-source/
 ARCHITECTURE.md

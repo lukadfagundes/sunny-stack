@@ -27,6 +27,7 @@ A high-performance portfolio website built with the latest web technologies. Fea
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **Framework:** Next.js 15.0 (App Router)
 - **UI Library:** React 19.0
 - **Language:** TypeScript 5.5
@@ -34,6 +35,7 @@ A high-performance portfolio website built with the latest web technologies. Fea
 - **Fonts:** Geist Font Family
 
 ### Development Tools
+
 - **Package Manager:** npm
 - **Linting:** ESLint
 - **Testing:** Jest & React Testing Library
@@ -41,6 +43,7 @@ A high-performance portfolio website built with the latest web technologies. Fea
 - **Build Tool:** Webpack (via Next.js)
 
 ### Deployment
+
 - **Platform:** Vercel
 - **CI/CD:** Automated via Vercel
 - **Analytics:** Vercel Analytics (optional)
@@ -48,29 +51,34 @@ A high-performance portfolio website built with the latest web technologies. Fea
 ## 📦 Installation
 
 ### Prerequisites
+
 - Node.js 20.0 or higher
 - npm 10.0 or higher
 
 ### Setup Instructions
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/lukadfagundes/sunny-stack.git
    cd sunny-stack
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Set up environment variables:
+
    ```bash
    cp .env.local.example .env.local
    # Edit .env.local with your configuration
    ```
 
 4. Run the development server:
+
    ```bash
    npm run dev
    ```
@@ -91,7 +99,7 @@ npm run type-check  # Run TypeScript compiler check
 
 ## 📂 Project Structure
 
-```
+```text
 sunny-stack/
 ├── app/                 # Next.js app directory
 │   ├── api/            # API routes
@@ -111,6 +119,7 @@ sunny-stack/
 ## 🌟 Features
 
 ### Pages
+
 - **Home** - Welcome page with hero section
 - **About** - Professional background and skills
 - **Portfolio** - Project showcase with filtering
@@ -119,6 +128,7 @@ sunny-stack/
 - **Quote** - Project quotation system
 
 ### Technical Features
+
 - Server-side rendering (SSR) for optimal performance
 - Static site generation (SSG) where applicable
 - Dynamic imports for code splitting

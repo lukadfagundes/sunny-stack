@@ -21,10 +21,10 @@ export default function NotFound() {
               You Got Lost Again, Didn't You?
             </h2>
             <p className="text-xl text-sunny-brown/80 mb-6">
-              Don't worry, it happens to the best swordsmen. This page seems to have wandered off 
+              Don't worry, it happens to the best swordsmen. This page seems to have wandered off
               in a completely different direction... probably ended up at a sake shop.
             </p>
-            
+
             <div className="border-t border-sunny-gold/30 pt-6 mb-6">
               <p className="text-sunny-brown/70 italic mb-2">
                 "I'm not lost. The page is just in the wrong place."

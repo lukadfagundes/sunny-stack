@@ -8,7 +8,7 @@ export interface ValidationRule {
   minLength?: number
   maxLength?: number
   pattern?: RegExp
-  custom?: (value: any) => boolean | string
+  custom?: (value: unknown) => boolean | string
 }
 
 export interface ValidationSchema {
@@ -19,7 +19,7 @@ export interface ValidationErrors {
   [field: string]: string
 }
 
-export function useFormValidation<T extends Record<string, any>>(
+export function useFormValidation<T extends Record<string, unknown>>(
   schema: ValidationSchema
 ) {
   debug.entry('useFormValidation', { fields: Object.keys(schema) })
@@ -27,7 +27,7 @@ export function useFormValidation<T extends Record<string, any>>(
   const [errors, setErrors] = useState<ValidationErrors>({})
 
   const validateField = useCallback(
-    (field: keyof T, value: any): string | null => {
+    (field: keyof T, value: unknown): string | null => {
       debug.info('validateField', "Debug log", { field, value })
 
       const rules = schema[field as string]
@@ -92,7 +92,7 @@ export function useFormValidation<T extends Record<string, any>>(
   )
 
   const validateSingle = useCallback(
-    (field: keyof T, value: any): boolean => {
+    (field: keyof T, value: unknown): boolean => {
       debug.info('validateSingle', "Debug log", { field, value })
 
       const error = validateField(field, value)

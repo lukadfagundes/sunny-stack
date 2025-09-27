@@ -22,32 +22,32 @@ export default function About() {
           <div className="bg-white/90 backdrop-blur rounded-2xl shadow-xl p-8 md:p-10 mb-8">
             <div className="prose prose-lg max-w-none">
               <h2 className="text-2xl font-bold text-sunny-darkRed mb-4">Hey, I'm Luka! 👋</h2>
-              
+
               <p className="text-sunny-brown/80 mb-4">
-                My journey to Salem, OR has been quite the adventure. Born in Reno, moved to and raised in Louisiana 
-                from 2001-2020, with a 4 year stint in Texas, I finally found my home in the beautiful Pacific Northwest in 2024. 
-                And yes, I got married here too! My wife and I actually hiked to Abiqua Falls right after our 
+                My journey to Salem, OR has been quite the adventure. Born in Reno, moved to and raised in Louisiana
+                from 2001-2020, with a 4 year stint in Texas, I finally found my home in the beautiful Pacific Northwest in 2024.
+                And yes, I got married here too! My wife and I actually hiked to Abiqua Falls right after our
                 ceremony, because nothing says "just married" like a gorgeous Oregon waterfall hike.
               </p>
 
               <p className="text-sunny-brown/80 mb-4">
-                My path to programming wasn't traditional. I spent a decade in the restaurant industry, waiting tables, 
-                bartending, and managing, while also working in insurance, specializing in bank protection. When COVID 
-                hit in 2020 I found myself at a crossroads and spent some time finding myself. After some time figuring things out, I landed in equipment 
-                sales, where I discovered a real need for better tools to value and review machinery. That's when 
+                My path to programming wasn't traditional. I spent a decade in the restaurant industry, waiting tables,
+                bartending, and managing, while also working in insurance, specializing in bank protection. When COVID
+                hit in 2020 I found myself at a crossroads and spent some time finding myself. After some time figuring things out, I landed in equipment
+                sales, where I discovered a real need for better tools to value and review machinery. That's when
                 programming went from a longtime interest to a burning passion.
               </p>
 
               <p className="text-sunny-brown/80 mb-4">
-                I first started teaching myself to code back in 2016, but life had other plans. Now, the spark has 
-                reignited stronger than ever, and everything just "clicks." I'm building the tools I wish I had, 
+                I first started teaching myself to code back in 2016, but life had other plans. Now, the spark has
+                reignited stronger than ever, and everything just "clicks." I'm building the tools I wish I had,
                 learning something new every day, and loving every minute of it.
               </p>
 
               <p className="text-sunny-brown/80">
-                When I'm not deep in code, you'll find me watching One Piece (I'm a huge fan, ask me about my 
-                collection!), playing video games, or exploring Oregon's incredible nature spots. 
-                Friday nights are for adventures and finding delicious food, Saturdays are for farmers markets, 
+                When I'm not deep in code, you'll find me watching One Piece (I'm a huge fan, ask me about my
+                collection!), playing video games, or exploring Oregon's incredible nature spots.
+                Friday nights are for adventures and finding delicious food, Saturdays are for farmers markets,
                 thrift shops, and hikes, and Sundays? Pure relaxation and catching up on shows (Yellowjackets, anyone?).
               </p>
             </div>
@@ -165,12 +165,12 @@ export default function About() {
               <h3 className="text-lg font-bold text-sunny-darkRed">What Drives Me</h3>
             </div>
             <p className="text-sunny-brown/80 mb-3">
-              The little joys in life keep me going. My wife and I eloped last June, and the dream of building 
-              the life we deserve together, one where we can wake up and do what we love without worry, 
+              The little joys in life keep me going. My wife and I eloped last June, and the dream of building
+              the life we deserve together, one where we can wake up and do what we love without worry,
               that's what pushes me to keep learning, keep building, keep growing.
             </p>
             <p className="text-sm text-sunny-brown/70 italic">
-              In five years? Picture this: our own home with a finished basement (my cave!), no alarm clocks, 
+              In five years? Picture this: our own home with a finished basement (my cave!), no alarm clocks,
               just doing what we love. Oh, and dinner with Eiichiro Oda would be pretty cool too.
             </p>
           </div>
@@ -180,7 +180,7 @@ export default function About() {
             <p className="text-sunny-brown/70 mb-4">
               Want to chat about code, One Piece theories, or the best waterfalls in Oregon?
             </p>
-            <a 
+            <a
               href="mailto:luka@sunny-stack.com"
               className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >

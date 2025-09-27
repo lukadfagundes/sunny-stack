@@ -1,4 +1,5 @@
 # Sunny Stack Architecture Documentation
+
 **Last Updated:** 2025-09-22
 **Trinity Method v7.1**
 
@@ -7,12 +8,14 @@
 ## 🏗️ SYSTEM OVERVIEW
 
 ### Project Classification
+
 - **Type:** Full Stack Web Portfolio Application
 - **Scale:** Personal/Professional Portfolio
 - **Complexity:** Medium (Multi-page SPA with API endpoints)
 - **Target Environment:** Web (Desktop & Mobile)
 
 ### Technology Foundation
+
 ```yaml
 Framework: Next.js 15.0.0
 Runtime: Node.js >=18.17.0
@@ -27,21 +30,27 @@ Package_Manager: npm
 ## 🎯 ARCHITECTURAL PATTERNS
 
 ### Framework Architecture
+
 **Pattern:** Next.js App Router Architecture
+
 - **App Directory Structure:** File-system based routing
 - **Server Components:** Default server-side rendering
 - **Client Components:** Selective client-side interactivity
 - **API Routes:** Built-in serverless functions
 
 ### Component Architecture
+
 **Pattern:** Modular React Components
+
 - **Layout Components:** Root layout with navigation
 - **Page Components:** Route-specific views
 - **Shared Components:** Reusable UI elements
 - **Custom Hooks:** State management logic
 
 ### Data Flow Architecture
+
 **Pattern:** Server-First with Client Hydration
+
 - **Static Generation:** Build-time rendering for performance
 - **Server-Side Rendering:** Dynamic content when needed
 - **Client Hydration:** Interactive functionality
@@ -52,6 +61,7 @@ Package_Manager: npm
 ## 📁 SYSTEM STRUCTURE
 
 ### Directory Architecture
+
 ```
 sunny-stack/
 ├── app/                    # Next.js App Router
@@ -80,6 +90,7 @@ sunny-stack/
 ```
 
 ### Component Hierarchy
+
 ```
 RootLayout
 ├── Navigation (Global)
@@ -101,6 +112,7 @@ RootLayout
 ## 🔄 DATA FLOW PATTERNS
 
 ### Client-Server Communication
+
 ```yaml
 Static_Content:
   Source: Build-time generation
@@ -120,6 +132,7 @@ Form_Submissions:
 ```
 
 ### State Management
+
 ```yaml
 Global_State:
   Navigation: React useState
@@ -142,6 +155,7 @@ Application_State:
 ## 🔌 INTEGRATION ARCHITECTURE
 
 ### External Services
+
 ```yaml
 Email_Service:
   Provider: Resend API
@@ -167,6 +181,7 @@ Icon_System:
 ```
 
 ### API Endpoints
+
 ```yaml
 /api/send-quote:
   Method: POST
@@ -181,6 +196,7 @@ Icon_System:
 ## 🔒 SECURITY ARCHITECTURE
 
 ### Content Security Policy
+
 ```yaml
 default-src: 'self'
 script-src: 'self' 'unsafe-eval' 'unsafe-inline'
@@ -193,6 +209,7 @@ object-src: 'none'
 ```
 
 ### Security Headers
+
 - **X-Frame-Options:** DENY
 - **X-Content-Type-Options:** nosniff
 - **Referrer-Policy:** strict-origin-when-cross-origin
@@ -200,6 +217,7 @@ object-src: 'none'
 - **Strict-Transport-Security:** max-age=31536000; includeSubDomains
 
 ### Input Validation
+
 ```yaml
 Client_Side:
   Length_Limits: Field-specific validation
@@ -218,6 +236,7 @@ Server_Side:
 ## 🚀 DEPLOYMENT ARCHITECTURE
 
 ### Build Process
+
 ```yaml
 Build_Command: next build
 Output_Directory: .next/
@@ -227,6 +246,7 @@ Linting: ESLint with Next.js config
 ```
 
 ### Environment Configuration
+
 ```yaml
 Development:
   Command: next dev
@@ -242,6 +262,7 @@ Production:
 ```
 
 ### Hosting Architecture
+
 ```yaml
 Recommended_Platform: Vercel (Next.js native)
 Alternative_Platforms: Netlify, AWS Amplify
@@ -255,6 +276,7 @@ Environment_Variables: Platform-specific configuration
 ## 📊 PERFORMANCE ARCHITECTURE
 
 ### Optimization Strategies
+
 ```yaml
 Code_Splitting:
   Method: Next.js automatic splitting
@@ -274,6 +296,7 @@ Bundle_Optimization:
 ```
 
 ### Performance Metrics
+
 ```yaml
 Core_Web_Vitals:
   LCP_Target: <2.5s
@@ -291,6 +314,7 @@ Bundle_Size:
 ## 🔄 SCALABILITY ARCHITECTURE
 
 ### Current Scale
+
 ```yaml
 Traffic_Level: Low (personal portfolio)
 Concurrent_Users: <100
@@ -299,6 +323,7 @@ Storage_Needs: Minimal (static content)
 ```
 
 ### Scaling Strategies
+
 ```yaml
 Horizontal_Scaling:
   CDN: Global content distribution
@@ -316,6 +341,7 @@ Vertical_Scaling:
 ## 🧪 TESTING ARCHITECTURE
 
 ### Testing Strategy
+
 ```yaml
 Current_Testing:
   Type_Safety: TypeScript compilation
@@ -330,6 +356,7 @@ Recommended_Testing:
 ```
 
 ### Quality Gates
+
 ```yaml
 Pre_Commit:
   Type_Check: tsc --noEmit
@@ -347,6 +374,7 @@ Pre_Deploy:
 ## 📚 TECHNOLOGY STACK VERSIONS
 
 ### Core Dependencies
+
 ```yaml
 next: ^15.0.0
 react: ^19.0.0
@@ -356,12 +384,14 @@ tailwindcss: ^3.4.0
 ```
 
 ### UI/UX Dependencies
+
 ```yaml
 framer-motion: ^11.0.0
 lucide-react: ^0.400.0
 ```
 
 ### Utility Dependencies
+
 ```yaml
 html2canvas: ^1.4.1
 jspdf: ^3.0.2
@@ -369,6 +399,7 @@ resend: ^6.0.3
 ```
 
 ### Development Dependencies
+
 ```yaml
 eslint: ^9.0.0
 eslint-config-next: ^15.0.0
@@ -383,6 +414,7 @@ postcss: ^8.4.0
 ## 🔍 MONITORING & OBSERVABILITY
 
 ### Current Monitoring
+
 ```yaml
 Build_Monitoring: Next.js build output
 Type_Checking: TypeScript compiler
@@ -391,6 +423,7 @@ Browser_Console: Client-side error logging
 ```
 
 ### Recommended Monitoring
+
 ```yaml
 Performance:
   Core_Web_Vitals: Google PageSpeed Insights
@@ -413,6 +446,7 @@ User_Analytics:
 ## 🎯 ARCHITECTURAL DECISIONS
 
 ### Key Technical Decisions
+
 1. **Next.js App Router:** Chosen for modern React patterns and built-in optimizations
 2. **TypeScript:** Type safety and better developer experience
 3. **Tailwind CSS:** Utility-first CSS for rapid development
@@ -420,6 +454,7 @@ User_Analytics:
 5. **Static-First:** Performance optimization for portfolio content
 
 ### Trade-offs Made
+
 ```yaml
 Simplicity_vs_Features:
   Choice: Simplicity
@@ -435,14 +470,17 @@ Bundle_Size_vs_Functionality:
 ```
 
 ---
+
 ## 🔄 CONFLICT DETECTION PROTOCOL (NEW)
 
 ### Mandatory Conflict Detection Before Work Order Execution
+
 **CRITICAL WORKFLOW REQUIREMENT:**
 
 Before executing any work order, the following conflict detection sequence is MANDATORY:
 
 1. **Merge Conflict Scan**
+
    ```bash
    # Check for merge conflict markers
    grep -r "<<<<<<< HEAD" . --exclude-dir=node_modules
@@ -451,6 +489,7 @@ Before executing any work order, the following conflict detection sequence is MA
    ```
 
 2. **Git Status Verification**
+
    ```bash
    # Check for unmerged files
    git status --porcelain | grep "^UU\|^AA\|^DD"
@@ -460,6 +499,7 @@ Before executing any work order, the following conflict detection sequence is MA
    ```
 
 3. **Critical File Conflict Check**
+
    ```bash
    # Verify package.json is conflict-free
    grep -E "<<<<<<|======|>>>>>>" package.json
@@ -472,6 +512,7 @@ Before executing any work order, the following conflict detection sequence is MA
    ```
 
 4. **Conflict Resolution Protocol**
+
    ```yaml
    If_Conflicts_Detected:
      Action: HALT work order execution immediately
@@ -489,6 +530,7 @@ Before executing any work order, the following conflict detection sequence is MA
    ```
 
 5. **Post-Resolution Verification**
+
    ```bash
    # Verify all conflicts resolved
    git status --porcelain | wc -l  # Should return 0
@@ -501,6 +543,7 @@ Before executing any work order, the following conflict detection sequence is MA
    ```
 
 ### Integration with Trinity Method Workflow
+
 - **Pre-Work Order:** Conflict detection is step 1 of every work order
 - **During Work:** Monitor for new conflicts during implementation
 - **Post-Work:** Final conflict scan before completion report

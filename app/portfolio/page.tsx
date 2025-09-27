@@ -28,7 +28,7 @@ export default function Portfolio() {
                 <div className="absolute -top-2 -right-12 text-6xl opacity-20 rotate-12">🏆</div>
                 <div className="absolute -bottom-2 -left-12 text-6xl opacity-20 -rotate-12">🏆</div>
               </div>
-              
+
               <h2 className="text-2xl font-bold text-sunny-darkRed mb-4">
                 This is where I'd put my client projects...
               </h2>
@@ -44,7 +44,7 @@ export default function Portfolio() {
                   <strong>Ready to be the first?</strong><br />
                   You'll get the VIP treatment, my undivided attention, and bragging rights as Client #1
                 </p>
-                
+
                 <Link
                   href="/quote"
                   className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
@@ -55,7 +55,7 @@ export default function Portfolio() {
               </div>
             </div>
           </div>
-          
+
           {/* Hidden Easter Egg - Get Lost Button */}
           <div className="mt-8 pb-8 text-center">
             <p className="text-xs text-sunny-brown/40 mb-2">

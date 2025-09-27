@@ -1,4 +1,4 @@
-import { test, expect, devices } from '@playwright/test'
+import { test, expect, devices as _devices } from '@playwright/test'
 import { mobileTestData } from './fixtures/test-data'
 
 // Mobile tests with iPhone 12 configuration

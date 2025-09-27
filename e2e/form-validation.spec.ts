@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { invalidFormData, edgeCaseData } from './fixtures/test-data'
+import { invalidFormData as _invalidFormData, edgeCaseData } from './fixtures/test-data'
 
 test.describe('Form Validation', () => {
   test.beforeEach(async ({ page }) => {

@@ -5,7 +5,7 @@ import QuoteContainer from '@/components/quote/QuoteContainer'
 
 // Mock the child components
 jest.mock('@/components/quote/QuoteModeSelector', () => {
-  return function MockQuoteModeSelector({ onModeSelect }: any) {
+  return function MockQuoteModeSelector({ onModeSelect }: { onModeSelect: (mode: string) => void }) {
     return (
       <div data-testid="mode-selector">
         <button onClick={() => onModeSelect('guided')}>Select Guided</button>
@@ -16,7 +16,7 @@ jest.mock('@/components/quote/QuoteModeSelector', () => {
 })
 
 jest.mock('@/components/quote/GuidedQuoteForm', () => {
-  return function MockGuidedQuoteForm({ onBack, onComplete }: any) {
+  return function MockGuidedQuoteForm({ onBack, onComplete }: { onBack: () => void; onComplete: () => void }) {
     return (
       <div data-testid="guided-form">
         <button onClick={onBack}>Back from Guided</button>
@@ -27,7 +27,7 @@ jest.mock('@/components/quote/GuidedQuoteForm', () => {
 })
 
 jest.mock('@/components/quote/TechnicalQuoteForm', () => {
-  return function MockTechnicalQuoteForm({ onBack, onComplete }: any) {
+  return function MockTechnicalQuoteForm({ onBack, onComplete }: { onBack: () => void; onComplete: () => void }) {
     return (
       <div data-testid="technical-form">
         <button onClick={onBack}>Back from Technical</button>

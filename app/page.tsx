@@ -34,7 +34,7 @@ export default function Home() {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-ocean-gradient opacity-10"></div>
-        
+
         <div className="container mx-auto px-4 py-16 relative z-10">
           {/* Header */}
           <div className="text-center mb-16 pt-8">
@@ -48,9 +48,9 @@ export default function Home() {
                 <Rocket className="w-5 h-5" />
               </div>
             </div>
-            
+
             <p className="text-xl text-sunny-brown/80 max-w-2xl mx-auto">
-              Self-taught developer building 
+              Self-taught developer building
               <span className="font-semibold text-sunny-red"> production-ready applications</span> with
               modern frameworks and AI integration.
             </p>
@@ -61,7 +61,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold text-center mb-8 text-sunny-darkRed">Featured Projects</h2>
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {projects.map((project, index) => (
-                <div 
+                <div
                   key={index}
                   className={`bg-white/90 backdrop-blur border-2 ${project.color} p-6 rounded-lg shadow-lg hover:shadow-xl transition-all hover:scale-105`}
                 >
@@ -73,7 +73,7 @@ export default function Home() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((tech, i) => (
-                      <span 
+                      <span
                         key={i}
                         className="text-xs px-2 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full"
                       >
@@ -109,7 +109,7 @@ export default function Home() {
           {/* Call to Action */}
           <div className="text-center mt-12">
             <p className="text-sunny-brown/70 mb-4">Have a cool project in mind?</p>
-            <Link 
+            <Link
               href="/quote"
               className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
@@ -118,12 +118,12 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
+
       {/* Wave Pattern Bottom */}
       <svg className="absolute bottom-0 left-0 right-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120">
-        <path 
-          fill="#7DD3FC" 
-          fillOpacity="0.1" 
+        <path
+          fill="#7DD3FC"
+          fillOpacity="0.1"
           d="M0,32L60,37.3C120,43,240,53,360,58.7C480,64,600,64,720,58.7C840,53,960,43,1080,48C1200,53,1320,75,1380,85.3L1440,96L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z"
         />
       </svg>

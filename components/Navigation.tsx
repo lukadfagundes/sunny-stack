@@ -114,7 +114,7 @@ export default function Navigation() {
                   </Link>
                 )
               })}
-              
+
               {/* Mobile Contact Button */}
               <div className="pt-3 mt-3 border-t border-sunny-brown/10">
                 <Link

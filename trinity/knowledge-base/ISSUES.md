@@ -1,6 +1,7 @@
 # ISSUES.md - Comprehensive Issues Database
 
 ## Overview
+
 This document contains pre-populated issue patterns relevant to our Next.js/React/TypeScript stack, extracted from the Trinity Method issues database and organized by severity and frequency for maximum effectiveness.
 
 ---
@@ -8,14 +9,17 @@ This document contains pre-populated issue patterns relevant to our Next.js/Reac
 ## CRITICAL SEVERITY ISSUES
 
 ### React Component Hydration Errors
+
 **Stack**: Next.js, React 18+
 **Frequency**: High
 **Severity**: Critical
 
 #### Problem Description
+
 Hydration errors occur when server-rendered HTML doesn't match client render, breaking interactivity and causing visual glitches. In Next.js App Router, this is particularly common with Server/Client Component mixing.
 
 #### Investigation Approach
+
 1. Check browser console for hydration warnings
 2. Compare server HTML with client render
 3. Look for suppressHydrationWarning usage
@@ -24,6 +28,7 @@ Hydration errors occur when server-rendered HTML doesn't match client render, br
 6. Review date/time/random value usage
 
 #### Resolution Pattern
+
 ```typescript
 // Pattern 1: Client-only wrapper
 'use client';
@@ -61,6 +66,7 @@ export function DateDisplay({ date }: { date: Date }) {
 ```
 
 #### Prevention Measures
+
 - Use ClientOnly wrapper for browser-dependent content
 - Avoid Date objects in initial render
 - Serialize data properly when passing to Client Components
@@ -70,14 +76,17 @@ export function DateDisplay({ date }: { date: Date }) {
 ---
 
 ### Session Knowledge Loss
+
 **Stack**: All Trinity Method sessions
 **Frequency**: High
 **Severity**: Critical
 
 #### Problem Description
+
 Valuable knowledge gained during a session is lost when the session ends, requiring re-investigation and re-discovery in future sessions.
 
 #### Investigation Approach
+
 1. Audit session documentation completeness
 2. Analyze knowledge retrieval success rate
 3. Track re-investigation frequency
@@ -85,6 +94,7 @@ Valuable knowledge gained during a session is lost when the session ends, requir
 5. Identify critical knowledge categories
 
 #### Resolution Pattern
+
 ```markdown
 # Session Knowledge Retention System
 
@@ -115,6 +125,7 @@ Valuable knowledge gained during a session is lost when the session ends, requir
 ```
 
 #### Prevention Measures
+
 - Mandatory session-end documentation
 - Automated pattern extraction
 - Searchable knowledge base
@@ -125,14 +136,17 @@ Valuable knowledge gained during a session is lost when the session ends, requir
 ## MOBILE-SPECIFIC CRITICAL ISSUES (NEW)
 
 ### Mobile Viewport Height Issues
+
 **Stack**: CSS, Next.js, React
 **Frequency**: High on mobile devices
 **Severity**: Critical (affects mobile UX)
 
 #### Problem Description
+
 Mobile browsers handle viewport height differently than desktop, causing layout issues with 100vh on mobile devices due to dynamic UI elements (address bar, navigation).
 
 #### Investigation Approach
+
 1. Test on actual mobile devices or Chrome DevTools mobile emulation
 2. Check for 100vh usage in CSS/styles
 3. Verify layout behavior during scroll
@@ -140,6 +154,7 @@ Mobile browsers handle viewport height differently than desktop, causing layout 
 5. Check for proper dynamic viewport height handling
 
 #### Resolution Pattern
+
 ```css
 /* Pattern 1: Use dynamic viewport height */
 .full-height {
@@ -177,20 +192,24 @@ useEffect(() => {
 ```
 
 #### Prevention Measures
+
 - Always test mobile viewport during development
 - Use dynamic viewport units (dvh, dvw) when available
 - Implement proper orientation change handling
 - Test on multiple mobile devices and browsers
 
 ### Mobile Touch Target Size Issues
+
 **Stack**: CSS, React, Next.js
 **Frequency**: Medium
 **Severity**: Critical (accessibility compliance)
 
 #### Problem Description
+
 Interactive elements too small for mobile touch interaction, failing WCAG accessibility guidelines and causing poor mobile UX.
 
 #### Investigation Approach
+
 1. Measure touch target sizes in mobile emulation
 2. Check for minimum 44px touch targets
 3. Test with finger/thumb interaction simulation
@@ -198,6 +217,7 @@ Interactive elements too small for mobile touch interaction, failing WCAG access
 5. Check accessibility audit results
 
 #### Resolution Pattern
+
 ```css
 /* Ensure minimum touch target sizes */
 button, a, input[type="checkbox"], input[type="radio"] {
@@ -213,6 +233,7 @@ button, a, input[type="checkbox"], input[type="radio"] {
 ```
 
 #### Prevention Measures
+
 - Include touch target size checks in mobile testing protocol
 - Use design system with predefined mobile-friendly sizes
 - Regular accessibility audits during development
@@ -222,14 +243,17 @@ button, a, input[type="checkbox"], input[type="radio"] {
 ## CONFLICT-RELATED CRITICAL ISSUES (NEW)
 
 ### Git Merge Conflicts in Package Files
+
 **Stack**: npm, Git, Next.js
 **Frequency**: High during team development
 **Severity**: Critical (blocks development)
 
 #### Problem Description
+
 Merge conflicts in package.json, package-lock.json, or other configuration files can break dependency resolution and build processes.
 
 #### Investigation Approach
+
 1. Check for conflict markers (<<<<<<, =======, >>>>>>>)
 2. Verify package.json syntax validity
 3. Test npm install after conflict resolution
@@ -237,6 +261,7 @@ Merge conflicts in package.json, package-lock.json, or other configuration files
 5. Verify build process still works
 
 #### Resolution Pattern
+
 ```bash
 # Detection commands
 grep -E "<<<<<<|======|>>>>>>" package.json
@@ -249,20 +274,24 @@ npm run type-check
 ```
 
 #### Prevention Measures
+
 - Run conflict detection before all work orders
 - Never manually edit package-lock.json
 - Use exact dependency versions where possible
 - Regular dependency audits
 
 ### Configuration File Conflicts
+
 **Stack**: TypeScript, ESLint, Next.js config
 **Frequency**: Medium
 **Severity**: High (affects development tools)
 
 #### Problem Description
+
 Conflicts in configuration files can break development tools, type checking, and build processes.
 
 #### Investigation Approach
+
 1. Check all .config files for conflict markers
 2. Verify configuration syntax after resolution
 3. Test development server startup
@@ -270,6 +299,7 @@ Conflicts in configuration files can break development tools, type checking, and
 5. Check for conflicting configuration options
 
 #### Resolution Pattern
+
 ```bash
 # Detection for configuration files
 find . -name "*.config.*" -exec grep -l "<<<<<<\|======\|>>>>>>" {} \;
@@ -281,6 +311,7 @@ npm run lint         # Verify ESLint config
 ```
 
 #### Prevention Measures
+
 - Include configuration files in conflict detection protocol
 - Backup working configurations before major changes
 - Use consistent formatting in configuration files
@@ -288,14 +319,17 @@ npm run lint         # Verify ESLint config
 ---## HIGH SEVERITY ISSUES
 
 ### React useEffect Cleanup Missing
+
 **Stack**: React, React Native, Next.js
 **Frequency**: High
 **Severity**: High
 
 #### Problem Description
+
 Components fail to properly clean up side effects when unmounting, leading to memory leaks, performance degradation, and "Can't perform a React state update on an unmounted component" warnings.
 
 #### Investigation Approach
+
 1. Search for all useEffect hooks without return statements
 2. Check browser DevTools for memory heap growth
 3. Monitor console for state update warnings
@@ -303,6 +337,7 @@ Components fail to properly clean up side effects when unmounting, leading to me
 5. Add console logs in cleanup functions
 
 #### Resolution Pattern
+
 ```javascript
 function ComponentWithSideEffects() {
   useEffect(() => {
@@ -327,6 +362,7 @@ function ComponentWithSideEffects() {
 ```
 
 #### Prevention Measures
+
 - Always return cleanup function from useEffect
 - Use ESLint rule: react-hooks/exhaustive-deps
 - Create custom hooks for common side effects
@@ -335,14 +371,17 @@ function ComponentWithSideEffects() {
 ---
 
 ### Async Component State Race Conditions
+
 **Stack**: React, React Native, Next.js
 **Frequency**: Medium
 **Severity**: High
 
 #### Problem Description
+
 Race conditions occur when multiple async operations update component state in unpredictable orders, leading to inconsistent UI states and data corruption.
 
 #### Investigation Approach
+
 1. Add timestamps to all async operations
 2. Log state updates with operation identifiers
 3. Test with network throttling
@@ -350,6 +389,7 @@ Race conditions occur when multiple async operations update component state in u
 5. Use React DevTools to track state changes
 
 #### Resolution Pattern
+
 ```javascript
 // Pattern: Request cancellation with AbortController
 function SearchComponent() {
@@ -392,6 +432,7 @@ function SearchComponent() {
 ```
 
 #### Prevention Measures
+
 - Always cancel previous requests
 - Use request timestamps for ordering
 - Implement proper state machines
@@ -400,14 +441,17 @@ function SearchComponent() {
 ---
 
 ### Trinity Consensus Delays
+
 **Stack**: Trinity Method team coordination
 **Frequency**: Medium
 **Severity**: High
 
 #### Problem Description
+
 Achieving consensus among Trinity members causes delays, conflicting recommendations, and implementation bottlenecks.
 
 #### Investigation Approach
+
 1. Track consensus achievement time
 2. Document conflict patterns
 3. Analyze decision reversal frequency
@@ -415,6 +459,7 @@ Achieving consensus among Trinity members causes delays, conflicting recommendat
 5. Review consensus criteria clarity
 
 #### Resolution Pattern
+
 ```markdown
 # Trinity Consensus Acceleration Protocol
 
@@ -442,6 +487,7 @@ Achieving consensus among Trinity members causes delays, conflicting recommendat
 ```
 
 #### Prevention Measures
+
 - Define consensus rules upfront
 - Use async consensus for non-urgent decisions
 - Implement tie-breaking mechanisms
@@ -452,14 +498,17 @@ Achieving consensus among Trinity members causes delays, conflicting recommendat
 ## MEDIUM SEVERITY ISSUES
 
 ### Next.js Server Component Data Fetching Waterfall
+
 **Stack**: Next.js 13+, React Server Components
 **Frequency**: High
 **Severity**: Medium
 
 #### Problem Description
+
 Sequential data fetching in Server Components creates waterfalls where each request waits for the previous one, significantly impacting page load times.
 
 #### Investigation Approach
+
 1. Enable Next.js request logging
 2. Use Chrome DevTools Network tab
 3. Add console.time() markers around fetch calls
@@ -467,6 +516,7 @@ Sequential data fetching in Server Components creates waterfalls where each requ
 5. Check for sequential await statements
 
 #### Resolution Pattern
+
 ```typescript
 // Anti-pattern: Sequential fetching
 async function SequentialComponent() {
@@ -504,6 +554,7 @@ export default function StreamingPage() {
 ```
 
 #### Prevention Measures
+
 - Always parallelize independent data fetches
 - Use Suspense boundaries strategically
 - Implement data preloading patterns
@@ -512,14 +563,17 @@ export default function StreamingPage() {
 ---
 
 ### React Component Re-render Cascade
+
 **Stack**: React, Preact
 **Frequency**: High
 **Severity**: Medium
 
 #### Problem Description
+
 Unintentional re-render cascades occur when parent component updates trigger unnecessary re-renders of all child components.
 
 #### Investigation Approach
+
 1. Enable React DevTools "Highlight Updates"
 2. Use Profiler to identify unnecessary renders
 3. Check component render counts
@@ -527,6 +581,7 @@ Unintentional re-render cascades occur when parent component updates trigger unn
 5. Monitor performance with Chrome DevTools
 
 #### Resolution Pattern
+
 ```javascript
 // Pattern: Memoization with React.memo
 const ExpensiveChild = React.memo(({ data, onUpdate }) => {
@@ -558,6 +613,7 @@ function ParentComponent() {
 ```
 
 #### Prevention Measures
+
 - Use React.memo for expensive components
 - Memoize callbacks with useCallback
 - Memoize values with useMemo
@@ -566,14 +622,17 @@ function ParentComponent() {
 ---
 
 ### Next.js Metadata and SEO Configuration Issues
+
 **Stack**: Next.js 13+
 **Frequency**: Medium
 **Severity**: Medium
 
 #### Problem Description
+
 Incorrect metadata configuration leads to poor SEO, broken social media previews, and missing critical meta tags.
 
 #### Investigation Approach
+
 1. Use SEO analysis tools to check meta tags
 2. Test social media preview tools
 3. Check View Source for rendered metadata
@@ -581,6 +640,7 @@ Incorrect metadata configuration leads to poor SEO, broken social media previews
 5. Test dynamic metadata generation
 
 #### Resolution Pattern
+
 ```typescript
 // Pattern: Static metadata
 import type { Metadata } from 'next';
@@ -619,6 +679,7 @@ export async function generateMetadata(
 ```
 
 #### Prevention Measures
+
 - Use metadata templates for consistency
 - Test with SEO validation tools
 - Verify Open Graph debuggers
@@ -627,14 +688,17 @@ export async function generateMetadata(
 ---
 
 ### Investigation Scope Creep
+
 **Stack**: All Trinity Method implementations
 **Frequency**: High
 **Severity**: Medium
 
 #### Problem Description
+
 Investigations expand beyond their original scope, leading to analysis paralysis, delayed implementations, and loss of focus on the core problem.
 
 #### Investigation Approach
+
 1. Define clear investigation boundaries upfront
 2. Set time limits for each investigation phase
 3. Document scope expansions as they occur
@@ -642,6 +706,7 @@ Investigations expand beyond their original scope, leading to analysis paralysis
 5. Identify patterns in scope creep triggers
 
 #### Resolution Pattern
+
 ```markdown
 # Investigation Scope Control Framework
 
@@ -673,6 +738,7 @@ Investigations expand beyond their original scope, leading to analysis paralysis
 ```
 
 #### Prevention Measures
+
 - Use timer during investigations
 - Write scope before starting
 - Review scope every 15 minutes
@@ -683,11 +749,13 @@ Investigations expand beyond their original scope, leading to analysis paralysis
 ## UNIVERSAL PATTERNS
 
 ### Investigation Template Standardization
+
 **Applicable To**: All technical problem solving
 **Frequency**: Every issue
 **Impact**: Resolution success rate
 
 #### Universal Investigation Template
+
 ```markdown
 ## 1. Problem Identification
 - [ ] Clear problem statement documented
@@ -728,11 +796,13 @@ Investigations expand beyond their original scope, leading to analysis paralysis
 ---
 
 ### Timeout Prevention Protocol
+
 **Applicable To**: All AI-assisted development sessions
 **Frequency**: Critical
 **Impact**: Session continuity
 
 #### 3-Minute Progress Update Protocol
+
 ```markdown
 ## Implementation Pattern
 Every 3 minutes during complex tasks, provide:
@@ -748,6 +818,7 @@ Every 3 minutes during complex tasks, provide:
 ```
 
 #### Prevention Measures
+
 - Set timer for 2.5-minute intervals
 - Break complex tasks into smaller chunks
 - Maintain continuous dialogue during investigation
@@ -756,11 +827,13 @@ Every 3 minutes during complex tasks, provide:
 ---
 
 ### Cross-Session Knowledge Bridging
+
 **Applicable To**: All development projects
 **Frequency**: Every session
 **Impact**: Development velocity
 
 #### Knowledge Persistence Structure
+
 ```yaml
 project/
 ├── trinity/
@@ -779,6 +852,7 @@ project/
 ```
 
 #### Session End Documentation Requirements
+
 ```markdown
 ## Required Artifacts
 1. **Session Summary**
@@ -803,11 +877,13 @@ project/
 ---
 
 ### Evidence-Based Decision Making
+
 **Applicable To**: All technical decisions
 **Frequency**: Every significant choice
 **Impact**: Decision quality
 
 #### Decision Template
+
 ```markdown
 ### Decision: [Technology/Approach Selection]
 
@@ -850,21 +926,25 @@ project/
 ## ISSUE FREQUENCY SUMMARY
 
 ### Critical Issues (Address Immediately)
+
 1. React Component Hydration Errors - Next.js specific
 2. Session Knowledge Loss - Trinity Method universal
 
 ### High Severity Issues (Address This Session)
+
 1. React useEffect Cleanup Missing - Memory leaks
 2. Async Component State Race Conditions - Data integrity
 3. Trinity Consensus Delays - Team coordination
 
 ### Medium Severity Issues (Address as Encountered)
+
 1. Next.js Server Component Data Fetching Waterfall - Performance
 2. React Component Re-render Cascade - Performance
 3. Next.js Metadata and SEO Configuration Issues - SEO
 4. Investigation Scope Creep - Trinity Method efficiency
 
 ### Universal Patterns (Apply Always)
+
 1. Investigation Template Standardization
 2. Timeout Prevention Protocol
 3. Cross-Session Knowledge Bridging

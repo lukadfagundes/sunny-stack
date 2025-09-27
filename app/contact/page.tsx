@@ -23,9 +23,9 @@ export default function Contact() {
             {/* Direct Contact Card */}
             <div className="bg-white/90 backdrop-blur rounded-xl shadow-xl p-6">
               <h2 className="text-xl font-bold text-sunny-darkRed mb-4">Direct Contact</h2>
-              
+
               <div className="space-y-4">
-                <a 
+                <a
                   href="mailto:luka@sunny-stack.com"
                   className="flex items-start gap-3 group hover:text-sunny-red transition-colors"
                 >
@@ -38,7 +38,7 @@ export default function Contact() {
                   </div>
                 </a>
 
-                <a 
+                <a
                   href="tel:+13183329700"
                   className="flex items-start gap-3 group hover:text-sunny-red transition-colors"
                 >
@@ -67,7 +67,7 @@ export default function Contact() {
             {/* Availability Card */}
             <div className="bg-white/90 backdrop-blur rounded-xl shadow-xl p-6">
               <h2 className="text-xl font-bold text-sunny-darkRed mb-4">Availability</h2>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <Clock className="w-5 h-5 text-sunny-red mt-1" />
@@ -96,7 +96,7 @@ export default function Contact() {
                   <Linkedin className="w-5 h-5 text-sunny-red mt-1" />
                   <div>
                     <p className="font-medium">LinkedIn</p>
-                    <a 
+                    <a
                       href="https://www.linkedin.com/in/jason-fagundes-54785a102/"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -113,7 +113,7 @@ export default function Contact() {
           {/* What I'm Looking For */}
           <div className="bg-white/90 backdrop-blur rounded-xl shadow-xl p-8 mb-12">
             <h2 className="text-2xl font-bold text-sunny-darkRed mb-6">What I'm Looking For</h2>
-            
+
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <h3 className="font-bold text-sunny-red mb-3">Ideal Projects</h3>
@@ -167,11 +167,11 @@ export default function Contact() {
               Ready to Work Together?
             </h2>
             <p className="text-sunny-brown/80 mb-6 max-w-2xl mx-auto">
-              Looking for a freelance developer to bring your project to life? 
+              Looking for a freelance developer to bring your project to life?
               Let's discuss how I can help build your next web application or integrate cutting-edge AI solutions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
+              <a
                 href="mailto:luka@sunny-stack.com"
                 className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
               >

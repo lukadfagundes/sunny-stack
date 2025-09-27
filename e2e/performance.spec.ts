@@ -1,4 +1,23 @@
 import { test, expect } from '@playwright/test'
+
+// Extend window interface for performance tests
+declare global {
+  interface Window {
+    frameCount?: number;
+    startTime?: number;
+  }
+}
+
+// Define performance memory interface
+interface PerformanceMemory {
+  usedJSHeapSize: number;
+  totalJSHeapSize: number;
+  jsHeapSizeLimit: number;
+}
+
+interface PerformanceWithMemory extends Performance {
+  memory?: PerformanceMemory;
+}
 import { performanceThresholds } from './fixtures/test-data'
 
 test.describe('Performance', () => {
@@ -33,7 +52,7 @@ test.describe('Performance', () => {
     // Get initial memory usage
     const initialMetrics = await page.evaluate(() => {
       if ('memory' in performance) {
-        return (performance as any).memory.usedJSHeapSize
+        return (performance as PerformanceWithMemory).memory?.usedJSHeapSize || 0
       }
       return 0
     })
@@ -51,7 +70,7 @@ test.describe('Performance', () => {
     // Check memory after navigation
     const finalMetrics = await page.evaluate(() => {
       if ('memory' in performance) {
-        return (performance as any).memory.usedJSHeapSize
+        return (performance as PerformanceWithMemory).memory?.usedJSHeapSize || 0
       }
       return 0
     })
@@ -122,12 +141,12 @@ test.describe('Performance', () => {
 
     // Start performance measurement
     await page.evaluateHandle(() => {
-      (window as any).frameCount = 0;
-      (window as any).startTime = performance.now()
+      window.frameCount = 0;
+      window.startTime = performance.now()
 
       const countFrames = () => {
-        (window as any).frameCount++
-        if (performance.now() - (window as any).startTime < 1000) {
+        window.frameCount = (window.frameCount || 0) + 1
+        if (performance.now() - (window.startTime || 0) < 1000) {
           requestAnimationFrame(countFrames)
         }
       }
@@ -139,7 +158,7 @@ test.describe('Performance', () => {
     await page.waitForTimeout(1000)
 
     // Check FPS
-    const fps = await page.evaluate(() => (window as any).frameCount)
+    const fps = await page.evaluate(() => window.frameCount || 0)
     expect(fps).toBeGreaterThan(50) // Allow some variance from 60 FPS
   })
 

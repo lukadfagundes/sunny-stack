@@ -42,14 +42,14 @@ export const generateResumePDF = () => {
   const nameWidth = doc.getTextWidth('LUKA FAGUNDES');
   doc.text('LUKA FAGUNDES', (pageWidth - nameWidth) / 2, yPosition);
   yPosition += 8;
-  
+
   doc.setFontSize(14);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(60, 60, 60);
   const titleWidth = doc.getTextWidth('Full Stack Developer');
   doc.text('Full Stack Developer', (pageWidth - titleWidth) / 2, yPosition);
   yPosition += 6;
-  
+
   doc.setFontSize(10);
   const contactInfo = 'Salem, OR | 318-332-9700 | luka@sunny-stack.com | sunny-stack.com';
   const contactWidth = doc.getTextWidth(contactInfo);
@@ -68,14 +68,14 @@ export const generateResumePDF = () => {
   addSeparator();
   addText('CORE COMPETENCIES', 14, true, [0, 0, 0]);
   yPosition += 2;
-  
+
   const competencies = [
     'Full Stack Development • Web Application Architecture • RESTful API Design • Database Management',
     'Agile Methodologies • Git Version Control • CI/CD • Test-Driven Development • Code Review',
     'Technical Sales • B2B Sales • Customer Relationship Management • Technical Documentation',
     'Problem Solving • Requirements Analysis • Project Management • Cross-functional Collaboration'
   ];
-  
+
   competencies.forEach(line => {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
@@ -88,7 +88,7 @@ export const generateResumePDF = () => {
   addSeparator();
   addText('TECHNICAL SKILLS', 14, true, [0, 0, 0]);
   yPosition += 2;
-  
+
   const skills = {
     'Languages': 'TypeScript, JavaScript, Python, Dart, HTML/CSS, SQL',
     'Frontend': 'React 19, Next.js 15, Flutter, Tailwind CSS, Framer Motion, Zustand',
@@ -167,19 +167,19 @@ export const generateResumePDF = () => {
       doc.addPage();
       yPosition = margin;
     }
-    
+
     // Job title - bold
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.text(job.title, margin, yPosition);
-    
+
     // Company - right aligned
     doc.setFont('helvetica', 'normal');
     const companyText = job.company;
     const companyWidth = doc.getTextWidth(companyText);
     doc.text(companyText, pageWidth - margin - companyWidth, yPosition);
     yPosition += 5;
-    
+
     // Period and location
     doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
@@ -187,7 +187,7 @@ export const generateResumePDF = () => {
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
     yPosition += 6;
-    
+
     // Highlights
     job.highlights.forEach((highlight) => {
       const bulletText = `• ${highlight}`;
@@ -208,7 +208,7 @@ export const generateResumePDF = () => {
   addSeparator();
   addText('PROJECTS', 14, true, [0, 0, 0]);
   yPosition += 2;
-  
+
   const projects = [
     {
       name: 'Enterprise Web Application - Portfolio Platform',
@@ -233,18 +233,18 @@ export const generateResumePDF = () => {
       doc.addPage();
       yPosition = margin;
     }
-    
+
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.text(project.name, margin, yPosition);
     yPosition += 5;
-    
+
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(60, 60, 60);
     doc.text(project.tech, margin, yPosition);
     yPosition += 5;
-    
+
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
     const descLines = doc.splitTextToSize(project.description, pageWidth - 2 * margin);

@@ -96,9 +96,9 @@ export default function Resume() {
             <p className="text-lg text-sunny-brown/80 mb-6">
               Click sections below to explore my background
             </p>
-            
+
             {/* Download Button */}
-            <button 
+            <button
               onClick={handleDownloadPDF}
               className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-2 px-6 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
@@ -194,7 +194,7 @@ export default function Resume() {
                 <div className="relative">
                   {/* Timeline line */}
                   <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-sunny-gold/30"></div>
-                  
+
                   {/* Timeline items */}
                   <div className="space-y-8">
                     {journey.map((item, index) => (
@@ -230,7 +230,7 @@ export default function Resume() {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h3 className="font-bold text-sunny-red mb-4">Backend Technologies</h3>
                     <div className="flex flex-wrap gap-3">
@@ -241,7 +241,7 @@ export default function Resume() {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h3 className="font-bold text-sunny-red mb-4">Database & Infrastructure</h3>
                     <div className="flex flex-wrap gap-3">
@@ -252,7 +252,7 @@ export default function Resume() {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h3 className="font-bold text-sunny-red mb-4">Development Environment</h3>
                     <div className="grid md:grid-cols-2 gap-4">
