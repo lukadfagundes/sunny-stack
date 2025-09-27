@@ -112,7 +112,7 @@ jobs:
 
       - name: Annotate PR with Coverage
         if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -170,7 +170,7 @@ jobs:
 
       - name: Update PR Description with Badge
         if: github.event_name == 'pull_request' && steps.readiness.outputs.score
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const score = '${{ steps.readiness.outputs.score }}';
