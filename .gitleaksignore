@@ -47,5 +47,11 @@ pnpm-lock.yaml
 # Specific false positives for this project
 # Jest setup file contains test API key
 jest.setup.js:29
-# Any line containing "test_api_key" is clearly a test value
+jest.setup.js:test_api_key_for_jest_testing
+# Any line containing test API key patterns
 test_api_key
+test_api_key_for_jest_testing
+mock_api_key_for_build
+# Workflow environment variables for build
+*.yml:mock_api_key_for_build
+*.yaml:mock_api_key_for_build

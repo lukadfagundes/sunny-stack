@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-// Initialize Resend with your API key
+// Lazy initialization of Resend to avoid build-time errors
 // You'll need to sign up at https://resend.com and get an API key
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY environment variable is required');
+  }
+  return new Resend(apiKey);
+}
 
 // Rate limiting configuration
 const RATE_LIMIT_MINUTE = 10  // 10 requests per minute
@@ -483,6 +489,7 @@ export async function POST(request: Request) {
     }
 
     // Send the email using Resend
+    const resend = getResendClient();
     const response = await resend.emails.send({
       from: 'Sunny Stack Forms <forms@sunny-stack.com>', // Using your verified domain
       to: ['luka@sunny-stack.com'],

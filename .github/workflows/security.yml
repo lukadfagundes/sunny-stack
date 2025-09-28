@@ -145,7 +145,16 @@ jobs:
           echo "- Container Scan: ${{ needs.container-scan.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Infrastructure Scan: ${{ needs.infrastructure-scan.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Security scanning completed" >> $GITHUB_STEP_SUMMARY
+
+          # Check if any critical scans failed (ignore skipped and canceled)
+          if [[ "${{ needs.dependency-check.result }}" == "failure" ]] || \
+             [[ "${{ needs.secret-scan.result }}" == "failure" ]] || \
+             [[ "${{ needs.container-scan.result }}" == "failure" ]] || \
+             [[ "${{ needs.infrastructure-scan.result }}" == "failure" ]]; then
+            echo "⚠️ Some security scans detected issues. Review the scan results above." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Security scanning completed successfully" >> $GITHUB_STEP_SUMMARY
+          fi
         continue-on-error: true
 
       - name: Create security summary artifact

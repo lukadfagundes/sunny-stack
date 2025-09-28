@@ -55,6 +55,9 @@ jobs:
       - name: Build JavaScript/TypeScript
         if: matrix.language == 'javascript'
         run: npm run build
+        env:
+          RESEND_API_KEY: "mock_api_key_for_build"
+          NODE_ENV: "production"
 
       # Autobuild for other languages
       - name: Autobuild

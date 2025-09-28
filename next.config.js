@@ -8,6 +8,18 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   // Removed 'output: export' to enable API routes
   trailingSlash: true,
+
+  // Build configuration
+  generateEtags: false,
+  compress: true,
+  poweredByHeader: false,
+
+  // Cache configuration
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
+
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
