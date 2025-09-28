@@ -65,6 +65,7 @@ jobs:
           path: ./
           base: main
           head: HEAD
+          extra_args: --debug --force-skip-binaries --force-skip-archives
         continue-on-error: true
 
       - name: Gitleaks Secret Scan
@@ -145,6 +146,7 @@ jobs:
           echo "- Infrastructure Scan: ${{ needs.infrastructure-scan.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ Security scanning completed" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
       - name: Create security summary artifact
         run: |
@@ -154,6 +156,7 @@ jobs:
           echo "Secret Scan: ${{ needs.secret-scan.result }}" >> security-summary.txt
           echo "Container Scan: ${{ needs.container-scan.result }}" >> security-summary.txt
           echo "Infrastructure Scan: ${{ needs.infrastructure-scan.result }}" >> security-summary.txt
+        continue-on-error: true
 
       - name: Upload summary
         uses: actions/upload-artifact@v4

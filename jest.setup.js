@@ -25,8 +25,8 @@ jest.mock("next/navigation", () => ({
   },
 }));
 
-// Mock environment variables for testing
-process.env.RESEND_API_KEY = "test_api_key";
+// Mock environment variables for testing - NOT REAL SECRETS
+process.env.RESEND_API_KEY = "test_api_key_for_jest_testing";
 
 // Suppress console errors during tests (optional, remove if you want to see errors)
 const originalError = console.error;

@@ -32,27 +32,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        if: matrix.language == 'javascript'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here
           # queries: security-extended,security-and-quality
           queries: security-and-quality
 
-      # Autobuild attempts to build any compiled languages
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+      # Install dependencies and build for JavaScript/TypeScript
+      - name: Install dependencies
+        if: matrix.language == 'javascript'
+        run: npm ci
 
-      # If autobuild fails, you can remove it and manually build:
-      # - name: Build JavaScript/TypeScript
-      #   if: matrix.language == 'javascript'
-      #   run: |
-      #     npm ci
-      #     npm run build
+      - name: Build JavaScript/TypeScript
+        if: matrix.language == 'javascript'
+        run: npm run build
+
+      # Autobuild for other languages
+      - name: Autobuild
+        if: matrix.language != 'javascript'
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
 
@@ -62,7 +72,7 @@ jobs:
         with:
           name: codeql-results-${{ matrix.language }}
           path: |
-            ../results/
+            results/
             **/*.sarif
           retention-days: 7
 
@@ -89,7 +99,7 @@ jobs:
           ignore-unfixed: true
 
       - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: "trivy-results.sarif"

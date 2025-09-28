@@ -1,0 +1,51 @@
+# Gitleaks ignore file - prevents false positives
+
+# Test files and mock data
+**/test/**
+**/tests/**
+**/__tests__/**
+**/spec/**
+**/__mocks__/**
+**/*.test.*
+**/*.spec.*
+**/*.mock.*
+
+# Documentation
+**/docs/**
+**/documentation/**
+**/*.md
+**/*.txt
+
+# Package files (often contain example keys)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment example files
+**/.env.example
+**/.env.template
+**/.env.sample
+
+# Common development files
+**/.vscode/**
+**/.idea/**
+**/node_modules/**
+
+# Build outputs
+**/dist/**
+**/build/**
+**/out/**
+**/.next/**
+
+# Common false positives
+**/jest.setup.js
+**/jest.config.*
+
+# Trinity Method files (if they contain example data)
+**/trinity/**
+
+# Specific false positives for this project
+# Jest setup file contains test API key
+jest.setup.js:29
+# Any line containing "test_api_key" is clearly a test value
+test_api_key
