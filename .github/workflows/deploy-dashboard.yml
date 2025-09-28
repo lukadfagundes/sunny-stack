@@ -1,10 +1,9 @@
-name: Deploy Trinity Dashboard (DISABLED)
+name: Deploy Trinity Dashboard (Manual Only - Deployed via Vercel)
 
 on:
-  # Disabled - GitHub Pages deployment turned off
-  # push:
-  #   branches: [main]
-  # workflow_dispatch:
+  # This project is deployed via Vercel, not GitHub Pages
+  # Manual trigger only for testing purposes
+  workflow_dispatch:
 
 permissions:
   contents: write

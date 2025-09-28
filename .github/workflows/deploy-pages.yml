@@ -1,10 +1,9 @@
-name: Deploy to GitHub Pages (DISABLED)
+name: Deploy to GitHub Pages (Manual Only - Deployed via Vercel)
 
 on:
-  # Disabled - GitHub Pages deployment turned off
-  # push:
-  #   branches: [main, master]
-  # workflow_dispatch:
+  # This project is deployed via Vercel, not GitHub Pages
+  # Manual trigger only for testing purposes
+  workflow_dispatch:
 
 # CRITICAL: Must have write permissions for Pages deployment
 permissions:
