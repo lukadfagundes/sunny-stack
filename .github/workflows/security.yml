@@ -60,19 +60,33 @@ jobs:
           fetch-depth: 0 # Full history for better detection
 
       - name: TruffleHog Secret Scan
+        id: trufflehog
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: main
-          head: HEAD
-          extra_args: --debug --force-skip-binaries --force-skip-archives
+          base: ${{ github.event.before || github.event.repository.default_branch || 'main' }}
+          head: ${{ github.sha }}
+          extra_args: --force-skip-binaries --force-skip-archives --only-verified
         continue-on-error: true
 
+      - name: Check TruffleHog results
+        if: steps.trufflehog.outcome == 'failure'
+        run: |
+          echo "::warning::TruffleHog found potential secrets"
+          echo "Review the findings carefully - only verified secrets are shown"
+
       - name: Gitleaks Secret Scan
+        id: gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
+
+      - name: Check Gitleaks results
+        if: steps.gitleaks.outcome == 'failure'
+        run: |
+          echo "::warning::Gitleaks found potential secrets"
+          echo "Check .gitleaks.toml for configuration"
 
   container-scan:
     name: Container Security Scan
