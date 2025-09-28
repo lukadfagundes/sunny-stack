@@ -7,6 +7,14 @@ on:
     branches: [main, dev, develop]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  security-events: write
+  actions: read
+  checks: write
+
 env:
   NODE_VERSION: "18"
   PYTHON_VERSION: "3.10"
