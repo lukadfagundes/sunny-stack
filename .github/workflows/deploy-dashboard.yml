@@ -1,9 +1,10 @@
-name: Deploy Trinity Dashboard
+name: Deploy Trinity Dashboard (DISABLED)
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  # Disabled - GitHub Pages deployment turned off
+  # push:
+  #   branches: [main]
+  # workflow_dispatch:
 
 permissions:
   contents: write

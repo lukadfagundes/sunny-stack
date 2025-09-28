@@ -288,12 +288,12 @@ jobs:
             htmlcov/
             python-coverage.json
 
-  # Deploy Dashboard Data to GitHub Pages
+  # Deploy Dashboard Data to GitHub Pages (DISABLED)
   deploy-dashboard-data:
-    name: Deploy Dashboard Data
+    name: Deploy Dashboard Data (DISABLED)
     runs-on: ubuntu-latest
     needs: [node-ci]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: false # Disabled - GitHub Pages deployment turned off
 
     steps:
       - name: Checkout code

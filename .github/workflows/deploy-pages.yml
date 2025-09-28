@@ -1,9 +1,10 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (DISABLED)
 
 on:
-  push:
-    branches: [main, master]
-  workflow_dispatch:
+  # Disabled - GitHub Pages deployment turned off
+  # push:
+  #   branches: [main, master]
+  # workflow_dispatch:
 
 # CRITICAL: Must have write permissions for Pages deployment
 permissions:
