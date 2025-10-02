@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Clock, Send } from 'lucide-react'
+import { Mail, Phone, MapPin, Clock, Send, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Contact() {
@@ -92,20 +92,35 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <Linkedin className="w-5 h-5 text-sunny-red mt-1" />
+                <a
+                  href="https://www.linkedin.com/in/jason-fagundes-54785a102/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 group hover:text-sunny-red transition-colors"
+                >
+                  <ExternalLink className="w-5 h-5 text-sunny-red mt-1" />
                   <div>
                     <p className="font-medium">LinkedIn</p>
-                    <a
-                      href="https://www.linkedin.com/in/jason-fagundes-54785a102/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-sunny-brown/70 hover:text-sunny-red transition-colors"
-                    >
+                    <p className="text-sm text-sunny-brown/70 group-hover:text-sunny-red">
                       Connect on LinkedIn
-                    </a>
+                    </p>
                   </div>
-                </div>
+                </a>
+
+                <a
+                  href="https://github.com/lukadfagundes"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 group hover:text-sunny-red transition-colors"
+                >
+                  <ExternalLink className="w-5 h-5 text-sunny-red mt-1" />
+                  <div>
+                    <p className="font-medium">GitHub</p>
+                    <p className="text-sm text-sunny-brown/70 group-hover:text-sunny-red">
+                      View my projects
+                    </p>
+                  </div>
+                </a>
               </div>
             </div>
           </div>

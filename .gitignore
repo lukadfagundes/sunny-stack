@@ -151,15 +151,6 @@ local_config/
 *.local.*
 nul
 
-# Trinity Method deployment files
-trinity/
-CLAUDE.md
-trinity-method-source/
-ARCHITECTURE.md
-ISSUES.md
-To-do.md
-Trinity.md
-
 # Testing Artifacts
 playwright-report/
 test-results/
@@ -178,3 +169,10 @@ build-output.txt
 
 # Additional Test Coverage
 *.lcov
+
+# Trinity Method deployment files
+.claude/
+trinity/
+trinity-hooks/
+CLAUDE.md
+TRINITY.md

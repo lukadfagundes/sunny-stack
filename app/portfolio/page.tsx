@@ -1,7 +1,16 @@
-import { Sparkles, Rocket, Compass } from 'lucide-react'
+'use client'
+
+import { useState } from 'react'
+import { Sparkles, Rocket, Compass, ChevronDown, Code2, Briefcase, ExternalLink, Zap, Users, GitBranch } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Portfolio() {
+  const [expandedCard, setExpandedCard] = useState<string | null>(null)
+
+  const toggleCard = (cardId: string) => {
+    setExpandedCard(expandedCard === cardId ? null : cardId)
+  }
+
   return (
     <main className="bg-gradient-to-br from-sunny-cream via-white to-sunny-sky/20" style={{ minHeight: '100dvh' }}>
       <div className="container mx-auto px-4 py-8">
@@ -10,48 +19,194 @@ export default function Portfolio() {
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="bg-sunny-gradient bg-clip-text text-transparent">
-                Client Portfolio
+                Portfolio
               </span>
             </h1>
             <p className="text-lg text-sunny-brown/80">
-              Where amazing client projects will live
+              Personal passion projects & professional work
             </p>
           </div>
 
-          {/* Empty State */}
-          <div className="bg-white/90 backdrop-blur rounded-2xl shadow-xl p-12 text-center">
-            <div className="max-w-md mx-auto">
-              <div className="mb-6 relative">
-                <div className="w-32 h-32 mx-auto bg-sunny-gold/20 rounded-full flex items-center justify-center">
-                  <Sparkles className="w-16 h-16 text-sunny-gold" />
+          {/* Project Cards Grid */}
+          <div className="space-y-6">
+            {/* Personal Projects Card */}
+            <div
+              className="bg-white/90 backdrop-blur border-2 border-sunny-gold/30 rounded-2xl shadow-lg hover:shadow-xl transition-all overflow-hidden"
+            >
+              <button
+                onClick={() => toggleCard('personal')}
+                className="w-full p-6 flex items-center justify-between hover:bg-sunny-gold/5 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-sunny-gold/20 rounded-full flex items-center justify-center">
+                    <Code2 className="w-6 h-6 text-sunny-orange" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="text-2xl font-bold text-sunny-darkRed">Personal Projects</h2>
+                    <p className="text-sm text-sunny-brown/60">Open-source tools & experiments</p>
+                  </div>
                 </div>
-                <div className="absolute -top-2 -right-12 text-6xl opacity-20 rotate-12">🏆</div>
-                <div className="absolute -bottom-2 -left-12 text-6xl opacity-20 -rotate-12">🏆</div>
+                <ChevronDown
+                  className={`w-6 h-6 text-sunny-brown/60 transition-transform duration-200 ${
+                    expandedCard === 'personal' ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              <div
+                className={`transition-all duration-300 ease-in-out ${
+                  expandedCard === 'personal' ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="px-6 pb-6 pt-2 border-t border-sunny-gold/20">
+                  {/* Trinity Method SDK */}
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <GitBranch className="w-5 h-5 text-sunny-red mt-1 flex-shrink-0" />
+                      <div>
+                        <h3 className="text-xl font-bold text-sunny-darkRed mb-2">Trinity Method SDK</h3>
+                        <p className="text-sunny-brown/80 mb-4">
+                          An innovative development methodology and toolkit designed to revolutionize AI-assisted coding.
+                          Built specifically for Claude Code, Trinity Method brings structure, consistency, and systematic
+                          approaches to AI-powered software development.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-sunny-cream/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-semibold text-sunny-red flex items-center gap-2">
+                        <Zap className="w-4 h-4" />
+                        Key Features
+                      </h4>
+                      <ul className="space-y-2 text-sm text-sunny-brown/80">
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>7 Specialized AI Agents</strong> - Each with distinct roles (ALY as CTO, AJ as Chief Code, etc.)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Investigation-First Methodology</strong> - Understand before implementing</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Automatic Quality Setup</strong> - Linting, pre-commit hooks, and quality gates</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Hierarchical Knowledge Base</strong> - Persistent learning across development sessions</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Lightning-Fast Deployment</strong> - 49 components deployed in under 15 seconds</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-sunny-sky/10 rounded-lg p-4 border border-sunny-ocean/20">
+                      <h4 className="font-semibold text-sunny-ocean mb-2 flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        Join the Development
+                      </h4>
+                      <p className="text-sm text-sunny-brown/80 mb-3">
+                        Trinity Method SDK is open-source and actively seeking contributors! Whether you're working with
+                        Claude Code, Cursor, Windsurf, or other AI coding assistants, your insights can help shape the
+                        future of AI-assisted development.
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">TypeScript</span>
+                        <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">AI Agents</span>
+                        <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Dev Methodology</span>
+                        <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">CLI Tool</span>
+                      </div>
+                      <a
+                        href="https://github.com/lukadfagundes/trinity-method-sdk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sunny-ocean hover:text-sunny-darkRed transition-colors font-medium"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        View on GitHub & Contribute
+                      </a>
+                    </div>
+
+                    <div className="pt-2">
+                      <p className="text-xs text-sunny-brown/60 italic">
+                        💡 Get started: <code className="bg-sunny-brown/10 px-2 py-0.5 rounded text-sunny-red">npx @trinity-method/cli deploy</code>
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
 
-              <h2 className="text-2xl font-bold text-sunny-darkRed mb-4">
-                This is where I'd put my client projects...
-              </h2>
-              <p className="text-xl text-sunny-brown/70 mb-2">
-                IF I HAD ANY!
-              </p>
-              <p className="text-sm text-sunny-brown/60 mb-8">
-                (But seriously, let's change that together)
-              </p>
+            {/* Professional Projects Card */}
+            <div
+              className="bg-white/90 backdrop-blur border-2 border-sunny-red/30 rounded-2xl shadow-lg hover:shadow-xl transition-all overflow-hidden"
+            >
+              <button
+                onClick={() => toggleCard('professional')}
+                className="w-full p-6 flex items-center justify-between hover:bg-sunny-red/5 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-sunny-red/20 rounded-full flex items-center justify-center">
+                    <Briefcase className="w-6 h-6 text-sunny-red" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="text-2xl font-bold text-sunny-darkRed">Professional Projects</h2>
+                    <p className="text-sm text-sunny-brown/60">Client work & commercial ventures</p>
+                  </div>
+                </div>
+                <ChevronDown
+                  className={`w-6 h-6 text-sunny-brown/60 transition-transform duration-200 ${
+                    expandedCard === 'professional' ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
 
-              <div className="border-t border-sunny-gold/30 pt-8">
-                <p className="text-sunny-brown/80 mb-6">
-                  <strong>Ready to be the first?</strong><br />
-                  You'll get the VIP treatment, my undivided attention, and bragging rights as Client #1
-                </p>
+              <div
+                className={`transition-all duration-300 ease-in-out ${
+                  expandedCard === 'professional' ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="px-6 pb-6 pt-2 border-t border-sunny-red/20">
+                  {/* Empty State - IF I HAD ANY */}
+                  <div className="text-center py-8">
+                    <div className="max-w-md mx-auto">
+                      <div className="mb-6 relative">
+                        <div className="w-24 h-24 mx-auto bg-sunny-gold/20 rounded-full flex items-center justify-center">
+                          <Sparkles className="w-12 h-12 text-sunny-gold" />
+                        </div>
+                        <div className="absolute -top-2 -right-8 text-4xl opacity-20 rotate-12">🏆</div>
+                        <div className="absolute -bottom-2 -left-8 text-4xl opacity-20 -rotate-12">🏆</div>
+                      </div>
 
-                <Link
-                  href="/quote"
-                  className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-                >
-                  <Rocket className="w-5 h-5" />
-                  Be My First Client
-                </Link>
+                      <h3 className="text-xl font-bold text-sunny-darkRed mb-3">
+                        This is where I'd put my client projects...
+                      </h3>
+                      <p className="text-lg text-sunny-brown/70 mb-2">
+                        IF I HAD ANY!
+                      </p>
+                      <p className="text-sm text-sunny-brown/60 mb-6">
+                        (But seriously, let's change that together)
+                      </p>
+
+                      <div className="border-t border-sunny-gold/30 pt-6">
+                        <p className="text-sunny-brown/80 mb-4 text-sm">
+                          <strong>Ready to be the first?</strong><br />
+                          You'll get the VIP treatment, my undivided attention, and bragging rights as Client #1
+                        </p>
+
+                        <Link
+                          href="/quote"
+                          className="inline-flex items-center gap-2 bg-sunny-red hover:bg-sunny-darkRed text-white font-bold py-2.5 px-5 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                        >
+                          <Rocket className="w-4 h-4" />
+                          Be My First Client
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

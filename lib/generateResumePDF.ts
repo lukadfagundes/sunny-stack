@@ -211,6 +211,11 @@ export const generateResumePDF = () => {
 
   const projects = [
     {
+      name: 'Trinity Method SDK - Open Source Development Methodology',
+      tech: 'TypeScript, Node.js, CLI Development, AI Agent Architecture, Development Tooling',
+      description: 'Created comprehensive development methodology SDK optimized for AI-assisted coding with 7 specialized agents, automatic quality setup, and investigation-first approach. Deployed 49 components with sub-15 second installation across multiple tech stacks'
+    },
+    {
       name: 'Enterprise Web Application - Portfolio Platform',
       tech: 'Next.js 15, React 19, TypeScript, Tailwind CSS, Responsive Design',
       description: 'Architected and deployed full-stack portfolio application with dynamic routing, interactive UI components, and PDF generation'
