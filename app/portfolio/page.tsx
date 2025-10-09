@@ -55,10 +55,12 @@ export default function Portfolio() {
 
               <div
                 className={`transition-all duration-300 ease-in-out ${
-                  expandedCard === 'personal' ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
+                  expandedCard === 'personal' ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
                 <div className="px-6 pb-6 pt-2 border-t border-sunny-gold/20">
+                  {/* Projects List */}
+                  <div className="space-y-6">
                   {/* Trinity Method SDK */}
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
@@ -134,6 +136,134 @@ export default function Portfolio() {
                         💡 Get started: <code className="bg-sunny-brown/10 px-2 py-0.5 rounded text-sunny-red">npx @trinity-method/cli deploy</code>
                       </p>
                     </div>
+                  </div>
+
+                  {/* Bwaincell Discord Bot */}
+                  <div className="space-y-4 pt-6 border-t border-sunny-gold/20">
+                    <div className="flex items-start gap-3">
+                      <GitBranch className="w-5 h-5 text-sunny-red mt-1 flex-shrink-0" />
+                      <div>
+                        <h3 className="text-xl font-bold text-sunny-darkRed mb-2">Bwaincell - Personal Productivity API</h3>
+                        <p className="text-sunny-brown/80 mb-4">
+                          A comprehensive dual-purpose productivity platform combining Discord bot functionality with a RESTful API.
+                          Features task management, lists, notes, reminders, budget tracking, and random generators—all accessible
+                          via Discord slash commands and secure HTTP endpoints.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-sunny-cream/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-semibold text-sunny-red flex items-center gap-2">
+                        <Zap className="w-4 h-4" />
+                        Key Features
+                      </h4>
+                      <ul className="space-y-2 text-sm text-sunny-brown/80">
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Dual Interface</strong> - Discord bot + REST API with Google OAuth 2.0</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Full Productivity Suite</strong> - Tasks, lists, notes, reminders, budget tracking</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Advanced Scheduling</strong> - One-time, daily, and weekly recurring reminders</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Production Ready</strong> - Deployed on Fly.io with Docker, comprehensive testing</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">TypeScript</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Discord.js</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Express</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">SQLite</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">OAuth 2.0</span>
+                    </div>
+
+                    <a
+                      href="https://github.com/lukadfagundes/bwaincell"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sunny-ocean hover:text-sunny-darkRed transition-colors font-medium"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      View on GitHub
+                    </a>
+                  </div>
+
+                  {/* Bwain.app PWA */}
+                  <div className="space-y-4 pt-6 border-t border-sunny-gold/20">
+                    <div className="flex items-start gap-3">
+                      <GitBranch className="w-5 h-5 text-sunny-red mt-1 flex-shrink-0" />
+                      <div>
+                        <h3 className="text-xl font-bold text-sunny-darkRed mb-2">Bwain.app - Productivity PWA</h3>
+                        <p className="text-sunny-brown/80 mb-4">
+                          Modern Progressive Web App companion to Bwaincell, featuring Google OAuth authentication, offline support,
+                          and a beautiful design inspired by "Your Name" (Kimi no Na wa). Installable on any device with full
+                          cross-platform compatibility.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-sunny-cream/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-semibold text-sunny-red flex items-center gap-2">
+                        <Zap className="w-4 h-4" />
+                        Key Features
+                      </h4>
+                      <ul className="space-y-2 text-sm text-sunny-brown/80">
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Progressive Web App</strong> - Installable, offline-capable, push notifications ready</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Modern Stack</strong> - Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn/ui</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Optimized Performance</strong> - 95+ Lighthouse score, PWA 100/100</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Cross-Platform</strong> - Works on iOS, Android, Windows, macOS, Linux</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Next.js</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">React</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">TypeScript</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">PWA</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">NextAuth.js</span>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <a
+                        href="https://bwain-app.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sunny-ocean hover:text-sunny-darkRed transition-colors font-medium"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Live App
+                      </a>
+                      <a
+                        href="https://github.com/lukadfagundes/bwain.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sunny-ocean hover:text-sunny-darkRed transition-colors font-medium"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        View on GitHub
+                      </a>
+                    </div>
+                  </div>
                   </div>
                 </div>
               </div>
