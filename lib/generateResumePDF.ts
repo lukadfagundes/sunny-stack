@@ -216,6 +216,16 @@ export const generateResumePDF = () => {
       description: 'Created comprehensive development methodology SDK optimized for AI-assisted coding with 7 specialized agents, automatic quality setup, and investigation-first approach. Deployed 49 components with sub-15 second installation across multiple tech stacks'
     },
     {
+      name: 'Bwaincell - Personal Productivity API & Discord Bot',
+      tech: 'TypeScript, Discord.js, Express, SQLite, Google OAuth 2.0, Docker, Fly.io',
+      description: 'Built dual-purpose productivity platform combining Discord bot with REST API for task management, lists, notes, reminders, and budget tracking. Production-ready deployment with comprehensive testing and multi-user authentication'
+    },
+    {
+      name: 'Bwain.app - Progressive Web Application',
+      tech: 'Next.js 14, React 18, TypeScript, NextAuth.js, TanStack Query, Tailwind CSS, PWA',
+      description: 'Developed modern PWA companion app with offline support, Google OAuth authentication, and cross-platform compatibility. Achieved 95+ Lighthouse score and 100/100 PWA score with installable functionality on all major platforms'
+    },
+    {
       name: 'Enterprise Web Application - Portfolio Platform',
       tech: 'Next.js 15, React 19, TypeScript, Tailwind CSS, Responsive Design',
       description: 'Architected and deployed full-stack portfolio application with dynamic routing, interactive UI components, and PDF generation'
@@ -224,11 +234,6 @@ export const generateResumePDF = () => {
       name: 'Cross-Platform Desktop Application',
       tech: 'Flutter, Dart, State Management (Riverpod), REST API Integration, GitHub API',
       description: 'Engineered desktop application with 22+ microservices, implementing MVC architecture and real-time data synchronization'
-    },
-    {
-      name: 'AI-Integrated SaaS Platform',
-      tech: 'Python, Flask, FastAPI, PostgreSQL, OpenAI GPT-4, OCR Technology, JWT Authentication',
-      description: 'Developed multi-tenant B2B platform with machine learning integration for automated equipment valuation and analysis'
     }
   ];
 
