@@ -66,7 +66,7 @@ export function ProjectSection({ data, errors, onChange, currentField }: Project
       </div>
 
       <FormTextarea
-        label="Project Description *"
+        label="Project Description"
         name="projectDescription"
         value={data.projectDescription || ''}
         onChange={(e) => onChange({ projectDescription: e.target.value })}

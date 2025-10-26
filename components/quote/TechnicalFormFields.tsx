@@ -85,7 +85,7 @@ function ContactFields({ formData, errors, onFieldChange }: ComponentFieldsProps
       <h3 className="font-bold text-sunny-red mb-4">Contact Information</h3>
       <div className="grid md:grid-cols-2 gap-4">
         <FormField
-          label="Full Name *"
+          label="Full Name"
           name="contactName"
           value={formData.contactName}
           onChange={(e) => onFieldChange('contactName', e.target.value)}
@@ -94,7 +94,7 @@ function ContactFields({ formData, errors, onFieldChange }: ComponentFieldsProps
           maxLength={50}
         />
         <FormField
-          label="Email *"
+          label="Email"
           name="contactEmail"
           type="email"
           value={formData.contactEmail}
@@ -123,7 +123,7 @@ function ProjectFields({ formData, errors, onFieldChange }: ComponentFieldsProps
       <h3 className="font-bold text-sunny-red mb-4">Project Details</h3>
       <div className="space-y-4">
         <FormField
-          label="Project Name *"
+          label="Project Name"
           name="projectName"
           value={formData.projectName}
           onChange={(e) => onFieldChange('projectName', e.target.value)}
@@ -132,7 +132,7 @@ function ProjectFields({ formData, errors, onFieldChange }: ComponentFieldsProps
           maxLength={50}
         />
         <FormSelect
-          label="Project Type *"
+          label="Project Type"
           name="projectType"
           value={formData.projectType}
           onChange={(e) => onFieldChange('projectType', e.target.value)}
@@ -150,7 +150,7 @@ function ProjectFields({ formData, errors, onFieldChange }: ComponentFieldsProps
           ]}
         />
         <FormTextarea
-          label="Project Description *"
+          label="Project Description"
           name="projectDescription"
           value={formData.projectDescription}
           onChange={(e) => onFieldChange('projectDescription', e.target.value)}
@@ -188,7 +188,7 @@ function TechnicalFields({ formData, errors, onFieldChange }: ComponentFieldsPro
           maxLength={1000}
         />
         <FormTextarea
-          label="Features & Functionality *"
+          label="Features & Functionality"
           name="features"
           value={formData.features}
           onChange={(e) => onFieldChange('features', e.target.value)}
@@ -233,7 +233,7 @@ function LogisticsFields({ formData, errors, onFieldChange }: ComponentFieldsPro
       <h3 className="font-bold text-sunny-red mb-4">Project Logistics</h3>
       <div className="grid md:grid-cols-2 gap-4">
         <FormSelect
-          label="Timeline *"
+          label="Timeline"
           name="timeline"
           value={formData.timeline}
           onChange={(e) => onFieldChange('timeline', e.target.value)}
@@ -249,7 +249,7 @@ function LogisticsFields({ formData, errors, onFieldChange }: ComponentFieldsPro
           ]}
         />
         <FormSelect
-          label="Budget Range *"
+          label="Budget Range"
           name="budget"
           value={formData.budget}
           onChange={(e) => onFieldChange('budget', e.target.value)}

@@ -24,7 +24,7 @@ export function ContactSection({ data, errors, onChange }: ContactSectionProps) 
 
       <div className="space-y-4">
         <FormField
-          label="Your Name *"
+          label="Your Name"
           name="name"
           value={data.name || ''}
           onChange={(e) => onChange({ name: e.target.value })}
@@ -35,7 +35,7 @@ export function ContactSection({ data, errors, onChange }: ContactSectionProps) 
         />
 
         <FormField
-          label="Email *"
+          label="Email"
           name="email"
           type="email"
           value={data.email || ''}
