@@ -42,7 +42,7 @@ export default function Resume() {
     {
       title: 'Account Manager - Process Equipment',
       company: 'Revelation Machinery',
-      period: '2021 - Present',
+      period: '2021 - 2025',
       location: 'Salem, OR (Remote)',
       highlights: [
         'Manage strategic partnerships and sales for industrial process equipment',

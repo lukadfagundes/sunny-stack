@@ -126,7 +126,7 @@ export const generateResumePDF = () => {
     {
       title: 'Account Manager',
       company: 'Revelation Machinery',
-      period: '2021 - Present',
+      period: '2021 - 2025',
       location: 'Salem, OR (Remote)',
       highlights: [
         'Source and sell used manufacturing equipment including CNC machines, lathes, and industrial tools',
