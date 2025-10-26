@@ -32,7 +32,7 @@ export default function Resume() {
       title: 'Developer Experience',
       company: 'Building impressive projects without the job title',
       period: '2025 - Present',
-      location: 'Salem, OR',
+      location: 'Eureka, CA',
       highlights: [
         'Self-taught developer with 2 months of intensive full-stack development',
         'Built 3 production-ready applications using modern frameworks',
