@@ -24,10 +24,11 @@ export default function About() {
               <h2 className="text-2xl font-bold text-sunny-darkRed mb-4">Hey, I'm Luka! 👋</h2>
 
               <p className="text-sunny-brown/80 mb-4">
-                My journey to Salem, OR has been quite the adventure. Born in Reno, moved to and raised in Louisiana
+                My journey to Eureka, CA has been quite the adventure. Born in Reno, moved to and raised in Louisiana
                 from 2001-2020, with a 4 year stint in Texas, I finally found my home in the beautiful Pacific Northwest in 2024.
-                And yes, I got married here too! My wife and I actually hiked to Abiqua Falls right after our
-                ceremony, because nothing says "just married" like a gorgeous Oregon waterfall hike.
+                My wife and I actually hiked to Abiqua Falls right after our ceremony, because nothing says "just married" like a
+                gorgeous Oregon waterfall hike. While I first landed in Salem, OR, I've recently moved to Eureka, CA, surrounded
+                by the glittering ocean and surrounded by the mountainous Redwoods.
               </p>
 
               <p className="text-sunny-brown/80 mb-4">
@@ -62,7 +63,7 @@ export default function About() {
                 <h3 className="font-bold text-sunny-darkRed">Based In</h3>
               </div>
               <p className="text-sm text-sunny-brown/70">
-                Salem, Oregon, where the waterfalls are plenty and the nature is stunning
+                Eureka, CA, beautiful west coast in the heart of the Redwoods
               </p>
             </div>
 
