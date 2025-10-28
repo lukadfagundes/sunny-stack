@@ -8,8 +8,6 @@ updates:
       day: "monday"
       time: "04:00"
     open-pull-requests-limit: 5
-    assignees:
-      - "trinity-method/developers"
     labels:
       - "dependencies"
       - "javascript"
@@ -41,44 +39,6 @@ updates:
           - "eslint*"
           - "@typescript-eslint/*"
 
-  # Python/pip dependencies (if requirements.txt exists)
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "05:00"
-    open-pull-requests-limit: 3
-    assignees:
-      - "trinity-method/developers"
-    labels:
-      - "dependencies"
-      - "python"
-    commit-message:
-      prefix: "pip"
-      include: "scope"
-    allow:
-      - dependency-type: "all"
-
-  # Rust/Cargo dependencies (if Cargo.toml exists)
-  - package-ecosystem: "cargo"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-    open-pull-requests-limit: 3
-    assignees:
-      - "trinity-method/developers"
-    labels:
-      - "dependencies"
-      - "rust"
-    commit-message:
-      prefix: "cargo"
-      include: "scope"
-    allow:
-      - dependency-type: "all"
-
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -87,8 +47,6 @@ updates:
       day: "monday"
       time: "07:00"
     open-pull-requests-limit: 3
-    assignees:
-      - "trinity-method/developers"
     labels:
       - "dependencies"
       - "github-actions"
@@ -107,8 +65,6 @@ updates:
       day: "tuesday"
       time: "04:00"
     open-pull-requests-limit: 2
-    assignees:
-      - "trinity-method/developers"
     labels:
       - "dependencies"
       - "docker"
