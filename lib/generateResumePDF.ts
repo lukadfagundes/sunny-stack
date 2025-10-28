@@ -51,7 +51,7 @@ export const generateResumePDF = () => {
   yPosition += 6;
 
   doc.setFontSize(10);
-  const contactInfo = 'Salem, OR | 318-332-9700 | luka@sunny-stack.com | sunny-stack.com';
+  const contactInfo = 'Eureka, CA | 318-332-9700 | luka@sunny-stack.com | sunny-stack.com';
   const contactWidth = doc.getTextWidth(contactInfo);
   doc.text(contactInfo, (pageWidth - contactWidth) / 2, yPosition);
   doc.setTextColor(0, 0, 0);
@@ -126,7 +126,7 @@ export const generateResumePDF = () => {
     {
       title: 'Account Manager',
       company: 'Revelation Machinery',
-      period: '2021 - Present',
+      period: '2021 - 2025',
       location: 'Salem, OR (Remote)',
       highlights: [
         'Source and sell used manufacturing equipment including CNC machines, lathes, and industrial tools',
@@ -216,11 +216,6 @@ export const generateResumePDF = () => {
       description: 'Created comprehensive development methodology SDK optimized for AI-assisted coding with 7 specialized agents, automatic quality setup, and investigation-first approach. Deployed 49 components with sub-15 second installation across multiple tech stacks'
     },
     {
-      name: 'All Blue Cook Book - Recipe Sharing Platform',
-      tech: 'Next.js 15, TypeScript, SQLite, Tesseract OCR, PDF Processing, Fly.io',
-      description: 'Built modern recipe-sharing web application with intelligent parsing engine supporting multi-source submissions (PDF/DOCX upload, photo OCR, website scraping). Features multi-component recipe detection and automatic ingredient/instruction extraction'
-    },
-    {
       name: 'Bwaincell - Personal Productivity API & Discord Bot',
       tech: 'TypeScript, Discord.js, Express, SQLite, Google OAuth 2.0, Docker, Fly.io',
       description: 'Built dual-purpose productivity platform combining Discord bot with REST API for task management, lists, notes, reminders, and budget tracking. Production-ready deployment with comprehensive testing and multi-user authentication'
@@ -234,6 +229,11 @@ export const generateResumePDF = () => {
       name: 'Enterprise Web Application - Portfolio Platform',
       tech: 'Next.js 15, React 19, TypeScript, Tailwind CSS, Responsive Design',
       description: 'Architected and deployed full-stack portfolio application with dynamic routing, interactive UI components, and PDF generation'
+    },
+    {
+      name: 'Cross-Platform Desktop Application',
+      tech: 'Flutter, Dart, State Management (Riverpod), REST API Integration, GitHub API',
+      description: 'Engineered desktop application with 22+ microservices, implementing MVC architecture and real-time data synchronization'
     }
   ];
 
