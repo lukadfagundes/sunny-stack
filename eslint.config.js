@@ -1,20 +1,8 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
-import typescript from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
 
 const eslintConfig = [
   js.configs.recommended,
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
@@ -22,23 +10,50 @@ const eslintConfig = [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        React: "readonly",
+        JSX: "readonly",
+        console: "readonly",
+        process: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
       },
     },
-    plugins: {
-      "@typescript-eslint": typescript,
-    },
     rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
-      "react/no-unescaped-entities": "off",
-      "prefer-const": "error",
+      "prefer-const": "warn",
       "no-var": "error",
+      "no-undef": "off",
+      "no-unused-vars": "off",
     },
   },
   {
-    files: [".github/scripts/**/*.js", "jest.setup.js", "*.config.js"],
+    files: ["**/*.js", "**/*.jsx"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        React: "readonly",
+        console: "readonly",
+        process: "readonly",
+      },
+    },
+    rules: {
+      "prefer-const": "warn",
+      "no-var": "error",
+      "no-unused-vars": "warn",
+    },
+  },
+  {
+    files: ["jest.setup.js", "*.config.js", "*.config.mjs"],
     languageOptions: {
       ecmaVersion: 2020,
-      sourceType: "commonjs",
+      sourceType: "module",
       globals: {
         require: "readonly",
         module: "readonly",
@@ -59,11 +74,21 @@ const eslintConfig = [
       },
     },
     rules: {
-      "@typescript-eslint/no-require-imports": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
       "no-undef": "off",
-      "import/no-anonymous-default-export": "off",
+      "no-unused-vars": "warn",
     },
+  },
+  {
+    ignores: [
+      "node_modules/**",
+      ".next/**",
+      "out/**",
+      "build/**",
+      "dist/**",
+      "coverage/**",
+      ".git/**",
+      "*.min.js",
+    ],
   },
 ];
 

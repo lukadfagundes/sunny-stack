@@ -32,7 +32,7 @@ export default function Resume() {
       title: 'Developer Experience',
       company: 'Building impressive projects without the job title',
       period: '2025 - Present',
-      location: 'Salem, OR',
+      location: 'Eureka, CA',
       highlights: [
         'Self-taught developer with 2 months of intensive full-stack development',
         'Built 3 production-ready applications using modern frameworks',
@@ -42,7 +42,7 @@ export default function Resume() {
     {
       title: 'Account Manager - Process Equipment',
       company: 'Revelation Machinery',
-      period: '2021 - Present',
+      period: '2021 - 2025',
       location: 'Salem, OR (Remote)',
       highlights: [
         'Manage strategic partnerships and sales for industrial process equipment',

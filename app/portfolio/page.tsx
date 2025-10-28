@@ -55,7 +55,7 @@ export default function Portfolio() {
 
               <div
                 className={`transition-all duration-300 ease-in-out ${
-                  expandedCard === 'personal' ? 'max-h-[2500px] opacity-100' : 'max-h-0 opacity-0'
+                  expandedCard === 'personal' ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
                 <div className="px-6 pb-6 pt-2 border-t border-sunny-gold/20">
@@ -255,75 +255,6 @@ export default function Portfolio() {
                       </a>
                       <a
                         href="https://github.com/lukadfagundes/bwain.app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sunny-ocean hover:text-sunny-darkRed transition-colors font-medium"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        View on GitHub
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* All Blue Cook Book */}
-                  <div className="space-y-4 pt-6 border-t border-sunny-gold/20">
-                    <div className="flex items-start gap-3">
-                      <GitBranch className="w-5 h-5 text-sunny-red mt-1 flex-shrink-0" />
-                      <div>
-                        <h3 className="text-xl font-bold text-sunny-darkRed mb-2">All Blue Cook Book</h3>
-                        <p className="text-sunny-brown/80 mb-4">
-                          A modern recipe-sharing web application inspired by Sanji's search for the All Blue in One Piece.
-                          Features intelligent recipe parsing with OCR support, multi-component recipe detection, and a beautiful
-                          ocean-themed design. Submit recipes via file upload, photo capture, or website links.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="bg-sunny-cream/30 rounded-lg p-4 space-y-3">
-                      <h4 className="font-semibold text-sunny-red flex items-center gap-2">
-                        <Zap className="w-4 h-4" />
-                        Key Features
-                      </h4>
-                      <ul className="space-y-2 text-sm text-sunny-brown/80">
-                        <li className="flex items-start gap-2">
-                          <span className="text-sunny-gold mt-1">•</span>
-                          <span><strong>Intelligent Parsing</strong> - Automatic extraction of ingredients, instructions, and metadata</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-sunny-gold mt-1">•</span>
-                          <span><strong>Multi-Source Submission</strong> - PDF/DOCX uploads, photo OCR, and website scraping</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-sunny-gold mt-1">•</span>
-                          <span><strong>Complex Recipe Support</strong> - Multi-component recipe detection (e.g., ramen with broth, noodles, toppings)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-sunny-gold mt-1">•</span>
-                          <span><strong>Public & Free</strong> - No authentication required, accessible to everyone with ocean wave animations</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Next.js 15</span>
-                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">TypeScript</span>
-                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">SQLite</span>
-                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Tesseract OCR</span>
-                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Fly.io</span>
-                    </div>
-
-                    <div className="flex gap-3">
-                      <a
-                        href="https://all-blue-cook-book.fly.dev"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sunny-ocean hover:text-sunny-darkRed transition-colors font-medium"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        Live App
-                      </a>
-                      <a
-                        href="https://github.com/lukadfagundes/all-blue-cook-book"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-sunny-ocean hover:text-sunny-darkRed transition-colors font-medium"

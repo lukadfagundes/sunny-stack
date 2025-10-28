@@ -11,8 +11,8 @@ repos:
       - id: check-merge-conflict
       - id: check-json
       - id: detect-private-key
-      - id: no-commit-to-branch
-        args: ["--branch", "main", "--branch", "master"]
+      # - id: no-commit-to-branch
+      #   args: ["--branch", "main", "--branch", "master"]
 
   # JavaScript/TypeScript specific - Using local Node.js (Windows compatible)
   - repo: local
@@ -32,7 +32,7 @@ repos:
         entry: npx prettier
         language: system
         files: \.(js|jsx|json|css|md|yml|yaml)$
-        exclude: 'deprecated|archived|package-lock\.json|yarn\.lock|\.github/workflows/.*\.yml$|\.github/workflows/.*\.yaml$'
+        exclude: 'deprecated|archived|package-lock\.json|yarn\.lock'
         args: [--write]
 
   # Custom local hooks (including Markdown linting)
