@@ -23,6 +23,7 @@
     "analyze:browser": "ANALYZE=true BUNDLE_ANALYZE=browser npm run build"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.2",
     "lucide-react": "^0.544.0",
