@@ -36,6 +36,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Skip static generation for admin routes (they use client-side auth)
+  skipTrailingSlashRedirect: true,
+  async redirects() {
+    return [];
+  },
   async headers() {
     return [
       {
@@ -49,12 +54,12 @@ const nextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // Next.js requires unsafe-inline and unsafe-eval
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com", // Allow Google Fonts and Next.js inline styles
               "font-src 'self' fonts.gstatic.com data:",
-              "img-src 'self' data: blob:",
-              "connect-src 'self'",
+              "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com https://authjs.dev", // Allow OAuth provider images
+              "connect-src 'self' https://accounts.google.com", // Allow Google OAuth
               "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self'",
+              "form-action 'self' https://accounts.google.com", // Allow Google OAuth form submission
               "frame-ancestors 'none'",
             ].join("; "),
           },

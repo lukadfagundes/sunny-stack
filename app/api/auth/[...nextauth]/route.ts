@@ -24,25 +24,24 @@
  */
 
 import NextAuth from 'next-auth';
+import type { NextAuthConfig } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import type { NextAuthOptions } from 'next-auth';
 
 /**
  * NextAuth configuration
  */
-export const authOptions: NextAuthOptions = {
+const config: NextAuthConfig = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  session: {
+    strategy: 'jwt',
+  },
   callbacks: {
-    /**
-     * JWT callback - runs when JWT is created or updated
-     */
     async jwt({ token, user }) {
-      // Add user info to token
       if (user) {
         token.email = user.email;
         token.name = user.name;
@@ -50,51 +49,33 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-
-    /**
-     * Session callback - runs when session is checked
-     */
     async session({ session, token }) {
-      // Add user info from token to session
-      if (session.user) {
+      if (session?.user) {
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         session.user.image = token.picture as string;
       }
       return session;
     },
-
-    /**
-     * Sign-in callback - control who can sign in
-     */
     async signIn({ user }) {
-      // Get admin email whitelist
       const adminEmails = process.env.ADMIN_EMAIL
         ? process.env.ADMIN_EMAIL.split(',').map((email) => email.trim())
         : [];
 
-      // Check if user email is in whitelist
       if (user.email && adminEmails.includes(user.email)) {
-        return true; // Allow sign in
+        return true;
       }
-
-      // Reject sign in for non-admin users
       return false;
     },
   },
-  pages: {
-    signIn: '/auth/signin', // Custom sign-in page (optional)
-    error: '/auth/error', // Custom error page (optional)
-  },
-  secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
 };
 
 /**
- * NextAuth handler
+ * NextAuth v5 handler
  */
-const handler = NextAuth(authOptions);
+const { handlers, auth, signIn, signOut } = NextAuth(config);
 
-/**
- * Export GET and POST handlers for Next.js App Router
- */
-export { handler as GET, handler as POST };
+export const GET = handlers.GET;
+export const POST = handlers.POST;
+export { auth, signIn, signOut };

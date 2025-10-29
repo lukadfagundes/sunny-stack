@@ -1,7 +1,7 @@
 // Prisma Schema for Neon PostgreSQL
 // Discord Bot + Admin Platform Database Schema
-// Version: 2.0.0
-// Last Updated: 2025-10-28
+// Version: 2.1.0
+// Last Updated: 2025-10-29
 
 // Generator configuration for Prisma Client
 generator client {
@@ -114,6 +114,9 @@ model Quote {
   updatedAt    DateTime    @updatedAt
   reviewedAt   DateTime?
 
+  // Relationships
+  proposals Proposal[]
+
   @@index([status])
   @@index([email])
   @@index([createdAt])
@@ -122,7 +125,24 @@ model Quote {
   @@map("quotes")
 }
 
-// 4. Time Tracking Entries
+// 4. Project Proposals (Generated PDFs)
+model Proposal {
+  id        String    @id @default(cuid())
+  quoteId   String
+  quote     Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  projectId String
+  pdfUrl    String    @db.Text // Base64 data URL or cloud storage URL
+  sentAt    DateTime? // Timestamp when email was sent
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([quoteId])
+  @@index([projectId])
+  @@index([createdAt])
+  @@map("proposals")
+}
+
+// 5. Time Tracking Entries
 model TimeEntry {
   id              String   @id @default(cuid())
   projectId       String
@@ -139,7 +159,7 @@ model TimeEntry {
   @@map("time_entries")
 }
 
-// 5. External Service Monitoring Events
+// 6. External Service Monitoring Events
 model MonitoringEvent {
   id        String    @id @default(cuid())
   type      EventType
@@ -156,7 +176,7 @@ model MonitoringEvent {
   @@map("monitoring_events")
 }
 
-// 6. Discord Message Audit Log
+// 7. Discord Message Audit Log
 model DiscordMessage {
   id               String   @id @default(cuid())
   discordMessageId String   @unique
@@ -177,7 +197,7 @@ model DiscordMessage {
   @@map("discord_messages")
 }
 
-// 7. API Keys for Bot Authentication
+// 8. API Keys for Bot Authentication
 model ApiKey {
   id         String    @id @default(cuid())
   name       String
@@ -190,7 +210,7 @@ model ApiKey {
   @@map("api_keys")
 }
 
-// 8. Webhook Configurations (GitHub, Vercel, etc.)
+// 9. Webhook Configurations (GitHub, Vercel, etc.)
 model Webhook {
   id        String   @id @default(cuid())
   name      String
@@ -206,7 +226,7 @@ model Webhook {
   @@map("webhooks")
 }
 
-// 9. System Configuration (Bot Settings)
+// 10. System Configuration (Bot Settings)
 model SystemConfig {
   id          String   @id @default(cuid())
   key         String   @unique
