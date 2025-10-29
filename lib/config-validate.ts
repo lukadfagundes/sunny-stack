@@ -12,10 +12,11 @@ import { z } from 'zod';
 // =============================================================================
 
 /**
- * Database configuration schema
+ * Database configuration schema (5 variables)
  */
 const databaseSchema = z.object({
   DATABASE_URL: z.string().url('DATABASE_URL must be a valid PostgreSQL URL'),
+  DATABASE_URL_UNPOOLED: z.string().url().optional(),
   POSTGRES_URL: z.string().url().optional(),
   POSTGRES_PRISMA_URL: z.string().url().optional(),
   POSTGRES_URL_NON_POOLING: z.string().url().optional(),
@@ -59,9 +60,34 @@ const discordSchema = z.object({
   DISCORD_APPLICATION_ID: z.string().min(15, 'DISCORD_APPLICATION_ID must be a valid Discord application ID'),
   DISCORD_GUILD_ID: z.string().min(15, 'DISCORD_GUILD_ID must be a valid Discord server ID'),
   DISCORD_ADMIN_USER_ID: z.string().min(15, 'DISCORD_ADMIN_USER_ID must be a valid Discord user ID'),
-  DISCORD_ADMIN_CHANNEL_ID: z.string().min(15, 'DISCORD_ADMIN_CHANNEL_ID must be a valid Discord channel ID'),
-  DISCORD_ALERT_CRITICAL_CHANNEL_ID: z.string().min(15, 'DISCORD_ALERT_CRITICAL_CHANNEL_ID must be a valid Discord channel ID'),
-  DISCORD_MONITORING_CHANNEL_ID: z.string().min(15, 'DISCORD_MONITORING_CHANNEL_ID must be a valid Discord channel ID'),
+});
+
+/**
+ * Discord channel configuration schema (13 channels)
+ */
+const discordChannelSchema = z.object({
+  // Administrative channels
+  DISCORD_CHANNEL_ADMIN_LOGS: z.string().min(15, 'DISCORD_CHANNEL_ADMIN_LOGS must be a valid Discord channel ID'),
+  DISCORD_CHANNEL_BOT_COMMANDS: z.string().min(15, 'DISCORD_CHANNEL_BOT_COMMANDS must be a valid Discord channel ID'),
+
+  // Project management channels
+  DISCORD_CHANNEL_ACTIVE_PROJECTS: z.string().min(15, 'DISCORD_CHANNEL_ACTIVE_PROJECTS must be a valid Discord channel ID'),
+  DISCORD_CHANNEL_PROPOSALS: z.string().min(15, 'DISCORD_CHANNEL_PROPOSALS must be a valid Discord channel ID'),
+  DISCORD_CHANNEL_TASKS: z.string().min(15, 'DISCORD_CHANNEL_TASKS must be a valid Discord channel ID'),
+  DISCORD_CHANNEL_TIME_TRACKING: z.string().min(15, 'DISCORD_CHANNEL_TIME_TRACKING must be a valid Discord channel ID'),
+
+  // Client communication channels
+  DISCORD_CHANNEL_CLIENT_INQUIRIES: z.string().min(15, 'DISCORD_CHANNEL_CLIENT_INQUIRIES must be a valid Discord channel ID'),
+  DISCORD_CHANNEL_CLIENT_UPDATES: z.string().min(15, 'DISCORD_CHANNEL_CLIENT_UPDATES must be a valid Discord channel ID'),
+
+  // Automation & monitoring channels
+  DISCORD_CHANNEL_CALENDAR_SYNC: z.string().min(15, 'DISCORD_CHANNEL_CALENDAR_SYNC must be a valid Discord channel ID'),
+  DISCORD_CHANNEL_EMAIL_NOTIFICATIONS: z.string().min(15, 'DISCORD_CHANNEL_EMAIL_NOTIFICATIONS must be a valid Discord channel ID'),
+  DISCORD_CHANNEL_ANALYTICS: z.string().min(15, 'DISCORD_CHANNEL_ANALYTICS must be a valid Discord channel ID'),
+
+  // Financial channels
+  DISCORD_CHANNEL_INVOICES: z.string().min(15, 'DISCORD_CHANNEL_INVOICES must be a valid Discord channel ID'),
+  DISCORD_CHANNEL_PAYMENTS: z.string().min(15, 'DISCORD_CHANNEL_PAYMENTS must be a valid Discord channel ID'),
 });
 
 /**
@@ -92,12 +118,14 @@ const webhookSchema = z.object({
  */
 const monitoringSchema = z.object({
   FLY_API_TOKEN: z.string().optional(),
+  FLY_ORG_SLUG: z.string().optional(),
   CLOUDFLARE_API_TOKEN: z.string().optional(),
+  CLOUDFLARE_ZONE_ID: z.string().optional(),
   CRONJOB_API_KEY: z.string().optional(),
 });
 
 /**
- * Complete configuration schema
+ * Complete configuration schema (44 variables)
  */
 const configSchema = z.object({
   ...databaseSchema.shape,
@@ -105,6 +133,7 @@ const configSchema = z.object({
   ...adminSchema.shape,
   ...googleSchema.shape,
   ...discordSchema.shape,
+  ...discordChannelSchema.shape,
   ...botApiSchema.shape,
   ...emailSchema.shape,
   ...webhookSchema.shape,
@@ -135,18 +164,23 @@ export function validateConfig(): ValidationResult {
   const warnings: string[] = [];
 
   const config = {
+    // Database (5)
     DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_URL_UNPOOLED: process.env.DATABASE_URL_UNPOOLED,
     POSTGRES_URL: process.env.POSTGRES_URL,
     POSTGRES_PRISMA_URL: process.env.POSTGRES_PRISMA_URL,
     POSTGRES_URL_NON_POOLING: process.env.POSTGRES_URL_NON_POOLING,
 
+    // NextAuth (3)
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NODE_ENV: process.env.NODE_ENV,
 
+    // Admin (2)
     ADMIN_ROUTE_HASH: process.env.ADMIN_ROUTE_HASH,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
 
+    // Google API (7)
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
@@ -155,38 +189,63 @@ export function validateConfig(): ValidationResult {
     GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
     GOOGLE_CLIENT_EMAIL: process.env.GOOGLE_CLIENT_EMAIL,
 
+    // Discord Bot (4)
     DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
     DISCORD_APPLICATION_ID: process.env.DISCORD_APPLICATION_ID,
     DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID,
     DISCORD_ADMIN_USER_ID: process.env.DISCORD_ADMIN_USER_ID,
-    DISCORD_ADMIN_CHANNEL_ID: process.env.DISCORD_ADMIN_CHANNEL_ID,
-    DISCORD_ALERT_CRITICAL_CHANNEL_ID: process.env.DISCORD_ALERT_CRITICAL_CHANNEL_ID,
-    DISCORD_MONITORING_CHANNEL_ID: process.env.DISCORD_MONITORING_CHANNEL_ID,
 
+    // Discord Channels (13)
+    DISCORD_CHANNEL_ADMIN_LOGS: process.env.DISCORD_CHANNEL_ADMIN_LOGS,
+    DISCORD_CHANNEL_BOT_COMMANDS: process.env.DISCORD_CHANNEL_BOT_COMMANDS,
+    DISCORD_CHANNEL_ACTIVE_PROJECTS: process.env.DISCORD_CHANNEL_ACTIVE_PROJECTS,
+    DISCORD_CHANNEL_PROPOSALS: process.env.DISCORD_CHANNEL_PROPOSALS,
+    DISCORD_CHANNEL_TASKS: process.env.DISCORD_CHANNEL_TASKS,
+    DISCORD_CHANNEL_TIME_TRACKING: process.env.DISCORD_CHANNEL_TIME_TRACKING,
+    DISCORD_CHANNEL_CLIENT_INQUIRIES: process.env.DISCORD_CHANNEL_CLIENT_INQUIRIES,
+    DISCORD_CHANNEL_CLIENT_UPDATES: process.env.DISCORD_CHANNEL_CLIENT_UPDATES,
+    DISCORD_CHANNEL_CALENDAR_SYNC: process.env.DISCORD_CHANNEL_CALENDAR_SYNC,
+    DISCORD_CHANNEL_EMAIL_NOTIFICATIONS: process.env.DISCORD_CHANNEL_EMAIL_NOTIFICATIONS,
+    DISCORD_CHANNEL_ANALYTICS: process.env.DISCORD_CHANNEL_ANALYTICS,
+    DISCORD_CHANNEL_INVOICES: process.env.DISCORD_CHANNEL_INVOICES,
+    DISCORD_CHANNEL_PAYMENTS: process.env.DISCORD_CHANNEL_PAYMENTS,
+
+    // Bot API (2)
     BOT_API_KEY: process.env.BOT_API_KEY,
     BOT_API_URL: process.env.BOT_API_URL,
 
+    // Email (1)
     RESEND_API_KEY: process.env.RESEND_API_KEY,
 
+    // Webhooks (2)
     GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET,
     VERCEL_WEBHOOK_SECRET: process.env.VERCEL_WEBHOOK_SECRET,
 
+    // Monitoring (5)
     FLY_API_TOKEN: process.env.FLY_API_TOKEN,
+    FLY_ORG_SLUG: process.env.FLY_ORG_SLUG,
     CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN,
+    CLOUDFLARE_ZONE_ID: process.env.CLOUDFLARE_ZONE_ID,
     CRONJOB_API_KEY: process.env.CRONJOB_API_KEY,
   };
 
   // Validate with zod
   const result = configSchema.safeParse(config);
 
-  if (!result.success) {
-    result.error.errors.forEach((error) => {
-      errors.push(`${error.path.join('.')}: ${error.message}`);
+  if (!result.success && result.error) {
+    result.error.issues.forEach((issue) => {
+      errors.push(`${issue.path.join('.')}: ${issue.message}`);
     });
   }
 
   // Check for optional but recommended variables
-  const optionalVars = ['FLY_API_TOKEN', 'CLOUDFLARE_API_TOKEN', 'CRONJOB_API_KEY'];
+  const optionalVars = [
+    'FLY_API_TOKEN',
+    'FLY_ORG_SLUG',
+    'CLOUDFLARE_API_TOKEN',
+    'CLOUDFLARE_ZONE_ID',
+    'CRONJOB_API_KEY'
+  ];
   optionalVars.forEach((varName) => {
     if (!process.env[varName]) {
       warnings.push(`${varName} is not set (optional - monitoring will be limited)`);
@@ -268,13 +327,33 @@ export function printConfigSummary(): void {
   console.log(`  ✓ DISCORD_BOT_TOKEN: ${process.env.DISCORD_BOT_TOKEN ? '✅ Set' : '❌ Missing'}`);
   console.log(`  ✓ DISCORD_GUILD_ID: ${process.env.DISCORD_GUILD_ID || '❌ Missing'}`);
 
+  console.log('\nDiscord Channels (13):');
+  const channelCount = [
+    process.env.DISCORD_CHANNEL_ADMIN_LOGS,
+    process.env.DISCORD_CHANNEL_BOT_COMMANDS,
+    process.env.DISCORD_CHANNEL_ACTIVE_PROJECTS,
+    process.env.DISCORD_CHANNEL_PROPOSALS,
+    process.env.DISCORD_CHANNEL_TASKS,
+    process.env.DISCORD_CHANNEL_TIME_TRACKING,
+    process.env.DISCORD_CHANNEL_CLIENT_INQUIRIES,
+    process.env.DISCORD_CHANNEL_CLIENT_UPDATES,
+    process.env.DISCORD_CHANNEL_CALENDAR_SYNC,
+    process.env.DISCORD_CHANNEL_EMAIL_NOTIFICATIONS,
+    process.env.DISCORD_CHANNEL_ANALYTICS,
+    process.env.DISCORD_CHANNEL_INVOICES,
+    process.env.DISCORD_CHANNEL_PAYMENTS,
+  ].filter(v => v).length;
+  console.log(`  ✓ ${channelCount}/13 channels configured`);
+
   console.log('\nWebhooks:');
   console.log(`  ✓ GITHUB_WEBHOOK_SECRET: ${process.env.GITHUB_WEBHOOK_SECRET ? '✅ Set' : '❌ Missing'}`);
   console.log(`  ✓ VERCEL_WEBHOOK_SECRET: ${process.env.VERCEL_WEBHOOK_SECRET ? '✅ Set' : '❌ Missing'}`);
 
   console.log('\nMonitoring (Optional):');
   console.log(`  ✓ FLY_API_TOKEN: ${process.env.FLY_API_TOKEN ? '✅ Set' : '⚠️  Not set'}`);
+  console.log(`  ✓ FLY_ORG_SLUG: ${process.env.FLY_ORG_SLUG ? '✅ Set' : '⚠️  Not set'}`);
   console.log(`  ✓ CLOUDFLARE_API_TOKEN: ${process.env.CLOUDFLARE_API_TOKEN ? '✅ Set' : '⚠️  Not set'}`);
+  console.log(`  ✓ CLOUDFLARE_ZONE_ID: ${process.env.CLOUDFLARE_ZONE_ID ? '✅ Set' : '⚠️  Not set'}`);
   console.log(`  ✓ CRONJOB_API_KEY: ${process.env.CRONJOB_API_KEY ? '✅ Set' : '⚠️  Not set'}`);
 
   console.log('');

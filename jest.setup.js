@@ -1,6 +1,16 @@
 // jest.setup.js
 import "@testing-library/jest-dom";
 
+// Polyfill setImmediate for Jest environment (required by Winston)
+if (typeof global.setImmediate === "undefined") {
+  global.setImmediate = (callback, ...args) => {
+    return setTimeout(callback, 0, ...args);
+  };
+  global.clearImmediate = (id) => {
+    return clearTimeout(id);
+  };
+}
+
 // Mock Next.js router
 jest.mock("next/navigation", () => ({
   useRouter() {
