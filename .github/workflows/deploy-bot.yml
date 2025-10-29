@@ -1,0 +1,214 @@
+name: Deploy Discord Bot to Raspberry Pi
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "bot/**"
+      - "lib/**"
+      - "Dockerfile"
+      - ".github/workflows/deploy-bot.yml"
+  workflow_dispatch:
+
+# Prevent concurrent deployments
+concurrency:
+  group: deploy-bot-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/discord-bot
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Build Docker Image
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/arm64 # Raspberry Pi 4B architecture
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+
+  # ---------------------------------------------------------------------------
+  # Deploy to Raspberry Pi
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy to Raspberry Pi
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: production
+      url: https://sunny-stack.com
+
+    steps:
+      - name: Deploy to Raspberry Pi via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USERNAME }}
+          key: ${{ secrets.PI_SSH_KEY }}
+          port: ${{ secrets.PI_SSH_PORT || 22 }}
+          script: |
+            # Navigate to bot directory
+            cd ~/sunny-stack-bot || exit 1
+
+            # Log in to GitHub Container Registry
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            # Pull latest image
+            docker pull ${{ needs.build.outputs.image-tag }}
+
+            # Stop existing container (if running)
+            docker-compose down || true
+
+            # Start new container
+            docker-compose up -d
+
+            # Wait for healthcheck
+            sleep 10
+
+            # Verify container is running
+            if docker-compose ps | grep -q "Up"; then
+              echo "✅ Bot deployed successfully!"
+            else
+              echo "❌ Bot deployment failed!"
+              docker-compose logs --tail=50
+              exit 1
+            fi
+
+            # Clean up old images
+            docker image prune -af --filter "until=168h"
+
+      - name: Verify deployment
+        run: |
+          echo "🎉 Discord bot deployed to Raspberry Pi!"
+          echo "Image: ${{ needs.build.outputs.image-tag }}"
+          echo "Digest: ${{ needs.build.outputs.image-digest }}"
+
+  # ---------------------------------------------------------------------------
+  # Notify Discord
+  # ---------------------------------------------------------------------------
+  notify:
+    name: Send Discord Notification
+    runs-on: ubuntu-latest
+    needs: [build, deploy]
+    if: always()
+
+    steps:
+      - name: Send success notification
+        if: needs.deploy.result == 'success'
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          title: "✅ Bot Deployed Successfully"
+          description: |
+            Discord bot has been deployed to Raspberry Pi
+            **Commit:** ${{ github.event.head_commit.message }}
+            **Image:** `${{ needs.build.outputs.image-tag }}`
+          color: 0x00FF00
+          username: GitHub Actions
+
+      - name: Send failure notification
+        if: needs.deploy.result != 'success'
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: failure
+          title: "❌ Bot Deployment Failed"
+          description: |
+            Failed to deploy Discord bot to Raspberry Pi
+            **Commit:** ${{ github.event.head_commit.message }}
+            **Job:** ${{ github.job }}
+          color: 0xFF0000
+          username: GitHub Actions
+
+  # ---------------------------------------------------------------------------
+  # Rollback (Manual Trigger)
+  # ---------------------------------------------------------------------------
+  rollback:
+    name: Rollback to Previous Version
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    environment:
+      name: production
+
+    steps:
+      - name: Rollback on Raspberry Pi
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USERNAME }}
+          key: ${{ secrets.PI_SSH_KEY }}
+          port: ${{ secrets.PI_SSH_PORT || 22 }}
+          script: |
+            cd ~/sunny-stack-bot || exit 1
+
+            # Get previous image
+            PREVIOUS_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep discord-bot | sed -n '2p')
+
+            if [ -z "$PREVIOUS_IMAGE" ]; then
+              echo "❌ No previous image found for rollback"
+              exit 1
+            fi
+
+            echo "Rolling back to: $PREVIOUS_IMAGE"
+
+            # Update docker-compose to use previous image
+            sed -i "s|image:.*|image: $PREVIOUS_IMAGE|" docker-compose.yml
+
+            # Restart with previous image
+            docker-compose down
+            docker-compose up -d
+
+            echo "✅ Rolled back to $PREVIOUS_IMAGE"
