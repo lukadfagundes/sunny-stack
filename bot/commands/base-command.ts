@@ -1,0 +1,207 @@
+/**
+ * Base Command Abstract Class
+ *
+ * Provides common functionality for all slash commands
+ *
+ * @module bot/commands/base-command
+ */
+
+import type { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import type { Command, PermissionLevel, BotConfig } from '../types';
+import { validatePermission } from '../utils/permissions';
+import { checkRateLimit } from '../utils/rate-limiter';
+import { logCommandExecution, botLogger } from '../core/logger';
+import { PermissionError, RateLimitError, ValidationError } from '../core/errors';
+
+/**
+ * Base command abstract class
+ *
+ * All commands should extend this class
+ */
+export abstract class BaseCommand implements Command {
+  abstract data: SlashCommandBuilder;
+  abstract permissions?: PermissionLevel;
+
+  /**
+   * Execute command with built-in error handling and validation
+   *
+   * @param interaction - Command interaction
+   * @param config - Bot configuration
+   */
+  async executeWithValidation(
+    interaction: CommandInteraction,
+    config: BotConfig
+  ): Promise<void> {
+    const startTime = Date.now();
+    const userId = interaction.user.id;
+    const commandName = interaction.commandName;
+
+    try {
+      // 1. Permission validation
+      if (this.permissions) {
+        const hasPermission = validatePermission(userId, this.permissions, config);
+        if (!hasPermission) {
+          throw new PermissionError(
+            'You do not have permission to use this command',
+            userId,
+            this.permissions
+          );
+        }
+      }
+
+      // 2. Rate limit check
+      const rateLimitResult = checkRateLimit(userId);
+      if (!rateLimitResult.allowed) {
+        throw new RateLimitError(
+          `Rate limit exceeded. Try again in ${rateLimitResult.retryAfter}ms`,
+          rateLimitResult.retryAfter
+        );
+      }
+
+      // 3. Execute command
+      await this.execute(interaction);
+
+      // 4. Log success
+      const executionTime = Date.now() - startTime;
+      logCommandExecution({
+        command: commandName,
+        userId,
+        success: true,
+        executionTime,
+      });
+    } catch (error) {
+      const executionTime = Date.now() - startTime;
+
+      // Handle specific error types
+      if (error instanceof PermissionError) {
+        await this.handlePermissionError(interaction, error);
+      } else if (error instanceof RateLimitError) {
+        await this.handleRateLimitError(interaction, error);
+      } else if (error instanceof ValidationError) {
+        await this.handleValidationError(interaction, error);
+      } else {
+        await this.handleUnknownError(interaction, error as Error);
+      }
+
+      // Log failure
+      logCommandExecution({
+        command: commandName,
+        userId,
+        success: false,
+        executionTime,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  }
+
+  /**
+   * Execute command (must be implemented by subclasses)
+   */
+  abstract execute(interaction: CommandInteraction): Promise<void>;
+
+  /**
+   * Handle permission error
+   */
+  private async handlePermissionError(
+    interaction: CommandInteraction,
+    error: PermissionError
+  ): Promise<void> {
+    const reply = {
+      content: '❌ **Access Denied**\n\nYou do not have permission to use this command.',
+      ephemeral: true,
+    };
+
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp(reply);
+    } else {
+      await interaction.reply(reply);
+    }
+  }
+
+  /**
+   * Handle rate limit error
+   */
+  private async handleRateLimitError(
+    interaction: CommandInteraction,
+    error: RateLimitError
+  ): Promise<void> {
+    const seconds = Math.ceil(error.retryAfter / 1000);
+    const reply = {
+      content: `⏱️ **Rate Limit Exceeded**\n\nPlease wait ${seconds} seconds before using this command again.`,
+      ephemeral: true,
+    };
+
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp(reply);
+    } else {
+      await interaction.reply(reply);
+    }
+  }
+
+  /**
+   * Handle validation error
+   */
+  private async handleValidationError(
+    interaction: CommandInteraction,
+    error: ValidationError
+  ): Promise<void> {
+    const reply = {
+      content: `❌ **Validation Error**\n\n${error.message}${error.field ? `\n\nField: \`${error.field}\`` : ''}`,
+      ephemeral: true,
+    };
+
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp(reply);
+    } else {
+      await interaction.reply(reply);
+    }
+  }
+
+  /**
+   * Handle unknown error
+   */
+  private async handleUnknownError(
+    interaction: CommandInteraction,
+    error: Error
+  ): Promise<void> {
+    botLogger.error('Command execution error', {
+      command: interaction.commandName,
+      userId: interaction.user.id,
+      error: error.message,
+      stack: error.stack,
+    });
+
+    const reply = {
+      content: '❌ **An unexpected error occurred**\n\nPlease try again later.',
+      ephemeral: true,
+    };
+
+    try {
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp(reply);
+      } else {
+        await interaction.reply(reply);
+      }
+    } catch (replyError) {
+      // If we can't reply, log the error
+      botLogger.error('Failed to send error message to user', {
+        error: replyError instanceof Error ? replyError.message : 'Unknown error',
+      });
+    }
+  }
+
+  /**
+   * Defer reply for long-running commands
+   *
+   * @param interaction - Command interaction
+   * @param ephemeral - Whether to make the reply ephemeral
+   */
+  protected async deferReply(
+    interaction: CommandInteraction,
+    ephemeral = false
+  ): Promise<void> {
+    if (!interaction.deferred && !interaction.replied) {
+      await interaction.deferReply({ ephemeral });
+    }
+  }
+}
