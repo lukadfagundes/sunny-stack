@@ -1,84 +1,110 @@
+/**
+ * @file Admin Monitor Alerts API
+ * @description Returns paginated list of monitoring alerts with filtering
+ * @route GET /api/admin/monitor/alerts - Get monitoring alerts
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/middleware/auth';
+import { withBotAuth, withRateLimit } from '@/lib/middleware/auth';
 import { prisma } from '@/lib/db/prisma';
+import { Severity, Prisma } from '@prisma/client';
 import logger from '@/lib/logger';
-import { AppError, ValidationError } from '@/lib/errors/app-error';
-import { Severity } from '@prisma/client';
 
-export const GET = withAuth(async (req: NextRequest) => {
+const ALERTS_PER_PAGE = 25;
+const VALID_SEVERITIES: Severity[] = ['CRITICAL', 'ERROR', 'WARNING', 'INFO'];
+
+/**
+ * Parse and validate query parameters
+ */
+function parseQueryParams(searchParams: URLSearchParams) {
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const severityFilter = searchParams.get('severity') as Severity | null;
+  const sourceFilter = searchParams.get('source');
+
+  return { page, severityFilter, sourceFilter };
+}
+
+/**
+ * Build Prisma where clause from filters
+ */
+function buildWhereClause(
+  severityFilter: Severity | null,
+  sourceFilter: string | null
+): Prisma.MonitoringAlertWhereInput {
+  const where: Prisma.MonitoringAlertWhereInput = {};
+
+  if (severityFilter && VALID_SEVERITIES.includes(severityFilter)) {
+    where.severity = severityFilter;
+  }
+
+  if (sourceFilter) {
+    where.source = sourceFilter;
+  }
+
+  return where;
+}
+
+/**
+ * Format alert for API response
+ */
+function formatAlert(alert: any) {
+  return {
+    id: alert.id,
+    type: alert.type,
+    severity: alert.severity,
+    source: alert.source,
+    message: alert.message,
+    timestamp: alert.timestamp.toISOString(),
+    acknowledged: alert.acknowledged,
+    metadata: alert.metadata,
+  };
+}
+
+/**
+ * GET /api/admin/monitor/alerts
+ * Query params:
+ * - page: number (default 1)
+ * - severity: CRITICAL | ERROR | WARNING | INFO (optional)
+ * - source: string (service name, optional)
+ */
+async function handler(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = req.nextUrl;
+    const { page, severityFilter, sourceFilter } = parseQueryParams(searchParams);
 
-    // Parse query parameters
-    const severityParam = searchParams.get('severity');
-    const limitParam = parseInt(searchParams.get('limit') || '50', 10);
-    const pageParam = parseInt(searchParams.get('page') || '1', 10);
+    const skip = (page - 1) * ALERTS_PER_PAGE;
+    const where = buildWhereClause(severityFilter, sourceFilter);
 
-    // Validate parameters
-    if (limitParam < 1 || limitParam > 100) {
-      throw new ValidationError('Limit must be between 1 and 100');
-    }
-    if (pageParam < 1) {
-      throw new ValidationError('Page must be >= 1');
-    }
-
-    // Build where clause
-    const where: any = {};
-    if (severityParam) {
-      const validSeverities = ['INFO', 'WARNING', 'ERROR', 'CRITICAL'];
-      if (!validSeverities.includes(severityParam.toUpperCase())) {
-        throw new ValidationError('Invalid severity level');
-      }
-      where.severity = severityParam.toUpperCase() as Severity;
-    }
-
-    // Execute queries in parallel
+    // Fetch alerts and total count in parallel
     const [alerts, total] = await Promise.all([
-      prisma.monitoringEvent.findMany({
+      prisma.monitoringAlert.findMany({
         where,
         orderBy: { timestamp: 'desc' },
-        skip: (pageParam - 1) * limitParam,
-        take: limitParam,
+        take: ALERTS_PER_PAGE,
+        skip,
       }),
-      prisma.monitoringEvent.count({ where }),
+      prisma.monitoringAlert.count({ where }),
     ]);
 
-    const totalPages = Math.ceil(total / limitParam);
+    const totalPages = Math.ceil(total / ALERTS_PER_PAGE);
 
-    const response = {
-      alerts: alerts.map((alert) => ({
-        id: alert.id,
-        type: alert.type.toLowerCase(),
-        severity: alert.severity.toLowerCase(),
-        message: alert.message,
-        source: alert.source,
-        metadata: alert.metadata,
-        timestamp: alert.timestamp.toISOString(),
-        acknowledged: alert.acknowledged,
-      })),
+    return NextResponse.json({
+      alerts: alerts.map(formatAlert),
       pagination: {
-        page: pageParam,
-        limit: limitParam,
+        page,
+        limit: ALERTS_PER_PAGE,
         total,
         totalPages,
       },
-    };
-
-    logger.info('Monitoring alerts retrieved', {
-      count: alerts.length,
-      page: pageParam,
-      severity: severityParam,
     });
-
-    return NextResponse.json(response);
   } catch (error) {
-    if (error instanceof ValidationError) {
-      throw error;
-    }
-
-    logger.error('Failed to retrieve monitoring alerts', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-    throw new AppError('Failed to retrieve monitoring alerts', 500);
+    logger.error('Monitor alerts error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch alerts' },
+      { status: 500 }
+    );
   }
-});
+}
+
+// Apply rate limiting (30 req/min) and bot authentication
+export const GET = withRateLimit(withBotAuth(handler), { limit: 30, windowMs: 60000 });

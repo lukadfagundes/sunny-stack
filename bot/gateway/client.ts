@@ -13,6 +13,7 @@ import { registerEventHandlers } from './events';
 import { discoverCommands } from '../commands/registry';
 import { botLogger } from '../core/logger';
 import { DiscordError } from '../core/errors';
+import { startServiceHealthMonitoring, stopServiceHealthMonitoring } from '../../lib/monitoring/service-health-checker';
 
 /**
  * Start Gateway bot
@@ -33,8 +34,8 @@ export async function startGatewayBot(config: BotConfig): Promise<Client> {
     // Register event handlers
     registerEventHandlers(client, config);
 
-    // Set up graceful shutdown
-    setupGracefulShutdown(client);
+    // Set up graceful shutdown with health monitoring cleanup
+    setupGracefulShutdown(client, stopServiceHealthMonitoring);
 
     // Connect to Discord
     await connectClient(client, config);
@@ -46,6 +47,15 @@ export async function startGatewayBot(config: BotConfig): Promise<Client> {
       guilds: client.guilds.cache.size,
       user: client.user?.tag,
     });
+
+    // Start service health monitoring
+    startServiceHealthMonitoring();
+    botLogger.info('Service health monitoring initialized');
+
+    // Store bot start time and client globally for monitoring API
+    global.botStartTime = Date.now();
+    global.discordClient = client;
+    global.botCommandsCount = (await discoverCommands()).length;
 
     return client;
   } catch (error) {

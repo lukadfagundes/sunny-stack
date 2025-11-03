@@ -1,77 +1,119 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/middleware/auth';
+/**
+ * @file Admin Monitor Services API
+ * @description Returns external service health status
+ * @route GET /api/admin/monitor/services - Get service health
+ */
+
+import { NextResponse } from 'next/server';
+import { withBotAuth, withRateLimit } from '@/lib/middleware/auth';
+import { prisma } from '@/lib/db/prisma';
 import logger from '@/lib/logger';
-import { AppError } from '@/lib/errors/app-error';
+import {
+  MONITORED_SERVICES,
+  CACHE_TTL_MS,
+} from '@/lib/monitoring/config';
 
-// Simple in-memory cache (60 second TTL)
-let servicesCache: { data: any; timestamp: number } | null = null;
-const CACHE_TTL = 60000; // 60 seconds
-
-async function checkService(name: string, endpoint: string) {
-  const startTime = Date.now();
-  try {
-    const response = await fetch(endpoint, {
-      method: 'GET',
-      signal: AbortSignal.timeout(5000), // 5 second timeout
-    });
-
-    const responseTime = Date.now() - startTime;
-    const status = response.ok ? 'operational' : 'degraded';
-
-    return {
-      name,
-      status,
-      responseTime,
-      lastChecked: new Date().toISOString(),
-      endpoint,
-    };
-  } catch (error) {
-    return {
-      name,
-      status: 'down' as const,
-      responseTime: null,
-      lastChecked: new Date().toISOString(),
-      endpoint,
-    };
-  }
+/**
+ * Fetch latest health checks from database
+ *
+ * Gets the most recent health check for each monitored service.
+ * Returns one result per service (or null if no checks exist yet).
+ */
+async function getLatestHealthChecks() {
+  return Promise.all(
+    MONITORED_SERVICES.map((service) =>
+      prisma.serviceHealthCheck.findFirst({
+        where: { serviceName: service.name },
+        orderBy: { lastChecked: 'desc' },
+      })
+    )
+  );
 }
 
-export const GET = withAuth(async (req: NextRequest) => {
+/**
+ * Check if health checks are recent (within cache TTL)
+ *
+ * @param checks - Array of health check results (may contain nulls)
+ * @returns true if all services have checks < 5 minutes old
+ */
+function areChecksRecent(checks: Array<any>) {
+  const validChecks = checks.filter((check) => check !== null);
+
+  if (validChecks.length !== MONITORED_SERVICES.length) {
+    return false; // Not all services have been checked yet
+  }
+
+  const cacheExpiry = new Date(Date.now() - CACHE_TTL_MS);
+  return validChecks.every((check) => check.lastChecked > cacheExpiry);
+}
+
+/**
+ * Format health check for API response
+ */
+function formatHealthCheck(check: any) {
+  return {
+    name: check.serviceName,
+    status: check.status,
+    responseTime: check.responseTime,
+    lastChecked: check.lastChecked.toISOString(),
+    endpoint: check.endpoint,
+  };
+}
+
+/**
+ * Calculate summary statistics for service health
+ */
+function calculateSummary(services: Array<{ status: string }>) {
+  return {
+    total: services.length,
+    operational: services.filter((s) => s.status === 'operational').length,
+    degraded: services.filter((s) => s.status === 'degraded').length,
+    down: services.filter((s) => s.status === 'down').length,
+  };
+}
+
+/**
+ * GET /api/admin/monitor/services
+ * Returns health status of external services
+ *
+ * This endpoint serves cached health check data from the database.
+ * The background health checker updates this data every 5 minutes.
+ * Cache TTL is 5 minutes - if data is stale, the response will indicate
+ * that checks are outdated (but still returns last known status).
+ */
+async function handler() {
   try {
-    // Check cache
-    const now = Date.now();
-    if (servicesCache && now - servicesCache.timestamp < CACHE_TTL) {
-      logger.info('Returning cached service status');
-      return NextResponse.json(servicesCache.data);
+    const latestChecks = await getLatestHealthChecks();
+    const validChecks = latestChecks.filter((check) => check !== null);
+
+    // If no health checks exist yet, return empty state
+    if (validChecks.length === 0) {
+      return NextResponse.json({
+        services: [],
+        summary: { total: 0, operational: 0, degraded: 0, down: 0 },
+        message: 'No health checks available yet. Background monitoring will start shortly.',
+      });
     }
 
-    // Check all services in parallel
-    const services = await Promise.all([
-      checkService('Vercel', 'https://api.vercel.com/v1/status'),
-      checkService('GitHub', 'https://api.github.com/status'),
-      checkService('Discord', 'https://discord.com/api/v10'),
-      checkService('Google APIs', 'https://www.googleapis.com'),
-    ]);
+    const services = validChecks.map(formatHealthCheck);
+    const summary = calculateSummary(services);
 
-    const summary = {
-      total: services.length,
-      operational: services.filter((s) => s.status === 'operational').length,
-      degraded: services.filter((s) => s.status === 'degraded').length,
-      down: services.filter((s) => s.status === 'down').length,
-    };
-
-    const response = { services, summary };
-
-    // Update cache
-    servicesCache = { data: response, timestamp: now };
-
-    logger.info('External services checked', { summary });
+    // Include cache status in response
+    const response: any = { services, summary };
+    if (!areChecksRecent(latestChecks)) {
+      response.cacheStatus = 'stale';
+      response.message = 'Health check data is older than 5 minutes. Background update in progress.';
+    }
 
     return NextResponse.json(response);
   } catch (error) {
-    logger.error('Failed to check external services', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-    throw new AppError('Failed to check external services', 500);
+    logger.error('Monitor services error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch service status' },
+      { status: 500 }
+    );
   }
-});
+}
+
+// Apply rate limiting (30 req/min) and bot authentication
+export const GET = withRateLimit(withBotAuth(handler), { limit: 30, windowMs: 60000 });

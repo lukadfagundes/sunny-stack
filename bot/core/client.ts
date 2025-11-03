@@ -105,10 +105,20 @@ export async function disconnectClient(client: Client): Promise<void> {
  * Set up graceful shutdown handlers
  *
  * @param client - Discord client instance
+ * @param cleanupFn - Optional cleanup function to run before shutdown
  */
-export function setupGracefulShutdown(client: Client): void {
+export function setupGracefulShutdown(client: Client, cleanupFn?: () => void): void {
   const shutdown = async (signal: string) => {
     botLogger.info(`Received ${signal}, shutting down gracefully...`);
+
+    // Run custom cleanup function if provided
+    if (cleanupFn) {
+      try {
+        cleanupFn();
+      } catch (error) {
+        botLogger.error('Error during cleanup', { error });
+      }
+    }
 
     await disconnectClient(client);
 

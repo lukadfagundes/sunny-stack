@@ -1,7 +1,7 @@
 // Prisma Schema for Neon PostgreSQL
 // Discord Bot + Admin Platform Database Schema
-// Version: 2.1.0
-// Last Updated: 2025-10-29
+// Version: 2.2.0
+// Last Updated: 2025-11-02
 
 // Generator configuration for Prisma Client
 generator client {
@@ -13,8 +13,6 @@ datasource db {
   provider = "postgresql"
   // Use DATABASE_URL for default connection (pooled via Neon)
   url      = env("DATABASE_URL")
-  // Use DATABASE_URL_UNPOOLED for direct connection (migrations, schema changes)
-  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // ============================================================================
@@ -48,6 +46,19 @@ enum Severity {
   WARNING
   ERROR
   CRITICAL
+}
+
+enum AlertType {
+  DEPLOYMENT
+  UPTIME_CHECK
+  ERROR
+  NOTIFICATION
+}
+
+enum ServiceStatus {
+  operational
+  degraded
+  down
 }
 
 // ============================================================================
@@ -174,6 +185,44 @@ model MonitoringEvent {
   @@index([severity])
   @@index([timestamp])
   @@map("monitoring_events")
+}
+
+// 6b. Monitoring Alerts (with acknowledgment tracking)
+model MonitoringAlert {
+  id             String    @id @default(cuid())
+  type           AlertType
+  severity       Severity
+  source         String // Service name or 'bot' or 'database'
+  message        String    @db.Text
+  timestamp      DateTime  @default(now())
+  acknowledged   Boolean   @default(false)
+  acknowledgedAt DateTime?
+  metadata       Json?
+  createdAt      DateTime  @default(now())
+
+  @@index([severity])
+  @@index([source])
+  @@index([acknowledged])
+  @@index([timestamp])
+  @@index([source, timestamp]) // Compound index for filtered queries by source with time ordering
+  @@map("monitoring_alerts")
+}
+
+// 6c. Service Health Checks
+model ServiceHealthCheck {
+  id           String        @id @default(cuid())
+  serviceName  String // 'Fly.io' | 'Cloudflare' | 'cron-job.org' | 'Vercel'
+  endpoint     String
+  status       ServiceStatus
+  responseTime Int? // milliseconds
+  statusCode   Int? // HTTP status code
+  lastChecked  DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+
+  @@index([serviceName])
+  @@index([status])
+  @@index([lastChecked])
+  @@map("service_health_checks")
 }
 
 // 7. Discord Message Audit Log
