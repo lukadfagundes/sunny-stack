@@ -15,10 +15,11 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json* ./
+# Copy bot package files (bot has only 4 runtime dependencies)
+# See ADR-001: bot/package.json approach
+COPY bot/package.json bot/package-lock.json* ./
 
-# Install dependencies
+# Install bot dependencies only
 RUN npm ci --only=production && npm cache clean --force
 
 # -----------------------------------------------------------------------------
@@ -28,20 +29,25 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Install TypeScript and build tools for compilation
+RUN npm install -g typescript@5.5.0
 
-# Copy source code
-COPY . .
+# Copy production dependencies from deps stage
+COPY --from=deps /app/node_modules ./bot/node_modules
 
-# Copy environment variables for build (if needed)
-# Note: Build-time secrets should be passed via --build-arg
+# Copy source files needed for bot build
+COPY bot/ ./bot/
+COPY lib/ ./lib/
+COPY tsconfig.bot.json ./
+COPY package.json ./
+
+# Set build environment
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-# Build TypeScript (if using TypeScript for bot)
-# If bot is in /bot directory, we only need to compile that
-RUN npm run build:bot || echo "No build:bot script found, skipping..."
+# Compile TypeScript bot code
+# Output goes to bot/dist/ per tsconfig.bot.json
+RUN tsc --project tsconfig.bot.json
 
 # -----------------------------------------------------------------------------
 # Stage 3: Runner
@@ -57,13 +63,14 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 botuser && \
     adduser --system --uid 1001 botuser
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Copy production dependencies from deps stage
+COPY --from=deps /app/node_modules ./bot/node_modules
 
-# Copy built application from builder
-COPY --from=builder --chown=botuser:botuser /app/bot ./bot
-COPY --from=builder --chown=botuser:botuser /app/lib ./lib
-COPY --from=builder --chown=botuser:botuser /app/package.json ./package.json
+# Copy compiled bot from builder (TypeScript output)
+COPY --from=builder --chown=botuser:botuser /app/bot/dist ./bot/dist
+
+# Copy bot package.json for runtime
+COPY --chown=botuser:botuser bot/package.json ./bot/package.json
 
 # Copy environment template (actual .env will be mounted as secret)
 COPY --chown=botuser:botuser .env.example ./.env.example
@@ -85,5 +92,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the bot
-CMD ["node", "bot/index.js"]
+# Start the compiled bot from dist/
+CMD ["node", "bot/dist/index.js"]

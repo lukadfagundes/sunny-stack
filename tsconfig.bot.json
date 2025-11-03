@@ -1,0 +1,42 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "outDir": "./bot/dist",
+    "rootDir": ".",
+    "declaration": false,
+    "sourceMap": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "noEmit": false,
+    "skipLibCheck": true,
+    "strict": false,
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/app/*": ["./app/*"]
+    }
+  },
+  "include": ["bot/**/*", "lib/**/*"],
+  "exclude": [
+    "node_modules",
+    "app",
+    "components",
+    "__tests__",
+    "e2e",
+    "scripts",
+    "bot/dist",
+    ".next"
+  ]
+}

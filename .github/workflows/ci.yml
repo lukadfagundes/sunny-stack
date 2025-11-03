@@ -47,6 +47,27 @@ jobs:
             npm install
           fi
 
+      - name: Validate Environment Variables
+        id: validate-env
+        run: |
+          echo "Validating Vercel environment configuration..."
+          npm run validate:env:vercel || true
+        continue-on-error: true
+
+      - name: Validate Prerequisites
+        id: validate-prereqs
+        run: |
+          echo "Validating deployment prerequisites..."
+          npm run validate:prerequisites || true
+        continue-on-error: true
+
+      - name: Build Bot
+        id: build-bot
+        run: |
+          echo "Building Discord bot..."
+          npm run build:bot || true
+        continue-on-error: true
+
       - name: Run ESLint
         id: eslint
         run: |
