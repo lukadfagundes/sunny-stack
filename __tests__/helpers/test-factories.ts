@@ -2,6 +2,10 @@
  * @file Test data factories
  * @description Factory functions for creating test data
  * @module __tests__/helpers/test-factories
+ * @jest-environment node
+ *
+ * NOTE: This is a utility file, not a test suite.
+ * Jest will not find any tests here.
  */
 
 import { ProjectStatus, QuoteStatus } from '@prisma/client';

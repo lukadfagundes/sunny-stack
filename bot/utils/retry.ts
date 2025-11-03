@@ -227,6 +227,8 @@ export async function withNetworkRetry<T>(
         message.includes('network') ||
         message.includes('timeout') ||
         message.includes('econnrefused') ||
+        message.includes('econnreset') ||
+        message.includes('etimedout') ||
         message.includes('enotfound') ||
         message.includes('503') ||
         message.includes('502')

@@ -1,0 +1,123 @@
+# =============================================================================
+# Sunny Stack Discord Bot - Production Docker Compose
+# =============================================================================
+# For Raspberry Pi 4B deployment with optimized resource allocation
+# =============================================================================
+
+# IMPORTANT: Set GITHUB_USERNAME environment variable before running
+# Example: export GITHUB_USERNAME=lukadfagundes
+# Validate with: [ -z "$GITHUB_USERNAME" ] && echo "Error: GITHUB_USERNAME not set" && exit 1
+
+version: "3.8"
+
+services:
+  # ---------------------------------------------------------------------------
+  # Discord Bot Service - Production Configuration
+  # ---------------------------------------------------------------------------
+  discord-bot:
+    # Image from GitHub Container Registry (pushed by CI/CD)
+    image: ghcr.io/${GITHUB_USERNAME}/sunny-stack/discord-bot:latest
+
+    container_name: sunny-stack-bot
+
+    # Restart policy for high availability
+    restart: unless-stopped
+
+    # Environment variables from production file
+    env_file:
+      - .env.production
+
+    # Additional environment overrides
+    environment:
+      - NODE_ENV=production
+      - DEPLOYMENT_MODE=pi
+
+    # Health check configuration (matches Dockerfile HEALTHCHECK)
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:8080/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+    # Port mapping (health endpoint only - optional for external access)
+    ports:
+      - "8080:8080"
+
+    # Resource limits optimized for Raspberry Pi 4B (4GB RAM model)
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0" # Max 2 cores (Pi has 4)
+          memory: 1.5G # Max 1.5GB RAM
+        reservations:
+          cpus: "0.5" # Min 0.5 cores reserved
+          memory: 512M # Min 512MB RAM reserved
+
+    # Logging configuration with rotation
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m" # Max 50MB per log file
+        max-file: "5" # Keep 5 rotated files (250MB total)
+        compress: "true" # Compress rotated logs
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true # Prevent privilege escalation
+
+    # Run as non-root user (matches Dockerfile USER)
+    user: "1001:1001"
+
+    # Network configuration
+    networks:
+      - sunny-stack-network
+
+    # Labels for management
+    labels:
+      com.sunny-stack.service: "discord-bot"
+      com.sunny-stack.environment: "production"
+      com.sunny-stack.platform: "raspberry-pi"
+
+# -----------------------------------------------------------------------------
+# Networks
+# -----------------------------------------------------------------------------
+networks:
+  sunny-stack-network:
+    driver: bridge
+# =============================================================================
+# Usage Instructions
+# =============================================================================
+#
+# Initial Setup:
+#   1. Update GITHUB_USERNAME in image path above
+#   2. Create .env.production with all required variables
+#   3. Authenticate to GitHub Container Registry:
+#      echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_USERNAME --password-stdin
+#
+# Start Services:
+#   docker-compose -f docker-compose.prod.yml up -d
+#
+# View Logs:
+#   docker-compose -f docker-compose.prod.yml logs -f discord-bot
+#
+# Check Health:
+#   curl http://localhost:8080/health
+#
+# Stop Services:
+#   docker-compose -f docker-compose.prod.yml down
+#
+# Update to Latest Image:
+#   docker-compose -f docker-compose.prod.yml pull
+#   docker-compose -f docker-compose.prod.yml up -d
+#
+# View Resource Usage:
+#   docker stats sunny-stack-bot
+#
+# =============================================================================

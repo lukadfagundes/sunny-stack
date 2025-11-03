@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 // __tests__/unit/lib/google/quota-manager.test.ts
 
 /**

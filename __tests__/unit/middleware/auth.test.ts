@@ -86,7 +86,8 @@ describe('Authentication Middleware', () => {
       const result = await withAuth(mockHandler)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
       expect(getServerSession).toHaveBeenCalled();
     });
@@ -173,7 +174,8 @@ describe('Authentication Middleware', () => {
       const result = await withAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
     });
 
@@ -216,7 +218,8 @@ describe('Authentication Middleware', () => {
       const result = await withBotAuth(mockHandler)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
     });
 
@@ -297,7 +300,8 @@ describe('Authentication Middleware', () => {
       const result = await withBotAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
     });
 
@@ -321,7 +325,8 @@ describe('Authentication Middleware', () => {
       const result = await withBotAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
     });
   });
@@ -357,7 +362,8 @@ describe('Authentication Middleware', () => {
       const result = await withWebhookAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
     });
 
@@ -450,7 +456,8 @@ describe('Authentication Middleware', () => {
       const result = await withWebhookAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
     });
 
@@ -501,7 +508,8 @@ describe('Authentication Middleware', () => {
       const result = await withWebhookAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
     });
   });
@@ -523,7 +531,8 @@ describe('Authentication Middleware', () => {
       const result = await withRateLimit(mockHandler)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
       expect(result.headers.get('x-ratelimit-limit')).toBe('10');
       expect(result.headers.get('x-ratelimit-remaining')).toBe('9');
@@ -586,7 +595,8 @@ describe('Authentication Middleware', () => {
       const result = await middleware(mockRequest2);
 
       // ASSERT - IP2 should still be allowed
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest2);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest2);
       expect(result.status).not.toBe(429);
       expect(result.headers.get('x-ratelimit-remaining')).toBe('9');
     });
@@ -671,7 +681,8 @@ describe('Authentication Middleware', () => {
       const result = await withRateLimit(mockHandler)(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest);
       expect(result.headers.get('x-ratelimit-remaining')).toBe('9');
     });
 
@@ -687,7 +698,8 @@ describe('Authentication Middleware', () => {
 
       // ASSERT
       // Should use a fallback IP (e.g., 'unknown')
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest);
       expect(result).toBeDefined();
     });
 
@@ -757,7 +769,8 @@ describe('Authentication Middleware', () => {
       const result = await composedHandler(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest);
       expect(result.headers.get('x-ratelimit-limit')).toBeDefined();
     });
 
@@ -781,7 +794,8 @@ describe('Authentication Middleware', () => {
       const result = await composedHandler(mockRequest);
 
       // ASSERT
-      expect(mockHandler).toHaveBeenCalledWith(mockRequest);
+      expect(mockHandler).toHaveBeenCalled();
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest);
       expect(result.headers.get('x-ratelimit-limit')).toBeDefined();
     });
   });

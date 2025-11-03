@@ -8,10 +8,11 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Dependencies
 # -----------------------------------------------------------------------------
-FROM node:18-alpine AS deps
+FROM --platform=linux/arm64 node:18-alpine AS deps
 
 # Install dependencies for native modules
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat && \
+    rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
@@ -25,12 +26,13 @@ RUN npm ci --only=production && npm cache clean --force
 # -----------------------------------------------------------------------------
 # Stage 2: Builder
 # -----------------------------------------------------------------------------
-FROM node:18-alpine AS builder
+FROM --platform=linux/arm64 node:18-alpine AS builder
 
 WORKDIR /app
 
-# Install TypeScript and build tools for compilation
-RUN npm install -g typescript@5.5.0
+# Install TypeScript locally (better dependency management)
+RUN npm install typescript@5.7.3
+ENV PATH="/app/node_modules/.bin:$PATH"
 
 # Copy production dependencies from deps stage
 COPY --from=deps /app/node_modules ./bot/node_modules
@@ -52,10 +54,11 @@ RUN tsc --project tsconfig.bot.json
 # -----------------------------------------------------------------------------
 # Stage 3: Runner
 # -----------------------------------------------------------------------------
-FROM node:18-alpine AS runner
+FROM --platform=linux/arm64 node:18-alpine AS runner
 
 # Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+RUN apk add --no-cache dumb-init && \
+    rm -rf /var/cache/apk/*
 
 WORKDIR /app
 

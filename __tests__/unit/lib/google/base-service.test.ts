@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 // __tests__/unit/lib/google/base-service.test.ts
 
 /**

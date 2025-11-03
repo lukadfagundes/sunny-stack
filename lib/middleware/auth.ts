@@ -130,14 +130,27 @@ export function withAuth(
         throw new Error('ADMIN_EMAIL environment variable is not defined');
       }
 
-      // For NextAuth v5 beta, session validation is handled by the authOptions
-      // configuration. API routes should be protected at the page/layout level.
-      // This middleware provides a lightweight check for critical admin routes.
+      // Lazy load NextAuth to avoid issues in test environment
+      const { getServerSession } = await import('next-auth/next');
+      const session = await getServerSession();
 
-      // TODO: Once NextAuth v5 is stable, implement proper session checking here
-      // For now, admin routes are protected by the layout.tsx auth check
+      // Check if session exists
+      if (!session || !session.user || !session.user.email) {
+        return NextResponse.json(
+          { error: 'Unauthorized - No session found' },
+          { status: 401 }
+        );
+      }
 
-      // Call handler directly (auth is handled by layout/page level)
+      // Check if user is admin
+      if (!adminEmails.includes(session.user.email)) {
+        return NextResponse.json(
+          { error: 'Forbidden - Admin access required' },
+          { status: 403 }
+        );
+      }
+
+      // User is authenticated and authorized - call handler
       return handler(req, context);
     } catch (error) {
       // Handle errors (e.g., session retrieval failure)
