@@ -1,5 +1,6 @@
 // jest.setup.js
 import "@testing-library/jest-dom";
+import { TextEncoder, TextDecoder } from "util";
 
 // Polyfill setImmediate for Jest environment (required by Winston)
 if (typeof global.setImmediate === "undefined") {
@@ -9,6 +10,33 @@ if (typeof global.setImmediate === "undefined") {
   global.clearImmediate = (id) => {
     return clearTimeout(id);
   };
+}
+
+// Polyfill TextEncoder and TextDecoder for Node.js test environment
+// Required by undici (used by discord.js and Next.js)
+if (typeof global.TextEncoder === "undefined") {
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
+// Polyfill Request, Response, and Streams for Next.js in test environment
+if (typeof global.Request === "undefined") {
+  const { Readable } = require("stream");
+  const {
+    ReadableStream,
+    WritableStream,
+    TransformStream,
+  } = require("stream/web");
+
+  global.ReadableStream = ReadableStream;
+  global.WritableStream = WritableStream;
+  global.TransformStream = TransformStream;
+
+  const { Request, Response, Headers, fetch } = require("undici");
+  global.Request = Request;
+  global.Response = Response;
+  global.Headers = Headers;
+  global.fetch = fetch;
 }
 
 // Mock Next.js router

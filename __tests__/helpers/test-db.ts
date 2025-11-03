@@ -2,6 +2,10 @@
  * @file Test database helpers
  * @description Utilities for setting up and tearing down test database
  * @module __tests__/helpers/test-db
+ * @jest-environment node
+ *
+ * NOTE: This is a utility file, not a test suite.
+ * Jest will not find any tests here.
  */
 
 import { PrismaClient } from '@prisma/client';
