@@ -14,6 +14,7 @@ import { loadBotConfig, validateConfig } from './config';
 import { DeploymentMode } from './types';
 import { botLogger } from './core/logger';
 import { ConfigurationError } from './core/errors';
+import { startHealthServer, stopHealthServer } from './health-server';
 
 /**
  * Initialize bot based on deployment mode
@@ -44,6 +45,10 @@ async function initializeBot() {
       // Pi mode starts persistent Gateway connection
       const { startGatewayBot } = await import('./gateway/client');
       await startGatewayBot(config);
+
+      // Start health check server after bot is ready
+      botLogger.info('Starting health check server...');
+      await startHealthServer();
     } else {
       throw new ConfigurationError(
         `Invalid deployment mode: ${config.deploymentMode}`,
@@ -60,6 +65,29 @@ async function initializeBot() {
     process.exit(1);
   }
 }
+
+/**
+ * Graceful shutdown handler
+ */
+async function gracefulShutdown(signal: string): Promise<void> {
+  botLogger.info(`Received ${signal}, shutting down gracefully...`);
+
+  try {
+    // Stop health server first
+    await stopHealthServer();
+
+    // Exit cleanly
+    botLogger.info('Shutdown complete');
+    process.exit(0);
+  } catch (error) {
+    botLogger.error('Error during shutdown', { error });
+    process.exit(1);
+  }
+}
+
+// Register shutdown handlers
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 // Only start bot if not in Vercel environment
 // Vercel will import the webhook handler directly
