@@ -12,7 +12,7 @@ import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
 import { loadBotConfig } from '../../config';
 import { createSuccessEmbed, createErrorEmbed, createInfoEmbed } from '../../utils/embed-builder';
-import { validateDescription, validateDuration } from '../../core/validators';
+import { validateDescription } from '../../core/validators';
 import { formatDuration, formatDiscordTimestamp } from '../../utils/formatters';
 
 /**
@@ -31,11 +31,19 @@ export class TimeLogCommand extends BaseCommand {
     )
     .addIntegerOption((option) =>
       option
-        .setName('duration')
-        .setDescription('Duration in minutes (1-1440)')
+        .setName('hours')
+        .setDescription('Hours worked (0-23)')
         .setRequired(true)
-        .setMinValue(1)
-        .setMaxValue(1440)
+        .setMinValue(0)
+        .setMaxValue(23)
+    )
+    .addIntegerOption((option) =>
+      option
+        .setName('minutes')
+        .setDescription('Minutes worked (0-59)')
+        .setRequired(true)
+        .setMinValue(0)
+        .setMaxValue(59)
     )
     .addStringOption((option) =>
       option
@@ -46,7 +54,7 @@ export class TimeLogCommand extends BaseCommand {
     .addStringOption((option) =>
       option
         .setName('started-at')
-        .setDescription('When did you start? (ISO format, e.g., 2025-01-15T09:00:00Z)')
+        .setDescription('When did you start? (e.g., 2:30 PM, 9:00 AM)')
         .setRequired(false)
     ) as SlashCommandBuilder;
 
@@ -83,8 +91,19 @@ export class TimeLogCommand extends BaseCommand {
 
     // Get project input (ID from autocomplete or title from manual entry)
     const projectInput = interaction.options.get('project-title', true).value as string;
-    const durationRaw = interaction.options.get('duration')?.value as number;
-    const durationMinutes = validateDuration(durationRaw);
+    const hours = interaction.options.get('hours', true).value as number;
+    const minutes = interaction.options.get('minutes', true).value as number;
+
+    // Calculate total duration in minutes
+    const durationMinutes = (hours * 60) + minutes;
+
+    // Validate total duration (max 24 hours = 1440 minutes)
+    if (durationMinutes < 1) {
+      throw new Error('Duration must be at least 1 minute');
+    }
+    if (durationMinutes > 1440) {
+      throw new Error('Duration cannot exceed 24 hours');
+    }
 
     const descriptionRaw = interaction.options.get('description')?.value as string | undefined;
     const description = descriptionRaw ? validateDescription(descriptionRaw, false) : null;
@@ -92,9 +111,41 @@ export class TimeLogCommand extends BaseCommand {
     const startedAtRaw = interaction.options.get('started-at')?.value as string | undefined;
     let startedAt: Date;
     if (startedAtRaw) {
-      startedAt = new Date(startedAtRaw);
-      if (isNaN(startedAt.getTime())) {
-        throw new Error('Invalid started-at date format. Use ISO format (e.g., 2025-01-15T09:00:00Z)');
+      // Parse time in HH:MM AM/PM format
+      const timeRegex = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i;
+      const match = startedAtRaw.trim().match(timeRegex);
+
+      if (!match) {
+        throw new Error('Invalid time format. Use format like "2:30 PM" or "9:00 AM"');
+      }
+
+      let hours = parseInt(match[1], 10);
+      const minutes = parseInt(match[2], 10);
+      const period = match[3].toUpperCase();
+
+      // Validate hours and minutes
+      if (hours < 1 || hours > 12) {
+        throw new Error('Hours must be between 1 and 12');
+      }
+      if (minutes < 0 || minutes > 59) {
+        throw new Error('Minutes must be between 0 and 59');
+      }
+
+      // Convert to 24-hour format
+      if (period === 'PM' && hours !== 12) {
+        hours += 12;
+      } else if (period === 'AM' && hours === 12) {
+        hours = 0;
+      }
+
+      // Create date for today with specified time
+      startedAt = new Date();
+      startedAt.setHours(hours, minutes, 0, 0);
+
+      // If the calculated end time would be in the future, assume they meant yesterday
+      const endedAt = new Date(startedAt.getTime() + durationMinutes * 60 * 1000);
+      if (endedAt > new Date()) {
+        startedAt.setDate(startedAt.getDate() - 1);
       }
     } else {
       // Default to current time minus duration

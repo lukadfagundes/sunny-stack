@@ -86,7 +86,7 @@ export class TimeStopCommand extends BaseCommand {
     const config = loadBotConfig();
     const apiClient = new ApiClient(config.apiUrl, config.apiKey);
 
-    const response = await apiClient.put<{
+    const response = await apiClient.post<{
       timeEntry: {
         id: string;
         projectId: string;
