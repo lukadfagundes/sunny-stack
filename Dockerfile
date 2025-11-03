@@ -40,6 +40,7 @@ COPY --from=deps /app/node_modules ./bot/node_modules
 # Copy source files needed for bot build
 COPY bot/ ./bot/
 COPY lib/ ./lib/
+COPY tsconfig.json ./
 COPY tsconfig.bot.json ./
 COPY package.json ./
 
