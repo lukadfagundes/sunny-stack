@@ -136,9 +136,9 @@ export function getNotificationSender(
   const channels = loadChannelConfig();
 
   const channelMap = {
-    general: channels.GENERAL_CHANNEL_ID,
-    notifications: channels.NOTIFICATIONS_CHANNEL_ID,
-    errors: channels.ERROR_CHANNEL_ID,
+    general: channels.botCommands,
+    notifications: channels.adminLogs,
+    errors: channels.adminLogs,
   };
 
   const channelId = channelMap[channelType];

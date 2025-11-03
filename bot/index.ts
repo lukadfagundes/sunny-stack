@@ -6,6 +6,10 @@
  * @module bot/index
  */
 
+// Load environment variables from .env.local
+import { config as loadEnv } from 'dotenv';
+loadEnv({ path: '.env.local' });
+
 import { loadBotConfig, validateConfig } from './config';
 import { DeploymentMode } from './types';
 import { botLogger } from './core/logger';

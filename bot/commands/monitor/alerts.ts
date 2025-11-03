@@ -71,7 +71,7 @@ export class MonitorAlertsCommand extends BaseCommand {
     if (severityFilter) queryParams.append('severity', severityFilter);
     if (sourceFilter) queryParams.append('source', sourceFilter);
 
-    const endpoint = `/admin/monitoring/alerts?${queryParams.toString()}`;
+    const endpoint = `/admin/monitor/alerts?${queryParams.toString()}`;
 
     const response = await apiClient.get<{
       alerts: Array<{
@@ -81,18 +81,24 @@ export class MonitorAlertsCommand extends BaseCommand {
         source: string;
         message: string;
         timestamp: string;
+        acknowledged: boolean;
         metadata?: Record<string, unknown>;
       }>;
-      total: number;
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
     }>(endpoint);
 
     if (response.error || !response.data) {
       throw new Error(response.error || 'Failed to fetch alerts');
     }
 
-    const { alerts, total } = response.data;
-    const limit = 10;
-    const totalPages = Math.ceil(total / limit);
+    const { alerts, pagination } = response.data;
+    const total = pagination.total;
+    const totalPages = pagination.totalPages;
 
     if (alerts.length === 0) {
       await interaction.followUp({

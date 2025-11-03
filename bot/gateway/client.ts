@@ -10,6 +10,7 @@ import { Client, Events } from 'discord.js';
 import type { BotConfig } from '../types';
 import { createDiscordClient, connectClient, setupGracefulShutdown, waitForReady } from '../core/client';
 import { registerEventHandlers } from './events';
+import { discoverCommands } from '../commands/registry';
 import { botLogger } from '../core/logger';
 import { DiscordError } from '../core/errors';
 
@@ -22,6 +23,9 @@ import { DiscordError } from '../core/errors';
 export async function startGatewayBot(config: BotConfig): Promise<Client> {
   try {
     botLogger.info('Starting Gateway bot...');
+
+    // Discover and register all commands
+    await discoverCommands();
 
     // Create Discord client
     const client = createDiscordClient(config);

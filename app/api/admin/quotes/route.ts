@@ -19,6 +19,8 @@ import { QuoteStatus } from '@prisma/client';
  * - page: number (default: 1)
  * - limit: number (default: 50, max: 100)
  * - status: QuoteStatus (optional filter)
+ * - email: string (optional filter - case-insensitive search)
+ * - company: string (optional filter - case-insensitive search)
  * - sort: string (default: 'createdAt')
  * - order: 'asc' | 'desc' (default: 'desc')
  */
@@ -33,6 +35,8 @@ export const GET = withAuth(async (req: NextRequest) => {
       100
     );
     const status = searchParams.get('status') as QuoteStatus | null;
+    const email = searchParams.get('email') || null;
+    const company = searchParams.get('company') || null;
     const sort = searchParams.get('sort') || 'createdAt';
     const order = (searchParams.get('order') || 'desc') as 'asc' | 'desc';
 
@@ -68,6 +72,16 @@ export const GET = withAuth(async (req: NextRequest) => {
 
     if (status) {
       where.status = status;
+    }
+
+    // Add email filter (case-insensitive search)
+    if (email) {
+      where.email = { contains: email, mode: 'insensitive' };
+    }
+
+    // Add company filter (case-insensitive search)
+    if (company) {
+      where.company = { contains: company, mode: 'insensitive' };
     }
 
     // Calculate skip for pagination

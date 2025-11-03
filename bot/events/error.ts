@@ -40,7 +40,7 @@ export async function handleError(client: Client, error: Error): Promise<void> {
 
       if (guild) {
         const notificationsChannel = guild.channels.cache.get(
-          channels.NOTIFICATIONS_CHANNEL_ID
+          channels.adminLogs
         );
 
         if (notificationsChannel?.isTextBased()) {

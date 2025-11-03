@@ -1,24 +1,23 @@
 /**
  * /project status Command
  *
- * Displays detailed project information by ID
+ * Displays detailed project information by title
  *
  * @module bot/commands/project/status
  */
 
-import { SlashCommandBuilder, CommandInteraction, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction, EmbedBuilder } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
 import { loadBotConfig } from '../../config';
-import { createProjectEmbed, createErrorEmbed, COLORS } from '../../utils/embed-builder';
+import { createProjectEmbed, createErrorEmbed, createInfoEmbed, COLORS } from '../../utils/embed-builder';
 import {
   formatCurrency,
   formatRelativeTime,
   formatDuration,
   formatDiscordTimestamp,
 } from '../../utils/formatters';
-import { validateId } from '../../core/validators';
 
 /**
  * Project Status Command
@@ -29,25 +28,134 @@ export class ProjectStatusCommand extends BaseCommand {
     .setDescription('Get detailed status of a specific project')
     .addStringOption((option) =>
       option
-        .setName('project-id')
-        .setDescription('The project ID (from /project-list)')
+        .setName('title')
+        .setDescription('Project title or partial name')
         .setRequired(true)
+        .setAutocomplete(true)
     ) as SlashCommandBuilder;
 
   permissions = PermissionLevel.ADMIN;
 
+  async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
+    const focusedValue = interaction.options.getFocused();
+
+    try {
+      const config = loadBotConfig();
+      const apiClient = new ApiClient(config.apiUrl, config.apiKey);
+
+      // Search for projects matching the input
+      const searchResponse = await apiClient.get<{
+        projects: Array<{ id: string; title: string; clientName: string; status: string }>;
+      }>(`/admin/projects?title=${encodeURIComponent(focusedValue)}&limit=25`);
+
+      if (searchResponse.data && searchResponse.data.projects) {
+        const choices = searchResponse.data.projects.map(p => ({
+          name: `${p.title} (${p.clientName})`,
+          value: p.id
+        }));
+
+        await interaction.respond(choices.slice(0, 25)); // Discord limit is 25
+      } else {
+        await interaction.respond([]);
+      }
+    } catch (error) {
+      // If autocomplete fails, just return empty array
+      await interaction.respond([]);
+    }
+  }
+
   async execute(interaction: CommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
-    // Validate input
-    const projectIdRaw = interaction.options.get('project-id')?.value as string;
-    const projectId = validateId(projectIdRaw);
+    // Get project input (ID from autocomplete or title from manual entry)
+    const projectInput = interaction.options.get('title', true).value as string;
 
-    // Call API
     const config = loadBotConfig();
     const apiClient = new ApiClient(config.apiUrl, config.apiKey);
 
-    const response = await apiClient.get<{
+    // Check if input is an ID (UUID or CUID from autocomplete)
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(projectInput);
+    const isCUID = /^c[a-z0-9]{24}$/i.test(projectInput);
+    const isID = isUUID || isCUID;
+
+    let projectId: string;
+
+    if (isID) {
+      // Direct lookup by ID from autocomplete
+      projectId = projectInput;
+    } else {
+      // Fallback: Search by title for manual entry
+      const searchResponse = await apiClient.get<{
+        projects: Array<{
+          id: string;
+          title: string;
+          description: string | null;
+          clientName: string;
+          clientEmail: string;
+          status: string;
+          budget: number | null;
+          deadline: string | null;
+          createdAt: string;
+          updatedAt: string;
+          _count?: {
+            quotes: number;
+            timeEntries: number;
+          };
+        }>;
+        pagination: {
+          total: number;
+        };
+      }>(`/admin/projects?title=${encodeURIComponent(projectInput)}`);
+
+      if (searchResponse.error || !searchResponse.data) {
+        const errorEmbed = createErrorEmbed(
+          'Search Failed',
+          searchResponse.error || 'Failed to search for projects'
+        );
+        await interaction.followUp({
+          embeds: [errorEmbed],
+        });
+        return;
+      }
+
+      const { projects } = searchResponse.data;
+
+      // Handle no matches
+      if (projects.length === 0) {
+        const errorEmbed = createErrorEmbed(
+          'No Projects Found',
+          `No projects found matching "${projectInput}"`
+        );
+        await interaction.followUp({
+          embeds: [errorEmbed],
+        });
+        return;
+      }
+
+      // Handle multiple matches - show disambiguation list
+      if (projects.length > 1) {
+        const disambiguationEmbed = createInfoEmbed(
+          `Found ${projects.length} Projects`,
+          `Multiple projects match "${projectInput}". Please use the autocomplete dropdown to select a specific project:\n\n` +
+            projects
+              .map(
+                (p, i) =>
+                  `**${i + 1}.** ${p.title}\n   Client: ${p.clientName} • Status: ${p.status}`
+              )
+              .join('\n\n')
+        );
+        await interaction.followUp({
+          embeds: [disambiguationEmbed],
+        });
+        return;
+      }
+
+      // Single match
+      projectId = projects[0].id;
+    }
+
+    // Fetch full project details by ID
+    const detailResponse = await apiClient.get<{
       project: {
         id: string;
         title: string;
@@ -75,10 +183,10 @@ export class ProjectStatusCommand extends BaseCommand {
       };
     }>(`/admin/projects/${projectId}`);
 
-    if (response.error || !response.data) {
+    if (detailResponse.error || !detailResponse.data) {
       const errorEmbed = createErrorEmbed(
-        'Project Not Found',
-        response.error || `No project found with ID: ${projectId}`
+        'Failed to Load Project',
+        detailResponse.error || 'Failed to load project details'
       );
       await interaction.followUp({
         embeds: [errorEmbed],
@@ -86,7 +194,7 @@ export class ProjectStatusCommand extends BaseCommand {
       return;
     }
 
-    const { project } = response.data;
+    const { project } = detailResponse.data;
 
     // Create main project embed
     const projectEmbed = createProjectEmbed(project);

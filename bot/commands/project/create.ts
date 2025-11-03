@@ -55,7 +55,7 @@ export class ProjectCreateCommand extends BaseCommand {
     .addStringOption((option) =>
       option
         .setName('deadline')
-        .setDescription('Project deadline (YYYY-MM-DD)')
+        .setDescription('Project deadline (DD-MM-YYYY)')
         .setRequired(false)
     )
     .addStringOption((option) =>

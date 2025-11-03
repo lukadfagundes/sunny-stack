@@ -37,6 +37,10 @@ jest.mock("next/navigation", () => ({
 
 // Mock environment variables for testing - NOT REAL SECRETS
 process.env.RESEND_API_KEY = "test_api_key_for_jest_testing";
+process.env.DATABASE_URL = "postgresql://test:test@localhost:5432/test_db";
+process.env.DATABASE_URL_UNPOOLED =
+  "postgresql://test:test@localhost:5432/test_db";
+process.env.ADMIN_EMAIL = "test@example.com";
 
 // Suppress console errors during tests (optional, remove if you want to see errors)
 const originalError = console.error;

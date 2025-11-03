@@ -6,13 +6,12 @@
  * @module bot/commands/quote/review
  */
 
-import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
 import { loadBotConfig } from '../../config';
-import { createQuoteEmbed } from '../../utils/embed-builder';
-import { validateId } from '../../core/validators';
+import { createQuoteEmbed, createErrorEmbed, createInfoEmbed } from '../../utils/embed-builder';
 
 /**
  * Quote Review Command
@@ -23,25 +22,129 @@ export class QuoteReviewCommand extends BaseCommand {
     .setDescription('Review a specific quote request in detail')
     .addStringOption((option) =>
       option
-        .setName('quote-id')
-        .setDescription('The quote ID (from /quote-list)')
-        .setRequired(true)
+        .setName('email')
+        .setDescription('Quote requester email address')
+        .setRequired(false)
+        .setAutocomplete(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName('company')
+        .setDescription('Quote requester company name')
+        .setRequired(false)
+        .setAutocomplete(true)
     ) as SlashCommandBuilder;
 
   permissions = PermissionLevel.ADMIN;
 
+  async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
+    const focusedOption = interaction.options.getFocused(true);
+    const focusedValue = focusedOption.value;
+
+    try {
+      const config = loadBotConfig();
+      const apiClient = new ApiClient(config.apiUrl, config.apiKey);
+
+      // Query based on which field is focused
+      const searchParam = focusedOption.name === 'email' ? 'email' : 'company';
+      const response = await apiClient.get<{
+        quotes: Array<{
+          email: string;
+          company: string | null;
+          projectType: string;
+        }>;
+      }>(`/admin/quotes?${searchParam}=${encodeURIComponent(focusedValue)}&limit=25`);
+
+      if (response.data && response.data.quotes) {
+        const choices = response.data.quotes.map((q) => {
+          const display =
+            focusedOption.name === 'email'
+              ? `${q.email}${q.company ? ` (${q.company})` : ''} - ${q.projectType}`
+              : `${q.company || 'No Company'}${q.email ? ` (${q.email})` : ''} - ${q.projectType}`;
+          return {
+            name: display.slice(0, 100), // Discord limit
+            value: focusedOption.name === 'email' ? q.email : q.company || q.email,
+          };
+        });
+
+        await interaction.respond(choices.slice(0, 25));
+      } else {
+        await interaction.respond([]);
+      }
+    } catch (error) {
+      await interaction.respond([]);
+    }
+  }
+
   async execute(interaction: CommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
-    // Validate input
-    const quoteIdRaw = interaction.options.get('quote-id')?.value as string;
-    const quoteId = validateId(quoteIdRaw);
+    // Get search parameters
+    const email = interaction.options.get('email')?.value as string | undefined;
+    const company = interaction.options.get('company')?.value as string | undefined;
 
-    // Call API
+    // At least one parameter required
+    if (!email && !company) {
+      const errorEmbed = createErrorEmbed(
+        'Missing Parameters',
+        'Please provide at least one of: `email` or `company`'
+      );
+      await interaction.followUp({ embeds: [errorEmbed] });
+      return;
+    }
+
+    // Call API to search by email/company
     const config = loadBotConfig();
     const apiClient = new ApiClient(config.apiUrl, config.apiKey);
 
-    const response = await apiClient.get<{
+    const params = new URLSearchParams();
+    if (email) params.append('email', email);
+    if (company) params.append('company', company);
+
+    const searchResponse = await apiClient.get<{
+      quotes: Array<{
+        id: string;
+        name: string;
+        email: string;
+        company: string | null;
+        projectType: string;
+        status: string;
+        createdAt: string;
+      }>;
+    }>(`/admin/quotes?${params.toString()}`);
+
+    if (searchResponse.error || !searchResponse.data || searchResponse.data.quotes.length === 0) {
+      const errorEmbed = createErrorEmbed(
+        'No Quotes Found',
+        `❌ No quotes found matching the provided criteria`
+      );
+      await interaction.followUp({ embeds: [errorEmbed] });
+      return;
+    }
+
+    const { quotes } = searchResponse.data;
+
+    // Handle multiple matches - show disambiguation list
+    if (quotes.length > 1) {
+      const disambiguationEmbed = createInfoEmbed(
+        `Found ${quotes.length} Quotes`,
+        `Multiple quotes match your criteria. Please be more specific:\n\n` +
+          quotes
+            .map(
+              (q, i) =>
+                `**${i + 1}.** ${q.name} (${q.email})` +
+                (q.company ? `\n   Company: ${q.company}` : '') +
+                `\n   Type: ${q.projectType} • Status: ${q.status}`
+            )
+            .join('\n\n')
+      );
+      await interaction.followUp({ embeds: [disambiguationEmbed] });
+      return;
+    }
+
+    // Single match - fetch full details
+    const quoteId = quotes[0].id;
+    const detailResponse = await apiClient.get<{
       quote: {
         id: string;
         name: string;
@@ -71,11 +174,11 @@ export class QuoteReviewCommand extends BaseCommand {
       };
     }>(`/admin/quotes/${quoteId}`);
 
-    if (response.error || !response.data) {
-      throw new Error(response.error || `No quote found with ID: ${quoteId}`);
+    if (detailResponse.error || !detailResponse.data) {
+      throw new Error(detailResponse.error || 'Failed to load quote details');
     }
 
-    const { quote } = response.data;
+    const { quote } = detailResponse.data;
 
     // Create detailed quote embed
     const quoteEmbed = createQuoteEmbed(quote);

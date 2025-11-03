@@ -230,7 +230,7 @@ export class ProjectNotificationSender extends BaseNotificationSender {
  */
 export function createProjectNotificationSender(client: Client): ProjectNotificationSender {
   const channels = loadChannelConfig();
-  return new ProjectNotificationSender(client, channels.NOTIFICATIONS_CHANNEL_ID);
+  return new ProjectNotificationSender(client, channels.activeProjects);
 }
 
 /**

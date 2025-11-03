@@ -64,7 +64,7 @@ export async function handleGuildMemberAdd(member: GuildMember): Promise<void> {
 
   // Send welcome message to general channel
   try {
-    const generalChannel = member.guild.channels.cache.get(channels.GENERAL_CHANNEL_ID);
+    const generalChannel = member.guild.channels.cache.get(channels.botCommands);
 
     if (generalChannel?.isTextBased()) {
       await generalChannel.send({
@@ -81,7 +81,7 @@ export async function handleGuildMemberAdd(member: GuildMember): Promise<void> {
   // Send notification to notifications channel
   try {
     const notificationsChannel = member.guild.channels.cache.get(
-      channels.NOTIFICATIONS_CHANNEL_ID
+      channels.adminLogs
     );
 
     if (notificationsChannel?.isTextBased()) {

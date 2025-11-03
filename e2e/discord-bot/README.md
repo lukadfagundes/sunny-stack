@@ -2,6 +2,40 @@
 
 This guide explains how to perform end-to-end testing of the Sunny Stack Discord bot.
 
+## Quick Start (Local Development)
+
+### 1. Set Deployment Mode
+
+Edit `.env.local` and set:
+
+```bash
+DEPLOYMENT_MODE=pi
+```
+
+### 2. Launch Both Processes
+
+**Terminal 1 - Next.js Site:**
+
+```bash
+npm run dev
+```
+
+**Terminal 2 - Discord Bot:**
+
+```bash
+npm run bot:dev
+```
+
+### 3. Deploy Slash Commands (First Time Only)
+
+```bash
+npm run bot:deploy
+```
+
+The bot will connect to Discord and start listening for commands!
+
+---
+
 ## Prerequisites
 
 1. **Test Discord Server**
@@ -44,10 +78,11 @@ This guide explains how to perform end-to-end testing of the Sunny Stack Discord
 
 **Steps:**
 
-1. Start the bot: `npm run bot:start` (add this script to package.json)
-2. Verify bot appears online in Discord server
-3. Check #notifications channel for "Bot Online" message
-4. Verify bot presence shows "Watching Sunny Stack Admin"
+1. Start the site: `npm run dev` (Terminal 1)
+2. Start the bot: `npm run bot:dev` (Terminal 2)
+3. Verify bot appears online in Discord server
+4. Check #notifications channel for "Bot Online" message
+5. Verify bot presence shows "Watching Sunny Stack Admin"
 
 **Expected Results:**
 
@@ -62,7 +97,7 @@ This guide explains how to perform end-to-end testing of the Sunny Stack Discord
 
 **Steps:**
 
-1. Deploy commands: `npm run deploy:commands`
+1. Deploy commands: `npm run bot:deploy`
 2. Type `/` in any channel
 3. Verify all 18 commands appear
 

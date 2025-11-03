@@ -9,6 +9,7 @@
 import { Client, Events } from 'discord.js';
 import { botLogger } from '../core/logger';
 import { loadBotConfig, loadChannelConfig } from '../config';
+import { commandRegistry } from '../commands/registry';
 
 /**
  * Handle the ready event
@@ -78,16 +79,19 @@ export async function handleReady(client: Client): Promise<void> {
     channels: channelVerification,
   });
 
-  // Log command count
-  const commandCount = client.application?.commands.cache.size || 0;
+  // Log command count from registry (accurate count of loaded commands)
+  const commandCount = commandRegistry.size();
+  const registeredCommands = commandRegistry.getNames();
+
   botLogger.info('Bot ready and operational', {
     commandCount,
+    commands: registeredCommands,
     uptime: process.uptime(),
   });
 
   // Send ready notification to notifications channel (if exists)
   try {
-    const notificationsChannel = guild.channels.cache.get(channels.NOTIFICATIONS_CHANNEL_ID);
+    const notificationsChannel = guild.channels.cache.get(channels.adminLogs);
     if (notificationsChannel?.isTextBased()) {
       await notificationsChannel.send({
         content: '✅ **Sunny Stack Bot Online**\nBot is ready and monitoring all systems.',

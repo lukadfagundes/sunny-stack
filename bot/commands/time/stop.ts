@@ -6,7 +6,7 @@
  * @module bot/commands/time/stop
  */
 
-import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -27,9 +27,53 @@ export class TimeStopCommand extends BaseCommand {
         .setName('entry-id')
         .setDescription('The time entry ID to stop (from /time-start)')
         .setRequired(true)
+        .setAutocomplete(true)
     ) as SlashCommandBuilder;
 
   permissions = PermissionLevel.ADMIN;
+
+  async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
+    try {
+      const config = loadBotConfig();
+      const apiClient = new ApiClient(config.apiUrl, config.apiKey);
+
+      const response = await apiClient.get<{
+        timeEntries: Array<{
+          id: string;
+          startedAt: string;
+          description: string | null;
+          project: {
+            title: string;
+          };
+        }>;
+      }>('/admin/time-entries?status=active&limit=25');
+
+      if (response.data && response.data.timeEntries) {
+        const now = Date.now();
+        const choices = response.data.timeEntries.map((entry) => {
+          const elapsed = Math.floor((now - new Date(entry.startedAt).getTime()) / 60000);
+          const hours = Math.floor(elapsed / 60);
+          const minutes = elapsed % 60;
+          const timeAgo = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+
+          const displayName = entry.description
+            ? `${entry.project.title} - ${entry.description} (${timeAgo} ago)`
+            : `${entry.project.title} - Started ${timeAgo} ago`;
+
+          return {
+            name: displayName.slice(0, 100), // Discord limit
+            value: entry.id,
+          };
+        });
+
+        await interaction.respond(choices);
+      } else {
+        await interaction.respond([]);
+      }
+    } catch (error) {
+      await interaction.respond([]);
+    }
+  }
 
   async execute(interaction: CommandInteraction): Promise<void> {
     await this.deferReply(interaction);

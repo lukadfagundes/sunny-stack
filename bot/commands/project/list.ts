@@ -59,15 +59,17 @@ export class ProjectListCommand extends BaseCommand {
       ? `/admin/projects?page=${page}&status=${statusFilter}`
       : `/admin/projects?page=${page}`;
 
-    const response = await apiClient.get<{ projects: any[]; total: number }>(endpoint);
+    const response = await apiClient.get<{
+      projects: any[];
+      pagination: { page: number; limit: number; total: number; totalPages: number };
+    }>(endpoint);
 
     if (response.error || !response.data) {
       throw new Error(response.error || 'Failed to fetch projects');
     }
 
-    const { projects, total } = response.data;
-    const limit = 10;
-    const totalPages = Math.ceil(total / limit);
+    const { projects, pagination } = response.data;
+    const { total, totalPages } = pagination;
 
     if (projects.length === 0) {
       await interaction.followUp({
