@@ -283,7 +283,7 @@ export class ProposalNotificationSender extends BaseNotificationSender {
  */
 export function createProposalNotificationSender(client: Client): ProposalNotificationSender {
   const channels = loadChannelConfig();
-  return new ProposalNotificationSender(client, channels.NOTIFICATIONS_CHANNEL_ID);
+  return new ProposalNotificationSender(client, channels.proposals);
 }
 
 /**

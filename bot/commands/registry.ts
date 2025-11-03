@@ -113,12 +113,57 @@ export const commandRegistry = new CommandRegistry();
 export async function discoverCommands(): Promise<void> {
   botLogger.info('Discovering commands...');
 
-  // TODO: Implement dynamic command discovery
-  // For now, commands will be manually registered
+  try {
+    // Import all command modules
+    const commands = [
+      // Project commands
+      await import('./project/create'),
+      await import('./project/list'),
+      await import('./project/status'),
+      await import('./project/update'),
+      await import('./project/delete'),
 
-  const commandCount = commandRegistry.size();
-  botLogger.info('Command discovery complete', {
-    count: commandCount,
-    commands: commandRegistry.getNames(),
-  });
+      // Quote commands
+      await import('./quote/list'),
+      await import('./quote/review'),
+      await import('./quote/convert'),
+      await import('./quote/approve'),
+
+      // Time tracking commands
+      await import('./time/start'),
+      await import('./time/stop'),
+      await import('./time/log'),
+      await import('./time/report'),
+
+      // Monitor commands
+      await import('./monitor/status'),
+      await import('./monitor/services'),
+      await import('./monitor/alerts'),
+
+      // Admin commands
+      await import('./admin/sync'),
+      await import('./admin/health'),
+    ];
+
+    // Register each command
+    for (const module of commands) {
+      const command = module.default;
+      if (command && command.data) {
+        commandRegistry.register(command);
+      } else {
+        botLogger.error('Invalid command module', { module });
+      }
+    }
+
+    const commandCount = commandRegistry.size();
+    botLogger.info('Command discovery complete', {
+      count: commandCount,
+      commands: commandRegistry.getNames(),
+    });
+  } catch (error) {
+    botLogger.error('Failed to discover commands', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+    throw error;
+  }
 }

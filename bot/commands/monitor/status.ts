@@ -32,124 +32,106 @@ export class MonitorStatusCommand extends BaseCommand {
     const apiClient = new ApiClient(config.apiUrl, config.apiKey);
 
     const response = await apiClient.get<{
-      services: Array<{
-        name: string;
-        status: 'operational' | 'degraded' | 'down';
-        lastCheck: string;
-        uptime: number; // percentage
-      }>;
-      recentAlerts: Array<{
-        id: string;
-        type: string;
-        severity: string;
-        source: string;
-        message: string;
-        timestamp: string;
-      }>;
-      stats: {
-        totalEvents: number;
-        criticalAlerts: number;
-        errorCount: number;
-        warningCount: number;
-        uptimePercentage: number;
+      bot: {
+        online: boolean;
+        uptime: number;
+        version: string;
+        deploymentMode: string;
+        commandsLoaded: number;
+        lastRestart: string;
       };
-    }>('/admin/monitoring/status');
+      database: {
+        connected: boolean;
+        responseTime: number;
+        stats: {
+          projects: number;
+          quotes: number;
+          timeEntries: number;
+          users: number;
+        };
+      };
+      discord: {
+        connected: boolean;
+        guilds: number;
+        channels: number;
+        latency: number | null;
+      };
+    }>('/admin/monitor/status');
 
     if (response.error || !response.data) {
       throw new Error(response.error || 'Failed to fetch monitoring status');
     }
 
-    const { services, recentAlerts, stats } = response.data;
+    const { bot, database, discord } = response.data;
 
     // Determine overall status color
-    const hasDown = services.some((s) => s.status === 'down');
-    const hasDegraded = services.some((s) => s.status === 'degraded');
-    const statusColor = hasDown ? COLORS.ERROR : hasDegraded ? COLORS.WARNING : COLORS.SUCCESS;
+    const allHealthy = bot.online && database.connected && discord.connected;
+    const statusColor = allHealthy ? COLORS.SUCCESS : COLORS.WARNING;
+
+    // Format uptime
+    const uptimeHours = Math.floor(bot.uptime / 3600);
+    const uptimeMinutes = Math.floor((bot.uptime % 3600) / 60);
+    const uptimeFormatted = `${uptimeHours}h ${uptimeMinutes}m`;
 
     // Create status embed
     const statusEmbed = new EmbedBuilder()
       .setColor(statusColor)
-      .setTitle('🖥️ Monitoring System Status')
+      .setTitle('🖥️ Bot Status')
       .setDescription(
-        `**Overall Uptime:** ${stats.uptimePercentage.toFixed(2)}%\n` +
-          `**Total Events:** ${stats.totalEvents}`
+        `**Version:** ${bot.version}\n` +
+          `**Uptime:** ${uptimeFormatted}\n` +
+          `**Deployment Mode:** ${bot.deploymentMode}\n` +
+          `**Commands Loaded:** ${bot.commandsLoaded}\n` +
+          `**Last Restart:** ${formatRelativeTime(bot.lastRestart)}`
       );
 
     // Add service status
-    if (services.length > 0) {
-      const servicesText = services
-        .map((service) => {
-          const statusIcon =
-            service.status === 'operational'
-              ? '🟢'
-              : service.status === 'degraded'
-                ? '🟡'
-                : '🔴';
-          const uptimeText = service.uptime ? ` (${service.uptime.toFixed(1)}% uptime)` : '';
-          return `${statusIcon} **${service.name}** - ${service.status.toUpperCase()}${uptimeText}\nLast check: ${formatRelativeTime(service.lastCheck)}`;
-        })
-        .join('\n\n');
+    const botStatus = bot.online ? '🟢 Online' : '🔴 Offline';
+    const dbStatus = database.connected
+      ? `🟢 Connected (${database.responseTime}ms)`
+      : '🔴 Disconnected';
+    const discordStatus = discord.connected
+      ? `🟢 Connected\n${discord.guilds} guilds, ${discord.channels} channels`
+      : '🔴 Disconnected';
 
-      statusEmbed.addFields({
-        name: '📊 Services',
-        value: servicesText,
-        inline: false,
-      });
-    }
-
-    // Add alert summary
     statusEmbed.addFields(
       {
-        name: '🚨 Alerts',
-        value: [
-          `**Critical:** ${stats.criticalAlerts}`,
-          `**Errors:** ${stats.errorCount}`,
-          `**Warnings:** ${stats.warningCount}`,
-        ].join('\n'),
+        name: '🤖 Bot',
+        value: botStatus,
+        inline: true,
+      },
+      {
+        name: '💾 Database',
+        value: dbStatus,
+        inline: true,
+      },
+      {
+        name: '💬 Discord',
+        value: discordStatus,
         inline: true,
       }
     );
 
-    // Add recent alerts (if any)
-    if (recentAlerts.length > 0) {
-      const alertsEmbed = new EmbedBuilder()
-        .setColor(COLORS.WARNING)
-        .setTitle('⚠️ Recent Alerts')
-        .setDescription(
-          recentAlerts
-            .slice(0, 5)
-            .map((alert) => {
-              const severityIcon =
-                alert.severity === 'CRITICAL'
-                  ? '🔴'
-                  : alert.severity === 'ERROR'
-                    ? '🟠'
-                    : alert.severity === 'WARNING'
-                      ? '🟡'
-                      : '🔵';
-              return `${severityIcon} **${alert.source}** - ${alert.type}\n${alert.message.slice(0, 100)}\n${formatRelativeTime(alert.timestamp)}`;
-            })
-            .join('\n\n')
-        );
+    // Add database stats
+    const dbStats =
+      `**Projects:** ${database.stats.projects}\n` +
+      `**Quotes:** ${database.stats.quotes}\n` +
+      `**Time Entries:** ${database.stats.timeEntries}\n` +
+      `**Users:** ${database.stats.users}`;
 
-      if (recentAlerts.length > 5) {
-        alertsEmbed.setFooter({
-          text: `Showing 5 of ${recentAlerts.length} recent alerts. Use /monitor-alerts for all.`,
-        });
-      }
+    statusEmbed.addFields({
+      name: '📊 Database Stats',
+      value: dbStats,
+      inline: false,
+    });
 
-      await interaction.followUp({
-        embeds: [statusEmbed, alertsEmbed],
-      });
-    } else {
-      statusEmbed.setFooter({
-        text: '✅ No recent alerts - all systems nominal',
-      });
+    statusEmbed.setFooter({
+      text: '✅ All systems operational',
+    });
 
-      await interaction.followUp({
-        embeds: [statusEmbed],
-      });
-    }
+    await interaction.followUp({
+      embeds: [statusEmbed],
+    });
   }
 }
 

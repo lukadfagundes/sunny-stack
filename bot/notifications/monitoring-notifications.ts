@@ -313,7 +313,7 @@ export function createMonitoringNotificationSender(
   client: Client
 ): MonitoringNotificationSender {
   const channels = loadChannelConfig();
-  return new MonitoringNotificationSender(client, channels.NOTIFICATIONS_CHANNEL_ID);
+  return new MonitoringNotificationSender(client, channels.adminLogs);
 }
 
 /**

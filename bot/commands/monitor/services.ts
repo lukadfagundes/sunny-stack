@@ -46,136 +46,99 @@ export class MonitorServicesCommand extends BaseCommand {
     const config = loadBotConfig();
     const apiClient = new ApiClient(config.apiUrl, config.apiKey);
 
-    const endpoint = serviceFilter
-      ? `/admin/monitoring/services?service=${serviceFilter}`
-      : '/admin/monitoring/services';
+    const endpoint = '/admin/monitor/services';
 
     const response = await apiClient.get<{
       services: Array<{
-        id: string;
         name: string;
-        source: string;
         status: 'operational' | 'degraded' | 'down';
-        lastCheck: string;
-        uptime: number;
         responseTime: number | null;
-        metadata: {
-          region?: string;
-          version?: string;
-          endpoint?: string;
-        };
-        recentEvents: Array<{
-          type: string;
-          severity: string;
-          message: string;
-          timestamp: string;
-        }>;
+        lastChecked: string;
+        endpoint: string;
       }>;
+      summary: {
+        total: number;
+        operational: number;
+        degraded: number;
+        down: number;
+      };
     }>(endpoint);
 
     if (response.error || !response.data) {
       throw new Error(response.error || 'Failed to fetch services');
     }
 
-    const { services } = response.data;
+    const { services, summary } = response.data;
 
     if (services.length === 0) {
       await interaction.followUp({
-        content: '📋 No services found.',
+        content: '📋 No external services configured.',
       });
       return;
     }
 
-    // Create embeds for each service (max 3 per message due to Discord limits)
-    const embeds: EmbedBuilder[] = [];
-
-    for (const service of services.slice(0, 3)) {
-      const statusIcon =
-        service.status === 'operational'
-          ? '🟢'
-          : service.status === 'degraded'
-            ? '🟡'
-            : '🔴';
-
-      const statusColor =
-        service.status === 'operational'
-          ? COLORS.SUCCESS
-          : service.status === 'degraded'
-            ? COLORS.WARNING
-            : COLORS.ERROR;
-
-      const serviceEmbed = new EmbedBuilder()
-        .setColor(statusColor)
-        .setTitle(`${statusIcon} ${service.name}`)
-        .setDescription(`**Source:** ${service.source}\n**Status:** ${service.status.toUpperCase()}`);
-
-      serviceEmbed.addFields(
-        {
-          name: '📊 Metrics',
-          value: [
-            `**Uptime:** ${service.uptime.toFixed(2)}%`,
-            service.responseTime
-              ? `**Response Time:** ${service.responseTime}ms`
-              : '**Response Time:** N/A',
-            `**Last Check:** ${formatRelativeTime(service.lastCheck)}`,
-          ].join('\n'),
-          inline: true,
-        }
+    // Filter by service if specified
+    let filteredServices = services;
+    if (serviceFilter) {
+      filteredServices = services.filter((s) =>
+        s.name.toLowerCase().includes(serviceFilter.toLowerCase())
       );
-
-      // Add metadata if available
-      if (service.metadata && Object.keys(service.metadata).length > 0) {
-        const metadataText = Object.entries(service.metadata)
-          .map(([key, value]) => `**${key}:** ${value}`)
-          .join('\n');
-
-        serviceEmbed.addFields({
-          name: '⚙️ Configuration',
-          value: metadataText,
-          inline: true,
+      if (filteredServices.length === 0) {
+        await interaction.followUp({
+          content: `📋 No services found matching "${serviceFilter}".`,
         });
+        return;
       }
-
-      // Add recent events
-      if (service.recentEvents && service.recentEvents.length > 0) {
-        const eventsText = service.recentEvents
-          .slice(0, 3)
-          .map((event) => {
-            const severityIcon =
-              event.severity === 'CRITICAL'
-                ? '🔴'
-                : event.severity === 'ERROR'
-                  ? '🟠'
-                  : event.severity === 'WARNING'
-                    ? '🟡'
-                    : '🔵';
-            return `${severityIcon} ${event.type} - ${event.message.slice(0, 50)}\n${formatDiscordTimestamp(event.timestamp, 'R')}`;
-          })
-          .join('\n\n');
-
-        serviceEmbed.addFields({
-          name: '📝 Recent Events',
-          value: eventsText,
-          inline: false,
-        });
-      }
-
-      serviceEmbed.setFooter({
-        text: `Service ID: ${service.id}`,
-      });
-
-      embeds.push(serviceEmbed);
     }
 
-    if (services.length > 3) {
-      embeds[0].setDescription(
-        embeds[0].data.description +
-          `\n\n*Showing 3 of ${services.length} services. Use filters to see specific services.*`
+    // Determine overall status color
+    const statusColor =
+      summary.down > 0 ? COLORS.ERROR : summary.degraded > 0 ? COLORS.WARNING : COLORS.SUCCESS;
+
+    // Create main embed
+    const mainEmbed = new EmbedBuilder()
+      .setColor(statusColor)
+      .setTitle('🌐 External Services Status')
+      .setDescription(
+        `**Total:** ${summary.total} | ` +
+          `🟢 ${summary.operational} | ` +
+          `🟡 ${summary.degraded} | ` +
+          `🔴 ${summary.down}`
       );
-    }
+
+    // Add service details
+    const servicesList = filteredServices
+      .map((service) => {
+        const statusIcon =
+          service.status === 'operational'
+            ? '🟢'
+            : service.status === 'degraded'
+              ? '🟡'
+              : '🔴';
+
+        const responseText = service.responseTime
+          ? ` (${service.responseTime}ms)`
+          : ' (timeout)';
+
+        return (
+          `${statusIcon} **${service.name}**${service.status === 'operational' ? responseText : ''}\n` +
+          `${service.status.toUpperCase()} - Last checked ${formatRelativeTime(service.lastChecked)}`
+        );
+      })
+      .join('\n\n');
+
+    mainEmbed.addFields({
+      name: '📊 Services',
+      value: servicesList,
+      inline: false,
+    });
+
+    mainEmbed.setFooter({
+      text: '💡 Status cached for 60 seconds',
+    });
 
     await interaction.followUp({
-      embeds,
+      embeds: [mainEmbed],
     });
   }
 }

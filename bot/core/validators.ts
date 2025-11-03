@@ -91,7 +91,7 @@ export function validateBudget(budget: string): number {
 /**
  * Validate date string
  *
- * @param date - Date string to validate (ISO format)
+ * @param date - Date string to validate (DD-MM-YYYY format)
  * @returns Validated Date object
  * @throws {ValidationError} If date is invalid
  */
@@ -100,10 +100,43 @@ export function validateDate(date: string): Date {
     throw new ValidationError('Date is required', 'date');
   }
 
-  const parsed = new Date(date);
+  const trimmed = date.trim();
 
-  if (isNaN(parsed.getTime())) {
-    throw new ValidationError('Invalid date format. Use YYYY-MM-DD', 'date');
+  // Parse DD-MM-YYYY format
+  const parts = trimmed.split('-');
+  if (parts.length !== 3) {
+    throw new ValidationError('Invalid date format. Use DD-MM-YYYY', 'date');
+  }
+
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const year = parseInt(parts[2], 10);
+
+  if (isNaN(day) || isNaN(month) || isNaN(year)) {
+    throw new ValidationError('Invalid date format. Use DD-MM-YYYY', 'date');
+  }
+
+  // Validate ranges
+  if (day < 1 || day > 31) {
+    throw new ValidationError('Day must be between 1 and 31', 'date');
+  }
+  if (month < 1 || month > 12) {
+    throw new ValidationError('Month must be between 1 and 12', 'date');
+  }
+  if (year < 2000 || year > 2100) {
+    throw new ValidationError('Year must be between 2000 and 2100', 'date');
+  }
+
+  // Create date object (month is 0-indexed in JavaScript Date)
+  const parsed = new Date(year, month - 1, day);
+
+  // Validate that the date is valid (e.g., no 31st of February)
+  if (
+    parsed.getDate() !== day ||
+    parsed.getMonth() !== month - 1 ||
+    parsed.getFullYear() !== year
+  ) {
+    throw new ValidationError('Invalid date (day does not exist in month)', 'date');
   }
 
   // Check if date is in the past (for deadlines)

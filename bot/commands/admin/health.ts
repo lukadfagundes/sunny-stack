@@ -37,33 +37,25 @@ export class AdminHealthCommand extends BaseCommand {
       status: 'healthy' | 'degraded' | 'unhealthy';
       timestamp: string;
       uptime: number; // seconds
-      components: {
+      services: {
         database: {
           status: 'healthy' | 'degraded' | 'unhealthy';
           responseTime: number; // ms
-          connections: number;
-        };
-        api: {
-          status: 'healthy' | 'degraded' | 'unhealthy';
-          responseTime: number;
-          version: string;
         };
         discord: {
           status: 'healthy' | 'degraded' | 'unhealthy';
-          latency: number;
-          guilds: number;
+          latency?: number | null;
+          guilds?: number;
         };
-        monitoring: {
+        api: {
           status: 'healthy' | 'degraded' | 'unhealthy';
-          activeAlerts: number;
-          criticalAlerts: number;
+          requestsPerMinute: number;
         };
       };
-      metrics: {
-        totalProjects: number;
-        activeProjects: number;
-        pendingQuotes: number;
-        recentTimeEntries: number;
+      memory: {
+        used: number;
+        total: number;
+        percentage: number;
       };
     }>('/admin/health');
 
@@ -73,7 +65,7 @@ export class AdminHealthCommand extends BaseCommand {
       throw new Error(response.error || 'Failed to fetch health status');
     }
 
-    const { status, timestamp, uptime, components, metrics } = response.data;
+    const { status, timestamp, uptime, services, memory } = response.data;
 
     // Determine overall status color
     const statusColor =
@@ -96,93 +88,70 @@ export class AdminHealthCommand extends BaseCommand {
           `**Last Check:** ${formatRelativeTime(timestamp)}`
       );
 
-    // Add component status
-    const componentStatus: string[] = [];
+    // Add service status
+    const serviceStatus: string[] = [];
 
-    for (const [name, component] of Object.entries(components)) {
+    for (const [name, service] of Object.entries(services)) {
       const icon =
-        component.status === 'healthy'
+        service.status === 'healthy'
           ? '🟢'
-          : component.status === 'degraded'
+          : service.status === 'degraded'
             ? '🟡'
             : '🔴';
 
       let details = '';
-      if ('responseTime' in component) {
-        details = ` (${component.responseTime}ms)`;
+      if ('responseTime' in service) {
+        details = ` (${service.responseTime}ms)`;
       }
-      if ('latency' in component) {
-        details = ` (${component.latency}ms latency)`;
+      if ('latency' in service && service.latency) {
+        details = ` (${service.latency}ms latency)`;
       }
 
-      componentStatus.push(`${icon} **${name.charAt(0).toUpperCase() + name.slice(1)}**${details}`);
+      serviceStatus.push(`${icon} **${name.charAt(0).toUpperCase() + name.slice(1)}**${details}`);
     }
 
     healthEmbed.addFields({
-      name: '🔧 Components',
-      value: componentStatus.join('\n'),
+      name: '🔧 Services',
+      value: serviceStatus.join('\n'),
       inline: false,
     });
 
     // Add database metrics
-    if (components.database) {
+    if (services.database) {
       healthEmbed.addFields({
         name: '💾 Database',
-        value: [
-          `**Connections:** ${components.database.connections}`,
-          `**Response Time:** ${components.database.responseTime}ms`,
-        ].join('\n'),
+        value: [`**Response Time:** ${services.database.responseTime}ms`].join('\n'),
         inline: true,
       });
     }
 
     // Add Discord metrics
-    if (components.discord) {
+    if (services.discord && services.discord.guilds) {
       healthEmbed.addFields({
         name: '💬 Discord',
         value: [
-          `**Latency:** ${components.discord.latency}ms`,
-          `**Guilds:** ${components.discord.guilds}`,
+          `**Latency:** ${services.discord.latency || 'N/A'}`,
+          `**Guilds:** ${services.discord.guilds}`,
         ].join('\n'),
         inline: true,
       });
     }
 
-    // Add monitoring alerts
-    if (components.monitoring) {
-      const alertText =
-        components.monitoring.criticalAlerts > 0
-          ? `🔴 ${components.monitoring.criticalAlerts} critical`
-          : `✅ No critical alerts`;
-
-      healthEmbed.addFields({
-        name: '🚨 Monitoring',
-        value: [
-          `**Active Alerts:** ${components.monitoring.activeAlerts}`,
-          `**Status:** ${alertText}`,
-        ].join('\n'),
-        inline: true,
-      });
-    }
-
-    // Add platform metrics
+    // Add memory metrics
     healthEmbed.addFields({
-      name: '📊 Platform Metrics',
+      name: '💾 Memory',
       value: [
-        `**Total Projects:** ${metrics.totalProjects}`,
-        `**Active Projects:** ${metrics.activeProjects}`,
-        `**Pending Quotes:** ${metrics.pendingQuotes}`,
-        `**Recent Time Entries:** ${metrics.recentTimeEntries}`,
+        `**Used:** ${(memory.used / 1024 / 1024).toFixed(2)} MB`,
+        `**Total:** ${(memory.total / 1024 / 1024).toFixed(2)} MB`,
+        `**Usage:** ${memory.percentage.toFixed(1)}%`,
       ].join('\n'),
-      inline: false,
+      inline: true,
     });
 
     // Add API info
-    if (components.api) {
-      healthEmbed.setFooter({
-        text: `API v${components.api.version} • Response time: ${apiResponseTime}ms`,
-      });
-    }
+    healthEmbed.setFooter({
+      text: `Response time: ${apiResponseTime}ms`,
+    });
 
     // Add timestamp
     healthEmbed.setTimestamp(new Date(timestamp));

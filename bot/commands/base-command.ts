@@ -193,15 +193,20 @@ export abstract class BaseCommand implements Command {
   /**
    * Defer reply for long-running commands
    *
+   * NOTE: As of INV-003, interaction handler now defers globally.
+   * This method is kept for backward compatibility but does nothing.
+   * The interaction is already deferred when commands execute.
+   *
    * @param interaction - Command interaction
-   * @param ephemeral - Whether to make the reply ephemeral
+   * @param ephemeral - Whether to make the reply ephemeral (IGNORED - handler defers all)
+   * @deprecated Interaction is now deferred globally in the handler
    */
   protected async deferReply(
     interaction: CommandInteraction,
     ephemeral = false
   ): Promise<void> {
-    if (!interaction.deferred && !interaction.replied) {
-      await interaction.deferReply({ ephemeral });
-    }
+    // No-op: Handler already deferred the interaction immediately upon receipt
+    // This prevents double-deferral and maintains backward compatibility
+    return;
   }
 }

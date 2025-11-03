@@ -17,6 +17,24 @@ import { PermissionError, RateLimitError, ValidationError } from '../core/errors
  * Handle interaction create event
  */
 export async function handleInteractionCreate(interaction: Interaction): Promise<void> {
+  // Handle autocomplete interactions
+  if (interaction.isAutocomplete()) {
+    const commandName = interaction.commandName;
+    const command = commandRegistry.get(commandName);
+
+    if (command && 'autocomplete' in command) {
+      try {
+        await command.autocomplete(interaction);
+      } catch (error) {
+        botLogger.error('Autocomplete error', {
+          command: commandName,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+    return;
+  }
+
   // Only handle slash commands
   if (!interaction.isChatInputCommand()) {
     return;
@@ -33,15 +51,30 @@ export async function handleInteractionCreate(interaction: Interaction): Promise
     channelId: interaction.channelId,
   });
 
+  // CRITICAL: Defer immediately to prevent Discord timeout
+  // Must acknowledge within 3 seconds or interaction becomes invalid
+  try {
+    if (!interaction.deferred && !interaction.replied) {
+      await interaction.deferReply();
+    }
+  } catch (deferError) {
+    botLogger.error('Failed to defer interaction', {
+      command: commandName,
+      error: deferError instanceof Error ? deferError.message : String(deferError),
+    });
+    // If defer fails, the interaction is already expired - retrying won't help
+    return;
+  }
+
   try {
     // Get command from registry
     const command = commandRegistry.get(commandName);
 
     if (!command) {
       botLogger.warn('Unknown command received', { command: commandName });
-      await interaction.reply({
+      await interaction.followUp({
         content: `⚠️ Unknown command: \`/${commandName}\``,
-        ephemeral: true,
+        flags: 64, // Ephemeral
       });
       return;
     }

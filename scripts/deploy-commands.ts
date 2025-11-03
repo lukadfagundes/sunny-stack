@@ -9,9 +9,13 @@
  *   npm run deploy:commands:delete - Delete all guild commands
  */
 
+// Load environment variables from .env.local
+import { config as loadEnv } from 'dotenv';
+loadEnv({ path: '.env.local' });
+
 import { loadBotConfig } from '../bot/config';
 import { deployCommands, deployGlobalCommands, deleteGuildCommands } from '../bot/commands/deploy';
-import { commandRegistry } from '../bot/commands/registry';
+import { commandRegistry, discoverCommands } from '../bot/commands/registry';
 import { botLogger } from '../bot/core/logger';
 
 async function main() {
@@ -27,9 +31,8 @@ async function main() {
       guildId: config.guildId,
     });
 
-    // TODO: Register all commands here
-    // For now, this is a placeholder
-    // Commands will be registered when implemented in Phase 3C
+    // Discover and register all commands
+    await discoverCommands();
 
     botLogger.info('Commands registered in registry', {
       count: commandRegistry.size(),

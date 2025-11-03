@@ -194,7 +194,7 @@ export class QuoteNotificationSender extends BaseNotificationSender {
  */
 export function createQuoteNotificationSender(client: Client): QuoteNotificationSender {
   const channels = loadChannelConfig();
-  return new QuoteNotificationSender(client, channels.NOTIFICATIONS_CHANNEL_ID);
+  return new QuoteNotificationSender(client, channels.clientInquiries);
 }
 
 /**

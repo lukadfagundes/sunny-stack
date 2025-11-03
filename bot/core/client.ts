@@ -128,6 +128,11 @@ export function setupGracefulShutdown(client: Client): void {
  * @throws {DiscordError} If timeout is reached
  */
 export function waitForReady(client: Client, timeoutMs = 30000): Promise<void> {
+  // If client is already ready, resolve immediately
+  if (client.isReady()) {
+    return Promise.resolve();
+  }
+
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       reject(

@@ -48,19 +48,28 @@ export interface BotConfig {
  * Discord channel configuration
  */
 export interface ChannelConfig {
-  adminLogs: string;
-  botCommands: string;
-  activeProjects: string;
-  proposals: string;
-  tasks: string;
-  timeTracking: string;
-  clientInquiries: string;
-  clientUpdates: string;
-  calendarSync: string;
-  emailNotifications: string;
-  analytics: string;
-  invoices: string;
-  payments: string;
+  // Administrative Channels
+  adminLogs: string;           // #admin-logs - Bot activity logs, configuration changes
+  botCommands: string;          // #bot-commands - Admin commands and bot configuration
+
+  // Project Management Channels
+  activeProjects: string;       // #active-projects - Active client projects tracking
+  proposals: string;            // #proposals - Client proposals and quotes
+  tasks: string;                // #tasks - Task tracking and management
+  timeTracking: string;         // #time-tracking - Time entry logs and summaries
+
+  // Client Communication Channels
+  clientInquiries: string;      // #client-inquiries - New client inquiries from contact/quote forms
+  clientUpdates: string;        // #client-updates - Updates sent to clients
+
+  // Automation & Monitoring Channels
+  calendarSync: string;         // #calendar-sync - Google Calendar event notifications
+  emailNotifications: string;   // #email-notifications - Gmail monitoring and notifications
+  analytics: string;            // #analytics - Website analytics and metrics
+
+  // Financial Channels
+  invoices: string;             // #invoices - Invoice generation and tracking
+  payments: string;             // #payments - Payment notifications and tracking
 }
 
 /**

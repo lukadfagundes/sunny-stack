@@ -20,7 +20,9 @@
     "lint:fix": "next lint --fix",
     "analyze": "ANALYZE=true npm run build",
     "analyze:server": "ANALYZE=true BUNDLE_ANALYZE=server npm run build",
-    "analyze:browser": "ANALYZE=true BUNDLE_ANALYZE=browser npm run build"
+    "analyze:browser": "ANALYZE=true BUNDLE_ANALYZE=browser npm run build",
+    "bot:dev": "tsx bot/index.ts",
+    "bot:deploy": "tsx scripts/deploy-commands.ts"
   },
   "dependencies": {
     "@discordjs/builders": "^1.7.0",
@@ -69,6 +71,7 @@
     "jest-environment-jsdom": "^30.2.0",
     "markdownlint-cli": "^0.45.0",
     "postcss": "^8.5.6",
+    "tsx": "^4.20.6",
     "typescript": "^5.5.0"
   },
   "engines": {
