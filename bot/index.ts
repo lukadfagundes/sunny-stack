@@ -6,8 +6,11 @@
  * @module bot/index
  */
 
-// Initialize module aliases for @/ imports
-import 'module-alias/register';
+// Initialize module aliases for @/ imports BEFORE any other imports
+import * as moduleAlias from 'module-alias';
+moduleAlias.addAliases({
+  '@': __dirname + '/..'
+});
 
 // Load environment variables from .env.local
 import { config as loadEnv } from 'dotenv';
@@ -99,4 +102,6 @@ if (process.env.DEPLOYMENT_MODE !== 'vercel') {
 }
 
 // Export for Vercel Edge Functions
-export { POST } from './interactions/webhook';
+// COMMENTED OUT: Causes @noble/ed25519 ES module error in Pi mode
+// Re-enable when deploying to Vercel or fix ES module imports
+// export { POST } from './interactions/webhook';
