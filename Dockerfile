@@ -37,8 +37,14 @@ WORKDIR /app
 # Copy root package.json for ALL dependencies (including devDependencies)
 COPY package.json package-lock.json* ./
 
+# Copy Prisma schema (needed before npm ci to generate client)
+COPY prisma ./prisma/
+
 # Install ALL dependencies (needed for TypeScript compilation)
 RUN npm ci
+
+# Generate Prisma Client (required for TypeScript types)
+RUN npx prisma generate
 
 # Copy source files needed for bot build
 COPY bot/ ./bot/
