@@ -32,6 +32,7 @@ bot/dist/
 .env.production
 .env.test
 .env*.local
+.env.*
 
 # -----------------------------------------------------------------------------
 # Git & Version Control
@@ -50,6 +51,7 @@ bot/dist/
 *.swo
 *~
 .DS_Store
+.claude/
 
 # -----------------------------------------------------------------------------
 # Testing & Coverage
