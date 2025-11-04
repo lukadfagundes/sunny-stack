@@ -6,7 +6,7 @@
  * @module bot/commands/quote/review
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -76,12 +76,12 @@ export class QuoteReviewCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get search parameters
-    const email = interaction.options.get('email')?.value as string | undefined;
-    const company = interaction.options.get('company')?.value as string | undefined;
+    const email = interaction.options.getString('email') ?? undefined;
+    const company = interaction.options.getString('company') ?? undefined;
 
     // At least one parameter required
     if (!email && !company) {

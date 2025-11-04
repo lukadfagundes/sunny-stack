@@ -23,7 +23,7 @@ export function registerEventHandlers(client: Client, config: BotConfig): void {
   client.once(Events.ClientReady, async (readyClient) => {
     try {
       const { handleReady } = await import('../events/ready');
-      await handleReady(readyClient, config);
+      await handleReady(readyClient);
     } catch (error) {
       const err = error as Error;
       botLogger.error('Ready handler error', {
@@ -37,7 +37,7 @@ export function registerEventHandlers(client: Client, config: BotConfig): void {
   client.on(Events.InteractionCreate, async (interaction) => {
     try {
       const { handleInteractionCreate } = await import('../events/interaction-create');
-      await handleInteractionCreate(interaction, config);
+      await handleInteractionCreate(interaction);
     } catch (error) {
       const err = error as Error;
       botLogger.error('Interaction handler error', {
@@ -51,7 +51,7 @@ export function registerEventHandlers(client: Client, config: BotConfig): void {
   client.on(Events.MessageCreate, async (message) => {
     try {
       const { handleMessageCreate } = await import('../events/message-create');
-      await handleMessageCreate(message, config);
+      await handleMessageCreate(message);
     } catch (error) {
       const err = error as Error;
       botLogger.error('Message handler error', {

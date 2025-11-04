@@ -6,7 +6,7 @@
  * @module bot/commands/time/start
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -64,12 +64,12 @@ export class TimeStartCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get project input (ID from autocomplete or title from manual entry)
-    const projectInput = interaction.options.get('project-title', true).value as string;
-    const descriptionRaw = interaction.options.get('description')?.value as string | undefined;
+    const projectInput = interaction.options.getString('project-title', true);
+    const descriptionRaw = interaction.options.getString('description');
     const description = descriptionRaw ? validateDescription(descriptionRaw, false) : null;
 
     const config = loadBotConfig();

@@ -10,8 +10,15 @@ import { QuoteListCommand } from '@/bot/commands/quote/list';
 import { TimeReportCommand } from '@/bot/commands/time/report';
 import { AdminHealthCommand } from '@/bot/commands/admin/health';
 
-// Mock API client
+// Mock API client and config
 jest.mock('@/bot/core/api-client');
+jest.mock('@/bot/config', () => ({
+  loadBotConfig: jest.fn().mockReturnValue({
+    apiUrl: 'http://localhost:3000',
+    apiKey: 'test-api-key',
+    token: 'test-token',
+  }),
+}));
 
 describe('Integration: Command Execution Flow', () => {
   let mockInteraction: Partial<CommandInteraction>;
@@ -34,7 +41,11 @@ describe('Integration: Command Execution Flow', () => {
       channelId: '111222333',
       options: {
         get: jest.fn(),
+        getString: jest.fn(),
+        getInteger: jest.fn(),
+        getBoolean: jest.fn(),
       } as any,
+      isChatInputCommand: jest.fn().mockReturnValue(true),
       deferReply: deferReplySpy,
       followUp: followUpSpy,
       reply: replySpy,
@@ -48,9 +59,12 @@ describe('Integration: Command Execution Flow', () => {
       const command = new ProjectListCommand();
 
       // Mock options
-      (mockInteraction.options!.get as jest.Mock).mockImplementation((name: string) => {
-        if (name === 'page') return { value: 1 };
-        if (name === 'status') return { value: undefined };
+      (mockInteraction.options!.getInteger as jest.Mock).mockImplementation((name: string) => {
+        if (name === 'page') return 1;
+        return null;
+      });
+      (mockInteraction.options!.getString as jest.Mock).mockImplementation((name: string) => {
+        if (name === 'status') return null;
         return null;
       });
 
@@ -68,13 +82,23 @@ describe('Integration: Command Execution Flow', () => {
                 createdAt: new Date().toISOString(),
               },
             ],
-            total: 1,
+            pagination: {
+              page: 1,
+              limit: 10,
+              total: 1,
+              totalPages: 1,
+            },
           },
           error: null,
         }),
       }));
 
-      await command.execute(mockInteraction as CommandInteraction);
+      try {
+        await command.execute(mockInteraction as CommandInteraction);
+      } catch (error) {
+        console.error('Command execution error:', error);
+        throw error;
+      }
 
       expect(deferReplySpy).toHaveBeenCalled();
       expect(followUpSpy).toHaveBeenCalled();
@@ -87,14 +111,20 @@ describe('Integration: Command Execution Flow', () => {
     it('should handle empty project list', async () => {
       const command = new ProjectListCommand();
 
-      (mockInteraction.options!.get as jest.Mock).mockReturnValue(null);
+      (mockInteraction.options!.getInteger as jest.Mock).mockReturnValue(null);
+      (mockInteraction.options!.getString as jest.Mock).mockReturnValue(null);
 
       const { ApiClient } = require('@/bot/core/api-client');
       ApiClient.mockImplementation(() => ({
         get: jest.fn().mockResolvedValue({
           data: {
             projects: [],
-            total: 0,
+            pagination: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+            },
           },
           error: null,
         }),
@@ -112,9 +142,12 @@ describe('Integration: Command Execution Flow', () => {
     it('should filter quotes by status', async () => {
       const command = new QuoteListCommand();
 
-      (mockInteraction.options!.get as jest.Mock).mockImplementation((name: string) => {
-        if (name === 'page') return { value: 1 };
-        if (name === 'status') return { value: 'PENDING' };
+      (mockInteraction.options!.getInteger as jest.Mock).mockImplementation((name: string) => {
+        if (name === 'page') return 1;
+        return null;
+      });
+      (mockInteraction.options!.getString as jest.Mock).mockImplementation((name: string) => {
+        if (name === 'status') return 'PENDING';
         return null;
       });
 
@@ -152,8 +185,9 @@ describe('Integration: Command Execution Flow', () => {
     it('should generate report with project breakdown', async () => {
       const command = new TimeReportCommand();
 
-      (mockInteraction.options!.get as jest.Mock).mockImplementation((name: string) => {
-        if (name === 'period') return { value: 'week' };
+      (mockInteraction.options!.getString as jest.Mock).mockImplementation((name: string) => {
+        if (name === 'period') return 'week';
+        if (name === 'project-title') return null;
         return null;
       });
 
@@ -203,33 +237,25 @@ describe('Integration: Command Execution Flow', () => {
             status: 'healthy',
             timestamp: new Date().toISOString(),
             uptime: 3600,
-            components: {
+            services: {
               database: {
                 status: 'healthy',
                 responseTime: 50,
-                connections: 10,
               },
               api: {
                 status: 'healthy',
-                responseTime: 100,
-                version: '1.0.0',
+                requestsPerMinute: 100,
               },
               discord: {
                 status: 'healthy',
                 latency: 75,
                 guilds: 1,
               },
-              monitoring: {
-                status: 'healthy',
-                activeAlerts: 0,
-                criticalAlerts: 0,
-              },
             },
-            metrics: {
-              totalProjects: 10,
-              activeProjects: 5,
-              pendingQuotes: 3,
-              recentTimeEntries: 20,
+            memory: {
+              used: 536870912, // 512 MB
+              total: 1073741824, // 1 GB
+              percentage: 50,
             },
           },
           error: null,
@@ -254,33 +280,25 @@ describe('Integration: Command Execution Flow', () => {
             status: 'degraded',
             timestamp: new Date().toISOString(),
             uptime: 3600,
-            components: {
+            services: {
               database: {
                 status: 'degraded',
                 responseTime: 500,
-                connections: 10,
               },
               api: {
                 status: 'healthy',
-                responseTime: 100,
-                version: '1.0.0',
+                requestsPerMinute: 100,
               },
               discord: {
                 status: 'healthy',
                 latency: 75,
                 guilds: 1,
               },
-              monitoring: {
-                status: 'healthy',
-                activeAlerts: 2,
-                criticalAlerts: 0,
-              },
             },
-            metrics: {
-              totalProjects: 10,
-              activeProjects: 5,
-              pendingQuotes: 3,
-              recentTimeEntries: 20,
+            memory: {
+              used: 858993459, // 819 MB
+              total: 1073741824, // 1 GB
+              percentage: 80,
             },
           },
           error: null,

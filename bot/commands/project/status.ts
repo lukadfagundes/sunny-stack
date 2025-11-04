@@ -6,7 +6,7 @@
  * @module bot/commands/project/status
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction, EmbedBuilder } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -64,11 +64,11 @@ export class ProjectStatusCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get project input (ID from autocomplete or title from manual entry)
-    const projectInput = interaction.options.get('title', true).value as string;
+    const projectInput = interaction.options.getString('title', true);
 
     const config = loadBotConfig();
     const apiClient = new ApiClient(config.apiUrl, config.apiKey);

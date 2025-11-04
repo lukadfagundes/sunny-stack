@@ -90,15 +90,19 @@ describe('bot/core/validators', () => {
   });
 
   describe('validateDate', () => {
-    it('should validate and parse valid ISO dates', () => {
-      const futureDate = new Date(Date.now() + 86400000).toISOString().split('T')[0]; // Tomorrow
+    it('should validate and parse valid DD-MM-YYYY dates', () => {
+      const tomorrow = new Date(Date.now() + 86400000);
+      const day = String(tomorrow.getDate()).padStart(2, '0');
+      const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+      const year = tomorrow.getFullYear();
+      const futureDate = `${day}-${month}-${year}`; // DD-MM-YYYY format
       const result = validateDate(futureDate);
       expect(result).toBeInstanceOf(Date);
       expect(result.getTime()).toBeGreaterThan(Date.now());
     });
 
     it('should reject past dates', () => {
-      const pastDate = '2020-01-01';
+      const pastDate = '01-01-2020'; // DD-MM-YYYY format
       expect(() => validateDate(pastDate)).toThrow(ValidationError);
     });
 

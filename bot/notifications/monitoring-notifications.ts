@@ -45,7 +45,15 @@ export class MonitoringNotificationSender extends BaseNotificationSender {
     // Determine if admin should be mentioned based on severity
     const shouldMention = alert.severity === 'CRITICAL' || alert.severity === 'ERROR';
 
-    const embed = createMonitoringEmbed(alert);
+    // Map alert.source to service property expected by createMonitoringEmbed
+    const embedData = {
+      service: alert.source,
+      severity: alert.severity,
+      message: alert.message,
+      timestamp: alert.timestamp,
+    };
+
+    const embed = createMonitoringEmbed(embedData);
 
     if (service) {
       embed.addFields(

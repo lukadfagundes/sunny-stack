@@ -6,7 +6,7 @@
  * @module bot/commands/admin/sync
  */
 
-import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -36,11 +36,11 @@ export class AdminSyncCommand extends BaseCommand {
 
   permissions = PermissionLevel.ADMIN;
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get sync type
-    const syncType = interaction.options.get('type')?.value as string;
+    const syncType = interaction.options.getString('type', true);
 
     // Call API
     const config = loadBotConfig();

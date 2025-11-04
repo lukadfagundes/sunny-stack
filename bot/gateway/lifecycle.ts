@@ -44,21 +44,26 @@ export function setupLifecycleHandlers(client: Client): void {
     });
   });
 
-  // Connection resumed
-  client.on(Events.Resume, () => {
+  // Connection resumed (shard-based event in v14)
+  client.on(Events.ShardResume, (shardId, replayedEvents) => {
     state.connected = true;
     state.reconnectAttempts = 0;
 
     botLogger.info('Connection resumed', {
+      shardId,
+      replayedEvents,
       status: client.ws.status,
     });
   });
 
-  // Disconnected
-  client.on(Events.Disconnect, () => {
+  // Disconnected (shard-based event in v14)
+  client.on(Events.ShardDisconnect, (closeEvent, shardId) => {
     state.connected = false;
 
     botLogger.warn('Bot disconnected', {
+      shardId,
+      code: closeEvent.code,
+      reason: closeEvent.reason,
       reconnectAttempts: state.reconnectAttempts,
     });
   });

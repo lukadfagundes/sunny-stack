@@ -6,7 +6,7 @@
  * @module bot/commands/time/report
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction, EmbedBuilder } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -69,12 +69,12 @@ export class TimeReportCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get options
-    const projectInput = interaction.options.get('project-title')?.value as string | undefined;
-    const period = (interaction.options.get('period')?.value as string) || 'all';
+    const projectInput = interaction.options.getString('project-title');
+    const period = interaction.options.getString('period') ?? 'all';
 
     // Call API
     const config = loadBotConfig();

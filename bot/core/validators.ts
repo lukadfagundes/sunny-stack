@@ -27,6 +27,10 @@ export function validateEmail(email: string): string {
 
   const trimmed = email.trim().toLowerCase();
 
+  if (trimmed.length > 254) {
+    throw new ValidationError('Email must be 254 characters or less', 'email');
+  }
+
   if (!EMAIL_REGEX.test(trimmed)) {
     throw new ValidationError('Invalid email format', 'email');
   }
@@ -77,8 +81,8 @@ export function validateBudget(budget: string): number {
     throw new ValidationError('Budget must be a valid number', 'budget');
   }
 
-  if (budgetNum < 0) {
-    throw new ValidationError('Budget must be a positive number', 'budget');
+  if (budgetNum <= 0) {
+    throw new ValidationError('Budget must be greater than zero', 'budget');
   }
 
   if (budgetNum > 10000000) {
@@ -225,8 +229,12 @@ export function validateId(id: string): string {
 
   const trimmed = id.trim();
 
-  // CUID format validation (starts with 'c', 25 characters)
-  if (trimmed.length !== 25 || !trimmed.startsWith('c')) {
+  if (trimmed.length === 0) {
+    throw new ValidationError('ID cannot be empty', 'id');
+  }
+
+  // CUID format validation (starts with 'c' or 'cl', alphanumeric)
+  if (!trimmed.match(/^c[a-z0-9]+$/)) {
     throw new ValidationError('Invalid ID format', 'id');
   }
 
@@ -267,8 +275,8 @@ export function validatePagination(params: {
   page?: string | number;
   limit?: string | number;
 }): { page: number; limit: number } {
-  const page = typeof params.page === 'string' ? parseInt(params.page, 10) : (params.page || 1);
-  const limit = typeof params.limit === 'string' ? parseInt(params.limit, 10) : (params.limit || 10);
+  const page = typeof params.page === 'string' ? parseInt(params.page, 10) : (params.page ?? 1);
+  const limit = typeof params.limit === 'string' ? parseInt(params.limit, 10) : (params.limit ?? 10);
 
   if (isNaN(page) || page < 1) {
     throw new ValidationError('Page must be a positive integer', 'page');

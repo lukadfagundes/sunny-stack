@@ -6,7 +6,7 @@
  * @module bot/commands/project/update
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -101,11 +101,11 @@ export class ProjectUpdateCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get project input (ID from autocomplete or title from manual entry)
-    const projectInput = interaction.options.get('project-title', true).value as string;
+    const projectInput = interaction.options.getString('project-title', true);
 
     // Call API to search by title
     const config = loadBotConfig();
@@ -152,37 +152,37 @@ export class ProjectUpdateCommand extends BaseCommand {
     // Build update data (only include provided fields)
     const updateData: Record<string, unknown> = {};
 
-    const titleRaw = interaction.options.get('title')?.value as string | undefined;
+    const titleRaw = interaction.options.getString('title');
     if (titleRaw) {
       updateData.title = validateTitle(titleRaw);
     }
 
-    const clientNameRaw = interaction.options.get('client-name')?.value as string | undefined;
+    const clientNameRaw = interaction.options.getString('client-name');
     if (clientNameRaw) {
       updateData.clientName = validateTitle(clientNameRaw); // Reuse title validator for name
     }
 
-    const clientEmailRaw = interaction.options.get('client-email')?.value as string | undefined;
+    const clientEmailRaw = interaction.options.getString('client-email');
     if (clientEmailRaw) {
       updateData.clientEmail = validateEmail(clientEmailRaw);
     }
 
-    const descriptionRaw = interaction.options.get('description')?.value as string | undefined;
-    if (descriptionRaw !== undefined) {
+    const descriptionRaw = interaction.options.getString('description');
+    if (descriptionRaw !== null) {
       updateData.description = validateDescription(descriptionRaw, false);
     }
 
-    const status = interaction.options.get('status')?.value as string | undefined;
+    const status = interaction.options.getString('status');
     if (status) {
       updateData.status = status;
     }
 
-    const budgetRaw = interaction.options.get('budget')?.value as string | undefined;
+    const budgetRaw = interaction.options.getString('budget');
     if (budgetRaw) {
       updateData.budget = validateBudget(budgetRaw);
     }
 
-    const deadlineRaw = interaction.options.get('deadline')?.value as string | undefined;
+    const deadlineRaw = interaction.options.getString('deadline');
     if (deadlineRaw) {
       updateData.deadline = validateDate(deadlineRaw);
     }

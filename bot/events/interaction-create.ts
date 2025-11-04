@@ -22,7 +22,7 @@ export async function handleInteractionCreate(interaction: Interaction): Promise
     const commandName = interaction.commandName;
     const command = commandRegistry.get(commandName);
 
-    if (command && 'autocomplete' in command) {
+    if (command && 'autocomplete' in command && typeof command.autocomplete === 'function') {
       try {
         await command.autocomplete(interaction);
       } catch (error) {
@@ -82,11 +82,13 @@ export async function handleInteractionCreate(interaction: Interaction): Promise
     // Execute command with validation (includes permission check, rate limiting, etc.)
     const config = loadBotConfig();
 
-    if ('executeWithValidation' in command) {
+    if ('executeWithValidation' in command && typeof command.executeWithValidation === 'function') {
       await command.executeWithValidation(interaction as CommandInteraction, config);
-    } else {
+    } else if ('execute' in command && typeof command.execute === 'function') {
       // Fallback for commands without BaseCommand
       await command.execute(interaction as CommandInteraction);
+    } else {
+      throw new Error(`Command ${commandName} does not have a valid execute method`);
     }
 
     const executionTime = Date.now() - startTime;
@@ -105,7 +107,7 @@ export async function handleInteractionCreate(interaction: Interaction): Promise
       userId: interaction.user.id,
       success: false,
       executionTime,
-      error: error instanceof Error ? error : new Error(String(error)),
+      error: error instanceof Error ? error.message : String(error),
     });
 
     // Handle different error types

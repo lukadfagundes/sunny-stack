@@ -6,7 +6,7 @@
  * @module bot/commands/quote/approve
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -86,13 +86,13 @@ export class QuoteApproveCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get search parameters
-    const email = interaction.options.get('email')?.value as string | undefined;
-    const company = interaction.options.get('company')?.value as string | undefined;
-    const action = interaction.options.get('action')?.value as string;
+    const email = interaction.options.getString('email') ?? undefined;
+    const company = interaction.options.getString('company') ?? undefined;
+    const action = interaction.options.getString('action', true);
 
     // At least one search parameter required
     if (!email && !company) {

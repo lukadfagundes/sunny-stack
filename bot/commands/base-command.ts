@@ -6,7 +6,7 @@
  * @module bot/commands/base-command
  */
 
-import type { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import type { CommandInteraction, ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import type { Command, PermissionLevel, BotConfig } from '../types';
 import { validatePermission } from '../utils/permissions';
 import { checkRateLimit } from '../utils/rate-limiter';
@@ -58,8 +58,17 @@ export abstract class BaseCommand implements Command {
         );
       }
 
-      // 3. Execute command
-      await this.execute(interaction);
+      // 3. Type validation and execution
+      if (!interaction.isChatInputCommand()) {
+        await interaction.reply({
+          content: '❌ Invalid command type. This command only works as a chat input command.',
+          ephemeral: true,
+        });
+        return;
+      }
+
+      // 4. Execute command with properly typed interaction
+      await this.run(interaction);
 
       // 4. Log success
       const executionTime = Date.now() - startTime;
@@ -96,8 +105,32 @@ export abstract class BaseCommand implements Command {
 
   /**
    * Execute command (must be implemented by subclasses)
+   *
+   * @deprecated Use run() instead - this method is kept for backward compatibility
    */
-  abstract execute(interaction: CommandInteraction): Promise<void>;
+  async execute(interaction: CommandInteraction): Promise<void> {
+    // Type guard for ChatInputCommandInteraction
+    if (!interaction.isChatInputCommand()) {
+      await interaction.reply({
+        content: '❌ Invalid command type. This command only works as a chat input command.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    // Delegate to run() with properly typed interaction
+    await this.run(interaction);
+  }
+
+  /**
+   * Run command with type-safe ChatInputCommandInteraction
+   *
+   * This method provides access to interaction.options which is not available
+   * on the base CommandInteraction type.
+   *
+   * @param interaction - ChatInputCommandInteraction with options property
+   */
+  abstract run(interaction: ChatInputCommandInteraction): Promise<void>;
 
   /**
    * Handle permission error
