@@ -28,6 +28,10 @@ RUN npm ci --only=production && npm cache clean --force
 # -----------------------------------------------------------------------------
 FROM --platform=linux/arm64 node:18-alpine AS builder
 
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++ && \
+    rm -rf /var/cache/apk/*
+
 WORKDIR /app
 
 # Copy root package.json for ALL dependencies (including devDependencies)
