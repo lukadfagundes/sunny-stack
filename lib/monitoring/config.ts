@@ -15,7 +15,7 @@
 export const MONITORED_SERVICES = [
   {
     name: 'Fly.io',
-    endpoint: 'https://status.flycdn.net/api/v2/status.json',
+    endpoint: 'https://status.flyio.net/api/v2/status.json',
   },
   {
     name: 'Cloudflare',
