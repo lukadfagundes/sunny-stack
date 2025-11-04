@@ -6,6 +6,9 @@
  * @module bot/index
  */
 
+// Initialize module aliases for @/ imports
+import 'module-alias/register';
+
 // Load environment variables from .env.local
 import { config as loadEnv } from 'dotenv';
 loadEnv({ path: '.env.local' });
