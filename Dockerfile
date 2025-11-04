@@ -56,9 +56,16 @@ COPY tsconfig.bot.json ./
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
+# Clean any pre-existing compiled code to force fresh compilation
+RUN rm -rf bot/dist/ bot/*.tsbuildinfo
+
 # Compile TypeScript bot code
 # Output goes to bot/dist/ per tsconfig.bot.json
 RUN npx tsc --project tsconfig.bot.json
+
+# Validate compiled code references correct environment file
+RUN grep -q '\.env\.production' bot/dist/bot/index.js || \
+    (echo "ERROR: Compiled code does not reference .env.production" && exit 1)
 
 # -----------------------------------------------------------------------------
 # Stage 3: Runner

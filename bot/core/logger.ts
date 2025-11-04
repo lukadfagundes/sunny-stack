@@ -6,7 +6,7 @@
  * @module bot/core/logger
  */
 
-import logger from '@/lib/logger';
+import logger from '../../lib/logger';
 
 /**
  * Bot-specific logger context
