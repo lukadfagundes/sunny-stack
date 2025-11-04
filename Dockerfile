@@ -87,8 +87,14 @@ COPY --chown=botuser:botuser bot/package.json ./bot/package.json
 # Copy environment template (actual .env will be mounted as secret)
 COPY --chown=botuser:botuser .env.example ./.env.example
 
+# Create logs directory with proper permissions
+RUN mkdir -p /app/bot/logs && chown -R botuser:botuser /app/bot
+
 # Switch to non-root user
 USER botuser
+
+# Change working directory to bot directory for module-alias resolution
+WORKDIR /app/bot
 
 # Expose health check port (optional)
 EXPOSE 8080
@@ -104,5 +110,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the compiled bot from dist/bot/
-CMD ["node", "bot/dist/bot/index.js"]
+# Start the compiled bot from dist/bot/ (relative to /app/bot)
+CMD ["node", "dist/bot/index.js"]
