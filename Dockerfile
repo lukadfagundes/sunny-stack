@@ -30,19 +30,17 @@ FROM --platform=linux/arm64 node:18-alpine AS builder
 
 WORKDIR /app
 
-# Install TypeScript locally (better dependency management)
-RUN npm install typescript@5.7.3
-ENV PATH="/app/node_modules/.bin:$PATH"
+# Copy root package.json for ALL dependencies (including devDependencies)
+COPY package.json package-lock.json* ./
 
-# Copy production dependencies from deps stage
-COPY --from=deps /app/node_modules ./bot/node_modules
+# Install ALL dependencies (needed for TypeScript compilation)
+RUN npm ci
 
 # Copy source files needed for bot build
 COPY bot/ ./bot/
 COPY lib/ ./lib/
 COPY tsconfig.json ./
 COPY tsconfig.bot.json ./
-COPY package.json ./
 
 # Set build environment
 ARG NODE_ENV=production
@@ -50,7 +48,7 @@ ENV NODE_ENV=${NODE_ENV}
 
 # Compile TypeScript bot code
 # Output goes to bot/dist/ per tsconfig.bot.json
-RUN tsc --project tsconfig.bot.json
+RUN npx tsc --project tsconfig.bot.json
 
 # -----------------------------------------------------------------------------
 # Stage 3: Runner
