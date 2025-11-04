@@ -6,15 +6,9 @@
  * @module bot/index
  */
 
-// Initialize module aliases for @/ imports BEFORE any other imports
-import * as moduleAlias from 'module-alias';
-moduleAlias.addAliases({
-  '@': __dirname + '/..'
-});
-
-// Load environment variables from .env.local
+// Load environment variables from .env.production
 import { config as loadEnv } from 'dotenv';
-loadEnv({ path: '.env.local' });
+loadEnv({ path: '.env.production' });
 
 import { loadBotConfig, validateConfig } from './config';
 import { DeploymentMode } from './types';
