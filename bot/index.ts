@@ -3,12 +3,10 @@
  *
  * Auto-selects deployment mode (Vercel vs Raspberry Pi) based on environment
  *
+ * Environment variables loaded via docker-compose env_file directive
+ *
  * @module bot/index
  */
-
-// Load environment variables from .env.production
-import { config as loadEnv } from 'dotenv';
-loadEnv({ path: '.env.production' });
 
 import { loadBotConfig, validateConfig } from './config';
 import { DeploymentMode } from './types';
