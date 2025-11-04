@@ -6,7 +6,6 @@
  * @module bot/interactions/verify
  */
 
-import { verify } from '@noble/ed25519';
 import { ValidationError } from '../core/errors';
 import { botLogger } from '../core/logger';
 
@@ -40,6 +39,9 @@ export async function verifyDiscordSignature(params: {
   }
 
   try {
+    // Dynamically import ES module at runtime
+    const { verify } = await import('@noble/ed25519');
+
     // Construct message (timestamp + body)
     const message = timestamp + body;
 
