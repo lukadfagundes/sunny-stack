@@ -6,7 +6,7 @@
  * @module bot/commands/time/stop
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -75,12 +75,12 @@ export class TimeStopCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Validate input
-    const entryIdRaw = interaction.options.get('entry-id')?.value as string;
-    const entryId = validateId(entryIdRaw);
+    const entryIdRaw = interaction.options.getString('entry-id');
+    const entryId = validateId(entryIdRaw ?? '');
 
     // Call API
     const config = loadBotConfig();

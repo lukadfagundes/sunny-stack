@@ -52,10 +52,13 @@ export async function startGatewayBot(config: BotConfig): Promise<Client> {
     startServiceHealthMonitoring();
     botLogger.info('Service health monitoring initialized');
 
+    // Discover and register commands
+    await discoverCommands();
+
     // Store bot start time and client globally for monitoring API
     global.botStartTime = Date.now();
     global.discordClient = client;
-    global.botCommandsCount = (await discoverCommands()).length;
+    // Note: botCommandsCount is set by discoverCommands() internally
 
     return client;
   } catch (error) {
@@ -79,8 +82,8 @@ export async function startGatewayBot(config: BotConfig): Promise<Client> {
  * @param client - Discord client
  */
 export function handleReconnect(client: Client): void {
-  client.on(Events.Resumed, () => {
-    botLogger.info('Gateway connection resumed');
+  client.on(Events.ShardResume, (shardId, replayedEvents) => {
+    botLogger.info('Gateway shard resumed', { shardId, replayedEvents });
   });
 
   client.on(Events.Warn, (info) => {

@@ -13,10 +13,11 @@
  * @returns Formatted currency string
  */
 export function formatCurrency(amount: number): string {
-  return `$${amount.toLocaleString('en-US', {
+  const formatted = Math.abs(amount).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  })}`;
+  });
+  return amount < 0 ? `-$${formatted}` : `$${formatted}`;
 }
 
 /**
@@ -59,8 +60,6 @@ export function formatDuration(minutes: number): string {
 
   if (hours === 0) {
     return `${mins}m`;
-  } else if (mins === 0) {
-    return `${hours}h`;
   } else {
     return `${hours}h ${mins}m`;
   }
@@ -81,7 +80,7 @@ export function formatProjectStatus(status: string): string {
     ARCHIVED: '📦 Archived',
   };
 
-  return statusMap[status] || status;
+  return statusMap[status] || '❓ Unknown';
 }
 
 /**
@@ -98,7 +97,7 @@ export function formatQuoteStatus(status: string): string {
     CONVERTED: '🔄 Converted',
   };
 
-  return statusMap[status] || status;
+  return statusMap[status] || '❓ Unknown';
 }
 
 /**

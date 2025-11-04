@@ -6,7 +6,7 @@
  * @module bot/commands/project/create
  */
 
-import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -74,18 +74,18 @@ export class ProjectCreateCommand extends BaseCommand {
 
   permissions = PermissionLevel.ADMIN;
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     // Defer reply for long-running operation
     await this.deferReply(interaction);
 
     // Get command options
-    const title = interaction.options.get('title', true).value as string;
-    const clientName = interaction.options.get('client-name', true).value as string;
-    const clientEmail = interaction.options.get('client-email', true).value as string;
-    const descriptionRaw = interaction.options.get('description')?.value as string | undefined;
-    const budgetRaw = interaction.options.get('budget')?.value as string | undefined;
-    const deadlineRaw = interaction.options.get('deadline')?.value as string | undefined;
-    const status = (interaction.options.get('status')?.value as string) || 'PLANNING';
+    const title = interaction.options.getString('title', true);
+    const clientName = interaction.options.getString('client-name', true);
+    const clientEmail = interaction.options.getString('client-email', true);
+    const descriptionRaw = interaction.options.getString('description') ?? undefined;
+    const budgetRaw = interaction.options.getString('budget') ?? undefined;
+    const deadlineRaw = interaction.options.getString('deadline') ?? undefined;
+    const status = interaction.options.getString('status') ?? 'PLANNING';
 
     // Validate inputs
     const validatedTitle = validateTitle(title);

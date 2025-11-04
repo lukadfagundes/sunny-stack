@@ -6,7 +6,7 @@
  * @module bot/commands/quote/convert
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -100,12 +100,12 @@ export class QuoteConvertCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get search parameters
-    const email = interaction.options.get('email')?.value as string | undefined;
-    const company = interaction.options.get('company')?.value as string | undefined;
+    const email = interaction.options.getString('email') ?? undefined;
+    const company = interaction.options.getString('company') ?? undefined;
 
     // At least one parameter required
     if (!email && !company) {
@@ -172,17 +172,17 @@ export class QuoteConvertCommand extends BaseCommand {
     // Build conversion data
     const conversionData: Record<string, unknown> = {};
 
-    const budgetRaw = interaction.options.get('budget')?.value as string | undefined;
+    const budgetRaw = interaction.options.getString('budget') ?? undefined;
     if (budgetRaw) {
       conversionData.budget = validateBudget(budgetRaw);
     }
 
-    const deadlineRaw = interaction.options.get('deadline')?.value as string | undefined;
+    const deadlineRaw = interaction.options.getString('deadline') ?? undefined;
     if (deadlineRaw) {
       conversionData.deadline = validateDate(deadlineRaw);
     }
 
-    const status = interaction.options.get('status')?.value as string | undefined;
+    const status = interaction.options.getString('status') ?? undefined;
     if (status) {
       conversionData.status = status;
     }

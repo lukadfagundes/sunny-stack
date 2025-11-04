@@ -6,7 +6,7 @@
  * @module bot/commands/monitor/alerts
  */
 
-import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -55,13 +55,13 @@ export class MonitorAlertsCommand extends BaseCommand {
 
   permissions = PermissionLevel.ADMIN;
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get options
-    const page = (interaction.options.get('page')?.value as number) || 1;
-    const severityFilter = interaction.options.get('severity')?.value as string | undefined;
-    const sourceFilter = interaction.options.get('source')?.value as string | undefined;
+    const page = interaction.options.getInteger('page') ?? 1;
+    const severityFilter = interaction.options.getString('severity') ?? undefined;
+    const sourceFilter = interaction.options.getString('source') ?? undefined;
 
     // Call API
     const config = loadBotConfig();

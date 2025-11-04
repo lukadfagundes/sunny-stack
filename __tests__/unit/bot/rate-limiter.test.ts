@@ -98,7 +98,8 @@ describe('bot/utils/rate-limiter', () => {
       const status = getRateLimitStatus(userId);
       expect(status).toBeDefined();
       expect(status.remaining).toBe(5);
-      expect(status.resetAt).toBeInstanceOf(Date);
+      expect(typeof status.resetAt).toBe('number');
+      expect(status.resetAt).toBeGreaterThan(Date.now());
     });
 
     it('should return current status after requests', () => {

@@ -6,7 +6,7 @@
  * @module bot/commands/project/delete
  */
 
-import { SlashCommandBuilder, CommandInteraction, AutocompleteInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -62,12 +62,12 @@ export class ProjectDeleteCommand extends BaseCommand {
     }
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction, true); // Ephemeral for confirmation prompts
 
     // Get project ID from autocomplete (or fallback to title if manually entered)
-    const projectInput = interaction.options.get('project-title', true).value as string;
-    const confirm = interaction.options.get('confirm')?.value as boolean;
+    const projectInput = interaction.options.getString('project-title', true);
+    const confirm = interaction.options.getBoolean('confirm') ?? false;
 
     if (!confirm) {
       const warningEmbed = createWarningEmbed(

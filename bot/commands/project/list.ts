@@ -6,7 +6,7 @@
  * @module bot/commands/project/list
  */
 
-import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -44,12 +44,12 @@ export class ProjectListCommand extends BaseCommand {
 
   permissions = PermissionLevel.ADMIN;
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get options
-    const page = (interaction.options.get('page')?.value as number) || 1;
-    const statusFilter = interaction.options.get('status')?.value as string | undefined;
+    const page = interaction.options.getInteger('page') ?? 1;
+    const statusFilter = interaction.options.getString('status') ?? undefined;
 
     // Call API
     const config = loadBotConfig();

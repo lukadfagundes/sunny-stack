@@ -6,7 +6,7 @@
  * @module bot/commands/monitor/services
  */
 
-import { SlashCommandBuilder, CommandInteraction, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { BaseCommand } from '../base-command';
 import { PermissionLevel } from '../../types';
 import { ApiClient } from '../../core/api-client';
@@ -36,11 +36,11 @@ export class MonitorServicesCommand extends BaseCommand {
 
   permissions = PermissionLevel.ADMIN;
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
     await this.deferReply(interaction);
 
     // Get options
-    const serviceFilter = interaction.options.get('service')?.value as string | undefined;
+    const serviceFilter = interaction.options.getString('service') ?? undefined;
 
     // Call API
     const config = loadBotConfig();

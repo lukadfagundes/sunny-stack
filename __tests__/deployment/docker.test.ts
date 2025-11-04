@@ -33,18 +33,18 @@ describe('Docker Deployment', () => {
     it('should use multi-stage build with deps, builder, and runner stages', () => {
       const dockerfile = readFileSync(dockerfilePath, 'utf-8');
 
-      // Check for all three stages
-      expect(dockerfile).toMatch(/FROM node:18-alpine AS deps/);
-      expect(dockerfile).toMatch(/FROM node:18-alpine AS builder/);
-      expect(dockerfile).toMatch(/FROM node:18-alpine AS runner/);
+      // Check for all three stages (with optional platform flag)
+      expect(dockerfile).toMatch(/FROM .*node:18-alpine AS deps/);
+      expect(dockerfile).toMatch(/FROM .*node:18-alpine AS builder/);
+      expect(dockerfile).toMatch(/FROM .*node:18-alpine AS runner/);
     });
 
     it('should install production dependencies only in deps stage', () => {
       const dockerfile = readFileSync(dockerfilePath, 'utf-8');
 
-      // Find deps stage
-      const depsStageStart = dockerfile.indexOf('FROM node:18-alpine AS deps');
-      const builderStageStart = dockerfile.indexOf('FROM node:18-alpine AS builder');
+      // Find deps stage (accounting for platform flag)
+      const depsStageStart = dockerfile.search(/FROM .*node:18-alpine AS deps/);
+      const builderStageStart = dockerfile.search(/FROM .*node:18-alpine AS builder/);
       const depsStage = dockerfile.substring(depsStageStart, builderStageStart);
 
       // Check for production-only install
@@ -54,9 +54,9 @@ describe('Docker Deployment', () => {
     it('should build bot with TypeScript compilation', () => {
       const dockerfile = readFileSync(dockerfilePath, 'utf-8');
 
-      // Find builder stage
-      const builderStageStart = dockerfile.indexOf('FROM node:18-alpine AS builder');
-      const runnerStageStart = dockerfile.indexOf('FROM node:18-alpine AS runner');
+      // Find builder stage (accounting for platform flag)
+      const builderStageStart = dockerfile.search(/FROM .*node:18-alpine AS builder/);
+      const runnerStageStart = dockerfile.search(/FROM .*node:18-alpine AS runner/);
       const builderStage = dockerfile.substring(builderStageStart, runnerStageStart);
 
       // Check for TypeScript compilation (either npm run build:bot or tsc command)
@@ -66,8 +66,8 @@ describe('Docker Deployment', () => {
     it('should use non-root user for security', () => {
       const dockerfile = readFileSync(dockerfilePath, 'utf-8');
 
-      // Find runner stage
-      const runnerStageStart = dockerfile.indexOf('FROM node:18-alpine AS runner');
+      // Find runner stage (accounting for platform flag)
+      const runnerStageStart = dockerfile.search(/FROM .*node:18-alpine AS runner/);
       const runnerStage = dockerfile.substring(runnerStageStart);
 
       // Check for user creation and usage
