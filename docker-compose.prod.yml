@@ -15,8 +15,8 @@ services:
   # Discord Bot Service - Production Configuration
   # ---------------------------------------------------------------------------
   discord-bot:
-    # Image from GitHub Container Registry (pushed by CI/CD)
-    image: ghcr.io/${GITHUB_USERNAME}/sunny-stack/discord-bot:latest
+    # Use locally built image
+    image: sunny-stack-bot:latest
 
     container_name: sunny-stack-bot
 

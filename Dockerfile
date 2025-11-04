@@ -104,5 +104,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the compiled bot from dist/
-CMD ["node", "bot/dist/index.js"]
+# Start the compiled bot from dist/bot/
+CMD ["node", "bot/dist/bot/index.js"]
