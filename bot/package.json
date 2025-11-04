@@ -10,7 +10,11 @@
     "discord.js": "^14.14.1",
     "@prisma/client": "^6.18.0",
     "dotenv": "^17.2.3",
-    "winston": "^3.18.3"
+    "winston": "^3.18.3",
+    "module-alias": "^2.2.3"
+  },
+  "_moduleAliases": {
+    "@": "."
   },
   "engines": {
     "node": ">=18.17.0"
