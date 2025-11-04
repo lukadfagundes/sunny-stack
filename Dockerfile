@@ -91,9 +91,6 @@ COPY --from=builder --chown=botuser:botuser /app/bot/dist ./bot/dist
 # Copy bot package.json for runtime
 COPY --chown=botuser:botuser bot/package.json ./bot/package.json
 
-# Copy environment template (actual .env will be mounted as secret)
-COPY --chown=botuser:botuser .env.example ./.env.example
-
 # Create logs directory with proper permissions
 RUN mkdir -p /app/bot/logs && chown -R botuser:botuser /app/bot
 
