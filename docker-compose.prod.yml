@@ -12,6 +12,67 @@ version: "3.8"
 
 services:
   # ---------------------------------------------------------------------------
+  # PostgreSQL Database - Production
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: sunny-stack-db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sunnystack}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-sunnystack}
+      # Performance tuning for production
+      POSTGRES_SHARED_BUFFERS: 256MB
+      POSTGRES_MAX_CONNECTIONS: 50
+
+    volumes:
+      # Persistent data storage on Pi SSD
+      - postgres-data:/var/lib/postgresql/data
+
+    # Expose port for debugging (optional - can be removed for security)
+    ports:
+      - "5432:5432"
+
+    networks:
+      - sunny-stack-network
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sunnystack}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    # Resource limits optimized for Raspberry Pi 4B
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5" # Max 0.5 cores
+          memory: 512M # Max 512MB RAM
+        reservations:
+          cpus: "0.25" # Min 0.25 cores reserved
+          memory: 256M # Min 256MB RAM reserved
+
+    # Logging configuration with rotation
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m" # Max 10MB per log file
+        max-file: "3" # Keep 3 rotated files
+        compress: "true"
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+
+    labels:
+      com.sunny-stack.service: "postgres"
+      com.sunny-stack.environment: "production"
+      com.sunny-stack.platform: "raspberry-pi"
+
+  # ---------------------------------------------------------------------------
   # Discord Bot Service - Production Configuration
   # ---------------------------------------------------------------------------
   discord-bot:
@@ -79,11 +140,25 @@ services:
     networks:
       - sunny-stack-network
 
+    # Wait for PostgreSQL to be healthy before starting
+    depends_on:
+      postgres:
+        condition: service_healthy
+
     # Labels for management
     labels:
       com.sunny-stack.service: "discord-bot"
       com.sunny-stack.environment: "production"
       com.sunny-stack.platform: "raspberry-pi"
+
+# -----------------------------------------------------------------------------
+# Volumes
+# -----------------------------------------------------------------------------
+volumes:
+  postgres-data:
+    driver: local
+    labels:
+      com.sunny-stack.description: "PostgreSQL production database storage"
 
 # -----------------------------------------------------------------------------
 # Networks
