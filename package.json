@@ -26,6 +26,7 @@
     "analyze:browser": "ANALYZE=true BUNDLE_ANALYZE=browser npm run build",
     "bot:dev": "tsx bot/index.ts",
     "bot:deploy": "tsx scripts/deploy-commands.ts",
+    "bot:test": "tsx scripts/test-bot-commands.ts",
     "validate:env:pi": "tsx scripts/validate-env.ts --mode=pi",
     "validate:env:vercel": "tsx scripts/validate-env.ts --mode=vercel",
     "validate:env": "tsx scripts/validate-env.ts",
