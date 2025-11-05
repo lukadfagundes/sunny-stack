@@ -18,10 +18,10 @@ import { QuoteStatus } from '@prisma/client';
  */
 export const GET = withAuth(async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Find quote
     const quote = await prisma.quote.findUnique({
@@ -86,10 +86,10 @@ export const GET = withAuth(async (
  */
 export const PUT = withAuth(async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
 
     // Check if quote exists

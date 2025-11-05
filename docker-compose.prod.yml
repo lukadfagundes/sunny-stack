@@ -19,6 +19,10 @@ services:
     container_name: sunny-stack-db
     restart: unless-stopped
 
+    # Load environment variables from .env.production
+    env_file:
+      - .env.production
+
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-sunnystack}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
