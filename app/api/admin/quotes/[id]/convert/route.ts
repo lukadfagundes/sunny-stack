@@ -26,10 +26,10 @@ import logger from '@/lib/logger';
  */
 export const POST = withAuth(async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id: quoteId } = params;
+    const { id: quoteId } = await params;
 
     // Call quote conversion utility from Phase 1 Group 1
     // This handles all validation and transaction logic
