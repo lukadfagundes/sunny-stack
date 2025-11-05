@@ -106,10 +106,13 @@ function cleanupRateLimitStore(): void {
 }
 
 /**
- * withAuth - NextAuth Google OAuth Middleware
+ * withAuth - NextAuth Google OAuth Middleware with Bot API Key Fallback
  *
- * Validates that the user has an active NextAuth session and is an admin.
- * Admin email(s) are configured via ADMIN_EMAIL environment variable or config.
+ * Validates authentication using TWO methods (tries in order):
+ * 1. Bot API Key (x-api-key header) - for Discord bot requests
+ * 2. NextAuth Session - for admin dashboard browser requests
+ *
+ * This allows admin routes to be accessed by both the dashboard and the bot.
  *
  * @param handler - The Next.js API route handler to protect
  * @param config - Optional configuration (admin emails)
@@ -121,6 +124,14 @@ export function withAuth(
 ): NextHandler {
   return async (req: NextRequest, context?: { params: any }) => {
     try {
+      // METHOD 1: Check for Bot API Key first
+      const apiKey = req.headers.get('x-api-key');
+      if (apiKey && process.env.BOT_API_KEY && apiKey === process.env.BOT_API_KEY) {
+        // Valid bot API key - allow access
+        return handler(req, context);
+      }
+
+      // METHOD 2: Check NextAuth session
       // Get admin emails from config or environment variable
       const adminEmails =
         config?.adminEmails ||
@@ -130,14 +141,14 @@ export function withAuth(
         throw new Error('ADMIN_EMAIL environment variable is not defined');
       }
 
-      // Lazy load NextAuth to avoid issues in test environment
-      const { getServerSession } = await import('next-auth/next');
-      const session = await getServerSession();
+      // NextAuth v5 - use auth() function instead of getServerSession()
+      const { auth } = await import('@/app/api/auth/[...nextauth]/route');
+      const session = await auth();
 
       // Check if session exists
       if (!session || !session.user || !session.user.email) {
         return NextResponse.json(
-          { error: 'Unauthorized - No session found' },
+          { error: 'Unauthorized - No session found and no valid API key' },
           { status: 401 }
         );
       }

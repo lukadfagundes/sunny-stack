@@ -74,7 +74,7 @@ export class ApiClient {
         signal: controller.signal,
       };
 
-      if (options.body && (method === 'POST' || method === 'PUT')) {
+      if (options.body && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
         fetchOptions.body = JSON.stringify(options.body);
       }
 
@@ -179,6 +179,16 @@ export class ApiClient {
     options: Omit<ApiRequestOptions, 'method' | 'body'> = {}
   ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...options, method: 'PUT', body });
+  }
+
+  /**
+   * PATCH request
+   */
+  async patch<T>(
+    endpoint: string,
+    options: Omit<ApiRequestOptions, 'method'> = {}
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { ...options, method: 'PATCH' });
   }
 
   /**
