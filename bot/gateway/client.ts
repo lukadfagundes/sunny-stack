@@ -52,9 +52,6 @@ export async function startGatewayBot(config: BotConfig): Promise<Client> {
     startServiceHealthMonitoring();
     botLogger.info('Service health monitoring initialized');
 
-    // Discover and register commands
-    await discoverCommands();
-
     // Store bot start time and client globally for monitoring API
     global.botStartTime = Date.now();
     global.discordClient = client;

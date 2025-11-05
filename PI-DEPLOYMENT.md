@@ -5,16 +5,21 @@
 **Command:** (Run from Windows dev machine in project root)
 
 ```bash
-tar -czvf - .dockerignore Dockerfile docker-compose.prod.yml bot/ lib/ prisma/ package.json package-lock.json tsconfig.json tsconfig.bot.json .env.production | ssh pi@sunny-pi "cd ~/sunny-stack && tar -xzvf -"
+tar -czvf - .dockerignore Dockerfile docker-compose.prod.yml bot/ lib/ prisma/ scripts/ package.json package-lock.json tsconfig.json tsconfig.bot.json .env.production .env.local | ssh pi@sunny-pi "cd ~/sunny-stack && tar -xzvf -"
 ```
 
 **What it does:**
 
 - `tar -czvf -` - Create compressed archive, verbose output, to stdout
-- Includes: Docker config, bot code, shared libs, Prisma schema, configs, production env
+- Includes: Docker config, bot code, shared libs, Prisma schema, deployment scripts, configs, env files
 - `ssh pi@sunny-pi` - Connect to Pi
 - `tar -xzvf -` - Extract archive on Pi, verbose output
 - Shows each file as it syncs
+
+**Critical Files Added:**
+
+- `scripts/` - Deployment and validation scripts (deploy-commands.ts, validate-env.ts, etc.)
+- `.env.local` - Development environment variables
 
 **Excludes:** node_modules, .next, test files, documentation (per .dockerignore)
 
@@ -110,7 +115,7 @@ docker compose -f docker-compose.prod.yml restart discord-bot
 
 ```bash
 # Step 1: Sync code
-tar -czvf - .dockerignore Dockerfile docker-compose.prod.yml bot/ lib/ prisma/ package.json package-lock.json tsconfig.json tsconfig.bot.json .env.production | ssh pi@sunny-pi "cd ~/sunny-stack && tar -xzvf -"
+tar -czvf - .dockerignore Dockerfile docker-compose.prod.yml bot/ lib/ prisma/ scripts/ package.json package-lock.json tsconfig.json tsconfig.bot.json .env.production .env.local | ssh pi@sunny-pi "cd ~/sunny-stack && tar -xzvf -"
 
 # Step 2: Build on Pi (via SSH)
 ssh pi@sunny-pi "cd ~/sunny-stack && docker compose -f docker-compose.prod.yml down && docker rmi -f sunny-stack-bot:latest 2>/dev/null; docker build --no-cache --progress=plain -t sunny-stack-bot:latest -f Dockerfile . 2>&1 | tee build.log"
