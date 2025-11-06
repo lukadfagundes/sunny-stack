@@ -11,12 +11,12 @@
 │         Vercel (Serverless)         │
 │  ┌──────────────────────────────┐   │
 │  │   Next.js Website + API      │   │
-│  │   https://sunny-stack.com    │   │
+│  │   https://your-site.vercel.app    │   │
 │  └──────────┬───────────────────┘   │
 └─────────────┼───────────────────────┘
               │
               │ DATABASE_URL
-              │ postgresql://192.168.1.19:5432
+              │ postgresql://YOUR_PI_IP:5432
               ↓
 ┌─────────────────────────────────────┐
 │      Raspberry Pi (Self-Hosted)     │
@@ -27,7 +27,7 @@
 │             │                        │
 │  ┌──────────↓───────────────────┐   │
 │  │   Discord Bot Container      │   │
-│  │   Calls: sunny-stack.com/api │   │
+│  │   Calls: your-site.vercel.app/api │   │
 │  └──────────────────────────────┘   │
 └─────────────────────────────────────┘
 ```
@@ -37,7 +37,7 @@
 - ✅ Website + API hosted on Vercel (serverless, auto-scaling)
 - ✅ PostgreSQL + Bot hosted on Pi (persistent, self-hosted)
 - ✅ Vercel API connects to Pi PostgreSQL via external IP
-- ✅ Bot calls Vercel API via HTTPS (sunny-stack.com/api)
+- ✅ Bot calls Vercel API via HTTPS (your-site.vercel.app/api)
 - ❌ NO API server container on Pi
 
 ---
@@ -45,10 +45,10 @@
 ## Prerequisites
 
 - Raspberry Pi 4B with Docker installed
-- SSH access configured (`pi@sunny-pi`)
+- SSH access configured (`pi@your-pi`)
 - Windows development machine
 - `.env.production` configured with production credentials
-- Vercel deployment active at `https://sunny-stack.com`
+- Vercel deployment active at `https://your-site.vercel.app`
 
 ---
 
@@ -65,7 +65,7 @@ POSTGRES_PASSWORD=<secure-production-password>
 POSTGRES_DB=sunnystack
 
 # Database Connection (for migrations run on Pi)
-DATABASE_URL=postgresql://sunnystack:<password>@postgres:5432/sunnystack
+DATABASE_URL=postgresql://YOUR_DB_USER:<password>@postgres:5432/YOUR_DB_NAME
 
 # Discord Bot Configuration
 DISCORD_TOKEN=<production-bot-token>
@@ -73,7 +73,7 @@ DISCORD_CLIENT_ID=<production-client-id>
 DISCORD_GUILD_ID=<production-server-id>
 
 # Bot API URL (points to Vercel production)
-BOT_API_URL=https://sunny-stack.com/api
+BOT_API_URL=https://your-site.vercel.app/api
 
 # Deployment Mode
 NODE_ENV=production
@@ -83,7 +83,7 @@ DEPLOYMENT_MODE=pi
 **Important:**
 
 - `DATABASE_URL` uses `postgres:5432` (Docker container name)
-- `BOT_API_URL` points to Vercel (`https://sunny-stack.com/api`)
+- `BOT_API_URL` points to Vercel (`https://your-site.vercel.app/api`)
 - Bot does NOT connect to localhost API - it calls Vercel
 
 ---
@@ -109,7 +109,7 @@ tar czf - \
   --exclude=.swc \
   --exclude=out \
   . \
-  | ssh pi@sunny-pi "cd ~/sunny-stack && tar xzf -"
+  | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
 ```
 
 **What syncs:**
@@ -127,7 +127,7 @@ tar czf - \
 ## Step 2: SSH into Pi
 
 ```bash
-ssh pi@sunny-pi
+ssh pi@your-pi
 cd ~/sunny-stack
 ```
 
@@ -141,7 +141,7 @@ ls -la .env.production
 
 # Verify BOT_API_URL points to Vercel
 grep BOT_API_URL .env.production
-# Should show: https://sunny-stack.com/api
+# Should show: https://your-site.vercel.app/api
 
 # Verify no dev files remain
 ls .env.local docker-compose.dev.yml 2>/dev/null
@@ -158,7 +158,7 @@ docker builder prune -af
 
 # Build bot image
 docker build --no-cache --progress=plain \
-  -t sunny-stack-bot:latest \
+  -t your-project-bot:latest \
   -f Dockerfile . 2>&1 | tee build-bot.log
 ```
 
@@ -167,12 +167,12 @@ docker build --no-cache --progress=plain \
 - Dependencies installation
 - Prisma client generation
 - Bot compilation
-- Image tagged as `sunny-stack-bot:latest`
+- Image tagged as `your-project-bot:latest`
 
 **Verify:**
 
 ```bash
-docker images | grep sunny-stack-bot
+docker images | grep your-project-bot
 ```
 
 ---
@@ -197,10 +197,10 @@ docker compose -f docker-compose.prod.yml ps
 
 **Expected:**
 
-- `sunny-stack-db`: Up (healthy)
-- `sunny-stack-bot`: Up (healthy)
+- `your-project-db`: Up (healthy)
+- `your-project-bot`: Up (healthy)
 
-**Note:** No `sunny-stack-api` container - API runs on Vercel
+**Note:** No `your-project-api` container - API runs on Vercel
 
 ---
 
@@ -223,7 +223,7 @@ Database schema created
 
 ```bash
 docker compose -f docker-compose.prod.yml exec postgres \
-  psql -U sunnystack -d sunnystack -c "\dt"
+  psql -U YOUR_DB_USER -d YOUR_DB_NAME -c "\dt"
 ```
 
 ---
@@ -296,12 +296,12 @@ docker compose -f docker-compose.prod.yml logs -f discord-bot | grep "API reques
 
 ```bash
 # Add production database URL
-DATABASE_URL=postgresql://sunnystack:<password>@192.168.1.19:5432/sunnystack
+DATABASE_URL=postgresql://YOUR_DB_USER:<password>@YOUR_PI_IP:5432/YOUR_DB_NAME
 ```
 
 **Important:**
 
-- Uses Pi's external IP (`192.168.1.19`)
+- Uses Pi's external IP (`YOUR_PI_IP`)
 - Port `5432` must be accessible from Vercel
 - Consider using PostgreSQL connection pooling (PgBouncer) for Vercel
 
@@ -346,7 +346,7 @@ curl http://localhost:8080/health
 
 # PostgreSQL health
 docker compose -f docker-compose.prod.yml exec postgres \
-  pg_isready -U sunnystack
+  pg_isready -U YOUR_DB_USER
 ```
 
 ### Restart Services
@@ -375,7 +375,7 @@ docker compose -f docker-compose.prod.yml down -v
 ### View Resource Usage
 
 ```bash
-docker stats sunny-stack-bot sunny-stack-db
+docker stats your-project-bot your-project-db
 ```
 
 ---
@@ -403,7 +403,7 @@ tar czf - \
   --exclude=.swc \
   --exclude=out \
   . \
-  | ssh pi@sunny-pi "cd ~/sunny-stack && tar xzf -"
+  | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
 ```
 
 ### On Pi
@@ -411,20 +411,20 @@ tar czf - \
 **2. Rebuild and redeploy:**
 
 ```bash
-ssh pi@sunny-pi
+ssh pi@your-pi
 cd ~/sunny-stack
 
 # Stop services
 docker compose -f docker-compose.prod.yml down
 
 # Remove old image
-docker rmi -f sunny-stack-bot:latest
+docker rmi -f your-project-bot:latest
 
 # Clear build cache
 docker builder prune -af
 
 # Rebuild bot image
-docker build --no-cache -t sunny-stack-bot:latest -f Dockerfile .
+docker build --no-cache -t your-project-bot:latest -f Dockerfile .
 
 # Start services
 docker compose -f docker-compose.prod.yml up -d
@@ -452,12 +452,12 @@ docker compose -f docker-compose.prod.yml exec discord-bot \
   printenv BOT_API_URL
 ```
 
-**Should show:** `https://sunny-stack.com/api`
+**Should show:** `https://your-site.vercel.app/api`
 
 **Test from Pi:**
 
 ```bash
-curl https://sunny-stack.com/api/health
+curl https://your-site.vercel.app/api/health
 ```
 
 **Expected:** `{"status":"healthy"}`
@@ -479,7 +479,7 @@ sudo ufw allow 5432/tcp
 **Test from Windows:**
 
 ```bash
-psql postgresql://sunnystack:<password>@192.168.1.19:5432/sunnystack
+psql postgresql://YOUR_DB_USER:<password>@YOUR_PI_IP:5432/YOUR_DB_NAME
 ```
 
 ### Issue: Migrations fail
@@ -528,10 +528,10 @@ docker compose -f docker-compose.prod.yml up -d
 **Before deployment:**
 
 - [ ] `.env.production` has correct production credentials
-- [ ] `BOT_API_URL=https://sunny-stack.com/api` (Vercel, not localhost)
+- [ ] `BOT_API_URL=https://your-site.vercel.app/api` (Vercel, not localhost)
 - [ ] `DATABASE_URL` uses `@postgres:5432` (Docker container name)
 - [ ] No `.env.local` or `docker-compose.dev.yml` on Pi
-- [ ] Vercel has `DATABASE_URL` pointing to Pi (`192.168.1.19:5432`)
+- [ ] Vercel has `DATABASE_URL` pointing to Pi (`YOUR_PI_IP:5432`)
 - [ ] Pi port 5432 accessible to Vercel
 - [ ] Bot image built successfully
 
@@ -542,7 +542,7 @@ docker compose -f docker-compose.prod.yml up -d
 - [ ] No API server container (runs on Vercel)
 - [ ] Bot logs show "Connected to Discord Gateway"
 - [ ] Test Discord command works (`/project-list`)
-- [ ] Bot logs show API requests to `sunny-stack.com/api`
+- [ ] Bot logs show API requests to `your-site.vercel.app/api`
 - [ ] Vercel can connect to Pi PostgreSQL
 
 ---
@@ -552,7 +552,7 @@ docker compose -f docker-compose.prod.yml up -d
 **One-line sync (production):**
 
 ```bash
-tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=coverage --exclude=logs --exclude=.env --exclude=.env.local --exclude=docker-compose.dev.yml --exclude=playwright-report --exclude=test-results --exclude=*.tsbuildinfo --exclude=*.log --exclude=.swc --exclude=out . | ssh pi@sunny-pi "cd ~/sunny-stack && tar xzf -"
+tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=coverage --exclude=logs --exclude=.env --exclude=.env.local --exclude=docker-compose.dev.yml --exclude=playwright-report --exclude=test-results --exclude=*.tsbuildinfo --exclude=*.log --exclude=.swc --exclude=out . | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
 ```
 
 **Complete deployment (from Pi):**
@@ -560,9 +560,9 @@ tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=covera
 ```bash
 cd ~/sunny-stack
 docker compose -f docker-compose.prod.yml down
-docker rmi -f sunny-stack-bot:latest
+docker rmi -f your-project-bot:latest
 docker builder prune -af
-docker build --no-cache -t sunny-stack-bot:latest -f Dockerfile .
+docker build --no-cache -t your-project-bot:latest -f Dockerfile .
 docker compose -f docker-compose.prod.yml up -d
 sleep 30
 docker compose -f docker-compose.prod.yml exec discord-bot npx prisma migrate deploy
@@ -574,7 +574,7 @@ docker compose -f docker-compose.prod.yml logs -f
 ```bash
 docker compose -f docker-compose.prod.yml ps
 curl http://localhost:8080/health
-docker stats sunny-stack-bot sunny-stack-db
+docker stats your-project-bot your-project-db
 ```
 
 ---

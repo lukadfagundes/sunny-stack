@@ -13,11 +13,11 @@
 │         Vercel (Serverless)         │
 │  ┌──────────────────────────────┐   │
 │  │   Next.js Website + API      │   │
-│  │   https://sunny-stack.com    │   │
+│  │   https://your-site.vercel.app    │   │
 │  └──────────┬───────────────────┘   │
 └─────────────┼───────────────────────┘
               │
-              │ DATABASE_URL=postgresql://192.168.1.19:5432
+              │ DATABASE_URL=postgresql://YOUR_PI_IP:5432
               ↓
 ┌─────────────────────────────────────┐
 │      Raspberry Pi (Self-Hosted)     │
@@ -29,9 +29,9 @@
 │             │                        │
 │  ┌──────────↓───────────────────┐   │
 │  │   Discord Bot Container      │   │
-│  │   sunny-stack-bot:latest     │   │
+│  │   your-project-bot:latest     │   │
 │  │   BOT_API_URL=               │   │
-│  │     sunny-stack.com/api      │   │
+│  │     your-site.vercel.app/api      │   │
 │  └──────────────────────────────┘   │
 └─────────────────────────────────────┘
 ```
@@ -50,12 +50,12 @@
 
 **Connects to:**
 
-- Pi PostgreSQL database (192.168.1.19:5432)
+- Pi PostgreSQL database (YOUR_PI_IP:5432)
 
 **Environment Variables:**
 
 ```bash
-DATABASE_URL=postgresql://sunnystack:<password>@192.168.1.19:5432/sunnystack
+DATABASE_URL=postgresql://YOUR_DB_USER:<password>@YOUR_PI_IP:5432/YOUR_DB_NAME
 RESEND_API_KEY=<resend-key>
 # All other secrets
 ```
@@ -87,8 +87,8 @@ POSTGRES_USER=sunnystack
 POSTGRES_PASSWORD=<secure-password>
 POSTGRES_DB=sunnystack
 
-DATABASE_URL=postgresql://sunnystack:<password>@postgres:5432/sunnystack
-BOT_API_URL=https://sunny-stack.com/api
+DATABASE_URL=postgresql://YOUR_DB_USER:<password>@postgres:5432/YOUR_DB_NAME
+BOT_API_URL=https://your-site.vercel.app/api
 DISCORD_TOKEN=<bot-token>
 # Other bot-specific variables
 ```
@@ -230,7 +230,7 @@ Discord User → Pi Bot → Vercel API → Pi PostgreSQL → Vercel API → Pi B
 
 - Production configuration
 - `DATABASE_URL=postgresql://...@postgres:5432/...` (Docker container name)
-- `BOT_API_URL=https://sunny-stack.com/api` (Vercel production)
+- `BOT_API_URL=https://your-site.vercel.app/api` (Vercel production)
 
 **docker-compose.prod.yml (Permanent)**
 
@@ -243,7 +243,7 @@ Discord User → Pi Bot → Vercel API → Pi PostgreSQL → Vercel API → Pi B
 
 **Environment Variables (Dashboard)**
 
-- `DATABASE_URL=postgresql://...@192.168.1.19:5432/...` (Pi external IP)
+- `DATABASE_URL=postgresql://...@YOUR_PI_IP:5432/...` (Pi external IP)
 - All website/API secrets (Resend, Google OAuth, etc.)
 
 ---
@@ -308,10 +308,10 @@ Discord User → Pi Bot → Vercel API → Pi PostgreSQL → Vercel API → Pi B
 ```bash
 # Verify BOT_API_URL
 docker compose -f docker-compose.prod.yml exec discord-bot printenv BOT_API_URL
-# Should show: https://sunny-stack.com/api
+# Should show: https://your-site.vercel.app/api
 
 # Test from Pi
-curl https://sunny-stack.com/api/health
+curl https://your-site.vercel.app/api/health
 ```
 
 ---
@@ -322,7 +322,7 @@ curl https://sunny-stack.com/api/health
 
 ```bash
 # Test from Windows
-psql postgresql://sunnystack:<password>@192.168.1.19:5432/sunnystack
+psql postgresql://YOUR_DB_USER:<password>@YOUR_PI_IP:5432/YOUR_DB_NAME
 
 # Check firewall
 sudo ufw status
@@ -365,7 +365,7 @@ rm -f .env.local docker-compose.dev.yml
 
 ```bash
 # See PI-PRODUCTION-DEPLOYMENT.md
-docker build --no-cache -t sunny-stack-bot:latest -f Dockerfile .
+docker build --no-cache -t your-project-bot:latest -f Dockerfile .
 docker compose -f docker-compose.prod.yml up -d
 docker compose -f docker-compose.prod.yml exec discord-bot npx prisma migrate deploy
 docker compose -f docker-compose.prod.yml logs -f
@@ -377,7 +377,7 @@ docker compose -f docker-compose.prod.yml logs -f
 docker compose -f docker-compose.prod.yml ps
 docker compose -f docker-compose.prod.yml logs -f discord-bot
 curl http://localhost:8080/health
-docker stats sunny-stack-bot sunny-stack-db
+docker stats your-project-bot your-project-db
 ```
 
 ---

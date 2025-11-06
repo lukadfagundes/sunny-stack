@@ -9,7 +9,7 @@
 ## Prerequisites
 
 - Raspberry Pi 4B with Docker installed
-- SSH access configured (`pi@sunny-pi`)
+- SSH access configured (`pi@your-pi`)
 - Windows development machine with project files
 - `.env.local` configured for Pi (`localhost:5432`, `localhost:3000`)
 
@@ -34,7 +34,7 @@ tar czf - \
   --exclude=.swc \
   --exclude=out \
   . \
-  | ssh pi@sunny-pi "cd ~/sunny-stack && tar xzf -"
+  | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
 ```
 
 **What syncs:**
@@ -47,7 +47,7 @@ tar czf - \
 ## Step 2: SSH into Pi
 
 ```bash
-ssh pi@sunny-pi
+ssh pi@your-pi
 cd ~/sunny-stack
 ```
 
@@ -77,7 +77,7 @@ docker compose -f docker-compose.dev.yml ps
 
 **Expected:**
 
-- Container: `sunny-stack-db-dev`
+- Container: `your-project-db-dev`
 - Status: `Up (healthy)`
 - Port: `0.0.0.0:5432->5432/tcp`
 
@@ -99,7 +99,7 @@ Database schema created in PostgreSQL
 **Verify schema:**
 
 ```bash
-docker compose -f docker-compose.dev.yml exec postgres psql -U sunnystack -d sunnystack -c "\dt"
+docker compose -f docker-compose.dev.yml exec postgres psql -U YOUR_DB_USER -d YOUR_DB_NAME -c "\dt"
 ```
 
 ---
@@ -117,7 +117,7 @@ npm run dev
 ```
 ▲ Next.js 15.5.4
 - Local:        http://localhost:3000
-- Network:      http://192.168.1.19:3000
+- Network:      http://YOUR_PI_IP:3000
 ✓ Ready in ~5s
 ```
 
@@ -130,7 +130,7 @@ npm run dev
 **Open second SSH terminal:**
 
 ```bash
-ssh pi@sunny-pi
+ssh pi@your-pi
 cd ~/sunny-stack
 npm run bot:dev
 ```
@@ -228,7 +228,7 @@ docker compose -f docker-compose.dev.yml down -v
 **Expected:**
 
 ```
-✔ Container sunny-stack-db-dev  Removed
+✔ Container your-project-db-dev  Removed
 ✔ Volume postgres-dev-data      Removed
 ✔ Network sunny-stack-dev-network Removed
 ```
@@ -339,7 +339,7 @@ npm test -- __tests__/unit/bot/commands/project.test.ts
 **One-line sync:**
 
 ```bash
-tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=coverage --exclude=logs --exclude=.env --exclude=playwright-report --exclude=test-results --exclude=*.tsbuildinfo --exclude=*.log --exclude=.swc --exclude=out . | ssh pi@sunny-pi "cd ~/sunny-stack && tar xzf -"
+tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=coverage --exclude=logs --exclude=.env --exclude=playwright-report --exclude=test-results --exclude=*.tsbuildinfo --exclude=*.log --exclude=.swc --exclude=out . | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
 ```
 
 **Complete test workflow (from Pi):**

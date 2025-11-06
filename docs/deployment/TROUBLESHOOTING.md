@@ -87,7 +87,7 @@ npm test
 
 # 4. Check Docker status
 docker ps -a
-docker logs sunny-stack-bot
+docker logs your-project-bot
 
 # 5. Check bot build
 npm run build:bot
@@ -153,7 +153,7 @@ docker buildx create --name mybuilder --use
 docker buildx inspect --bootstrap
 
 # Build for ARM64
-docker buildx build --platform linux/arm64 -t sunny-stack-bot:arm64 .
+docker buildx build --platform linux/arm64 -t your-project-bot:arm64 .
 ```
 
 **2. TypeScript compilation errors during build**
@@ -193,7 +193,7 @@ cat bot/package.json
 
 ```bash
 # Clean build (no cache)
-docker build --no-cache -t sunny-stack-bot .
+docker build --no-cache -t your-project-bot .
 
 # Or fix package.json dependency versions
 # Use exact versions instead of ranges
@@ -207,11 +207,11 @@ docker build --no-cache -t sunny-stack-bot .
 
 ```bash
 # Check image size
-docker images sunny-stack-bot
+docker images your-project-bot
 # Should be ~380MB
 
 # Check layer sizes
-docker history sunny-stack-bot:latest
+docker history your-project-bot:latest
 ```
 
 **Solution:**
@@ -222,7 +222,7 @@ docker history sunny-stack-bot:latest
 # Check that dev dependencies aren't in final image
 
 # Validate:
-docker run --rm sunny-stack-bot:latest du -sh /app
+docker run --rm your-project-bot:latest du -sh /app
 ```
 
 **5. Disk space errors during build**
@@ -264,11 +264,11 @@ docker builder prune -af
 
 ```bash
 # Check exit code
-docker ps -a | grep sunny-stack-bot
+docker ps -a | grep your-project-bot
 # Look for: Exited (1) or Exited (137)
 
 # Check logs
-docker logs sunny-stack-bot
+docker logs your-project-bot
 ```
 
 **Common Exit Codes:**
@@ -287,7 +287,7 @@ docker logs sunny-stack-bot
 
 ```bash
 # Check logs for error
-docker logs sunny-stack-bot 2>&1 | grep -i error
+docker logs your-project-bot 2>&1 | grep -i error
 
 # Common errors:
 # - Missing environment variables
@@ -300,7 +300,7 @@ docker logs sunny-stack-bot 2>&1 | grep -i error
 
 ```bash
 # Check memory limit
-docker inspect sunny-stack-bot | jq '.[0].HostConfig.Memory'
+docker inspect your-project-bot | jq '.[0].HostConfig.Memory'
 
 # Increase memory limit in docker-compose.prod.yml
 deploy:
@@ -316,7 +316,7 @@ deploy:
 ls -la ~/.env.production
 
 # Check variables are loaded
-docker exec sunny-stack-bot env | grep DISCORD
+docker exec your-project-bot env | grep DISCORD
 ```
 
 **Port conflict:**
@@ -341,13 +341,13 @@ sudo lsof -ti:8080 | xargs kill -9
 
 ```bash
 # Check restart count
-docker inspect sunny-stack-bot | jq '.[0].RestartCount'
+docker inspect your-project-bot | jq '.[0].RestartCount'
 
 # Monitor logs in real-time
-docker logs sunny-stack-bot -f
+docker logs your-project-bot -f
 
 # Check for crash pattern
-docker logs sunny-stack-bot 2>&1 | tail -50
+docker logs your-project-bot 2>&1 | tail -50
 ```
 
 **Common Causes:**
@@ -356,7 +356,7 @@ docker logs sunny-stack-bot 2>&1 | tail -50
 
 ```bash
 # Look for "Uncaught Exception" in logs
-docker logs sunny-stack-bot 2>&1 | grep "Uncaught"
+docker logs your-project-bot 2>&1 | grep "Uncaught"
 
 # Solution: Fix code to handle errors
 # Ensure all async operations use try-catch
@@ -366,7 +366,7 @@ docker logs sunny-stack-bot 2>&1 | grep "Uncaught"
 
 ```bash
 # Monitor memory over time
-watch -n 5 'docker stats sunny-stack-bot --no-stream'
+watch -n 5 'docker stats your-project-bot --no-stream'
 
 # If memory constantly increases:
 # - Review code for memory leaks
@@ -378,7 +378,7 @@ watch -n 5 'docker stats sunny-stack-bot --no-stream'
 
 ```bash
 # Check database connectivity
-docker exec sunny-stack-bot node -e "const {PrismaClient} = require('@prisma/client'); const prisma = new PrismaClient(); prisma.\$connect().then(() => console.log('Connected')).catch(e => console.error(e));"
+docker exec your-project-bot node -e "const {PrismaClient} = require('@prisma/client'); const prisma = new PrismaClient(); prisma.\$connect().then(() => console.log('Connected')).catch(e => console.error(e));"
 
 # If fails: Verify DATABASE_URL is correct
 ```
@@ -387,7 +387,7 @@ docker exec sunny-stack-bot node -e "const {PrismaClient} = require('@prisma/cli
 
 ```bash
 # Look for Discord errors
-docker logs sunny-stack-bot 2>&1 | grep -i "discord"
+docker logs your-project-bot 2>&1 | grep -i "discord"
 
 # Common: Invalid token, rate limiting, missing intents
 ```
@@ -396,11 +396,11 @@ docker logs sunny-stack-bot 2>&1 | grep -i "discord"
 
 ```bash
 # Set restart policy to "on-failure" temporarily (for debugging)
-docker update --restart=on-failure:5 sunny-stack-bot
+docker update --restart=on-failure:5 your-project-bot
 
 # Fix underlying issue
 # Then restore restart policy
-docker update --restart=unless-stopped sunny-stack-bot
+docker update --restart=unless-stopped your-project-bot
 ```
 
 ### Image Pull Errors
@@ -444,7 +444,7 @@ docker login ghcr.io -u USERNAME
 # Go to: GitHub > Packages
 
 # Verify image name matches
-docker pull ghcr.io/lukadfagundes/sunny-stack/discord-bot:latest
+docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/discord-bot:latest
 #         ^--- Ensure correct username/repo
 ```
 
@@ -485,10 +485,10 @@ curl -I https://ghcr.io
 
 ```bash
 # Check if health server is running
-docker exec sunny-stack-bot curl http://localhost:8080/health
+docker exec your-project-bot curl http://localhost:8080/health
 
 # Check health server logs
-docker logs sunny-stack-bot | grep "health"
+docker logs your-project-bot | grep "health"
 ```
 
 **Common Causes:**
@@ -563,12 +563,12 @@ echo $DISCORD_BOT_TOKEN
 
 **Common Format Errors:**
 
-| Variable                 | Expected Format        | Example                          |
-| ------------------------ | ---------------------- | -------------------------------- |
-| `DISCORD_APPLICATION_ID` | 17-19 digits           | `1234567890123456789`            |
-| `DATABASE_URL`           | `postgresql://` prefix | `postgresql://user:pass@host/db` |
-| `BOT_API_URL`            | `https://` prefix      | `https://sunny-stack.com/api`    |
-| `ADMIN_ROUTE_HASH`       | 64-char hex            | `6bde736bb52aa194f1d...`         |
+| Variable                 | Expected Format        | Example                            |
+| ------------------------ | ---------------------- | ---------------------------------- |
+| `DISCORD_APPLICATION_ID` | 17-19 digits           | `1234567890123456789`              |
+| `DATABASE_URL`           | `postgresql://` prefix | `postgresql://user:pass@host/db`   |
+| `BOT_API_URL`            | `https://` prefix      | `https://your-site.vercel.app/api` |
+| `ADMIN_ROUTE_HASH`       | 64-char hex            | `6bde736bb52aa194f1d...`           |
 
 **Solution:**
 
@@ -782,16 +782,16 @@ _(Content to be added)_
 
 ```bash
 # Docker container logs
-docker logs sunny-stack-bot
+docker logs your-project-bot
 
 # Follow logs in real-time
-docker logs -f sunny-stack-bot
+docker logs -f your-project-bot
 
 # Last 100 lines
-docker logs --tail 100 sunny-stack-bot
+docker logs --tail 100 your-project-bot
 
 # Logs since timestamp
-docker logs --since 2024-01-01T00:00:00 sunny-stack-bot
+docker logs --since 2024-01-01T00:00:00 your-project-bot
 ```
 
 ### Common Log Patterns
@@ -828,7 +828,7 @@ If you can't resolve the issue:
    npm run validate:prerequisites > diagnostics.txt
    npm run validate:env:pi >> diagnostics.txt
    docker ps -a >> diagnostics.txt
-   docker logs sunny-stack-bot >> diagnostics.txt
+   docker logs your-project-bot >> diagnostics.txt
    ```
 
 3. **Create GitHub issue**

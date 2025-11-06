@@ -157,7 +157,7 @@ sudo dd if=[image].img of=/dev/sdX bs=4M status=progress && sync
    ping raspberrypi.local
 
    # Or scan network
-   nmap -sn 192.168.1.0/24 | grep -B 2 "Raspberry"
+   nmap -sn YOUR_PI_IP/24 | grep -B 2 "Raspberry"
 
    # Or check router's connected devices
    ```
@@ -418,7 +418,7 @@ sudo passwd pi
 
 ```bash
 # Generate new Ed25519 key
-ssh-keygen -t ed25519 -C "sunny-stack-bot-deploy" -f ~/.ssh/sunny-stack-pi
+ssh-keygen -t ed25519 -C "your-project-bot-deploy" -f ~/.ssh/sunny-stack-pi
 
 # This creates:
 # ~/.ssh/sunny-stack-pi (private key)
@@ -480,7 +480,7 @@ ssh -i ~/.ssh/sunny-stack-pi pi@raspberrypi.local
 nano ~/.ssh/config
 
 # Add this entry:
-Host sunny-pi
+Host your-pi
     HostName raspberrypi.local  # or use IP address
     User pi
     IdentityFile ~/.ssh/sunny-stack-pi
@@ -489,7 +489,7 @@ Host sunny-pi
 # Save and exit
 
 # Now you can connect simply with:
-ssh sunny-pi
+ssh your-pi
 ```
 
 #### Step 7: Disable Password Authentication (Security)
@@ -566,7 +566,7 @@ ssh-keygen -R raspberrypi.local
 ssh-keygen -R 192.168.1.X
 
 # Try connecting again
-ssh sunny-pi
+ssh your-pi
 ```
 
 ---
@@ -578,7 +578,7 @@ ssh sunny-pi
 **On Raspberry Pi**, create environment file:
 
 ```bash
-cd ~/sunny-stack-bot
+cd ~/your-project-bot
 nano .env
 ```
 
@@ -617,7 +617,7 @@ POSTGRES_URL_NON_POOLING=postgresql://user:pass@host/db
 
 # Bot API (2)
 BOT_API_KEY=your-shared-secret-here
-BOT_API_URL=https://sunny-stack.com/api
+BOT_API_URL=https://your-site.vercel.app/api
 
 # Deployment Mode
 DEPLOYMENT_MODE=pi
@@ -654,7 +654,7 @@ Assigning a static IP address ensures the Raspberry Pi is always accessible at t
 
 **Why Static IP?**
 
-- Consistent SSH access (`ssh pi@192.168.1.100` always works)
+- Consistent SSH access (`ssh pi@YOUR_PI_IP` always works)
 - GitHub Actions deployment (no need to update IP)
 - External monitoring tools (fixed endpoint)
 - DNS configuration (if using custom domain)
@@ -672,11 +672,11 @@ ip addr show eth0
 
 # Check router/gateway
 ip route | grep default
-# Look for: default via 192.168.1.1
+# Look for: default via YOUR_PI_IP
 
 # Check DNS servers
 cat /etc/resolv.conf
-# Look for: nameserver 192.168.1.1
+# Look for: nameserver YOUR_PI_IP
 ```
 
 **Step 2: Edit dhcpcd configuration**
@@ -690,22 +690,22 @@ sudo nano /etc/dhcpcd.conf
 ```conf
 # Static IP configuration for eth0 (Ethernet)
 interface eth0
-static ip_address=192.168.1.100/24
-static routers=192.168.1.1
-static domain_name_servers=192.168.1.1 8.8.8.8
+static ip_address=YOUR_PI_IP/24
+static routers=YOUR_PI_IP
+static domain_name_servers=YOUR_PI_IP 8.8.8.8
 
 # Optional: Static IP for WiFi
 # interface wlan0
-# static ip_address=192.168.1.101/24
-# static routers=192.168.1.1
-# static domain_name_servers=192.168.1.1 8.8.8.8
+# static ip_address=YOUR_PI_IP/24
+# static routers=YOUR_PI_IP
+# static domain_name_servers=YOUR_PI_IP 8.8.8.8
 ```
 
 **Configuration Explanation:**
 
 - `interface eth0`: Apply to Ethernet (use `wlan0` for WiFi)
-- `static ip_address=192.168.1.100/24`: Your chosen static IP + subnet mask
-- `static routers=192.168.1.1`: Your router/gateway address
+- `static ip_address=YOUR_PI_IP/24`: Your chosen static IP + subnet mask
+- `static routers=YOUR_PI_IP`: Your router/gateway address
 - `static domain_name_servers`: DNS servers (router + Google DNS as backup)
 
 **Step 4: Restart networking**
@@ -724,7 +724,7 @@ sudo reboot
 # Check IP address
 ip addr show eth0
 
-# Expected: inet 192.168.1.100/24
+# Expected: inet YOUR_PI_IP/24
 
 # Test connectivity
 ping -c 4 8.8.8.8
@@ -751,11 +751,11 @@ network:
     eth0:
       dhcp4: no
       addresses:
-        - 192.168.1.100/24
-      gateway4: 192.168.1.1
+        - YOUR_PI_IP/24
+      gateway4: YOUR_PI_IP
       nameservers:
         addresses:
-          - 192.168.1.1
+          - YOUR_PI_IP
           - 8.8.8.8
 ```
 
@@ -769,11 +769,11 @@ sudo netplan apply
 
 **Best Practices:**
 
-1. **Check DHCP range**: Most routers assign 192.168.1.100-192.168.1.200
-   - Choose IP outside DHCP range (e.g., 192.168.1.50)
+1. **Check DHCP range**: Most routers assign YOUR_PI_IP-YOUR_PI_IP
+   - Choose IP outside DHCP range (e.g., YOUR_PI_IP)
    - Or configure router to reserve IP for Pi's MAC address
 
-2. **Use low number**: 192.168.1.10-192.168.1.50 (easier to remember)
+2. **Use low number**: YOUR_PI_IP-YOUR_PI_IP (easier to remember)
 
 3. **Document it**: Write down IP, gateway, and DNS settings
 
@@ -781,9 +781,9 @@ sudo netplan apply
 
 ```
 Router admin panel > DHCP Settings
-- Start IP: 192.168.1.100
-- End IP: 192.168.1.200
-- Choose static IP: 192.168.1.50 (outside range)
+- Start IP: YOUR_PI_IP
+- End IP: YOUR_PI_IP
+- Choose static IP: YOUR_PI_IP (outside range)
 ```
 
 **Troubleshooting:**
@@ -798,7 +798,7 @@ ip addr show eth0
 ip route
 
 # Check if gateway is reachable
-ping 192.168.1.1
+ping YOUR_PI_IP
 ```
 
 **Solution:** Verify router IP and subnet match your configuration.
@@ -816,7 +816,7 @@ nslookup google.com
 
 ```bash
 # Check for IP conflicts
-sudo arping -I eth0 192.168.1.100
+sudo arping -I eth0 YOUR_PI_IP
 ```
 
 **Solution:** Choose different IP or remove conflicting device.
@@ -857,7 +857,7 @@ sudo ufw default allow outgoing
 sudo ufw allow 22/tcp comment 'SSH access'
 
 # Alternative: Allow SSH from specific IP only (more secure)
-sudo ufw allow from 192.168.1.0/24 to any port 22 comment 'SSH from local network only'
+sudo ufw allow from YOUR_PI_IP/24 to any port 22 comment 'SSH from local network only'
 
 # Health check endpoint (optional for external monitoring)
 sudo ufw allow 8080/tcp comment 'Bot health check'
@@ -952,7 +952,7 @@ sudo ufw deny from 203.0.113.100
 
 ```bash
 # SSH from local network only (most secure)
-sudo ufw allow from 192.168.1.0/24 to any port 22
+sudo ufw allow from YOUR_PI_IP/24 to any port 22
 
 # OR SSH from anywhere with rate limiting (if remote access needed)
 sudo ufw limit 22/tcp
@@ -989,10 +989,10 @@ Port forwarding exposes the Raspberry Pi to the internet, allowing external acce
 ```bash
 # Check router IP (usually your gateway)
 ip route | grep default
-# Output: default via 192.168.1.1 dev eth0
+# Output: default via YOUR_PI_IP dev eth0
 
 # Access router admin panel
-# Open browser: http://192.168.1.1
+# Open browser: http://YOUR_PI_IP
 # Login with router credentials
 ```
 
@@ -1006,19 +1006,19 @@ Navigate to: **Advanced Settings > Port Forwarding** (location varies by router)
 | ------------- | --------------- | --------------------------- |
 | Service Name  | SSH-RaspberryPi | SSH-RaspberryPi             |
 | External Port | 2222            | 2222 (NOT 22, for security) |
-| Internal IP   | Pi static IP    | 192.168.1.100               |
+| Internal IP   | Pi static IP    | YOUR_PI_IP                  |
 | Internal Port | 22              | 22                          |
 | Protocol      | TCP             | TCP                         |
 
 **Health Check (Port 8080):**
 
-| Setting       | Value        | Example       |
-| ------------- | ------------ | ------------- |
-| Service Name  | Bot-Health   | Bot-Health    |
-| External Port | 8080         | 8080          |
-| Internal IP   | Pi static IP | 192.168.1.100 |
-| Internal Port | 8080         | 8080          |
-| Protocol      | TCP          | TCP           |
+| Setting       | Value        | Example    |
+| ------------- | ------------ | ---------- |
+| Service Name  | Bot-Health   | Bot-Health |
+| External Port | 8080         | 8080       |
+| Internal IP   | Pi static IP | YOUR_PI_IP |
+| Internal Port | 8080         | 8080       |
+| Protocol      | TCP          | TCP        |
 
 **Step 3: Test external access**
 
@@ -1433,7 +1433,7 @@ Protocol 2
 AllowUsers botadmin
 
 # Limit SSH to specific IPs (optional)
-# ListenAddress 192.168.1.100
+# ListenAddress YOUR_PI_IP
 
 # Change default port (security through obscurity)
 # Port 2222
