@@ -1,148 +1,29 @@
-name: Deploy Discord Bot to Raspberry Pi
+name: Deploy to Raspberry Pi
 
 on:
   push:
     branches:
       - main
-    paths:
-      - "bot/**"
-      - "lib/**"
-      - "Dockerfile"
-      - ".github/workflows/deploy-bot.yml"
   workflow_dispatch:
 
 # Prevent concurrent deployments
 concurrency:
-  group: deploy-bot-${{ github.ref }}
+  group: deploy-pi-${{ github.ref }}
   cancel-in-progress: false
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/discord-bot
-
 jobs:
-  # ---------------------------------------------------------------------------
-  # Build Docker Image
-  # ---------------------------------------------------------------------------
-  build:
-    name: Build Docker Image
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
-      image-digest: ${{ steps.build.outputs.digest }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push Docker image
-        id: build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          platforms: linux/arm64 # Raspberry Pi 4B architecture
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.build.outputs.digest }}
-          push-to-registry: true
-
-  # ---------------------------------------------------------------------------
-  # Pre-Deployment Health Check
-  # ---------------------------------------------------------------------------
-  pre-deploy-check:
-    name: Pre-Deployment Health Check
-    runs-on: ubuntu-latest
-    needs: build
-
-    outputs:
-      current-image: ${{ steps.backup.outputs.current-image }}
-
-    steps:
-      - name: Check Raspberry Pi connectivity
-        run: |
-          echo "Testing SSH connection to Pi..."
-          ssh -o StrictHostKeyChecking=no \
-              -o ConnectTimeout=10 \
-              ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-              "echo 'Pi is reachable'"
-
-      - name: Check disk space on Pi
-        run: |
-          echo "Checking disk space..."
-          USAGE=$(ssh ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-            "df -h / | tail -1 | awk '{print \$5}' | sed 's/%//'")
-
-          echo "Disk usage: ${USAGE}%"
-
-          if [ "$USAGE" -gt 90 ]; then
-            echo "❌ Disk usage is ${USAGE}% - too high!"
-            exit 1
-          fi
-
-          echo "✅ Disk usage is acceptable (${USAGE}%)"
-
-      - name: Check Docker on Pi
-        run: |
-          echo "Verifying Docker availability..."
-          ssh ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-            "docker --version && docker ps"
-
-      - name: Backup current image tag
-        id: backup
-        run: |
-          echo "Backing up current deployment..."
-          CURRENT_IMAGE=$(ssh ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-            "docker inspect sunny-stack-bot --format='{{.Config.Image}}' 2>/dev/null || echo 'none'")
-
-          echo "current-image=$CURRENT_IMAGE" >> $GITHUB_OUTPUT
-          echo "Current image: $CURRENT_IMAGE"
-
   # ---------------------------------------------------------------------------
   # Deploy to Raspberry Pi
   # ---------------------------------------------------------------------------
   deploy:
     name: Deploy to Raspberry Pi
     runs-on: ubuntu-latest
-    needs: [build, pre-deploy-check]
     environment:
       name: production
       url: https://sunny-stack.com
 
     steps:
-      - name: Deploy to Raspberry Pi via SSH
+      - name: Deploy to Raspberry Pi
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.PI_HOST }}
@@ -150,280 +31,165 @@ jobs:
           key: ${{ secrets.PI_SSH_KEY }}
           port: ${{ secrets.PI_SSH_PORT || 22 }}
           script: |
-            # Navigate to bot directory
-            cd ~/sunny-stack-bot || exit 1
+            set -e  # Exit on any error
 
-            # Log in to GitHub Container Registry
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "================================================"
+            echo "Starting Raspberry Pi Deployment"
+            echo "================================================"
 
-            # Pull latest image
-            docker pull ${{ needs.build.outputs.image-tag }}
+            # Navigate to project directory
+            cd ~/sunny-stack || {
+              echo "❌ Directory ~/sunny-stack not found"
+              exit 1
+            }
 
-            # Stop existing container (if running)
-            docker-compose -f docker-compose.prod.yml down || true
+            # Pull latest code from GitHub
+            echo "📥 Pulling latest code from GitHub..."
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
 
-            # Start new container
-            docker-compose -f docker-compose.prod.yml up -d
-
-            # Wait for container startup
-            echo "Waiting for container to start..."
-            sleep 15
-
-            # Verify container is running
-            if docker ps | grep -q "sunny-stack-bot"; then
-              echo "✅ Container started successfully!"
-            else
-              echo "❌ Container failed to start!"
-              docker-compose -f docker-compose.prod.yml logs --tail=50
+            # Verify .env.production exists
+            if [ ! -f .env.production ]; then
+              echo "❌ .env.production not found!"
               exit 1
             fi
 
-      - name: Verify health endpoint
-        id: health-check
-        run: |
-          echo "Checking health endpoint..."
+            echo "✅ Repository updated to latest commit"
+            echo "Commit: $(git log -1 --oneline)"
 
-          for i in {1..10}; do
-            HEALTH=$(ssh ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-              "curl -sf http://localhost:8080/health || echo 'failed'")
+            # Stop existing containers
+            echo "🛑 Stopping existing containers..."
+            docker compose -f docker-compose.prod.yml down || true
 
-            if echo "$HEALTH" | grep -q "healthy"; then
-              echo "✅ Health check passed!"
-              echo "$HEALTH"
-              exit 0
+            # Clean up old images
+            echo "🧹 Cleaning up old images..."
+            docker rmi -f sunny-stack-bot:latest || true
+            docker builder prune -af
+
+            # Build bot image
+            echo "🔨 Building bot image..."
+            docker build --no-cache \
+              -t sunny-stack-bot:latest \
+              -f Dockerfile \
+              . 2>&1 | tee build-bot.log
+
+            if [ ${PIPESTATUS[0]} -ne 0 ]; then
+              echo "❌ Bot image build failed"
+              tail -100 build-bot.log
+              exit 1
             fi
 
-            echo "Attempt $i/10 failed, retrying in 5s..."
+            echo "✅ Bot image built successfully"
+
+            # Start production services
+            echo "🚀 Starting production services..."
+            docker compose -f docker-compose.prod.yml up -d
+
+            # Wait for services to start
+            echo "⏳ Waiting for services to start..."
+            sleep 30
+
+            # Check service status
+            echo "🔍 Checking service status..."
+            docker compose -f docker-compose.prod.yml ps
+
+            # Verify PostgreSQL is healthy
+            echo "🔍 Checking PostgreSQL health..."
+            for i in {1..10}; do
+              if docker compose -f docker-compose.prod.yml exec -T postgres pg_isready -U sunnystack; then
+                echo "✅ PostgreSQL is healthy"
+                break
+              fi
+              echo "Attempt $i/10 - PostgreSQL not ready, waiting..."
+              sleep 3
+            done
+
+            # Run database migrations
+            echo "📊 Running database migrations..."
+            docker compose -f docker-compose.prod.yml exec -T discord-bot \
+              npx prisma migrate deploy 2>&1 | tee migration.log
+
+            if [ ${PIPESTATUS[0]} -ne 0 ]; then
+              echo "⚠️  Migrations may have failed - check logs"
+              cat migration.log
+            else
+              echo "✅ Migrations completed"
+            fi
+
+            # Verify bot health
+            echo "🔍 Checking bot health..."
+            for i in {1..15}; do
+              HEALTH=$(curl -sf http://localhost:8080/health || echo "failed")
+              if echo "$HEALTH" | grep -q "healthy"; then
+                echo "✅ Bot health check passed"
+                echo "$HEALTH"
+                break
+              fi
+              echo "Attempt $i/15 - Bot not healthy yet, waiting..."
+              sleep 3
+            done
+
+            # Check bot logs for Discord connection
+            echo "🔍 Checking bot Discord connection..."
             sleep 5
-          done
+            docker compose -f docker-compose.prod.yml logs --tail=50 discord-bot | tee bot-logs.txt
 
-          echo "❌ Health check failed after 10 attempts"
-          ssh ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-            "docker logs sunny-stack-bot --tail=100"
-          exit 1
-
-      - name: Verify bot connection to Discord
-        run: |
-          echo "Checking bot logs for Discord connection..."
-
-          sleep 5
-
-          ssh ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-            "docker logs sunny-stack-bot --tail=50 2>&1" | tee bot-logs.txt
-
-          if grep -q "Bot ready\|Ready!\|Logged in as" bot-logs.txt; then
-            echo "✅ Bot connected to Discord"
-          else
-            echo "⚠️  Bot connection not confirmed (may still be starting)"
-            echo "Check logs manually if issues persist"
-          fi
-
-      - name: Check resource usage
-        run: |
-          echo "Checking container resource usage..."
-
-          ssh ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-            "docker stats sunny-stack-bot --no-stream --format 'CPU: {{.CPUPerc}}, Memory: {{.MemUsage}}'"
-
-      - name: Clean up old images
-        run: |
-          echo "Cleaning up old Docker images..."
-
-          ssh ${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }} \
-            "docker image prune -af --filter 'until=168h'"
-
-      - name: Deployment summary
-        run: |
-          echo "🎉 Discord bot deployed to Raspberry Pi!"
-          echo "Image: ${{ needs.build.outputs.image-tag }}"
-          echo "Digest: ${{ needs.build.outputs.image-digest }}"
-          echo "Health: ✅ Passing"
-          echo "Discord: ✅ Connected"
-
-  # ---------------------------------------------------------------------------
-  # Automatic Rollback (on failure)
-  # ---------------------------------------------------------------------------
-  auto-rollback:
-    name: Automatic Rollback on Failure
-    runs-on: ubuntu-latest
-    needs: [pre-deploy-check, deploy]
-    if: failure() && needs.pre-deploy-check.outputs.current-image != 'none'
-
-    steps:
-      - name: Rollback to previous image
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.PI_HOST }}
-          username: ${{ secrets.PI_USERNAME }}
-          key: ${{ secrets.PI_SSH_KEY }}
-          port: ${{ secrets.PI_SSH_PORT || 22 }}
-          script: |
-            PREVIOUS_IMAGE="${{ needs.pre-deploy-check.outputs.current-image }}"
-
-            if [ "$PREVIOUS_IMAGE" = "none" ]; then
-              echo "⚠️  No previous image to rollback to"
-              exit 0
-            fi
-
-            echo "Rolling back to: $PREVIOUS_IMAGE"
-
-            cd ~/sunny-stack-bot
-
-            # Stop failed container
-            docker-compose -f docker-compose.prod.yml down
-
-            # Tag previous image as latest for docker-compose
-            docker tag "$PREVIOUS_IMAGE" sunny-stack-bot:rollback
-
-            # Update compose file temporarily
-            sed -i.bak "s|image:.*|image: $PREVIOUS_IMAGE|" docker-compose.prod.yml
-
-            # Start with previous image
-            docker-compose -f docker-compose.prod.yml up -d
-
-            # Wait for startup
-            sleep 10
-
-            # Verify health
-            if curl -sf http://localhost:8080/health | grep -q "healthy"; then
-              echo "✅ Rolled back successfully"
-              echo "Health check: PASSED"
+            if grep -q "Bot ready and operational\|Connected to Discord Gateway" bot-logs.txt; then
+              echo "✅ Bot connected to Discord"
             else
-              echo "❌ Rollback health check failed"
-              docker logs sunny-stack-bot --tail=50
-              exit 1
+              echo "⚠️  Bot connection not confirmed - check logs"
             fi
 
-      - name: Send rollback notification
-        if: always()
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          status: warning
-          title: "⚠️  Deployment Failed - Rolled Back"
-          description: |
-            Deployment failed and was automatically rolled back.
-            **Commit:** ${{ github.event.head_commit.message }}
-            **Rolled back to:** `${{ needs.pre-deploy-check.outputs.current-image }}`
-            **Check logs:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          color: 0xFF9900
-          username: GitHub Actions
+            # Display resource usage
+            echo "📊 Container resource usage:"
+            docker stats sunny-stack-bot sunny-stack-db --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
 
-  # ---------------------------------------------------------------------------
-  # Notify Discord
-  # ---------------------------------------------------------------------------
-  notify:
-    name: Send Discord Notification
-    runs-on: ubuntu-latest
-    needs: [build, deploy, auto-rollback]
-    if: always() && (needs.deploy.result == 'success' || needs.deploy.result == 'failure')
+            # Clean up old images (older than 7 days)
+            echo "🧹 Cleaning up old Docker images..."
+            docker image prune -af --filter "until=168h" || true
 
-    steps:
-      - name: Send success notification
-        if: needs.deploy.result == 'success'
+            echo "================================================"
+            echo "✅ Deployment Complete"
+            echo "================================================"
+            echo "PostgreSQL: $(docker inspect -f '{{.State.Health.Status}}' sunny-stack-db)"
+            echo "Bot: $(docker inspect -f '{{.State.Health.Status}}' sunny-stack-bot)"
+            echo "================================================"
+
+      - name: Send Discord notification on success
+        if: success()
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: success
-          title: "✅ Bot Deployed Successfully"
+          title: "✅ Deployed to Raspberry Pi"
           description: |
-            Discord bot has been deployed to Raspberry Pi!
-
             **Commit:** `${{ github.event.head_commit.message }}`
             **Author:** ${{ github.actor }}
-            **Image:** `${{ needs.build.outputs.image-tag }}`
-            **Digest:** `${{ needs.build.outputs.image-digest }}`
+            **Branch:** `main`
 
-            **Health Check:** ✅ Passed
-            **Discord Connection:** ✅ Connected
+            **Services:**
+            • PostgreSQL: Running
+            • Discord Bot: Connected
 
             [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           color: 0x00FF00
           username: GitHub Actions
-          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
 
-      - name: Send failure notification
-        if: needs.deploy.result != 'success' && needs.auto-rollback.result == 'skipped'
+      - name: Send Discord notification on failure
+        if: failure()
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: failure
-          title: "❌ Bot Deployment Failed"
+          title: "❌ Pi Deployment Failed"
           description: |
-            Failed to deploy Discord bot to Raspberry Pi
-
             **Commit:** `${{ github.event.head_commit.message }}`
             **Author:** ${{ github.actor }}
-            **Job:** ${{ github.job }}
+            **Branch:** `main`
 
-            **Status:** No previous version available for rollback
+            Deployment to Raspberry Pi failed.
 
             [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           color: 0xFF0000
-          username: GitHub Actions
-          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-
-  # ---------------------------------------------------------------------------
-  # Manual Rollback (workflow_dispatch)
-  # ---------------------------------------------------------------------------
-  manual-rollback:
-    name: Manual Rollback to Previous Version
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
-    environment:
-      name: production
-
-    steps:
-      - name: Rollback on Raspberry Pi
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.PI_HOST }}
-          username: ${{ secrets.PI_USERNAME }}
-          key: ${{ secrets.PI_SSH_KEY }}
-          port: ${{ secrets.PI_SSH_PORT || 22 }}
-          script: |
-            cd ~/sunny-stack-bot || exit 1
-
-            # Get previous image
-            PREVIOUS_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep discord-bot | sed -n '2p')
-
-            if [ -z "$PREVIOUS_IMAGE" ]; then
-              echo "❌ No previous image found for rollback"
-              exit 1
-            fi
-
-            echo "Rolling back to: $PREVIOUS_IMAGE"
-
-            # Stop current container
-            docker-compose -f docker-compose.prod.yml down
-
-            # Update docker-compose to use previous image
-            sed -i.bak "s|image:.*|image: $PREVIOUS_IMAGE|" docker-compose.prod.yml
-
-            # Start with previous image
-            docker-compose -f docker-compose.prod.yml up -d
-
-            # Wait and verify
-            sleep 10
-
-            if curl -sf http://localhost:8080/health | grep -q "healthy"; then
-              echo "✅ Rolled back successfully to $PREVIOUS_IMAGE"
-              docker logs sunny-stack-bot --tail=20
-            else
-              echo "❌ Rollback health check failed"
-              docker logs sunny-stack-bot --tail=50
-              exit 1
-            fi
-
-      - name: Notify manual rollback
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          status: success
-          title: "🔄 Manual Rollback Completed"
-          description: |
-            Bot manually rolled back to previous version
-            **Triggered by:** ${{ github.actor }}
-            [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          color: 0x0099FF
           username: GitHub Actions

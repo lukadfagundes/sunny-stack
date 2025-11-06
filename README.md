@@ -60,7 +60,7 @@ A high-performance portfolio website built with the latest web technologies. Fea
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/lukadfagundes/sunny-stack.git
+   git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
    cd sunny-stack
    ```
 
@@ -105,9 +105,13 @@ sunny-stack/
 │   ├── api/            # API routes
 │   ├── (routes)/       # Page components
 │   └── layout.tsx      # Root layout
+├── bot/                # Discord bot application
 ├── components/         # Reusable React components
 │   ├── forms/         # Form components
 │   └── ui/            # UI components
+├── docs/               # Documentation
+│   ├── deployment/    # Deployment guides
+│   └── *.md          # Setup guides
 ├── lib/               # Utility functions and helpers
 ├── hooks/             # Custom React hooks
 ├── styles/            # Global styles
@@ -155,8 +159,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Luka D. Fagundes**
 
-- GitHub: [@lukadfagundes](https://github.com/lukadfagundes)
-- Portfolio: [www.sunny-stack.com](https://www.sunny-stack.com)
+- GitHub: [@lukadfagundes](https://github.com/YOUR_USERNAME)
+- Portfolio: [www.your-site.vercel.app](https://www.your-site.vercel.app)
 
 ## 🙏 Acknowledgments
 
@@ -221,7 +225,18 @@ This project uses the **Trinity Method** - an investigation-first development me
 
 ### Documentation
 
-All project knowledge is maintained in `trinity/knowledge-base/`:
+**Deployment Guides** (`docs/deployment/`):
+
+- **DEPLOYMENT-OVERVIEW.md** - Architecture and deployment strategy
+- **DEPLOYMENT-CHECKLIST.md** - Quick reference checklist
+- **PI-PRODUCTION-DEPLOYMENT.md** - Raspberry Pi production deployment
+- **PI-TESTING-GUIDE.md** - Pre-production testing workflow
+- **GITHUB-ACTIONS-SETUP.md** - CI/CD configuration
+- **RASPBERRY-PI-SETUP.md** - Initial Pi setup guide
+- **TROUBLESHOOTING.md** - Common issues and solutions
+- **SANITIZE-DOCS.md** - Documentation personalization guide
+
+**Trinity Knowledge Base** (`trinity/knowledge-base/`):
 
 - **ARCHITECTURE.md** - System design and technical decisions
 - **ISSUES.md** - Known problems and their status
