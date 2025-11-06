@@ -59,6 +59,39 @@ services:
       com.sunny-stack.service: "postgres"
       com.sunny-stack.environment: "development"
 
+  # ---------------------------------------------------------------------------
+  # Next.js API Server - Development (for Pi testing)
+  # ---------------------------------------------------------------------------
+  api-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      platforms:
+        - linux/arm64
+    container_name: sunny-stack-api-dev
+    restart: unless-stopped
+
+    env_file:
+      - .env.local
+
+    environment:
+      - NODE_ENV=development
+      - HOSTNAME=0.0.0.0
+
+    ports:
+      - "3000:3000"
+
+    networks:
+      - sunny-stack-dev-network
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    labels:
+      com.sunny-stack.service: "api-server"
+      com.sunny-stack.environment: "development"
+
 # -----------------------------------------------------------------------------
 # Volumes
 # -----------------------------------------------------------------------------
