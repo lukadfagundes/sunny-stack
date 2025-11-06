@@ -111,28 +111,11 @@ docker-compose*.yml
 .dockerignore
 
 # -----------------------------------------------------------------------------
-# Public Assets (not needed for bot)
+# Architecture Note
 # -----------------------------------------------------------------------------
-public/
-
-# -----------------------------------------------------------------------------
-# Next.js Specific (not needed for bot)
-# -----------------------------------------------------------------------------
-app/
-components/
-styles/
-pages/
-next.config.js
-next.config.mjs
-postcss.config.js
-tailwind.config.js
-tailwind.config.ts
-
-# -----------------------------------------------------------------------------
-# Only Include What Bot Needs
-# -----------------------------------------------------------------------------
-# The bot only needs:
-# - /bot/** (Discord bot code)
-# - /lib/** (shared utilities)
-# - package.json
-# - node_modules (installed in container)
+# This .dockerignore is shared between bot (Dockerfile) and API (Dockerfile.api)
+# Each Dockerfile explicitly COPYs only what it needs:
+# - Bot: bot/, lib/, prisma/
+# - API: app/, components/, lib/, styles/, public/, prisma/
+#
+# We don't exclude source directories here - let each Dockerfile decide

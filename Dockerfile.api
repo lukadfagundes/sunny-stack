@@ -1,0 +1,124 @@
+# =============================================================================
+# Sunny Stack API Server - Multi-Stage Docker Build
+# =============================================================================
+# This Dockerfile builds a lightweight Next.js API server for Raspberry Pi 4B
+# Only API routes are used - frontend remains on Vercel
+# Bot calls this local API server for database operations
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Stage 1: Dependencies
+# -----------------------------------------------------------------------------
+FROM --platform=linux/arm64 node:18-alpine AS deps
+
+# Install dependencies for native modules (including Python for node-gyp)
+RUN apk add --no-cache \
+    libc6-compat \
+    python3 \
+    make \
+    g++ && \
+    rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install production dependencies only
+RUN npm ci --only=production && npm cache clean --force
+
+# -----------------------------------------------------------------------------
+# Stage 2: Builder
+# -----------------------------------------------------------------------------
+FROM --platform=linux/arm64 node:18-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache python3 make g++ && \
+    rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Copy Prisma schema (needed before npm ci to generate client)
+COPY prisma ./prisma/
+
+# Install ALL dependencies (needed for Next.js build)
+RUN npm ci
+
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Copy source files needed for Next.js build
+COPY app/ ./app/
+COPY bot/ ./bot/
+COPY components/ ./components/
+COPY hooks/ ./hooks/
+COPY lib/ ./lib/
+COPY styles/ ./styles/
+COPY public/ ./public/
+COPY next.config.js ./
+COPY tsconfig.json ./
+COPY tailwind.config.ts ./
+COPY postcss.config.js ./
+
+# Set build environment
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+# Build Next.js (only API routes will be used)
+RUN npm run build
+
+# -----------------------------------------------------------------------------
+# Stage 3: Runner
+# -----------------------------------------------------------------------------
+FROM --platform=linux/arm64 node:18-alpine AS runner
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init && \
+    rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+# Create non-root user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy production dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy Prisma files for runtime
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma ./prisma
+
+# Copy Next.js build output
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/next.config.js ./next.config.js
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/.next/cache && \
+    chown -R nextjs:nodejs /app
+
+# Switch to non-root user
+USER nextjs
+
+# Expose Next.js port
+EXPOSE 3000
+
+# Set environment variables
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME="0.0.0.0"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))" || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start Next.js production server
+CMD ["npm", "start"]

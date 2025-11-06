@@ -14,6 +14,20 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
 
+  // Externalize bot dependencies (Discord.js) to prevent webpack bundling issues
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push(
+        "discord.js",
+        "@discordjs/ws",
+        "zlib-sync",
+        "bufferutil",
+        "utf-8-validate",
+      );
+    }
+    return config;
+  },
+
   // Cache configuration
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,

@@ -77,6 +77,86 @@ services:
       com.sunny-stack.platform: "raspberry-pi"
 
   # ---------------------------------------------------------------------------
+  # Next.js API Server - Production Configuration
+  # ---------------------------------------------------------------------------
+  api-server:
+    # Use locally built image
+    image: sunny-stack-api:latest
+
+    container_name: sunny-stack-api
+
+    # Restart policy for high availability
+    restart: unless-stopped
+
+    # Environment variables from production file
+    env_file:
+      - .env.production
+
+    # Additional environment overrides
+    environment:
+      - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
+
+    # Health check configuration
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000/api/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # Port mapping (API server on localhost only - not exposed externally)
+    # Bot accesses via internal network (api-server:3000)
+    ports:
+      - "127.0.0.1:3000:3000"
+
+    # Resource limits optimized for Raspberry Pi 4B
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0" # Max 1 core
+          memory: 512M # Max 512MB RAM
+        reservations:
+          cpus: "0.25" # Min 0.25 cores reserved
+          memory: 256M # Min 256MB RAM reserved
+
+    # Logging configuration with rotation
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "25m" # Max 25MB per log file
+        max-file: "3" # Keep 3 rotated files
+        compress: "true"
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+
+    # Run as non-root user (matches Dockerfile USER)
+    user: "1001:1001"
+
+    # Network configuration
+    networks:
+      - sunny-stack-network
+
+    # Wait for PostgreSQL to be healthy before starting
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    # Labels for management
+    labels:
+      com.sunny-stack.service: "api-server"
+      com.sunny-stack.environment: "production"
+      com.sunny-stack.platform: "raspberry-pi"
+
+  # ---------------------------------------------------------------------------
   # Discord Bot Service - Production Configuration
   # ---------------------------------------------------------------------------
   discord-bot:
@@ -144,9 +224,11 @@ services:
     networks:
       - sunny-stack-network
 
-    # Wait for PostgreSQL to be healthy before starting
+    # Wait for API server and PostgreSQL to be healthy before starting
     depends_on:
       postgres:
+        condition: service_healthy
+      api-server:
         condition: service_healthy
 
     # Labels for management
