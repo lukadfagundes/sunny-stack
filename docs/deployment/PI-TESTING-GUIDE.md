@@ -10,14 +10,15 @@
 
 - Raspberry Pi 4B with Docker installed
 - SSH access configured (`pi@your-pi`)
-- Windows development machine with project files
+- Development machine with project files
 - `.env.local` configured for Pi (`localhost:5432`, `localhost:3000`)
+- `.env` file required (Docker Compose reads this for variable substitution)
 
 ---
 
 ## Step 1: Sync Files to Pi
 
-**Run from Windows machine in project root:**
+**Run from windows machine in project root:**
 
 ```bash
 tar czf - \
@@ -26,7 +27,6 @@ tar czf - \
   --exclude=.git \
   --exclude=coverage \
   --exclude=logs \
-  --exclude=.env \
   --exclude=playwright-report \
   --exclude=test-results \
   --exclude=*.tsbuildinfo \
@@ -39,8 +39,10 @@ tar czf - \
 
 **What syncs:**
 
-- ✅ All source code, config files, and `.env.local`
-- ❌ `node_modules`, `.git`, `.env`, build artifacts
+- ✅ All source code, config files, `.env.local`, and `.env`
+- ❌ `node_modules`, `.git`, build artifacts
+
+**Important:** Docker Compose automatically reads `.env` from project root for variable substitution (e.g., `${POSTGRES_PASSWORD}`), even when `env_file: .env.local` is specified. Both files are needed for Pi testing.
 
 ---
 
@@ -53,7 +55,28 @@ cd ~/sunny-stack
 
 ---
 
-## Step 3: Install Dependencies
+## Step 3: Clean Up Old Containers
+
+```bash
+# Remove any old sunny-stack containers
+docker ps -a | grep sunny-stack | awk '{print $1}' | xargs -r docker rm -f
+
+# Remove any old sunny-stack volumes
+docker volume ls | grep sunny-stack | awk '{print $2}' | xargs -r docker volume rm
+```
+
+**Expected:**
+
+```
+Removed old containers (if any)
+Removed old volumes (if any)
+```
+
+**Why:** Ensures clean testing environment, prevents conflicts with old containers
+
+---
+
+## Step 4: Install Dependencies
 
 ```bash
 npm install
@@ -63,7 +86,21 @@ npm install
 
 ---
 
-## Step 4: Start PostgreSQL Dev Database
+## Step 5: Generate Prisma Client
+
+```bash
+npx prisma generate
+```
+
+**Expected:**
+
+```
+✔ Generated Prisma Client to ./node_modules/@prisma/client
+```
+
+---
+
+## Step 6: Start PostgreSQL Dev Database
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d postgres
@@ -77,13 +114,13 @@ docker compose -f docker-compose.dev.yml ps
 
 **Expected:**
 
-- Container: `your-project-db-dev`
+- Container: `sunny-stack-db-dev`
 - Status: `Up (healthy)`
 - Port: `0.0.0.0:5432->5432/tcp`
 
 ---
 
-## Step 5: Run Database Migrations
+## Step 7: Run Database Migrations
 
 ```bash
 npx dotenv -e .env.local -- npx prisma migrate deploy
@@ -99,12 +136,22 @@ Database schema created in PostgreSQL
 **Verify schema:**
 
 ```bash
-docker compose -f docker-compose.dev.yml exec postgres psql -U YOUR_DB_USER -d YOUR_DB_NAME -c "\dt"
+docker compose -f docker-compose.dev.yml exec postgres psql -U sunnystack -d sunnystack -c "\dt"
+```
+
+**Expected output:**
+
+```
+         List of relations
+ Schema |   Name   | Type  |   Owner
+--------+----------+-------+------------
+ public | Project  | table | sunnystack
+ public | _prisma  | table | sunnystack
 ```
 
 ---
 
-## Step 6: Start Dev Server
+## Step 8: Start Dev Server
 
 **Open first SSH terminal:**
 
@@ -125,7 +172,7 @@ npm run dev
 
 ---
 
-## Step 7: Start Bot Dev
+## Step 9: Start Bot Dev
 
 **Open second SSH terminal:**
 
@@ -147,7 +194,7 @@ npm run bot:dev
 
 ---
 
-## Step 8: Light Manual Testing
+## Step 10: Light Manual Testing
 
 **In Discord, run test commands:**
 
@@ -171,7 +218,7 @@ npm run bot:dev
 
 ---
 
-## Step 9: Kill Dev Bot
+## Step 11: Kill Dev Bot
 
 **In terminal 2:**
 
@@ -183,7 +230,7 @@ Ctrl + C
 
 ---
 
-## Step 10: Run Bot Tests
+## Step 12: Run Bot Tests
 
 **In terminal 2:**
 
@@ -203,7 +250,7 @@ Pass rate:   >90%
 
 ---
 
-## Step 11: Kill Dev Server
+## Step 13: Kill Dev Server
 
 **In terminal 1:**
 
@@ -215,7 +262,7 @@ Ctrl + C
 
 ---
 
-## Step 12: Stop Dev Database
+## Step 14: Stop Dev Database
 
 ```bash
 docker compose -f docker-compose.dev.yml down -v
@@ -228,7 +275,7 @@ docker compose -f docker-compose.dev.yml down -v
 **Expected:**
 
 ```
-✔ Container your-project-db-dev  Removed
+✔ Container sunny-stack-db-dev  Removed
 ✔ Volume postgres-dev-data      Removed
 ✔ Network sunny-stack-dev-network Removed
 ```
@@ -244,10 +291,10 @@ docker volume ls | grep sunny-stack
 
 ---
 
-## Step 13: Delete Dev Files
+## Step 15: Delete Dev Files
 
 ```bash
-rm -f .env.local docker-compose.dev.yml
+rm -f .env .env.local docker-compose.dev.yml
 ```
 
 **Verify cleanup:**
@@ -261,6 +308,7 @@ ls docker-compose*
 
 - ✅ `.env.production` exists
 - ✅ `docker-compose.prod.yml` exists
+- ❌ `.env` deleted
 - ❌ `.env.local` deleted
 - ❌ `docker-compose.dev.yml` deleted
 
@@ -339,13 +387,18 @@ npm test -- __tests__/unit/bot/commands/project.test.ts
 **One-line sync:**
 
 ```bash
-tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=coverage --exclude=logs --exclude=.env --exclude=playwright-report --exclude=test-results --exclude=*.tsbuildinfo --exclude=*.log --exclude=.swc --exclude=out . | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
+tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=coverage --exclude=logs --exclude=playwright-report --exclude=test-results --exclude=*.tsbuildinfo --exclude=*.log --exclude=.swc --exclude=out . | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
 ```
 
 **Complete test workflow (from Pi):**
 
 ```bash
+# Clean up old containers/volumes
+docker ps -a | grep sunny-stack | awk '{print $1}' | xargs -r docker rm -f
+docker volume ls | grep sunny-stack | awk '{print $2}' | xargs -r docker volume rm
+
 npm install
+npx prisma generate
 docker compose -f docker-compose.dev.yml up -d postgres
 npx dotenv -e .env.local -- npx prisma migrate deploy
 
@@ -356,7 +409,7 @@ npx dotenv -e .env.local -- npx prisma migrate deploy
 # Terminal 1: Ctrl+C
 
 docker compose -f docker-compose.dev.yml down -v
-rm -f .env.local docker-compose.dev.yml
+rm -f .env .env.local docker-compose.dev.yml
 ```
 
 ---
