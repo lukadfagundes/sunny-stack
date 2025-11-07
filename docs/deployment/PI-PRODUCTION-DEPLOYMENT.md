@@ -150,15 +150,43 @@ ls .env.local docker-compose.dev.yml 2>/dev/null
 
 ---
 
-## Step 4: Build Bot Image
+## Step 4: Personalize Documentation (First Time Only)
+
+**Before building the bot image, personalize the project documentation to replace placeholder names with your project name.**
+
+```bash
+# Edit scripts/personalize-docs.sh and update:
+# - PROJECT_NAME="sunny-stack" (change from default)
+# - PI_IP="192.168.1.42" (your Pi's IP address)
+nano scripts/personalize-docs.sh
+
+# Run personalization script
+bash scripts/personalize-docs.sh
+```
+
+**What this does:**
+
+- Replaces `your-project-bot` → `sunny-stack-bot` in all documentation
+- Replaces `your-project-db` → `sunny-stack-db` in all documentation
+- Replaces `YOUR_PI_IP` → your actual Pi IP address
+
+**Verify changes:**
+
+```bash
+grep -r "sunny-stack-bot" docs/deployment/ | head -5
+```
+
+---
+
+## Step 5: Build Bot Image
 
 ```bash
 # Clear Docker cache
 docker builder prune -af
 
-# Build bot image
+# Build bot image (now uses correct name from personalize script)
 docker build --no-cache --progress=plain \
-  -t your-project-bot:latest \
+  -t sunny-stack-bot:latest \
   -f Dockerfile . 2>&1 | tee build-bot.log
 ```
 
@@ -167,17 +195,17 @@ docker build --no-cache --progress=plain \
 - Dependencies installation
 - Prisma client generation
 - Bot compilation
-- Image tagged as `your-project-bot:latest`
+- Image tagged as `sunny-stack-bot:latest`
 
 **Verify:**
 
 ```bash
-docker images | grep your-project-bot
+docker images | grep sunny-stack-bot
 ```
 
 ---
 
-## Step 5: Start Production Services
+## Step 6: Start Production Services
 
 ```bash
 docker compose -f docker-compose.prod.yml up -d
@@ -197,14 +225,14 @@ docker compose -f docker-compose.prod.yml ps
 
 **Expected:**
 
-- `your-project-db`: Up (healthy)
-- `your-project-bot`: Up (healthy)
+- `sunny-stack-db`: Up (healthy)
+- `sunny-stack-bot`: Up (healthy)
 
-**Note:** No `your-project-api` container - API runs on Vercel
+**Note:** No API container - API runs on Vercel
 
 ---
 
-## Step 6: Run Database Migrations
+## Step 7: Run Database Migrations
 
 ```bash
 docker compose -f docker-compose.prod.yml exec discord-bot npx prisma migrate deploy
@@ -223,12 +251,12 @@ Database schema created
 
 ```bash
 docker compose -f docker-compose.prod.yml exec postgres \
-  psql -U YOUR_DB_USER -d YOUR_DB_NAME -c "\dt"
+  psql -U sunnystack -d sunnystack -c "\dt"
 ```
 
 ---
 
-## Step 7: Verify Production Deployment
+## Step 8: Verify Production Deployment
 
 ### Check Logs
 
@@ -290,7 +318,7 @@ docker compose -f docker-compose.prod.yml logs -f discord-bot | grep "API reques
 
 ---
 
-## Step 8: Configure Vercel Database Connection
+## Step 9: Configure Vercel Database Connection
 
 **In Vercel Dashboard → Environment Variables:**
 
@@ -375,7 +403,7 @@ docker compose -f docker-compose.prod.yml down -v
 ### View Resource Usage
 
 ```bash
-docker stats your-project-bot your-project-db
+docker stats sunny-stack-bot sunny-stack-db
 ```
 
 ---
@@ -418,13 +446,13 @@ cd ~/sunny-stack
 docker compose -f docker-compose.prod.yml down
 
 # Remove old image
-docker rmi -f your-project-bot:latest
+docker rmi -f sunny-stack-bot:latest
 
 # Clear build cache
 docker builder prune -af
 
 # Rebuild bot image
-docker build --no-cache -t your-project-bot:latest -f Dockerfile .
+docker build --no-cache -t sunny-stack-bot:latest -f Dockerfile .
 
 # Start services
 docker compose -f docker-compose.prod.yml up -d
@@ -560,9 +588,9 @@ tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=covera
 ```bash
 cd ~/sunny-stack
 docker compose -f docker-compose.prod.yml down
-docker rmi -f your-project-bot:latest
+docker rmi -f sunny-stack-bot:latest
 docker builder prune -af
-docker build --no-cache -t your-project-bot:latest -f Dockerfile .
+docker build --no-cache -t sunny-stack-bot:latest -f Dockerfile .
 docker compose -f docker-compose.prod.yml up -d
 sleep 30
 docker compose -f docker-compose.prod.yml exec discord-bot npx prisma migrate deploy
@@ -574,7 +602,7 @@ docker compose -f docker-compose.prod.yml logs -f
 ```bash
 docker compose -f docker-compose.prod.yml ps
 curl http://localhost:8080/health
-docker stats your-project-bot your-project-db
+docker stats sunny-stack-bot sunny-stack-db
 ```
 
 ---
