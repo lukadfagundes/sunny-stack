@@ -88,7 +88,7 @@ export interface Command {
  * API request options
  */
 export interface ApiRequestOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: Record<string, unknown>;
   headers?: Record<string, string>;
   timeout?: number;

@@ -6,6 +6,8 @@
  * NOTE: This is an example implementation showing how to use GoogleServiceBase.
  * For production use, install @googleapis/gmail package:
  * npm install @googleapis/gmail googleapis
+ *
+ * @ts-nocheck - Example file, googleapis not installed in production
  */
 
 import { GoogleServiceBase } from './base-service';

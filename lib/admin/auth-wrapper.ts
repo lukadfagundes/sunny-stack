@@ -21,7 +21,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+// NextAuth v5 - import auth function from route config
+import { auth } from '@/app/api/auth/[...nextauth]/route';
 
 /**
  * Configuration for admin authentication wrapper
@@ -75,8 +76,8 @@ export function withAdminAuth(
         throw new Error('ADMIN_EMAIL environment variable is not defined');
       }
 
-      // Get server session from NextAuth
-      const session = await getServerSession();
+      // Get server session from NextAuth v5
+      const session = await auth();
 
       // Check if session exists
       if (!session || !session.user) {
