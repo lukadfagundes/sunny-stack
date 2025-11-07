@@ -1,7 +1,11 @@
 # Fly.io API Setup Guide
 
+> **ℹ️ Usage Note:** This Sunny Stack project is NOT hosted on Fly.io (uses Vercel + Raspberry Pi).
+> This setup guide is for **monitoring external Fly.io projects** via the Discord bot.
+
 **Estimated Time:** 5-10 minutes
 **Purpose:** Enable bot to monitor Fly.io-hosted projects (deployments, health, logs)
+**Status:** ✅ Active - Monitoring external client/personal projects on Fly.io
 
 ---
 

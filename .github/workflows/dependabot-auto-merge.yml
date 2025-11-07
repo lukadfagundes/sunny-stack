@@ -1,0 +1,59 @@
+name: Dependabot Auto-Merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: Check if patch update
+        id: check
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+
+          # Extract version numbers from PR title
+          # Example: "npm(deps): bump react from 19.0.0 to 19.0.1"
+          if echo "$PR_TITLE" | grep -qE "bump .* from [0-9]+\.[0-9]+\.[0-9]+ to [0-9]+\.[0-9]+\.[0-9]+"; then
+            OLD_VERSION=$(echo "$PR_TITLE" | grep -oE "from [0-9]+\.[0-9]+\.[0-9]+" | awk '{print $2}')
+            NEW_VERSION=$(echo "$PR_TITLE" | grep -oE "to [0-9]+\.[0-9]+\.[0-9]+$" | awk '{print $2}')
+
+            # Extract major.minor for comparison
+            OLD_MAJOR_MINOR=$(echo "$OLD_VERSION" | cut -d. -f1,2)
+            NEW_MAJOR_MINOR=$(echo "$NEW_VERSION" | cut -d. -f1,2)
+
+            if [ "$OLD_MAJOR_MINOR" = "$NEW_MAJOR_MINOR" ]; then
+              echo "is_patch=true" >> $GITHUB_OUTPUT
+              echo "✅ Patch update detected: $OLD_VERSION → $NEW_VERSION"
+            else
+              echo "is_patch=false" >> $GITHUB_OUTPUT
+              echo "⚠️ Minor/major update: $OLD_VERSION → $NEW_VERSION (requires manual review)"
+            fi
+          else
+            echo "is_patch=false" >> $GITHUB_OUTPUT
+            echo "❌ Not a semantic version update"
+          fi
+
+      - name: Wait for tests to pass
+        if: steps.check.outputs.is_patch == 'true'
+        uses: fountainhead/action-wait-for-check@v1.2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: "Tests & Quality Checks"
+          ref: ${{ github.event.pull_request.head.sha }}
+          timeoutSeconds: 300
+
+      - name: Enable auto-merge for patch updates
+        if: steps.check.outputs.is_patch == 'true'
+        run: |
+          gh pr merge --auto --squash "${{ github.event.pull_request.number }}"
+          gh pr review --approve "${{ github.event.pull_request.number }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

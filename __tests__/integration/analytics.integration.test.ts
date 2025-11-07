@@ -1,7 +1,11 @@
 /**
  * @file Analytics integration tests
  * @description Tests analytics aggregations and dashboard metrics
+ * @jest-environment node
  */
+
+// IMPORTANT: Unmock Prisma for integration tests - we need real DB access
+jest.unmock('@prisma/client');
 
 import { setupTestDatabase, teardownTestDatabase, testPrisma } from '../helpers/test-db';
 import { createTestProject, createTestQuote, createTestTimeEntry } from '../helpers/test-factories';

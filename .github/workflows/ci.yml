@@ -1,4 +1,12 @@
-name: CI Pipeline
+name: CI Pipeline (Non-Blocking)
+
+# Purpose: Exploratory CI checks that report issues but don't block merges
+# - Uses continue-on-error: true for most steps (failures don't fail the workflow)
+# - Runs on Node.js 18 for compatibility testing
+# - Generates artifacts and reports for review
+# - Use for: Gathering metrics, optional checks, experimental validations
+#
+# Note: test.yml enforces required quality gates (this workflow does not block merges)
 
 on:
   push:

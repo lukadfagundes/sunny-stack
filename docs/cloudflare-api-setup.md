@@ -1,7 +1,11 @@
 # Cloudflare API Setup Guide
 
+> **ℹ️ Usage Note:** This Sunny Stack project may use Cloudflare for DNS/CDN.
+> This setup guide enables **monitoring Cloudflare services** via the Discord bot.
+
 **Estimated Time:** 10-15 minutes
 **Purpose:** Enable bot to monitor and manage Cloudflare DNS, CDN, and security features
+**Status:** ✅ Active - Monitoring Cloudflare-hosted domains and services
 
 ---
 

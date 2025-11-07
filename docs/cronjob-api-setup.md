@@ -1,7 +1,11 @@
 # cron-job.org API Setup Guide
 
+> **ℹ️ Usage Note:** This Sunny Stack project does NOT host scheduled tasks on cron-job.org.
+> This setup guide is for **monitoring external cron jobs** via the Discord bot.
+
 **Estimated Time:** 5-10 minutes
 **Purpose:** Enable bot to monitor external cron jobs and scheduled tasks
+**Status:** ✅ Active - Monitoring cron jobs on external projects
 
 ---
 

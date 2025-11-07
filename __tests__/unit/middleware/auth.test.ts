@@ -18,15 +18,13 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-// Mock NextAuth
-jest.mock('next-auth', () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
-
-// Mock NextAuth server functions
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
+// Mock NextAuth v5 route configuration
+jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
+  auth: jest.fn(),
+  signIn: jest.fn(),
+  signOut: jest.fn(),
+  GET: jest.fn(),
+  POST: jest.fn(),
 }));
 
 // Mock webhook verification functions
@@ -74,8 +72,8 @@ describe('Authentication Middleware', () => {
         },
       };
 
-      const { getServerSession } = require('next-auth/next');
-      getServerSession.mockResolvedValue(mockSession);
+      const { auth } = require('@/app/api/auth/[...nextauth]/route');
+      auth.mockResolvedValue(mockSession);
 
       const mockRequest = new NextRequest('http://localhost:3000/api/admin');
       const mockHandler = jest.fn().mockResolvedValue(
@@ -89,14 +87,14 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).toHaveBeenCalled();
       expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
-      expect(getServerSession).toHaveBeenCalled();
+      expect(auth).toHaveBeenCalled();
     });
 
     test('should reject unauthenticated user with 401', async () => {
       // ARRANGE
       process.env.ADMIN_EMAIL = 'admin@example.com';
-      const { getServerSession } = require('next-auth/next');
-      getServerSession.mockResolvedValue(null); // No session
+      const { auth } = require('@/app/api/auth/[...nextauth]/route');
+      auth.mockResolvedValue(null); // No session
 
       const mockRequest = new NextRequest('http://localhost:3000/api/admin');
       const mockHandler = jest.fn();
@@ -121,8 +119,8 @@ describe('Authentication Middleware', () => {
         },
       };
 
-      const { getServerSession } = require('next-auth/next');
-      getServerSession.mockResolvedValue(mockSession);
+      const { auth } = require('@/app/api/auth/[...nextauth]/route');
+      auth.mockResolvedValue(mockSession);
 
       const mockRequest = new NextRequest('http://localhost:3000/api/admin');
       const mockHandler = jest.fn();
@@ -162,8 +160,8 @@ describe('Authentication Middleware', () => {
         },
       };
 
-      const { getServerSession } = require('next-auth/next');
-      getServerSession.mockResolvedValue(mockSession);
+      const { auth } = require('@/app/api/auth/[...nextauth]/route');
+      auth.mockResolvedValue(mockSession);
 
       const mockRequest = new NextRequest('http://localhost:3000/api/admin');
       const mockHandler = jest.fn().mockResolvedValue(
@@ -182,8 +180,8 @@ describe('Authentication Middleware', () => {
     test('should handle session callback errors gracefully', async () => {
       // ARRANGE
       process.env.ADMIN_EMAIL = 'admin@example.com';
-      const { getServerSession } = require('next-auth/next');
-      getServerSession.mockRejectedValue(new Error('Session retrieval failed'));
+      const { auth } = require('@/app/api/auth/[...nextauth]/route');
+      auth.mockRejectedValue(new Error('Session retrieval failed'));
 
       const mockRequest = new NextRequest('http://localhost:3000/api/admin');
       const mockHandler = jest.fn();
@@ -751,8 +749,8 @@ describe('Authentication Middleware', () => {
         },
       };
 
-      const { getServerSession } = require('next-auth/next');
-      getServerSession.mockResolvedValue(mockSession);
+      const { auth } = require('@/app/api/auth/[...nextauth]/route');
+      auth.mockResolvedValue(mockSession);
 
       const mockRequest = new NextRequest('http://localhost:3000/api/admin', {
         headers: {

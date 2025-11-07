@@ -51,20 +51,26 @@ export async function createTestQuote(overrides: Partial<{
   status: QuoteStatus;
   projectId: string;
 }> = {}) {
-  return testPrisma.quote.create({
-    data: {
-      name: overrides.name || 'Test Client',
-      email: overrides.email || 'client@example.com',
-      company: overrides.company || 'Test Company',
-      projectType: overrides.projectType || 'Web Application',
-      budgetRange: overrides.budgetRange || '10k-25k',
-      timeline: overrides.timeline || '3 months',
-      description: overrides.description || 'Test quote description',
-      requirements: overrides.requirements || 'Test requirements',
-      status: overrides.status || QuoteStatus.PENDING,
-      projectId: overrides.projectId || null,
-    },
-  });
+  try {
+    const quote = await testPrisma.quote.create({
+      data: {
+        name: overrides.name || 'Test Client',
+        email: overrides.email || 'client@example.com',
+        company: overrides.company || 'Test Company',
+        projectType: overrides.projectType || 'Web Application',
+        budgetRange: overrides.budgetRange || '10k-25k',
+        timeline: overrides.timeline || '3 months',
+        description: overrides.description || 'Test quote description',
+        requirements: overrides.requirements || 'Test requirements',
+        status: overrides.status || QuoteStatus.PENDING,
+        projectId: overrides.projectId || null,
+      },
+    });
+    return quote;
+  } catch (error) {
+    console.error('Error creating test quote:', error);
+    throw error;
+  }
 }
 
 /**
@@ -122,11 +128,14 @@ export async function createTestUser(overrides: Partial<{
   googleId: string;
   avatar: string;
 }> = {}) {
+  // Generate unique googleId to avoid unique constraint violations
+  const uniqueGoogleId = overrides.googleId || `google_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+
   return testPrisma.user.create({
     data: {
       email: overrides.email || 'admin@example.com',
       name: overrides.name || 'Admin User',
-      googleId: overrides.googleId || 'google_123',
+      googleId: uniqueGoogleId,
       avatar: overrides.avatar || null,
     },
   });

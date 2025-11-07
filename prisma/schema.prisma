@@ -8,11 +8,21 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Datasource configuration for Neon PostgreSQL
+// Datasource configuration for PostgreSQL
 datasource db {
   provider = "postgresql"
-  // Use DATABASE_URL for default connection (pooled via Neon)
+  // Use DATABASE_URL for default connection
   url      = env("DATABASE_URL")
+
+  // Connection pooling configuration
+  // Optimized for Raspberry Pi 4 (limited resources)
+  // Max connections recommended: 20-25 for Pi 4, 30-40 for Pi 5
+  // Add ?connection_limit=20 to DATABASE_URL for pooling
+  //
+  // Example DATABASE_URL formats:
+  // - Local development: postgresql://user:password@localhost:5432/dbname?connection_limit=20
+  // - Pi production (Docker): postgresql://user:password@postgres:5432/dbname?connection_limit=20
+  // - Neon cloud (with pooling): postgresql://user:password@host:5432/dbname?pgbouncer=true&connection_limit=20
 }
 
 // ============================================================================
