@@ -4,17 +4,11 @@
  * Auto-selects deployment mode (Vercel vs Raspberry Pi) based on environment
  *
  * Environment variables:
- * - Development: Loaded from .env.local via dotenv
+ * - Development: Loaded via dotenv-cli (npm run bot:dev uses dotenv -e .env.local)
  * - Production: Loaded via docker-compose env_file directive
  *
  * @module bot/index
  */
-
-// Load environment variables in development only
-if (process.env.NODE_ENV !== 'production') {
-  const { config: loadEnv } = require('dotenv');
-  loadEnv({ path: '.env.local' });
-}
 
 import { loadBotConfig, validateConfig } from './config';
 import { DeploymentMode } from './types';
