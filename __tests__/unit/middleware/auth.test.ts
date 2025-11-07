@@ -106,7 +106,7 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).not.toHaveBeenCalled();
       expect(result.status).toBe(401);
       const body = await result.json();
-      expect(body.error).toBe('Unauthorized - No session found');
+      expect(body.error).toBe('Unauthorized - No session found and no valid API key');
     });
 
     test('should reject non-admin user with 403', async () => {
