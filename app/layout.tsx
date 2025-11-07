@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Navigation from '@/components/Navigation'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Providers } from './providers'
 import '../styles/globals.css'
 
@@ -27,12 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
-          <Navigation />
-          <div className="pt-16 min-h-screen">
-            {children}
-          </div>
-        </Providers>
+        <ErrorBoundary>
+          <Providers>
+            <Navigation />
+            <div className="pt-16 min-h-screen">
+              {children}
+            </div>
+          </Providers>
+        </ErrorBoundary>
       </body>
     </html>
   )

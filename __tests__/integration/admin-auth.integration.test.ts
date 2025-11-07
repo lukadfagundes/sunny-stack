@@ -1,7 +1,11 @@
 /**
  * @file Admin authentication integration tests
  * @description Tests authentication flow across middleware and API routes
+ * @jest-environment node
  */
+
+// IMPORTANT: Unmock Prisma for integration tests - we need real DB access
+jest.unmock('@prisma/client');
 
 import { setupTestDatabase, teardownTestDatabase, testPrisma } from '../helpers/test-db';
 import { createTestUser } from '../helpers/test-factories';

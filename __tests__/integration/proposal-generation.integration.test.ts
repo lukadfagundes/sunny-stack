@@ -1,7 +1,11 @@
 /**
  * @file Proposal generation integration tests
  * @description Tests PDF proposal generation workflow end-to-end
+ * @jest-environment node
  */
+
+// IMPORTANT: Unmock Prisma for integration tests - we need real DB access
+jest.unmock('@prisma/client');
 
 import { setupTestDatabase, teardownTestDatabase, testPrisma } from '../helpers/test-db';
 import { createTestProject, createTestQuote, createTestProposal } from '../helpers/test-factories';

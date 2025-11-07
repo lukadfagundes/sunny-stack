@@ -13,9 +13,17 @@ concurrency:
 
 jobs:
   # ---------------------------------------------------------------------------
+  # Run Tests Before Deployment
+  # ---------------------------------------------------------------------------
+  test:
+    name: Run Quality Gates
+    uses: ./.github/workflows/test.yml
+
+  # ---------------------------------------------------------------------------
   # Deploy to Raspberry Pi
   # ---------------------------------------------------------------------------
   deploy:
+    needs: [test]
     name: Deploy to Raspberry Pi
     runs-on: ubuntu-latest
     environment:
@@ -155,6 +163,85 @@ jobs:
             echo "PostgreSQL: $(docker inspect -f '{{.State.Health.Status}}' sunny-stack-db)"
             echo "Bot: $(docker inspect -f '{{.State.Health.Status}}' sunny-stack-bot)"
             echo "================================================"
+
+      - name: Verify deployment health
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USERNAME }}
+          key: ${{ secrets.PI_SSH_KEY }}
+          port: ${{ secrets.PI_SSH_PORT || 22 }}
+          script: |
+            set -e
+
+            echo "🔍 Post-Deployment Health Verification"
+            echo "========================================"
+
+            cd ~/sunny-stack
+
+            # Check PostgreSQL health
+            echo "Checking PostgreSQL..."
+            PG_STATUS=$(docker inspect -f '{{.State.Health.Status}}' sunny-stack-db 2>/dev/null || echo "unknown")
+            if [ "$PG_STATUS" != "healthy" ]; then
+              echo "❌ PostgreSQL health check failed: $PG_STATUS"
+              exit 1
+            fi
+            echo "✅ PostgreSQL is healthy"
+
+            # Check Bot health with retries
+            echo "Checking Bot health endpoint..."
+            MAX_RETRIES=3
+            RETRY_DELAY=10
+
+            for i in $(seq 1 $MAX_RETRIES); do
+              HEALTH_RESPONSE=$(curl -sf http://localhost:8080/health || echo "failed")
+
+              if echo "$HEALTH_RESPONSE" | grep -q "healthy"; then
+                echo "✅ Bot health check passed (attempt $i/$MAX_RETRIES)"
+                echo "Response: $HEALTH_RESPONSE"
+                break
+              fi
+
+              if [ $i -eq $MAX_RETRIES ]; then
+                echo "❌ Bot health check failed after $MAX_RETRIES attempts"
+                echo "Last response: $HEALTH_RESPONSE"
+
+                echo "Bot container status:"
+                docker ps -a | grep sunny-stack-bot
+
+                echo "Recent bot logs:"
+                docker logs --tail=50 sunny-stack-bot
+
+                exit 1
+              fi
+
+              echo "⏳ Health check attempt $i/$MAX_RETRIES failed, retrying in ${RETRY_DELAY}s..."
+              sleep $RETRY_DELAY
+            done
+
+            # Check Bot container is running
+            echo "Checking Bot container status..."
+            BOT_STATUS=$(docker inspect -f '{{.State.Status}}' sunny-stack-bot 2>/dev/null || echo "unknown")
+            if [ "$BOT_STATUS" != "running" ]; then
+              echo "❌ Bot container is not running: $BOT_STATUS"
+              docker logs --tail=100 sunny-stack-bot
+              exit 1
+            fi
+            echo "✅ Bot container is running"
+
+            # Check Discord connection in logs
+            echo "Verifying Discord connection..."
+            sleep 5
+            if docker logs --tail=100 sunny-stack-bot 2>&1 | grep -q "Bot ready and operational\|Connected to Discord Gateway\|Ready!"; then
+              echo "✅ Bot connected to Discord"
+            else
+              echo "⚠️  Discord connection not confirmed in logs (may still be connecting)"
+              docker logs --tail=50 sunny-stack-bot
+            fi
+
+            echo "========================================"
+            echo "✅ All health checks passed"
+            echo "Deployment verified successfully"
 
       - name: Send Discord notification on success
         if: success()

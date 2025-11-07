@@ -1,7 +1,11 @@
 /**
  * @file Integration tests for DataLoader with Prisma
  * @description Tests N+1 query prevention with real Prisma client
+ * @jest-environment node
  */
+
+// IMPORTANT: Unmock Prisma for integration tests - we need real DB access
+jest.unmock('@prisma/client');
 
 import { PrismaClient } from '@prisma/client';
 import {

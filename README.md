@@ -42,11 +42,52 @@ A high-performance portfolio website built with the latest web technologies. Fea
 - **E2E Testing:** Playwright
 - **Build Tool:** Webpack (via Next.js)
 
-### Deployment
+### Deployment & Infrastructure
 
-- **Platform:** Vercel
-- **CI/CD:** Automated via Vercel
-- **Analytics:** Vercel Analytics (optional)
+- **Platform:** Vercel (Next.js Website + API Routes)
+- **Database:** PostgreSQL on Raspberry Pi (self-hosted)
+- **Bot:** Discord bot on Raspberry Pi (Docker container)
+- **CI/CD:** Automated via Vercel + manual Pi deployment
+- **Architecture:** Hybrid cloud + self-hosted
+
+See [docs/deployment/](docs/deployment/) for complete deployment guides.
+
+## 🏗️ Architecture
+
+Sunny Stack uses a hybrid cloud + self-hosted architecture optimized for cost and performance:
+
+```
+┌─────────────────────────────────────┐
+│         Vercel (Serverless)         │
+│  ┌──────────────────────────────┐   │
+│  │   Next.js Website + API      │   │
+│  │   https://sunny-stack.com    │   │
+│  └──────────┬───────────────────┘   │
+└─────────────┼───────────────────────┘
+              │
+              │ DATABASE_URL
+              ↓
+┌─────────────────────────────────────┐
+│      Raspberry Pi (Self-Hosted)     │
+│  ┌──────────────────────────────┐   │
+│  │   PostgreSQL Container       │   │
+│  │   postgres:15-alpine         │   │
+│  └──────────┬───────────────────┘   │
+│             │                        │
+│  ┌──────────↓───────────────────┐   │
+│  │   Discord Bot Container      │   │
+│  │   BOT_API_URL → Vercel       │   │
+│  └──────────────────────────────┘   │
+└─────────────────────────────────────┘
+```
+
+### Why Hybrid?
+
+- **Vercel:** Handles website and API routes with automatic scaling and global CDN
+- **Raspberry Pi:** Runs PostgreSQL database and Discord bot 24/7 at minimal cost
+- **Best of Both:** Serverless flexibility + self-hosted control
+
+See [docs/deployment/DEPLOYMENT-OVERVIEW.md](docs/deployment/DEPLOYMENT-OVERVIEW.md) for detailed architecture documentation.
 
 ## 📦 Installation
 
@@ -76,6 +117,27 @@ A high-performance portfolio website built with the latest web technologies. Fea
    cp .env.local.example .env.local
    # Edit .env.local with your configuration
    ```
+
+   **Required Environment Variables:**
+
+   ```bash
+   # Database (for development)
+   DATABASE_URL=postgresql://user:password@localhost:5432/sunnystack
+
+   # Email API (Resend)
+   RESEND_API_KEY=your_resend_api_key
+
+   # Site URL (for absolute links)
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+   # Google OAuth (optional, for NextAuth)
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   NEXTAUTH_SECRET=your_nextauth_secret
+   NEXTAUTH_URL=http://localhost:3000
+   ```
+
+   See `.env.local.example` for complete list and descriptions.
 
 4. Run the development server:
 
@@ -141,6 +203,21 @@ sunny-stack/
 - SEO optimization with metadata API
 - Progressive Web App (PWA) ready
 
+### Security
+
+Sunny Stack implements comprehensive security controls:
+
+- **Error Monitoring:** Rollbar integration for production error tracking
+- **Security Tests:** 29 automated tests covering OWASP Top 5
+- **Dependency Scanning:** Dependabot weekly updates (auto-merge patch updates)
+- **Security Headers:** CSP, HSTS, X-Frame-Options, X-Content-Type-Options
+- **Authentication:** NextAuth.js with Google OAuth
+- **Authorization:** Admin-only routes with session validation
+- **Input Validation:** Comprehensive sanitization and validation
+- **Rate Limiting:** API endpoint protection
+
+For security issues, see [SECURITY.md](.github/SECURITY.md).
+
 ## 🤝 Contributing
 
 While this is a personal portfolio project, suggestions and feedback are welcome! Feel free to:
@@ -150,6 +227,10 @@ While this is a personal portfolio project, suggestions and feedback are welcome
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+## 📜 Code of Conduct
+
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to luka@sunny-stack.com.
 
 ## 📄 License
 

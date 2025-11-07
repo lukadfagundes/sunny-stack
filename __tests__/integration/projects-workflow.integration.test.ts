@@ -1,7 +1,11 @@
 /**
  * @file Projects workflow integration tests
  * @description Tests complete project CRUD operations workflow
+ * @jest-environment node
  */
+
+// IMPORTANT: Unmock Prisma for integration tests - we need real DB access
+jest.unmock('@prisma/client');
 
 import { setupTestDatabase, teardownTestDatabase, testPrisma } from '../helpers/test-db';
 import { createTestProject, createTestTimeEntry, createTestQuote } from '../helpers/test-factories';
@@ -75,7 +79,7 @@ describe('Projects Workflow Integration', () => {
       // ASSERT
       expect(project.description).toBe('A comprehensive web application');
       expect(project.status).toBe(ProjectStatus.IN_PROGRESS);
-      expect(project.budget?.toString()).toBe('50000.00');
+      expect(Number(project.budget)).toBe(50000);
       expect(project.deadline).toEqual(deadline);
     });
 
@@ -227,7 +231,7 @@ describe('Projects Workflow Integration', () => {
       });
 
       // ASSERT
-      expect(updated.budget?.toString()).toBe('25000.00');
+      expect(Number(updated.budget)).toBe(25000);
     });
 
     it('should update project deadline', async () => {
@@ -475,10 +479,10 @@ describe('Projects Workflow Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('50000.00');
-      expect(parseFloat(result._avg.budget?.toString() || '0')).toBeCloseTo(16666.67, 1);
-      expect(result._min.budget?.toString()).toBe('10000.00');
-      expect(result._max.budget?.toString()).toBe('25000.00');
+      expect(Number(result._sum.budget)).toBe(50000);
+      expect(Number(result._avg.budget)).toBeCloseTo(16666.67, 1);
+      expect(Number(result._min.budget)).toBe(10000);
+      expect(Number(result._max.budget)).toBe(25000);
     });
   });
 });
