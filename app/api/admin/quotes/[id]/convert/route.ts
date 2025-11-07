@@ -28,8 +28,10 @@ export const POST = withAuth(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
+  // Await params at the top of the function for use in error handlers
+  const { id: quoteId } = await params;
+
   try {
-    const { id: quoteId } = await params;
 
     // Call quote conversion utility from Phase 1 Group 1
     // This handles all validation and transaction logic
@@ -77,7 +79,7 @@ export const POST = withAuth(async (
 
     // Unknown error
     logger.error('Quote conversion API failed with unknown error', {
-      quoteId: params.id,
+      quoteId,
       error: error instanceof Error ? error.message : 'Unknown error',
     });
 

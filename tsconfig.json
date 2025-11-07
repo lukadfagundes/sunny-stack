@@ -23,16 +23,19 @@
       "@/*": ["./*"],
       "@/components/*": ["./components/*"],
       "@/lib/*": ["./lib/*"],
-      "@/app/*": ["./app/*"]
+      "@/app/*": ["./app/*"],
+      "discord.js": ["./node_modules/discord.js"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": [
     "node_modules",
     "__tests__",
     "**/*.test.ts",
     "**/*.test.tsx",
     "e2e",
-    "bot/dist"
+    "bot/dist",
+    ".next",
+    "lib/google/example-gmail-service.ts"
   ]
 }

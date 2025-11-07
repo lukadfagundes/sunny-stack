@@ -20,8 +20,10 @@ export const GET = withAuth(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
+  // Await params at the top of the function for use in error handlers
+  const { id } = await params;
+
   try {
-    const { id } = await params;
 
     // Find quote
     const quote = await prisma.quote.findUnique({
@@ -51,7 +53,7 @@ export const GET = withAuth(async (
     return NextResponse.json({ quote });
   } catch (error) {
     logger.error('Failed to retrieve quote', {
-      quoteId: params.id,
+      quoteId: id,
       error: error instanceof Error ? error.message : 'Unknown error',
     });
 
@@ -88,8 +90,10 @@ export const PUT = withAuth(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
+  // Await params at the top of the function for use in error handlers
+  const { id } = await params;
+
   try {
-    const { id } = await params;
     const body = await req.json();
 
     // Check if quote exists
@@ -165,7 +169,7 @@ export const PUT = withAuth(async (
     return NextResponse.json({ quote });
   } catch (error) {
     logger.error('Failed to update quote', {
-      quoteId: params.id,
+      quoteId: id,
       error: error instanceof Error ? error.message : 'Unknown error',
     });
 

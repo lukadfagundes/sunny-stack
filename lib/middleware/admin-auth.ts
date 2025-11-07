@@ -26,12 +26,12 @@
  * @module lib/middleware/admin-auth
  */
 
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * NextRequest handler type
+ * NextRequest handler type (matches auth.ts type)
  */
-type NextHandler = (req: NextRequest) => Promise<Response>;
+type NextHandler = (req: NextRequest, context?: { params: any }) => Promise<NextResponse>;
 
 /**
  * Get admin route path with hash

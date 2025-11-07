@@ -47,8 +47,9 @@ const nextConfig = {
   eslint: {
     dirs: ["app", "components", "lib"],
   },
+  // TypeScript strict build enabled - DO NOT ignore build errors
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   // Skip static generation for admin routes (they use client-side auth)
   skipTrailingSlashRedirect: true,

@@ -39,6 +39,87 @@ if (typeof global.Request === "undefined") {
   global.fetch = fetch;
 }
 
+// Mock PrismaClient globally for ALL tests
+// Integration tests that need real DB should use jest.unmock('@prisma/client') in their test files
+const mockQueryRaw = jest.fn();
+const mockConnect = jest.fn().mockResolvedValue(undefined);
+const mockDisconnect = jest.fn().mockResolvedValue(undefined);
+
+jest.mock("@prisma/client", () => ({
+  PrismaClient: jest.fn().mockImplementation(() => ({
+    $queryRaw: mockQueryRaw,
+    $connect: mockConnect,
+    $disconnect: mockDisconnect,
+    // Add all Prisma model methods as mocks for integration test compatibility
+    user: { deleteMany: jest.fn(), findMany: jest.fn(), create: jest.fn() },
+    project: { deleteMany: jest.fn(), findMany: jest.fn(), create: jest.fn() },
+    quote: { deleteMany: jest.fn(), findMany: jest.fn(), create: jest.fn() },
+    proposal: { deleteMany: jest.fn(), findMany: jest.fn(), create: jest.fn() },
+    timeEntry: {
+      deleteMany: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+    discordMessage: {
+      deleteMany: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+    monitoringEvent: {
+      deleteMany: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+    apiKey: { deleteMany: jest.fn(), findMany: jest.fn(), create: jest.fn() },
+    webhook: { deleteMany: jest.fn(), findMany: jest.fn(), create: jest.fn() },
+    systemConfig: {
+      deleteMany: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+    quoteRequest: {
+      deleteMany: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+    contactMessage: {
+      deleteMany: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+    // Store mock functions on the instance for test access
+    __mockQueryRaw: mockQueryRaw,
+    __mockConnect: mockConnect,
+    __mockDisconnect: mockDisconnect,
+  })),
+  // Export Prisma enums for tests
+  QuoteStatus: {
+    PENDING: "PENDING",
+    APPROVED: "APPROVED",
+    DECLINED: "DECLINED",
+    CONVERTED: "CONVERTED",
+  },
+  ProjectStatus: {
+    PLANNING: "PLANNING",
+    IN_PROGRESS: "IN_PROGRESS",
+    REVIEW: "REVIEW",
+    COMPLETE: "COMPLETE",
+    ARCHIVED: "ARCHIVED",
+  },
+  Severity: {
+    INFO: "INFO",
+    WARNING: "WARNING",
+    ERROR: "ERROR",
+    CRITICAL: "CRITICAL",
+  },
+  EventType: {
+    DEPLOYMENT: "DEPLOYMENT",
+    UPTIME_CHECK: "UPTIME_CHECK",
+    ERROR: "ERROR",
+    ALERT: "ALERT",
+  },
+}));
+
 // Mock Next.js router
 jest.mock("next/navigation", () => ({
   useRouter() {

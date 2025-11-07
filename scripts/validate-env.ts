@@ -568,8 +568,9 @@ function main(): void {
   process.exit(result.valid ? 0 : 1);
 }
 
-// Export for testing
-export { validateEnvironment, ValidationRule, ValidationResult };
+// Export for testing (use 'export type' for types when isolatedModules is enabled)
+export { validateEnvironment };
+export type { ValidationRule, ValidationResult };
 
 // Run main (CLI execution)
 main();
