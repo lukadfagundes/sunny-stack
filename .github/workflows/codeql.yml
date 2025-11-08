@@ -56,6 +56,7 @@ jobs:
         if: matrix.language == 'javascript'
         run: npm run build
         env:
+          DATABASE_URL: "postgresql://mock:mock@localhost:5432/mock"
           RESEND_API_KEY: "mock_api_key_for_build"
           NODE_ENV: "production"
 
