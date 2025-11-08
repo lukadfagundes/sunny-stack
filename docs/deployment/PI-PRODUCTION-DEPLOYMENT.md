@@ -88,6 +88,21 @@ DEPLOYMENT_MODE=pi
 
 ---
 
+## Step 0: Clear Cache
+
+```bash
+# Stop containers
+docker compose down -v
+
+# Remove all Docker cache/build cache:
+docker builder prune -af
+
+# Remove all unused images:
+docker image prune -af
+```
+
+---
+
 ## Step 1: Sync Files to Pi
 
 **From Windows machine:**
@@ -99,7 +114,6 @@ tar czf - \
   --exclude=.git \
   --exclude=coverage \
   --exclude=logs \
-  --exclude=.env \
   --exclude=.env.local \
   --exclude=docker-compose.dev.yml \
   --exclude=playwright-report \
@@ -115,12 +129,15 @@ tar czf - \
 **What syncs:**
 
 - ✅ `Dockerfile` (bot image)
-- ✅ `docker-compose.prod.yml`
+- ✅ `docker-compose.yml`
 - ✅ `.env.production`
+- ✅ **`.env`** (required for Docker Compose variable substitution)
 - ✅ Bot source code (`bot/`)
 - ✅ Prisma schema (`prisma/`)
 - ❌ `.env.local`, `docker-compose.dev.yml` (testing only)
 - ❌ `Dockerfile.api` (not needed - API on Vercel)
+
+**Important:** The `.env` file MUST be synced because Docker Compose reads it for variable substitution (e.g., `${POSTGRES_PASSWORD}`) in docker-compose.yml files, even when `env_file: .env.production` is specified. Without it, PostgreSQL container will fail to start.
 
 ---
 
@@ -208,7 +225,7 @@ docker images | grep sunny-stack-bot
 ## Step 6: Start Production Services
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
 **Service startup order:**
@@ -220,7 +237,8 @@ docker compose -f docker-compose.prod.yml up -d
 **Verify:**
 
 ```bash
-docker compose -f docker-compose.prod.yml ps
+docker compose ps
+
 ```
 
 **Expected:**
@@ -363,7 +381,7 @@ docker compose -f docker-compose.prod.yml logs --tail=50
 ### Check Service Status
 
 ```bash
-docker compose -f docker-compose.prod.yml ps
+docker compose ps
 ```
 
 ### Check Health
@@ -421,7 +439,6 @@ tar czf - \
   --exclude=.git \
   --exclude=coverage \
   --exclude=logs \
-  --exclude=.env \
   --exclude=.env.local \
   --exclude=docker-compose.dev.yml \
   --exclude=playwright-report \
@@ -580,7 +597,7 @@ docker compose -f docker-compose.prod.yml up -d
 **One-line sync (production):**
 
 ```bash
-tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=coverage --exclude=logs --exclude=.env --exclude=.env.local --exclude=docker-compose.dev.yml --exclude=playwright-report --exclude=test-results --exclude=*.tsbuildinfo --exclude=*.log --exclude=.swc --exclude=out . | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
+tar czf - --exclude=node_modules --exclude=.next --exclude=.git --exclude=coverage --exclude=logs --exclude=.env.local --exclude=docker-compose.dev.yml --exclude=playwright-report --exclude=test-results --exclude=*.tsbuildinfo --exclude=*.log --exclude=.swc --exclude=out . | ssh pi@your-pi "cd ~/sunny-stack && tar xzf -"
 ```
 
 **Complete deployment (from Pi):**
@@ -600,7 +617,7 @@ docker compose -f docker-compose.prod.yml logs -f
 **View status:**
 
 ```bash
-docker compose -f docker-compose.prod.yml ps
+docker compose ps
 curl http://localhost:8080/health
 docker stats sunny-stack-bot sunny-stack-db
 ```

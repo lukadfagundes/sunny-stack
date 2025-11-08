@@ -63,6 +63,9 @@ RUN rm -rf bot/dist/ bot/*.tsbuildinfo
 # Output goes to bot/dist/ per tsconfig.bot.json
 RUN npx tsc --project tsconfig.bot.json
 
+# Transform TypeScript path aliases (@/...) to relative paths
+RUN npx tsc-alias --project tsconfig.bot.json
+
 # Validate compiled code does NOT contain dotenv loading (env vars loaded by docker-compose)
 RUN ! grep -q 'dotenv' bot/dist/bot/index.js || \
     (echo "ERROR: Compiled code should not load dotenv (use docker-compose env_file)" && exit 1)

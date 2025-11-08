@@ -5,8 +5,6 @@
 # Website + API hosted on Vercel (not in this compose file)
 # =============================================================================
 
-version: "3.8"
-
 services:
   # ---------------------------------------------------------------------------
   # PostgreSQL Database - Production
@@ -185,34 +183,34 @@ networks:
 #   3. Build bot image: docker build -t sunny-stack-bot:latest -f Dockerfile .
 #
 # Start Services:
-#   docker compose -f docker-compose.prod.yml up -d
+#   docker compose up -d
 #
 # View Logs:
-#   docker compose -f docker-compose.prod.yml logs -f
-#   docker compose -f docker-compose.prod.yml logs -f discord-bot
-#   docker compose -f docker-compose.prod.yml logs -f postgres
+#   docker compose logs -f
+#   docker compose logs -f discord-bot
+#   docker compose logs -f postgres
 #
 # Check Health:
-#   docker compose -f docker-compose.prod.yml ps
+#   docker compose ps
 #   curl http://localhost:8080/health
 #
 # Run Migrations:
-#   docker compose -f docker-compose.prod.yml exec discord-bot npx prisma migrate deploy
+#   docker compose exec discord-bot npx prisma migrate deploy
 #
 # Stop Services:
-#   docker compose -f docker-compose.prod.yml down
+#   docker compose down
 #
 # Update Bot:
-#   docker compose -f docker-compose.prod.yml down
+#   docker compose down
 #   docker rmi -f sunny-stack-bot:latest
 #   docker build --no-cache -t sunny-stack-bot:latest -f Dockerfile .
-#   docker compose -f docker-compose.prod.yml up -d
+#   docker compose up -d
 #
 # View Resource Usage:
 #   docker stats sunny-stack-bot sunny-stack-db
 #
 # Database Backup:
-#   docker compose -f docker-compose.prod.yml exec postgres \
+#   docker compose exec postgres \
 #     pg_dump -U sunnystack sunnystack > backup.sql
 #
 # =============================================================================
