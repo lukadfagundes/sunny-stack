@@ -294,7 +294,7 @@ docker volume ls | grep sunny-stack
 ## Step 15: Delete Dev Files
 
 ```bash
-rm -f .env .env.local docker-compose.dev.yml
+rm -f .env.local docker-compose.dev.yml
 ```
 
 **Verify cleanup:**
@@ -308,7 +308,7 @@ ls docker-compose*
 
 - ✅ `.env.production` exists
 - ✅ `docker-compose.prod.yml` exists
-- ❌ `.env` deleted
+- ✅ `.env` exists
 - ❌ `.env.local` deleted
 - ❌ `docker-compose.dev.yml` deleted
 
