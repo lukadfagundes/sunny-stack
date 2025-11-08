@@ -88,6 +88,10 @@ RUN addgroup --system --gid 1001 botuser && \
 # Copy production dependencies from deps stage
 COPY --from=deps /app/node_modules ./bot/node_modules
 
+# Copy Prisma Client from builder (generated during build)
+COPY --from=builder /app/node_modules/.prisma ./bot/node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./bot/node_modules/@prisma
+
 # Copy compiled bot from builder (TypeScript output)
 COPY --from=builder --chown=botuser:botuser /app/bot/dist ./bot/dist
 
