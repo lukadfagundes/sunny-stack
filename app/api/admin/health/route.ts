@@ -9,6 +9,10 @@ import { withAuth } from '@/lib/middleware/auth';
 import { prisma } from '@/lib/db/prisma';
 import logger from '@/lib/logger';
 
+// Force dynamic rendering (no static optimization)
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 /**
  * Health status type
  */
