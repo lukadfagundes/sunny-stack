@@ -1,9 +1,3 @@
-import bundleAnalyzer from "@next/bundle-analyzer";
-
-const withBundleAnalyzer = bundleAnalyzer({
-  enabled: process.env.ANALYZE === "true",
-});
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Removed 'output: export' to enable API routes
@@ -133,4 +127,7 @@ const nextConfig = {
   },
 };
 
-export default withBundleAnalyzer(nextConfig);
+// Export config without bundle analyzer to prevent Vercel build errors
+// Bundle analyzer is only needed for local development analysis
+// To analyze bundles locally: ANALYZE=true npm run build
+export default nextConfig;
