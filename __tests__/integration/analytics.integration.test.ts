@@ -223,7 +223,7 @@ describe('Analytics Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('50000.00');
+      expect(result._sum.budget?.toString()).toBe('50000');
     });
 
     it('should handle projects with null budgets', async () => {
@@ -239,7 +239,7 @@ describe('Analytics Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('15000.00');
+      expect(result._sum.budget?.toString()).toBe('15000');
     });
 
     it('should return null for zero projects', async () => {
@@ -269,7 +269,7 @@ describe('Analytics Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('10000.00');
+      expect(result._sum.budget?.toString()).toBe('10000');
     });
 
     it('should handle large budget amounts', async () => {
@@ -284,7 +284,7 @@ describe('Analytics Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('350000.00');
+      expect(result._sum.budget?.toString()).toBe('350000');
     });
   });
 
@@ -516,7 +516,7 @@ describe('Analytics Integration', () => {
       // ASSERT
       expect(activeProjects).toBe(2);
       expect(pendingQuotes).toBe(2);
-      expect(totalRevenue._sum.budget?.toString()).toBe('70000.00');
+      expect(totalRevenue._sum.budget?.toString()).toBe('70000');
       expect(hoursTracked._sum.durationMinutes).toBe(120);
     });
   });

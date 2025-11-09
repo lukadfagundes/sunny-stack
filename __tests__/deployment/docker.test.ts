@@ -140,16 +140,16 @@ describe('Docker Deployment', () => {
       expect(existsSync(botPackageJsonPath)).toBe(true);
     });
 
-    it('should have exactly 4 dependencies in bot/package.json', () => {
+    it('should have exactly 6 dependencies in bot/package.json', () => {
       const botPackageJson = JSON.parse(readFileSync(botPackageJsonPath, 'utf-8'));
       const dependencies = botPackageJson.dependencies || {};
 
-      // According to ADR-001, bot should have exactly 4 dependencies:
-      // discord.js, dotenv, @prisma/client, winston
-      expect(Object.keys(dependencies)).toHaveLength(4);
+      // Bot dependencies (updated from ADR-001):
+      // discord.js, dotenv, @prisma/client, winston, winston-daily-rotate-file, @noble/ed25519
+      expect(Object.keys(dependencies)).toHaveLength(6);
     });
 
-    it('should have required bot dependencies: discord.js, dotenv, @prisma/client, winston', () => {
+    it('should have required bot dependencies: discord.js, dotenv, @prisma/client, winston, winston-daily-rotate-file, @noble/ed25519', () => {
       const botPackageJson = JSON.parse(readFileSync(botPackageJsonPath, 'utf-8'));
       const dependencies = botPackageJson.dependencies || {};
 
@@ -158,6 +158,8 @@ describe('Docker Deployment', () => {
       expect('dotenv' in dependencies).toBe(true);
       expect('@prisma/client' in dependencies).toBe(true);
       expect('winston' in dependencies).toBe(true);
+      expect('winston-daily-rotate-file' in dependencies).toBe(true);
+      expect('@noble/ed25519' in dependencies).toBe(true);
     });
 
     it('should not have devDependencies in bot/package.json', () => {

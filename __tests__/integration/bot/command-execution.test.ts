@@ -49,7 +49,8 @@ describe('Integration: Command Execution Flow', () => {
       deferReply: deferReplySpy,
       followUp: followUpSpy,
       reply: replySpy,
-      deferred: false,
+      // Per INV-003: Interaction is pre-deferred by handler
+      deferred: true,
       replied: false,
     };
   });
@@ -100,7 +101,8 @@ describe('Integration: Command Execution Flow', () => {
         throw error;
       }
 
-      expect(deferReplySpy).toHaveBeenCalled();
+      // Per INV-003: deferReply is a no-op, so we don't check it
+      // We only verify that followUp was called
       expect(followUpSpy).toHaveBeenCalled();
 
       const followUpCall = followUpSpy.mock.calls[0][0];
