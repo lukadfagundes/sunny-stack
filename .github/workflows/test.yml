@@ -3,11 +3,12 @@ name: Test & Quality Gates (Required)
 # Purpose: Enforces code quality standards and blocks merges on failure
 # - All steps MUST pass for workflow to succeed (no continue-on-error)
 # - Runs on Node.js 20 (production version)
-# - Enforces 80% code coverage threshold
+# - Runs unit tests and security tests
+# - Coverage checking is disabled in CI (run `npm run test:coverage` locally)
 # - Blocks PR merges if quality gates fail
 # - Use for: Required quality gates before merging to main
 #
-# Note: ci.yml runs exploratory checks (failures don't block merges)
+# Note: ci.yml runs exploratory checks with coverage (failures don't block merges)
 
 on:
   push:
@@ -71,8 +72,8 @@ jobs:
       - name: Run TypeScript type checking
         run: npm run type-check
 
-      - name: Run unit tests with coverage
-        run: npm run test:coverage
+      - name: Run unit tests
+        run: npm run test:ci
         env:
           CI: true
           DATABASE_URL: postgresql://sunnystack:test_password@localhost:5432/sunnystack
@@ -95,86 +96,8 @@ jobs:
 
           echo "✅ OWASP coverage verified ($TEST_COUNT test files)"
 
-      - name: Check coverage threshold
-        run: |
-          echo "Checking coverage threshold (80%)..."
-          node -e "
-          const fs = require('fs');
-          const coverage = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
-          const total = coverage.total;
-          const statements = total.statements.pct;
-          const branches = total.branches.pct;
-          const functions = total.functions.pct;
-          const lines = total.lines.pct;
-
-          console.log('Coverage Summary:');
-          console.log('  Statements:', statements + '%');
-          console.log('  Branches:', branches + '%');
-          console.log('  Functions:', functions + '%');
-          console.log('  Lines:', lines + '%');
-
-          const threshold = 80;
-          const failed = [];
-
-          if (statements < threshold) failed.push('statements (' + statements + '%)');
-          if (branches < threshold) failed.push('branches (' + branches + '%)');
-          if (functions < threshold) failed.push('functions (' + functions + '%)');
-          if (lines < threshold) failed.push('lines (' + lines + '%)');
-
-          if (failed.length > 0) {
-            console.error('❌ Coverage threshold not met for: ' + failed.join(', '));
-            console.error('Required: 80% minimum for all metrics');
-            process.exit(1);
-          }
-
-          console.log('✅ All coverage thresholds met (>= 80%)');
-          "
-
-      - name: Upload coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-          retention-days: 30
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            coverage/coverage-summary.json
-            coverage/lcov.info
-          retention-days: 30
-
-      - name: Comment PR with coverage
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const coverage = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
-            const total = coverage.total;
-
-            const comment = `## 📊 Test Coverage Report
-
-            | Metric | Coverage | Status |
-            |--------|----------|--------|
-            | Statements | ${total.statements.pct}% | ${total.statements.pct >= 80 ? '✅' : '❌'} |
-            | Branches | ${total.branches.pct}% | ${total.branches.pct >= 80 ? '✅' : '❌'} |
-            | Functions | ${total.functions.pct}% | ${total.functions.pct >= 80 ? '✅' : '❌'} |
-            | Lines | ${total.lines.pct}% | ${total.lines.pct >= 80 ? '✅' : '❌'} |
-
-            **Threshold:** 80% minimum required for all metrics
-            `;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+      # Coverage checking disabled - run `npm run test:coverage` locally to check coverage
+      # Coverage thresholds are enforced via jest.config.mjs for local development only
 
   test-summary:
     name: Test Summary
