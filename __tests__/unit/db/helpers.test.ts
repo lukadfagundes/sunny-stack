@@ -4,45 +4,44 @@
  * Tests CRUD operations for database tables
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-
-// Create separate mock functions for each method
-const createMockFn = () => jest.fn();
+import { describe, it, expect, beforeEach } from '@jest/globals';
 
 // Mock Prisma Client class to prevent initialization
 jest.mock('@prisma/client', () => {
+  const mockPrismaClient = {
+    $connect: jest.fn(),
+    $disconnect: jest.fn(),
+    project: {
+      findUnique: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+    },
+    quote: {
+      findUnique: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+    },
+    timeEntry: {
+      findUnique: jest.fn(),
+      findMany: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      aggregate: jest.fn(),
+    },
+    monitoringEvent: {
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+    discordMessage: {
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+  };
+
   return {
-    PrismaClient: jest.fn().mockImplementation(() => ({
-      $connect: jest.fn(),
-      $disconnect: jest.fn(),
-      project: {
-        findUnique: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-      },
-      quote: {
-        findUnique: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-      },
-      timeEntry: {
-        findUnique: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-        aggregate: jest.fn(),
-      },
-      monitoringEvent: {
-        findMany: jest.fn(),
-        create: jest.fn(),
-      },
-      discordMessage: {
-        findMany: jest.fn(),
-        create: jest.fn(),
-      },
-    })),
+    PrismaClient: jest.fn(() => mockPrismaClient),
   };
 });
 
@@ -58,16 +57,8 @@ import * as helpers from '@/lib/db/helpers';
 
 describe('Database Query Helpers', () => {
   beforeEach(() => {
-    // Reset all mock implementations
-    Object.values(mockPrisma).forEach((model: any) => {
-      if (typeof model === 'object') {
-        Object.values(model).forEach((method: any) => {
-          if (typeof method?.mockClear === 'function') {
-            method.mockClear();
-          }
-        });
-      }
-    });
+    // Clear all mocks before each test
+    jest.clearAllMocks();
   });
 
   describe('Project Helpers', () => {
