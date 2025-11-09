@@ -20,6 +20,9 @@ describe('Integration: Webhook Notifications', () => {
 
   beforeEach(() => {
     process.env.DISCORD_WEBHOOK_SECRET = webhookSecret;
+    process.env.DISCORD_BOT_TOKEN = 'test-bot-token';
+    process.env.DISCORD_APPLICATION_ID = 'test-app-id';
+    process.env.DISCORD_GUILD_ID = 'test-guild-id';
 
     // Mock Discord client
     const { createDiscordClient, connectClient } = require('@/bot/core/client');
@@ -31,6 +34,9 @@ describe('Integration: Webhook Notifications', () => {
 
   afterEach(() => {
     delete process.env.DISCORD_WEBHOOK_SECRET;
+    delete process.env.DISCORD_BOT_TOKEN;
+    delete process.env.DISCORD_APPLICATION_ID;
+    delete process.env.DISCORD_GUILD_ID;
     jest.clearAllMocks();
   });
 
