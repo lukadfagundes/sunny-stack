@@ -10,6 +10,7 @@ import { POST } from '@/app/api/discord/webhooks/route';
 
 // Mock Discord client and notification senders
 jest.mock('@/bot/core/client');
+jest.mock('@/bot/config');
 jest.mock('@/bot/notifications/quote-notifications');
 jest.mock('@/bot/notifications/project-notifications');
 jest.mock('@/bot/notifications/proposal-notifications');
@@ -23,6 +24,18 @@ describe('Integration: Webhook Notifications', () => {
     process.env.DISCORD_BOT_TOKEN = 'test-bot-token';
     process.env.DISCORD_APPLICATION_ID = 'test-app-id';
     process.env.DISCORD_GUILD_ID = 'test-guild-id';
+
+    // Mock bot config
+    const { loadBotConfig } = require('@/bot/config');
+    loadBotConfig.mockReturnValue({
+      discordBotToken: 'test-bot-token',
+      applicationId: 'test-app-id',
+      guildId: 'test-guild-id',
+      adminUserId: 'test-admin',
+      apiUrl: 'http://localhost:3000/api',
+      apiKey: 'test-api-key',
+      deploymentMode: 'pi',
+    });
 
     // Mock Discord client
     const { createDiscordClient, connectClient } = require('@/bot/core/client');
