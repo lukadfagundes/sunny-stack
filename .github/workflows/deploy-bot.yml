@@ -63,7 +63,7 @@ jobs:
 
             # Stop existing containers
             echo "🛑 Stopping existing containers..."
-            docker compose -f docker-compose.prod.yml down || true
+            docker compose down || true
 
             # Clean up old images
             echo "🧹 Cleaning up old images..."
@@ -87,7 +87,7 @@ jobs:
 
             # Start production services
             echo "🚀 Starting production services..."
-            docker compose -f docker-compose.prod.yml up -d
+            docker compose up -d
 
             # Wait for services to start
             echo "⏳ Waiting for services to start..."
@@ -95,12 +95,12 @@ jobs:
 
             # Check service status
             echo "🔍 Checking service status..."
-            docker compose -f docker-compose.prod.yml ps
+            docker compose ps
 
             # Verify PostgreSQL is healthy
             echo "🔍 Checking PostgreSQL health..."
             for i in {1..10}; do
-              if docker compose -f docker-compose.prod.yml exec -T postgres pg_isready -U sunnystack; then
+              if docker compose exec -T postgres pg_isready -U sunnystack; then
                 echo "✅ PostgreSQL is healthy"
                 break
               fi
@@ -110,7 +110,7 @@ jobs:
 
             # Run database migrations
             echo "📊 Running database migrations..."
-            docker compose -f docker-compose.prod.yml exec -T discord-bot \
+            docker compose exec -T discord-bot \
               npx prisma migrate deploy 2>&1 | tee migration.log
 
             if [ ${PIPESTATUS[0]} -ne 0 ]; then
@@ -136,7 +136,7 @@ jobs:
             # Check bot logs for Discord connection
             echo "🔍 Checking bot Discord connection..."
             sleep 5
-            docker compose -f docker-compose.prod.yml logs --tail=50 discord-bot | tee bot-logs.txt
+            docker compose logs --tail=50 discord-bot | tee bot-logs.txt
 
             if grep -q "Bot ready and operational\|Connected to Discord Gateway" bot-logs.txt; then
               echo "✅ Bot connected to Discord"
