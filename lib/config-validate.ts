@@ -363,16 +363,5 @@ export function printConfigSummary(): void {
 // CLI Usage
 // =============================================================================
 
-if (require.main === module) {
-  // Load environment variables
-  require('dotenv').config({ path: '.env.local' });
-
-  try {
-    validateConfigOrThrow();
-    printConfigSummary();
-    process.exit(0);
-  } catch (error) {
-    console.error(error.message);
-    process.exit(1);
-  }
-}
+// Note: CLI usage moved to scripts/validate-env.ts
+// This file is now a pure library module to avoid import-time side effects
