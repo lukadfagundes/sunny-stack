@@ -367,7 +367,7 @@ Once you've completed Phase 0 setup (Discord + Google + Environment):
    ```
 
 3. **Begin Implementation:**
-   Follow the Trinity Method workflow starting with Phase 1.
+   Follow the Trinity Method workflow starting with Phase 1 first.
 
 ---
 
