@@ -41,7 +41,11 @@ const config = {
       lines: 80,
       statements: 80
     }
-  }
+  },
+  // Increase worker limits for CI stability
+  workerIdleMemoryLimit: '512MB',
+  maxWorkers: process.env.CI ? 1 : 2,
+  testTimeout: 30000,
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
