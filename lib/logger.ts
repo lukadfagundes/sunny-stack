@@ -63,10 +63,15 @@ const consoleTransport = new winston.transports.Console({
 });
 
 /**
+ * Determine if we're running on Vercel (serverless environment with read-only filesystem)
+ */
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+
+/**
  * Winston logger instance
  * Configured with:
- * - Daily rotating file logs (error.log, combined.log)
- * - Console output in development only
+ * - Daily rotating file logs (error.log, combined.log) - Only on Pi/local, not Vercel
+ * - Console output always enabled (Vercel captures console logs)
  * - JSON format for structured logging
  * - 14-day log retention
  *
@@ -86,16 +91,19 @@ export const logger = winston.createLogger({
     environment: process.env.NODE_ENV || 'development',
   },
   transports: [
-    errorFileTransport,
-    combinedFileTransport,
+    // Always add console transport (Vercel captures this)
+    new winston.transports.Console({
+      format: process.env.NODE_ENV === 'production' ? prodFormat : devFormat,
+    }),
   ],
 });
 
 /**
- * Add console transport in development
+ * Add file transports only when NOT on Vercel (read-only filesystem)
  */
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(consoleTransport);
+if (!isVercel) {
+  logger.add(errorFileTransport);
+  logger.add(combinedFileTransport);
 }
 
 /**
