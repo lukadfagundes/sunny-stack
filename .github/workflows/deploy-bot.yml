@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Deploy to Raspberry Pi
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.3
         with:
           host: ${{ secrets.PI_HOST }}
           username: ${{ secrets.PI_USERNAME }}
@@ -170,7 +170,7 @@ jobs:
             echo "================================================"
 
       - name: Verify deployment health
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.3
         with:
           host: ${{ secrets.PI_HOST }}
           username: ${{ secrets.PI_USERNAME }}
