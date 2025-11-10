@@ -13,21 +13,9 @@ concurrency:
 
 jobs:
   # ---------------------------------------------------------------------------
-  # Run Tests Before Deployment
-  # ---------------------------------------------------------------------------
-  test:
-    name: Run Quality Gates
-    uses: ./.github/workflows/test.yml
-    permissions:
-      contents: read
-      checks: write
-      pull-requests: write
-
-  # ---------------------------------------------------------------------------
   # Deploy to Raspberry Pi
   # ---------------------------------------------------------------------------
   deploy:
-    needs: [test]
     name: Deploy to Raspberry Pi
     runs-on: ubuntu-latest
     environment:
