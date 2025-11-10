@@ -33,39 +33,37 @@ const prodFormat = winston.format.combine(
 );
 
 /**
- * Daily rotate file transport for error logs
- */
-const errorFileTransport = new DailyRotateFile({
-  filename: path.join(process.cwd(), 'logs', 'error-%DATE%.log'),
-  datePattern: 'YYYY-MM-DD',
-  level: 'error',
-  maxSize: '20m',
-  maxFiles: '14d', // Keep logs for 14 days
-  format: prodFormat,
-});
-
-/**
- * Daily rotate file transport for combined logs (all levels)
- */
-const combinedFileTransport = new DailyRotateFile({
-  filename: path.join(process.cwd(), 'logs', 'combined-%DATE%.log'),
-  datePattern: 'YYYY-MM-DD',
-  maxSize: '20m',
-  maxFiles: '14d',
-  format: prodFormat,
-});
-
-/**
- * Console transport for development
- */
-const consoleTransport = new winston.transports.Console({
-  format: devFormat,
-});
-
-/**
  * Determine if we're running on Vercel (serverless environment with read-only filesystem)
  */
 const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+
+/**
+ * Lazy-load file transports only when NOT on Vercel
+ * This prevents attempting to create log directories on read-only filesystems
+ */
+function createFileTransports() {
+  if (isVercel) {
+    return [];
+  }
+
+  return [
+    new DailyRotateFile({
+      filename: path.join(process.cwd(), 'logs', 'error-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      level: 'error',
+      maxSize: '20m',
+      maxFiles: '14d', // Keep logs for 14 days
+      format: prodFormat,
+    }),
+    new DailyRotateFile({
+      filename: path.join(process.cwd(), 'logs', 'combined-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      maxSize: '20m',
+      maxFiles: '14d',
+      format: prodFormat,
+    }),
+  ];
+}
 
 /**
  * Winston logger instance
@@ -95,16 +93,10 @@ export const logger = winston.createLogger({
     new winston.transports.Console({
       format: process.env.NODE_ENV === 'production' ? prodFormat : devFormat,
     }),
+    // Add file transports only when NOT on Vercel
+    ...createFileTransports(),
   ],
 });
-
-/**
- * Add file transports only when NOT on Vercel (read-only filesystem)
- */
-if (!isVercel) {
-  logger.add(errorFileTransport);
-  logger.add(combinedFileTransport);
-}
 
 /**
  * Export logger as default
