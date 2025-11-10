@@ -109,13 +109,6 @@ htmlcov/
 docs/_build/
 site/
 
-# Application specific
-proposals/
-projects/
-client_data/
-analytics/
-metrics/
-
 # Operating System
 $RECYCLE.BIN/
 *.cab
