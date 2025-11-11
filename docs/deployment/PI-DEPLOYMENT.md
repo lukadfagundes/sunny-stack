@@ -506,6 +506,78 @@ docker compose logs -f
 
 ---
 
+## Automatic Rollback
+
+### Overview
+
+The GitHub Actions deployment workflow includes **automatic rollback** functionality. If a deployment fails during health checks or service verification, the system automatically restores the previous working version.
+
+### How It Works
+
+1. **Before Deployment:** Current Docker image is tagged as `sunny-stack-bot:backup`
+2. **During Deployment:** New image is built and deployed as `sunny-stack-bot:latest`
+3. **Health Verification:** System checks PostgreSQL, bot health endpoint, and Discord connection
+4. **On Failure:** If any check fails, automatic rollback triggers:
+   - Stops failed containers
+   - Restores backup image as latest
+   - Restarts services with previous working version
+   - Verifies rollback success
+   - Sends Discord notification
+
+### Rollback Triggers
+
+Automatic rollback is triggered when:
+
+- Docker build fails
+- Container startup fails
+- PostgreSQL health check fails (after 10 attempts)
+- Bot health endpoint fails (after 15 attempts)
+- Discord connection not detected in logs
+- Any deployment step exits with non-zero code
+
+### Manual Rollback
+
+If you need to rollback manually:
+
+```bash
+# SSH to Pi
+ssh pi@raspberrypi.local
+cd ~/sunny-stack
+
+# Check if backup image exists
+docker images | grep sunny-stack-bot
+
+# Stop current containers
+docker compose down
+
+# Restore backup image
+docker tag sunny-stack-bot:backup sunny-stack-bot:latest
+
+# Restart services
+docker compose up -d
+
+# Verify health
+curl http://localhost:8080/health
+docker logs --tail=50 sunny-stack-bot
+```
+
+### Rollback Limitations
+
+- **First Deployment:** No rollback available (no previous image exists)
+- **Manual Builds:** Only automated deployments create backup tags
+- **Database Migrations:** Migrations are NOT rolled back automatically
+  - If migration fails, manual intervention required
+  - Consider database backup before major schema changes
+
+### Discord Notifications
+
+Automatic rollback sends notifications to Discord with:
+
+- ✅ **Success:** "Automatic Rollback Successful" (orange color)
+- ❌ **Failure:** "Automatic Rollback Failed - manual intervention required" (red color)
+
+---
+
 ## Troubleshooting
 
 ### Issue: Bot crash-looping with "Cannot find module '@/lib/...'"

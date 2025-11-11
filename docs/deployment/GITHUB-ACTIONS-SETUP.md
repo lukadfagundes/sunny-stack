@@ -336,7 +336,126 @@ git push origin main
 3. ✅ Discord notification sent
 4. ✅ Containers restart with new code
 
-**Deployment time:** ~3-5 minutes
+**Deployment time:** ~15-20 minutes (includes Docker build for ARM64)
+
+---
+
+## Automatic Rollback
+
+### Overview
+
+The deployment workflow includes **automatic rollback** functionality. If deployment fails at any stage, the system automatically restores the previous working version.
+
+### Rollback Process
+
+1. **Before Deployment:** Current image tagged as `sunny-stack-bot:backup`
+2. **Deployment Failure:** Any health check or verification step fails
+3. **Automatic Rollback Triggered:**
+   - Stops failed containers
+   - Restores backup image as latest
+   - Restarts services
+   - Verifies rollback health
+   - Sends Discord notification
+
+### Rollback Workflow Jobs
+
+The workflow contains two jobs:
+
+#### 1. **deploy** (Main Deployment)
+
+- Backs up current image
+- Pulls latest code
+- Builds new Docker image
+- Starts containers
+- Runs migrations
+- Verifies health checks
+- Sends success/failure notifications
+
+#### 2. **rollback** (Automatic Recovery)
+
+- **Triggers:** Only if `deploy` job fails
+- **Conditions:** `needs: deploy` and `if: failure()`
+- **Actions:**
+  - Checks for backup image
+  - Restores previous working version
+  - Verifies services are healthy
+  - Sends rollback notification to Discord
+
+### Rollback Triggers
+
+Automatic rollback is triggered when:
+
+- ❌ Docker build fails
+- ❌ Container startup fails
+- ❌ PostgreSQL health check fails (10 attempts)
+- ❌ Bot health endpoint fails (15 attempts)
+- ❌ Discord connection not detected
+- ❌ Any deployment step exits with error code
+
+### Rollback Notifications
+
+**Discord notifications for rollback:**
+
+| Status     | Title                              | Color  | Description                                 |
+| ---------- | ---------------------------------- | ------ | ------------------------------------------- |
+| ✅ Success | "🔄 Automatic Rollback Successful" | Orange | Services restored to previous working state |
+| ❌ Failure | "🔄 Automatic Rollback Failed"     | Red    | Manual intervention required                |
+
+### Rollback Limitations
+
+⚠️ **Important Considerations:**
+
+1. **First Deployment:** No rollback available (no previous image)
+2. **Database Migrations:** NOT automatically rolled back
+   - If migration fails, manual intervention required
+   - Recommendation: Backup database before major schema changes
+3. **Manual Builds:** Only GitHub Actions deployments create backups
+4. **Backup Retention:** Only 1 previous version stored
+
+### Manual Rollback
+
+If automatic rollback fails, manual procedure:
+
+```bash
+# SSH to Pi
+ssh pi@your-pi
+cd ~/sunny-stack
+
+# Check backup image exists
+docker images | grep sunny-stack-bot
+
+# Stop containers
+docker compose down
+
+# Restore backup
+docker tag sunny-stack-bot:backup sunny-stack-bot:latest
+
+# Restart services
+docker compose up -d
+
+# Verify
+curl http://localhost:8080/health
+docker logs sunny-stack-bot --tail=50
+```
+
+### Testing Rollback
+
+**To test automatic rollback, intentionally break deployment:**
+
+```yaml
+# Edit deploy-bot.yml temporarily (DON'T COMMIT)
+# Add exit 1 to force failure after backup step
+script: |
+  echo "Testing rollback..."
+  exit 1  # Force failure
+```
+
+**Expected behavior:**
+
+1. Deploy job fails
+2. Rollback job triggers automatically
+3. Services restored to previous version
+4. Discord notification sent
 
 ---
 

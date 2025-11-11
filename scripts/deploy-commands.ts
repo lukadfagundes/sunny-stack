@@ -13,10 +13,10 @@
 import { config as loadEnv } from 'dotenv';
 loadEnv({ path: '.env.local' });
 
-import { loadBotConfig } from '../bot/config';
-import { deployCommands, deployGlobalCommands, deleteGuildCommands } from '../bot/commands/deploy';
-import { commandRegistry, discoverCommands } from '../bot/commands/registry';
-import { botLogger } from '../bot/core/logger';
+import { loadBotConfig } from '../bot/config.js';
+import { deployCommands, deployGlobalCommands, deleteGuildCommands } from '../bot/commands/deploy.js';
+import { discoverCommands } from '../bot/commands/registry.js';
+import { botLogger } from '../bot/core/logger.js';
 
 async function main() {
   try {
@@ -34,9 +34,7 @@ async function main() {
     // Discover and register all commands
     await discoverCommands();
 
-    botLogger.info('Commands registered in registry', {
-      count: commandRegistry.size(),
-    });
+    botLogger.info('Commands discovered and ready for deployment');
 
     // Execute appropriate deployment
     switch (command) {

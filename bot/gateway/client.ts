@@ -14,6 +14,11 @@ import { discoverCommands } from '../commands/registry';
 import { botLogger } from '../core/logger';
 import { DiscordError } from '../core/errors';
 import { startServiceHealthMonitoring, stopServiceHealthMonitoring } from '../../lib/monitoring/service-health-checker';
+import { startGitHubMonitoring, stopGitHubMonitoring } from '../../lib/monitoring/github-monitor';
+import { startVercelMonitoring, stopVercelMonitoring } from '../../lib/monitoring/vercel-monitor';
+import { startFlyioMonitoring, stopFlyioMonitoring } from '../../lib/monitoring/flyio-monitor';
+import { startCloudflareMonitoring, stopCloudflareMonitoring } from '../../lib/monitoring/cloudflare-monitor';
+import { startCronJobMonitoring, stopCronJobMonitoring } from '../../lib/monitoring/cronjob-monitor';
 
 /**
  * Start Gateway bot
@@ -35,7 +40,14 @@ export async function startGatewayBot(config: BotConfig): Promise<Client> {
     registerEventHandlers(client, config);
 
     // Set up graceful shutdown with health monitoring cleanup
-    setupGracefulShutdown(client, stopServiceHealthMonitoring);
+    setupGracefulShutdown(client, () => {
+      stopServiceHealthMonitoring();
+      stopGitHubMonitoring();
+      stopVercelMonitoring();
+      stopFlyioMonitoring();
+      stopCloudflareMonitoring();
+      stopCronJobMonitoring();
+    });
 
     // Connect to Discord
     await connectClient(client, config);
@@ -48,14 +60,44 @@ export async function startGatewayBot(config: BotConfig): Promise<Client> {
       user: client.user?.tag,
     });
 
+    // Store bot start time and client globally for monitoring API FIRST
+    global.botStartTime = Date.now();
+    global.discordClient = client;
+    // Note: botCommandsCount is set by discoverCommands() internally
+
+    // Ensure guild channels are cached before starting monitoring services
+    const guild = client.guilds.cache.first();
+    if (guild) {
+      botLogger.info('Fetching guild channels to populate cache...');
+      await guild.channels.fetch();
+      botLogger.info(`Guild channels cached: ${guild.channels.cache.size} channels`);
+    } else {
+      botLogger.warn('No guild found in cache');
+    }
+
     // Start service health monitoring
     startServiceHealthMonitoring();
     botLogger.info('Service health monitoring initialized');
 
-    // Store bot start time and client globally for monitoring API
-    global.botStartTime = Date.now();
-    global.discordClient = client;
-    // Note: botCommandsCount is set by discoverCommands() internally
+    // Start GitHub monitoring
+    startGitHubMonitoring(client);
+    botLogger.info('GitHub monitoring initialized');
+
+    // Start Vercel monitoring
+    startVercelMonitoring(client);
+    botLogger.info('Vercel monitoring initialized');
+
+    // Start Fly.io monitoring
+    startFlyioMonitoring(client);
+    botLogger.info('Fly.io monitoring initialized');
+
+    // Start Cloudflare monitoring
+    startCloudflareMonitoring(client);
+    botLogger.info('Cloudflare monitoring initialized');
+
+    // Start cron-job.org monitoring
+    startCronJobMonitoring(client);
+    botLogger.info('cron-job.org monitoring initialized');
 
     return client;
   } catch (error) {

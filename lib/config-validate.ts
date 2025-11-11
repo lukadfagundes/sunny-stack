@@ -12,14 +12,10 @@ import { z } from 'zod';
 // =============================================================================
 
 /**
- * Database configuration schema (5 variables)
+ * Database configuration schema (1 variable)
  */
 const databaseSchema = z.object({
   DATABASE_URL: z.string().url('DATABASE_URL must be a valid PostgreSQL URL'),
-  DATABASE_URL_UNPOOLED: z.string().url().optional(),
-  POSTGRES_URL: z.string().url().optional(),
-  POSTGRES_PRISMA_URL: z.string().url().optional(),
-  POSTGRES_URL_NON_POOLING: z.string().url().optional(),
 });
 
 /**
@@ -40,16 +36,13 @@ const adminSchema = z.object({
 });
 
 /**
- * Google OAuth & APIs configuration schema
+ * Google OAuth configuration schema (4 variables)
  */
 const googleSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1, 'GOOGLE_CLIENT_ID is required'),
   GOOGLE_CLIENT_SECRET: z.string().min(1, 'GOOGLE_CLIENT_SECRET is required'),
   GOOGLE_REDIRECT_URI: z.string().url('GOOGLE_REDIRECT_URI must be a valid URL'),
-  GOOGLE_REFRESH_TOKEN: z.string().min(1, 'GOOGLE_REFRESH_TOKEN is required'),
-  GOOGLE_PROJECT_ID: z.string().min(1).optional(),
-  GOOGLE_PRIVATE_KEY: z.string().optional(),
-  GOOGLE_CLIENT_EMAIL: z.string().email().optional(),
+  GOOGLE_PROJECT_ID: z.string().min(1, 'GOOGLE_PROJECT_ID is required'),
 });
 
 /**
@@ -106,15 +99,15 @@ const emailSchema = z.object({
 });
 
 /**
- * Webhook configuration schema
+ * Deployment & CI/CD API tokens schema
  */
-const webhookSchema = z.object({
-  GITHUB_WEBHOOK_SECRET: z.string().min(20, 'GITHUB_WEBHOOK_SECRET must be at least 20 characters'),
-  VERCEL_WEBHOOK_SECRET: z.string().min(20, 'VERCEL_WEBHOOK_SECRET must be at least 20 characters'),
+const deploymentApiSchema = z.object({
+  GITHUB_API_TOKEN: z.string().min(20, 'GITHUB_API_TOKEN must be at least 20 characters'),
+  VERCEL_API_TOKEN: z.string().min(20, 'VERCEL_API_TOKEN must be at least 20 characters'),
 });
 
 /**
- * Optional monitoring services schema
+ * Infrastructure monitoring API tokens schema
  */
 const monitoringSchema = z.object({
   FLY_API_TOKEN: z.string().optional(),
@@ -125,7 +118,19 @@ const monitoringSchema = z.object({
 });
 
 /**
- * Complete configuration schema (44 variables)
+ * Complete configuration schema (47 variables)
+ * - Database: 1
+ * - NextAuth: 3
+ * - Admin: 2
+ * - Google OAuth: 4
+ * - Discord: 17 (4 bot + 13 channels)
+ * - Bot API: 2
+ * - Email: 1
+ * - Deployment APIs: 2
+ * - Infrastructure Monitoring: 5
+ * - Error Monitoring: 1 (Rollbar)
+ * - CI/CD: 1 (Discord webhook)
+ * - Deployment: 2 (GitHub username, Pi SSH passphrase)
  */
 const configSchema = z.object({
   ...databaseSchema.shape,
@@ -136,7 +141,7 @@ const configSchema = z.object({
   ...discordChannelSchema.shape,
   ...botApiSchema.shape,
   ...emailSchema.shape,
-  ...webhookSchema.shape,
+  ...deploymentApiSchema.shape,
   ...monitoringSchema.shape,
 });
 
@@ -164,12 +169,8 @@ export function validateConfig(): ValidationResult {
   const warnings: string[] = [];
 
   const config = {
-    // Database (5)
+    // Database (1)
     DATABASE_URL: process.env.DATABASE_URL,
-    DATABASE_URL_UNPOOLED: process.env.DATABASE_URL_UNPOOLED,
-    POSTGRES_URL: process.env.POSTGRES_URL,
-    POSTGRES_PRISMA_URL: process.env.POSTGRES_PRISMA_URL,
-    POSTGRES_URL_NON_POOLING: process.env.POSTGRES_URL_NON_POOLING,
 
     // NextAuth (3)
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -180,14 +181,11 @@ export function validateConfig(): ValidationResult {
     ADMIN_ROUTE_HASH: process.env.ADMIN_ROUTE_HASH,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
 
-    // Google API (7)
+    // Google OAuth (4)
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
-    GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
     GOOGLE_PROJECT_ID: process.env.GOOGLE_PROJECT_ID,
-    GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
-    GOOGLE_CLIENT_EMAIL: process.env.GOOGLE_CLIENT_EMAIL,
 
     // Discord Bot (4)
     DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
@@ -217,11 +215,11 @@ export function validateConfig(): ValidationResult {
     // Email (1)
     RESEND_API_KEY: process.env.RESEND_API_KEY,
 
-    // Webhooks (2)
-    GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET,
-    VERCEL_WEBHOOK_SECRET: process.env.VERCEL_WEBHOOK_SECRET,
+    // Deployment & CI/CD APIs (2)
+    GITHUB_API_TOKEN: process.env.GITHUB_API_TOKEN,
+    VERCEL_API_TOKEN: process.env.VERCEL_API_TOKEN,
 
-    // Monitoring (5)
+    // Infrastructure Monitoring APIs (5)
     FLY_API_TOKEN: process.env.FLY_API_TOKEN,
     FLY_ORG_SLUG: process.env.FLY_ORG_SLUG,
     CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN,
@@ -319,9 +317,10 @@ export function printConfigSummary(): void {
   console.log(`  ✓ ADMIN_EMAIL: ${process.env.ADMIN_EMAIL || '❌ Missing'}`);
   console.log(`  ✓ ADMIN_ROUTE_HASH: ${process.env.ADMIN_ROUTE_HASH ? '✅ Set' : '❌ Missing'}`);
 
-  console.log('\nGoogle APIs:');
+  console.log('\nGoogle OAuth:');
   console.log(`  ✓ GOOGLE_CLIENT_ID: ${process.env.GOOGLE_CLIENT_ID ? '✅ Set' : '❌ Missing'}`);
-  console.log(`  ✓ GOOGLE_REFRESH_TOKEN: ${process.env.GOOGLE_REFRESH_TOKEN ? '✅ Set' : '❌ Missing'}`);
+  console.log(`  ✓ GOOGLE_CLIENT_SECRET: ${process.env.GOOGLE_CLIENT_SECRET ? '✅ Set' : '❌ Missing'}`);
+  console.log(`  ✓ GOOGLE_PROJECT_ID: ${process.env.GOOGLE_PROJECT_ID ? '✅ Set' : '❌ Missing'}`);
 
   console.log('\nDiscord Bot:');
   console.log(`  ✓ DISCORD_BOT_TOKEN: ${process.env.DISCORD_BOT_TOKEN ? '✅ Set' : '❌ Missing'}`);
@@ -345,11 +344,11 @@ export function printConfigSummary(): void {
   ].filter(v => v).length;
   console.log(`  ✓ ${channelCount}/13 channels configured`);
 
-  console.log('\nWebhooks:');
-  console.log(`  ✓ GITHUB_WEBHOOK_SECRET: ${process.env.GITHUB_WEBHOOK_SECRET ? '✅ Set' : '❌ Missing'}`);
-  console.log(`  ✓ VERCEL_WEBHOOK_SECRET: ${process.env.VERCEL_WEBHOOK_SECRET ? '✅ Set' : '❌ Missing'}`);
+  console.log('\nDeployment & CI/CD APIs:');
+  console.log(`  ✓ GITHUB_API_TOKEN: ${process.env.GITHUB_API_TOKEN ? '✅ Set' : '❌ Missing'}`);
+  console.log(`  ✓ VERCEL_API_TOKEN: ${process.env.VERCEL_API_TOKEN ? '✅ Set' : '❌ Missing'}`);
 
-  console.log('\nMonitoring (Optional):');
+  console.log('\nInfrastructure Monitoring APIs (Optional):');
   console.log(`  ✓ FLY_API_TOKEN: ${process.env.FLY_API_TOKEN ? '✅ Set' : '⚠️  Not set'}`);
   console.log(`  ✓ FLY_ORG_SLUG: ${process.env.FLY_ORG_SLUG ? '✅ Set' : '⚠️  Not set'}`);
   console.log(`  ✓ CLOUDFLARE_API_TOKEN: ${process.env.CLOUDFLARE_API_TOKEN ? '✅ Set' : '⚠️  Not set'}`);
