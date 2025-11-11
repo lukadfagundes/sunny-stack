@@ -2,11 +2,50 @@
 /**
  * Bot Command Integration Test Script
  *
- * Tests all Discord bot commands against the local API to verify:
+ * Comprehensive test suite for ALL 19 Discord bot commands and API endpoints:
+ *
+ * PROJECT COMMANDS (5):
+ * ✓ project-create  - Create new project
+ * ✓ project-list    - List all projects
+ * ✓ project-status  - Get specific project details
+ * ✓ project-update  - Update project information
+ * ✓ project-delete  - Delete project (cleanup)
+ *
+ * QUOTE COMMANDS (4):
+ * ✓ quote-list      - List all quotes
+ * ✓ quote-review    - Review pending quotes
+ * ⚠ quote-convert   - Convert quote to project (requires quote ID)
+ * ⚠ quote-approve   - Approve quote (requires quote ID)
+ *
+ * TIME TRACKING COMMANDS (4):
+ * ✓ time-start      - Start time tracking
+ * ⚠ time-stop       - Stop time tracking (requires active entry)
+ * ✓ time-log        - Log time entry
+ * ✓ time-report     - Generate time report
+ *
+ * MONITORING COMMANDS (4):
+ * ✓ monitor-status  - Overall system status
+ * ✓ monitor-services - Service health checks
+ * ✓ monitor-alerts  - Recent monitoring alerts
+ * ✓ monitor-github  - GitHub repos, workflows, PRs
+ *
+ * ADMIN COMMANDS (2):
+ * ✓ admin-health    - System health check
+ * ✓ admin-sync      - Sync with admin platform
+ *
+ * ANALYTICS:
+ * ✓ admin-analytics - Dashboard analytics
+ *
+ * DISCORD NOTIFICATION TEST:
+ * ✓ test-notification - Send test notification to admin logs channel
+ *
+ * Verifies:
  * - Database connectivity
  * - API authentication (bot API key)
  * - CRUD operations
  * - Error handling
+ * - API response formats
+ * - Discord bot connection and notifications
  *
  * Usage: npm run bot:test
  */
@@ -256,11 +295,70 @@ async function main() {
     logInfo(`Found ${response.quotes.length} quote(s)`);
   });
 
+  // Test: Quote Review (if we have quotes)
+  logTest('GET /admin/quotes?status=PENDING (review pending quotes)');
+  await runTest('quote-review', async () => {
+    const response = await apiClient.get<{
+      quotes: any[];
+      pagination: any;
+    }>('/admin/quotes?status=PENDING&page=1');
+
+    logInfo(`Found ${response.quotes.length} pending quote(s)`);
+  });
+
+  // Test: Quote Convert (requires quote ID - skip if none)
+  // Test: Quote Approve (requires quote ID - skip if none)
+  logInfo('Note: quote-convert and quote-approve require specific quote IDs');
+
   // ============================================================================
   // TIME TRACKING COMMANDS
   // ============================================================================
 
   log('\n═══ TIME TRACKING COMMANDS ═══', 'yellow');
+
+  // Test: Time Start (begin timer)
+  if (testProjectId) {
+    logTest(`POST /admin/time-entries (start time tracking)`);
+    await runTest('time-start', async () => {
+      const response = await apiClient.post<{
+        timeEntry: any;
+        project: any;
+      }>('/admin/time-entries', {
+        projectId: testProjectId,
+        description: 'Automated test time entry',
+      });
+
+      if (!response.timeEntry?.id) throw new Error('No time entry ID returned');
+      logInfo(`Started time entry: ${response.timeEntry.id}`);
+    });
+  }
+
+  // Test: Time Stop (simulated - would need active entry)
+  logInfo('Note: time-stop requires an active time entry ID');
+
+  // Test: Time Log (manual entry with completed time)
+  if (testProjectId) {
+    logTest(`POST /admin/time-entries/manual (log manual time entry)`);
+    await runTest('time-log', async () => {
+      const now = new Date();
+      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+
+      const response = await apiClient.post<{
+        timeEntry: any;
+        project: any;
+      }>('/admin/time-entries/manual', {
+        projectId: testProjectId,
+        description: 'Manual time log from test',
+        startedAt: oneHourAgo.toISOString(),
+        endedAt: now.toISOString(),
+        durationMinutes: 60,
+        loggedVia: 'api',
+      });
+
+      if (!response.timeEntry?.id) throw new Error('No time entry ID returned');
+      logInfo(`Logged time entry: ${response.timeEntry.id}`);
+    });
+  }
 
   // Test: Time Report
   if (testProjectId) {
@@ -285,6 +383,17 @@ async function main() {
 
   log('\n═══ MONITORING COMMANDS ═══', 'yellow');
 
+  // Test: Monitor Status (Overall health)
+  logTest('GET /admin/monitor/status (overall system status)');
+  await runTest('monitor-status', async () => {
+    const response = await apiClient.get<{
+      status: string;
+      data: any;
+    }>('/admin/monitor/status');
+
+    logInfo(`System Status: ${response.status}`);
+  });
+
   // Test: Monitor Services
   logTest('GET /admin/monitor/services (service health)');
   await runTest('monitor-services', async () => {
@@ -307,6 +416,43 @@ async function main() {
     logInfo(`Found ${response.alerts.length} alert(s)`);
   });
 
+  // Test: Monitor GitHub
+  logTest('GET /admin/monitor/github (GitHub status)');
+  await runTest('monitor-github', async () => {
+    const response = await apiClient.get<{
+      status: string;
+      data: {
+        health: {
+          authenticated: boolean;
+          user: string;
+          rateLimit: {
+            remaining: number;
+            limit: number;
+            resetAt: string;
+          };
+        };
+        repositories: {
+          total: number;
+          recentlyUpdated: any[];
+        };
+        workflows: {
+          recent: number;
+          failed: number;
+          failedRuns: any[];
+        };
+        pullRequests: {
+          open: number;
+          recentPRs: any[];
+        };
+      };
+    }>('/admin/monitor/github');
+
+    logInfo(`Authenticated: ${response.data.health.authenticated}`);
+    logInfo(`Repositories: ${response.data.repositories.total}`);
+    logInfo(`Failed Workflows: ${response.data.workflows.failed}`);
+    logInfo(`Open PRs: ${response.data.pullRequests.open}`);
+  });
+
   // ============================================================================
   // ANALYTICS COMMANDS
   // ============================================================================
@@ -327,6 +473,90 @@ async function main() {
     logInfo(`Pending Quotes: ${response.pendingQuotes}`);
     logInfo(`Total Revenue: $${response.totalRevenue}`);
     logInfo(`Hours Tracked: ${response.hoursTracked}`);
+  });
+
+  // ============================================================================
+  // ADMIN COMMANDS
+  // ============================================================================
+
+  log('\n═══ ADMIN COMMANDS ═══', 'yellow');
+
+  // Test: Admin Health
+  logTest('GET /admin/health (system health check)');
+  await runTest('admin-health', async () => {
+    const response = await apiClient.get<{
+      status: 'healthy' | 'degraded' | 'unhealthy';
+      timestamp: string;
+      uptime: number;
+      services: {
+        database: {
+          status: string;
+          responseTime: number;
+        };
+        discord: {
+          status: string;
+          latency?: number | null;
+          guilds?: number;
+        };
+        api: {
+          status: string;
+          requestsPerMinute: number;
+        };
+      };
+      memory: {
+        used: number;
+        total: number;
+        percentage: number;
+      };
+    }>('/admin/health');
+
+    logInfo(`Overall Status: ${response.status}`);
+    logInfo(`Uptime: ${Math.floor(response.uptime / 60)} minutes`);
+    logInfo(`Database: ${response.services.database.status} (${response.services.database.responseTime}ms)`);
+    logInfo(`Memory Usage: ${response.memory.percentage.toFixed(1)}%`);
+  });
+
+  // Test: Admin Sync
+  logTest('POST /admin/sync (sync with admin platform)');
+  await runTest('admin-sync', async () => {
+    const response = await apiClient.post<{
+      syncType: string;
+      results: {
+        projects?: { synced: number; updated: number; errors: number };
+        quotes?: { synced: number; updated: number; errors: number };
+        timeEntries?: { synced: number; updated: number; errors: number };
+        monitoring?: { synced: number; updated: number; errors: number };
+      };
+      timestamp: string;
+      duration: number;
+    }>('/admin/sync', { type: 'projects' });
+
+    logInfo(`Sync Type: ${response.syncType}`);
+    logInfo(`Duration: ${response.duration}ms`);
+    if (response.results.projects) {
+      logInfo(`Projects Synced: ${response.results.projects.synced}`);
+    }
+  });
+
+  // ============================================================================
+  // DISCORD NOTIFICATION TEST
+  // ============================================================================
+
+  log('\n═══ DISCORD NOTIFICATION TEST ═══', 'cyan');
+
+  logTest('POST /admin/test-notification (test Discord notification)');
+  await runTest('test-notification', async () => {
+    const response = await apiClient.post<{
+      success: boolean;
+      message: string;
+      channelId: string;
+      botUser: string;
+    }>('/admin/test-notification', {});
+
+    if (!response.success) throw new Error('Test notification failed');
+
+    logInfo(`✅ Notification sent to channel: ${response.channelId}`);
+    logInfo(`📡 Bot user: ${response.botUser}`);
   });
 
   // ============================================================================

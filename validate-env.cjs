@@ -2,12 +2,8 @@
 require('dotenv').config({ path: '.env.local' });
 
 const requiredVars = [
-  // Database (5)
+  // Database (1)
   'DATABASE_URL',
-  'DATABASE_URL_UNPOOLED',
-  'POSTGRES_URL',
-  'POSTGRES_PRISMA_URL',
-  'POSTGRES_URL_NON_POOLING',
 
   // NextAuth (3)
   'NEXTAUTH_URL',
@@ -17,11 +13,10 @@ const requiredVars = [
   // Admin Security (1)
   'ADMIN_ROUTE_HASH',
 
-  // Google OAuth (5)
+  // Google OAuth (4)
   'GOOGLE_CLIENT_ID',
   'GOOGLE_CLIENT_SECRET',
   'GOOGLE_REDIRECT_URI',
-  'GOOGLE_REFRESH_TOKEN',
   'GOOGLE_PROJECT_ID',
 
   // Discord Bot (4 + 13 channels = 17)
@@ -47,11 +42,11 @@ const requiredVars = [
   'BOT_API_KEY',
   'BOT_API_URL',
 
-  // Webhooks (2)
-  'GITHUB_WEBHOOK_SECRET',
-  'VERCEL_WEBHOOK_SECRET',
+  // Deployment & CI/CD APIs (2)
+  'GITHUB_API_TOKEN',
+  'VERCEL_API_TOKEN',
 
-  // Monitoring Services (5)
+  // Infrastructure Monitoring APIs (5)
   'FLY_API_TOKEN',
   'FLY_ORG_SLUG',
   'CLOUDFLARE_API_TOKEN',

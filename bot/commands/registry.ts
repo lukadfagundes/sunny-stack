@@ -139,6 +139,7 @@ export async function discoverCommands(): Promise<void> {
       await import('./monitor/status'),
       await import('./monitor/services'),
       await import('./monitor/alerts'),
+      await import('./monitoring/monitor-github'),
 
       // Admin commands
       await import('./admin/sync'),

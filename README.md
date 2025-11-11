@@ -232,6 +232,76 @@ While this is a personal portfolio project, suggestions and feedback are welcome
 
 This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to luka@sunny-stack.com.
 
+## 🚀 Deployment
+
+Sunny Stack uses a decoupled deployment architecture optimized for cost and performance:
+
+### Quick Start
+
+#### Next.js Frontend (Vercel)
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy to production
+vercel --prod
+```
+
+**Automatic Deployment:** Push to `main` branch triggers automatic Vercel deployment.
+
+#### Discord Bot (Raspberry Pi)
+
+```bash
+# 1. Set up Raspberry Pi (one-time setup)
+curl -fsSL https://raw.githubusercontent.com/lukadfagundes/sunny-stack/main/scripts/pi-setup.sh | bash
+
+# 2. Sync environment variables from local to Pi
+./scripts/sync-env-to-pi.sh raspberrypi.local pi
+
+# 3. Deploy via GitHub Actions (automatic on push to main)
+# Or deploy manually:
+cd ~/sunny-stack
+docker compose up -d
+```
+
+### Architecture Components
+
+**Vercel (Cloud):**
+
+- Next.js website and API routes
+- Serverless functions with automatic scaling
+- Global CDN for optimal performance
+- Environment: Production secrets via Vercel dashboard
+
+**Raspberry Pi (Self-Hosted):**
+
+- PostgreSQL database (Docker container)
+- Discord bot (Docker container)
+- 24/7 uptime at minimal cost (~$0/month after hardware)
+- Environment: `.env.production` file on Pi
+
+### Deployment Documentation
+
+Comprehensive deployment guides are available in [docs/deployment/](docs/deployment/):
+
+- **[DEPLOYMENT-OVERVIEW.md](docs/deployment/DEPLOYMENT-OVERVIEW.md)** - Complete architecture and deployment strategy
+- **[RASPBERRY-PI-SETUP.md](docs/deployment/RASPBERRY-PI-SETUP.md)** - Initial Pi setup (one-time)
+- **[PI-DEPLOYMENT.md](docs/deployment/PI-DEPLOYMENT.md)** - Pi deployment procedures
+- **[GITHUB-ACTIONS-SETUP.md](docs/deployment/GITHUB-ACTIONS-SETUP.md)** - CI/CD configuration
+- **[TROUBLESHOOTING.md](docs/deployment/TROUBLESHOOTING.md)** - Common issues and solutions
+
+### CI/CD Pipeline
+
+**Automated Deployments:**
+
+- Push to `main` → Vercel deploys frontend automatically
+- Push to `main` → GitHub Actions deploys to Pi automatically
+- Health checks and rollback on failure
+- Discord notifications for deployment status
+
+See [GITHUB-ACTIONS-SETUP.md](docs/deployment/GITHUB-ACTIONS-SETUP.md) for CI/CD setup details.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
