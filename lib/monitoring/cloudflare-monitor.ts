@@ -3,8 +3,7 @@
  * @description Background monitoring for Cloudflare DNS, SSL, and zone status with Discord notifications
  */
 
-import { EmbedBuilder, TextChannel } from 'discord.js';
-import type { Client } from '@/bot/types';
+import { Client, EmbedBuilder, TextChannel } from 'discord.js';
 import { prisma } from '@/lib/db/prisma';
 import logger from '@/lib/logger';
 import { getZone, getSSLStatus } from '@/lib/integrations/cloudflare';
