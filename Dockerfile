@@ -41,7 +41,8 @@ COPY package.json package-lock.json* ./
 COPY prisma ./prisma/
 
 # Install ALL dependencies (needed for TypeScript compilation)
-RUN npm ci
+# Increase max memory for npm on Raspberry Pi
+RUN NODE_OPTIONS="--max-old-space-size=2048" npm ci --loglevel=error
 
 # Generate Prisma Client (required for TypeScript types)
 RUN npx prisma generate
