@@ -62,7 +62,15 @@ export class MonitorStatusCommand extends BaseCommand {
       throw new Error(response.error || 'Failed to fetch monitoring status');
     }
 
-    const { bot, database, discord } = response.data;
+    const { bot, database } = response.data;
+
+    // Get Discord status from the bot's own client (not from API)
+    const discord = {
+      connected: interaction.client.isReady(),
+      guilds: interaction.client.guilds.cache.size,
+      channels: interaction.client.channels.cache.size,
+      latency: interaction.client.ws.ping,
+    };
 
     // Determine overall status color
     const allHealthy = bot.online && database.connected && discord.connected;

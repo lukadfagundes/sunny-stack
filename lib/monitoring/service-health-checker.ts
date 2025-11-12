@@ -179,19 +179,24 @@ export async function runServiceHealthChecks(): Promise<void> {
         .map((check) => [check.serviceName, check.status])
     );
 
-    // Step 3: Batch save all health checks (1 database query)
-    await prisma.serviceHealthCheck.createMany({
-      data: results.map((result) => ({
-        serviceName: result.serviceName,
-        endpoint: result.endpoint,
-        status: result.status,
-        responseTime: result.responseTime,
-        statusCode: result.statusCode,
-        lastChecked: new Date(),
-      })),
+    // Step 3: Batch save all health checks (non-blocking)
+    setImmediate(async () => {
+      try {
+        await prisma.serviceHealthCheck.createMany({
+          data: results.map((result) => ({
+            serviceName: result.serviceName,
+            endpoint: result.endpoint,
+            status: result.status,
+            responseTime: result.responseTime,
+            statusCode: result.statusCode,
+            lastChecked: new Date(),
+          })),
+        });
+        logger.info('Health checks saved to database');
+      } catch (error) {
+        logger.error('Failed to save health checks', error);
+      }
     });
-
-    logger.info('Health checks saved to database');
 
     // Step 4: Build alerts for status changes
     const alertsToCreate = results
@@ -207,13 +212,18 @@ export async function runServiceHealthChecks(): Promise<void> {
       })
       .filter((alert): alert is NonNullable<typeof alert> => alert !== null);
 
-    // Step 5: Batch create alerts if any exist (1 database query)
+    // Step 5: Batch create alerts if any exist (non-blocking)
     if (alertsToCreate.length > 0) {
-      await prisma.monitoringAlert.createMany({
-        data: alertsToCreate,
+      setImmediate(async () => {
+        try {
+          await prisma.monitoringAlert.createMany({
+            data: alertsToCreate,
+          });
+          logger.info(`Created ${alertsToCreate.length} alert(s) for status changes`);
+        } catch (error) {
+          logger.error('Failed to create monitoring alerts', error);
+        }
       });
-
-      logger.info(`Created ${alertsToCreate.length} alert(s) for status changes`);
     }
 
     // Log individual results

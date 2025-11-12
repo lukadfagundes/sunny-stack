@@ -16,6 +16,9 @@ import {
 const VERCEL_POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
 const VERCEL_NOTIFICATION_CHANNEL = process.env.DISCORD_CHANNEL_ADMIN_LOGS;
 
+// Track when monitoring started to avoid alerting on old deployments
+const monitoringStartTime = Date.now();
+
 interface MonitoredDeployment {
   uid: string;
   name: string;
@@ -179,19 +182,30 @@ async function monitorDeployments(client: Client): Promise<void> {
 
       const previous = lastDeploymentCheck.get(deployment.uid);
 
+      // Only alert on deployments created after monitoring started
+      const deploymentTime = new Date(monitored.created).getTime();
+      const isRecentDeployment = deploymentTime > monitoringStartTime;
+
       // New deployment failure detected
-      if (deployment.state === 'ERROR' && !previous) {
+      if (deployment.state === 'ERROR' && !previous && isRecentDeployment) {
         await notifyDeploymentFailure(client, monitored);
 
-        // Create alert in database
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'ERROR',
-            severity: 'CRITICAL',
-            source: 'Vercel',
-            message: `Deployment failed: ${monitored.name}`,
-            metadata: monitored,
-          },
+        // Create alert in database (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'ERROR',
+                severity: 'CRITICAL',
+                source: 'Vercel',
+                message: `Deployment failed: ${monitored.name}`,
+                timestamp: new Date(monitored.created),
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -199,19 +213,27 @@ async function monitorDeployments(client: Client): Promise<void> {
       if (
         deployment.state === 'READY' &&
         deployment.target === 'production' &&
-        !previous
+        !previous &&
+        isRecentDeployment
       ) {
         await notifyProductionDeployment(client, monitored);
 
-        // Create notification alert
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'DEPLOYMENT',
-            severity: 'INFO',
-            source: 'Vercel',
-            message: `Production deployment: ${monitored.name}`,
-            metadata: monitored,
-          },
+        // Create notification alert (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'DEPLOYMENT',
+                severity: 'INFO',
+                source: 'Vercel',
+                message: `Production deployment: ${monitored.name}`,
+                timestamp: new Date(monitored.created),
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -234,15 +256,22 @@ async function monitorDeployments(client: Client): Promise<void> {
           await channel.send({ embeds: [recoveryEmbed] });
         }
 
-        // Create recovery alert
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'UPTIME_CHECK',
-            severity: 'INFO',
-            source: 'Vercel',
-            message: `Deployment recovered: ${monitored.name}`,
-            metadata: monitored,
-          },
+        // Create recovery alert (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'UPTIME_CHECK',
+                severity: 'INFO',
+                source: 'Vercel',
+                message: `Deployment recovered: ${monitored.name}`,
+                timestamp: new Date(monitored.created),
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -283,17 +312,15 @@ export function startVercelMonitoring(client: Client): void {
     stopVercelMonitoring();
   }
 
-  // Delay initial check by 5 seconds to ensure Discord client is fully ready
-  setTimeout(() => {
-    runVercelMonitoring(client);
-  }, 5000);
+  // Run initial check immediately (channels are already cached)
+  runVercelMonitoring(client);
 
   // Schedule recurring checks
   vercelMonitorInterval = setInterval(() => {
     runVercelMonitoring(client);
   }, VERCEL_POLL_INTERVAL);
 
-  logger.info(`Vercel monitoring started (${VERCEL_POLL_INTERVAL / 60000}-minute interval, first check in 5s)`);
+  logger.info(`Vercel monitoring started (${VERCEL_POLL_INTERVAL / 60000}-minute interval)`);
 }
 
 /**
