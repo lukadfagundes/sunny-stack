@@ -181,9 +181,9 @@ jobs:
               echo "⚠️  Bot connection not confirmed - check logs"
             fi
 
-            # Display resource usage
+            # Display resource usage (with timeout to avoid hanging)
             echo "📊 Container resource usage:"
-            docker stats sunny-stack-bot sunny-stack-db --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
+            timeout 10 docker stats sunny-stack-bot sunny-stack-db --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" || echo "⚠️  Stats collection timed out (non-critical)"
 
             # Clean up old images (older than 7 days)
             echo "🧹 Cleaning up old Docker images..."
@@ -205,7 +205,7 @@ jobs:
           passphrase: ${{ secrets.PI_SSH_PASSPHRASE }}
           port: ${{ secrets.PI_SSH_PORT || 22 }}
           timeout: 10m
-          command_timeout: 5m
+          command_timeout: 10m
           script: |
             set -e
 
