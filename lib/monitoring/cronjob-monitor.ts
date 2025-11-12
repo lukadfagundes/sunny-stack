@@ -152,15 +152,21 @@ async function monitorCronJobs(client: Client): Promise<void> {
           statusText: '',
         });
 
-        // Create alert in database
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'ERROR',
-            severity: 'ERROR',
-            source: 'cron-job.org',
-            message: `Cron job failed: ${monitored.title}`,
-            metadata: monitored,
-          },
+        // Create alert in database (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'ERROR',
+                severity: 'ERROR',
+                source: 'cron-job.org',
+                message: `Cron job failed: ${monitored.title}`,
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -168,15 +174,21 @@ async function monitorCronJobs(client: Client): Promise<void> {
       if (!job.enabled && previous && previous.enabled) {
         await notifyJobDisabled(client, monitored);
 
-        // Create alert
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'NOTIFICATION',
-            severity: 'WARNING',
-            source: 'cron-job.org',
-            message: `Cron job disabled: ${monitored.title}`,
-            metadata: monitored,
-          },
+        // Create alert (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'NOTIFICATION',
+                severity: 'WARNING',
+                source: 'cron-job.org',
+                message: `Cron job disabled: ${monitored.title}`,
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -219,17 +231,15 @@ export function startCronJobMonitoring(client: Client): void {
     stopCronJobMonitoring();
   }
 
-  // Delay initial check by 5 seconds to ensure Discord client is fully ready
-  setTimeout(() => {
-    runCronJobMonitoring(client);
-  }, 5000);
+  // Run initial check immediately (channels are already cached)
+  runCronJobMonitoring(client);
 
   // Schedule recurring checks
   cronjobMonitorInterval = setInterval(() => {
     runCronJobMonitoring(client);
   }, CRONJOB_POLL_INTERVAL);
 
-  logger.info(`cron-job.org monitoring started (${CRONJOB_POLL_INTERVAL / 60000}-minute interval, first check in 5s)`);
+  logger.info(`cron-job.org monitoring started (${CRONJOB_POLL_INTERVAL / 60000}-minute interval)`);
 }
 
 /**

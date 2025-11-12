@@ -213,43 +213,56 @@ async function monitorApps(client: Client): Promise<void> {
 
       const previous = lastAppCheck.get(app.name);
 
-      // App went down
-      if (
-        (!app.deployed || app.status !== 'running') &&
-        previous &&
-        (previous.deployed || previous.status === 'running')
-      ) {
+      // Determine if app is actually running
+      // Fly.io apps can have status: 'deployed', 'running', 'suspended', etc.
+      // An app is considered "up" if it's deployed OR has running/deployed status
+      // An app is considered "down" if it's not deployed AND status is not running/deployed
+      // We ignore 'suspended' apps as those are intentionally stopped
+      const isRunning = app.deployed || app.status === 'running' || app.status === 'deployed';
+      const isSuspended = app.status === 'suspended';
+      const wasRunning = previous && (previous.deployed || previous.status === 'running' || previous.status === 'deployed');
+
+      // App went down (skip suspended apps as they're intentionally stopped)
+      if (!isRunning && !isSuspended && wasRunning) {
         await notifyAppDown(client, monitored);
 
-        // Create alert in database
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'ERROR',
-            severity: 'CRITICAL',
-            source: 'Fly.io',
-            message: `App down: ${monitored.name}`,
-            metadata: monitored,
-          },
+        // Create alert in database (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'ERROR',
+                severity: 'CRITICAL',
+                source: 'Fly.io',
+                message: `App down: ${monitored.name}`,
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
-      // App recovered
-      if (
-        (app.deployed || app.status === 'running') &&
-        previous &&
-        (!previous.deployed && previous.status !== 'running')
-      ) {
+      // App recovered (from down to running, not from suspended)
+      if (isRunning && previous && !wasRunning && previous.status !== 'suspended') {
         await notifyAppRecovery(client, monitored);
 
-        // Create recovery alert
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'UPTIME_CHECK',
-            severity: 'INFO',
-            source: 'Fly.io',
-            message: `App recovered: ${monitored.name}`,
-            metadata: monitored,
-          },
+        // Create recovery alert (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'UPTIME_CHECK',
+                severity: 'INFO',
+                source: 'Fly.io',
+                message: `App recovered: ${monitored.name}`,
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -297,17 +310,15 @@ export function startFlyioMonitoring(client: Client): void {
     stopFlyioMonitoring();
   }
 
-  // Delay initial check by 5 seconds to ensure Discord client is fully ready
-  setTimeout(() => {
-    runFlyioMonitoring(client);
-  }, 5000);
+  // Run initial check immediately (channels are already cached)
+  runFlyioMonitoring(client);
 
   // Schedule recurring checks
   flyioMonitorInterval = setInterval(() => {
     runFlyioMonitoring(client);
   }, FLYIO_POLL_INTERVAL);
 
-  logger.info(`Fly.io monitoring started (${FLYIO_POLL_INTERVAL / 60000}-minute interval, first check in 5s)`);
+  logger.info(`Fly.io monitoring started (${FLYIO_POLL_INTERVAL / 60000}-minute interval)`);
 }
 
 /**

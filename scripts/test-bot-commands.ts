@@ -36,8 +36,15 @@
  * ANALYTICS:
  * ✓ admin-analytics - Dashboard analytics
  *
- * DISCORD NOTIFICATION TEST:
- * ✓ test-notification - Send test notification to admin logs channel
+ * DISCORD BOT HEALTH:
+ * ✓ bot-health-check - Verify Discord bot is running via health endpoint
+ *
+ * MONITORING SERVICES (Background):
+ * • GitHub Monitor - Workflow failures, PR notifications (5-min interval)
+ * • Vercel Monitor - Deployment status, production alerts (5-min interval)
+ * • Fly.io Monitor - App health, machine state changes (5-min interval)
+ * • Cloudflare Monitor - Zone status, SSL certificate warnings (10-min interval)
+ * • Cron-job Monitor - Job failures, disabled job alerts (10-min interval)
  *
  * Verifies:
  * - Database connectivity
@@ -539,25 +546,45 @@ async function main() {
   });
 
   // ============================================================================
-  // DISCORD NOTIFICATION TEST
+  // DISCORD NOTIFICATION TESTS
   // ============================================================================
 
-  log('\n═══ DISCORD NOTIFICATION TEST ═══', 'cyan');
+  log('\n═══ DISCORD NOTIFICATION TESTS ═══', 'cyan');
 
-  logTest('POST /admin/test-notification (test Discord notification)');
-  await runTest('test-notification', async () => {
-    const response = await apiClient.post<{
-      success: boolean;
-      message: string;
-      channelId: string;
-      botUser: string;
-    }>('/admin/test-notification', {});
+  logTest('GET http://localhost:8080/health (verify Discord bot is running)');
+  await runTest('bot-health-check', async () => {
+    try {
+      const healthResponse = await fetch('http://localhost:8080/health');
 
-    if (!response.success) throw new Error('Test notification failed');
+      if (!healthResponse.ok) {
+        throw new Error(`Bot health check failed: ${healthResponse.status}`);
+      }
 
-    logInfo(`✅ Notification sent to channel: ${response.channelId}`);
-    logInfo(`📡 Bot user: ${response.botUser}`);
+      const health = await healthResponse.json();
+
+      if (health.status !== 'healthy') {
+        throw new Error('Bot is not healthy');
+      }
+
+      logInfo(`✅ Discord bot is running and healthy`);
+      logInfo(`📊 Bot uptime: ${Math.floor(health.uptime)}s`);
+      logInfo(`🤖 Bot version: ${health.version}`);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('ECONNREFUSED')) {
+        throw new Error('Discord bot is not running (connection refused on port 8080)');
+      }
+      throw error;
+    }
   });
+
+  log('\n📊 Monitoring Service Notifications:', 'cyan');
+  log('Monitoring services automatically check every 5-10 minutes and send notifications', 'blue');
+  log('to #admin-logs channel when events occur (failures, deployments, etc.).', 'blue');
+  log('\nTo manually trigger monitoring checks, use these Discord slash commands:', 'yellow');
+  log('  • /monitor-github  - Check GitHub workflows and pull requests', 'yellow');
+  log('  • /monitor-status  - View overall system monitoring status', 'yellow');
+  log('  • /monitor-services - Health check for all monitored services', 'yellow');
+  log('  • /monitor-alerts  - View recent monitoring alerts from database\n', 'yellow');
 
   // ============================================================================
   // CLEANUP (Delete Test Project)

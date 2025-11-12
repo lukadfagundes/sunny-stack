@@ -17,6 +17,9 @@ import {
 const GITHUB_POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
 const GITHUB_NOTIFICATION_CHANNEL = process.env.DISCORD_CHANNEL_ADMIN_LOGS;
 
+// Track when monitoring started to avoid alerting on old workflows/PRs
+const monitoringStartTime = Date.now();
+
 interface MonitoredWorkflow {
   id: number;
   name: string;
@@ -71,21 +74,10 @@ async function notifyWorkflowFailure(
       return;
     }
 
-    logger.info(`DEBUG: Looking for channel ID: ${GITHUB_NOTIFICATION_CHANNEL}`);
-    logger.info(`DEBUG: Guild has ${guild.channels.cache.size} channels in cache`);
-    logger.info(`DEBUG: Guild ID: ${guild.id}, Name: ${guild.name}`);
-
     const channel = guild.channels.cache.get(GITHUB_NOTIFICATION_CHANNEL);
-
-    logger.info(`DEBUG: Channel found: ${channel ? 'YES' : 'NO'}`);
-    if (channel) {
-      logger.info(`DEBUG: Channel type: ${channel.type}, isTextBased: ${channel.isTextBased()}`);
-      logger.info(`DEBUG: Is TextChannel: ${channel instanceof TextChannel}`);
-    }
 
     if (!channel || !channel.isTextBased()) {
       logger.error('Admin logs channel not found or not a text channel');
-      logger.error(`DEBUG: Available channel IDs in cache: ${Array.from(guild.channels.cache.keys()).join(', ')}`);
       return;
     }
 
@@ -272,19 +264,30 @@ async function monitorWorkflows(client: Client): Promise<void> {
 
       const previous = lastWorkflowCheck.get(workflow.id);
 
+      // Only alert on workflows created after monitoring started
+      const workflowTime = new Date(monitored.createdAt).getTime();
+      const isRecentWorkflow = workflowTime > monitoringStartTime;
+
       // New workflow failure detected
-      if (workflow.conclusion === 'failure' && !previous) {
+      if (workflow.conclusion === 'failure' && !previous && isRecentWorkflow) {
         await notifyWorkflowFailure(client, monitored);
 
-        // Create alert in database
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'ERROR',
-            severity: 'ERROR',
-            source: 'GitHub',
-            message: `Workflow failed: ${monitored.repository} - ${monitored.name}`,
-            metadata: monitored,
-          },
+        // Create alert in database (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'ERROR',
+                severity: 'ERROR',
+                source: 'GitHub',
+                message: `Workflow failed: ${monitored.repository} - ${monitored.name}`,
+                timestamp: new Date(monitored.createdAt),
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -296,15 +299,22 @@ async function monitorWorkflows(client: Client): Promise<void> {
       ) {
         await notifyWorkflowSuccess(client, monitored);
 
-        // Create recovery alert
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'UPTIME_CHECK',
-            severity: 'INFO',
-            source: 'GitHub',
-            message: `Workflow recovered: ${monitored.repository} - ${monitored.name}`,
-            metadata: monitored,
-          },
+        // Create recovery alert (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'UPTIME_CHECK',
+                severity: 'INFO',
+                source: 'GitHub',
+                message: `Workflow recovered: ${monitored.repository} - ${monitored.name}`,
+                timestamp: new Date(monitored.createdAt),
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -343,19 +353,30 @@ async function monitorPullRequests(client: Client): Promise<void> {
 
       const previous = lastPRCheck.get(pr.id);
 
+      // Only alert on PRs updated after monitoring started
+      const prTime = new Date(monitored.updatedAt).getTime();
+      const isRecentPR = prTime > monitoringStartTime;
+
       // New PR detected
-      if (!previous) {
+      if (!previous && isRecentPR) {
         await notifyNewPullRequest(client, monitored);
 
-        // Create alert in database
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'NOTIFICATION',
-            severity: 'INFO',
-            source: 'GitHub',
-            message: `New pull request: #${monitored.number} - ${monitored.title}`,
-            metadata: monitored,
-          },
+        // Create alert in database (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'NOTIFICATION',
+                severity: 'INFO',
+                source: 'GitHub',
+                message: `New pull request: #${monitored.number} - ${monitored.title}`,
+                timestamp: new Date(monitored.updatedAt),
+                metadata: monitored,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
 
@@ -418,17 +439,15 @@ export function startGitHubMonitoring(client: Client): void {
     stopGitHubMonitoring();
   }
 
-  // Delay initial check by 5 seconds to ensure Discord client is fully ready
-  setTimeout(() => {
-    runGitHubMonitoring(client);
-  }, 5000);
+  // Run initial check immediately (channels are already cached)
+  runGitHubMonitoring(client);
 
   // Schedule recurring checks
   githubMonitorInterval = setInterval(() => {
     runGitHubMonitoring(client);
   }, GITHUB_POLL_INTERVAL);
 
-  logger.info(`GitHub monitoring started (${GITHUB_POLL_INTERVAL / 60000}-minute interval, first check in 5s)`);
+  logger.info(`GitHub monitoring started (${GITHUB_POLL_INTERVAL / 60000}-minute interval)`);
 }
 
 /**

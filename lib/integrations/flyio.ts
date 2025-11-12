@@ -256,8 +256,11 @@ export async function getFlyioStatusSummary() {
       })
     );
 
-    const runningApps = apps.filter((a) => a.status === 'running' || a.deployed);
-    const stoppedApps = apps.filter((a) => a.status !== 'running' && !a.deployed);
+    // Apps are considered "running" if deployed OR status is running/deployed
+    // Suspended apps are intentionally stopped and counted separately
+    const runningApps = apps.filter((a) => a.deployed || a.status === 'running' || a.status === 'deployed');
+    const suspendedApps = apps.filter((a) => a.status === 'suspended');
+    const stoppedApps = apps.filter((a) => !a.deployed && a.status !== 'running' && a.status !== 'deployed' && a.status !== 'suspended');
 
     return {
       health: {
@@ -267,6 +270,7 @@ export async function getFlyioStatusSummary() {
       apps: {
         total: apps.length,
         running: runningApps.length,
+        suspended: suspendedApps.length,
         stopped: stoppedApps.length,
         appList: appsWithMachines.map((app) => ({
           name: app.name,

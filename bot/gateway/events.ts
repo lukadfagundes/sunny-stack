@@ -9,6 +9,11 @@
 import { Client, Events } from 'discord.js';
 import type { BotConfig } from '../types';
 import { botLogger } from '../core/logger';
+import { handleReady } from '../events/ready';
+import { handleInteractionCreate } from '../events/interaction-create';
+import { handleMessageCreate } from '../events/message-create';
+import { handleError } from '../events/error';
+import { handleGuildMemberAdd } from '../events/guild-member-add';
 
 /**
  * Register all event handlers
@@ -22,7 +27,6 @@ export function registerEventHandlers(client: Client, config: BotConfig): void {
   // Ready event
   client.once(Events.ClientReady, async (readyClient) => {
     try {
-      const { handleReady } = await import('../events/ready');
       await handleReady(readyClient);
     } catch (error) {
       const err = error as Error;
@@ -33,24 +37,37 @@ export function registerEventHandlers(client: Client, config: BotConfig): void {
     }
   });
 
-  // Interaction Create event
-  client.on(Events.InteractionCreate, async (interaction) => {
-    try {
-      const { handleInteractionCreate } = await import('../events/interaction-create');
-      await handleInteractionCreate(interaction);
-    } catch (error) {
-      const err = error as Error;
-      botLogger.error('Interaction handler error', {
-        error: err.message,
-        stack: err.stack,
-      });
-    }
+  // Interaction Create event - CRITICAL: Use nextTick for highest priority
+  client.on(Events.InteractionCreate, (interaction) => {
+    const eventReceived = Date.now();
+
+    // Process on next tick to ensure this runs before setImmediate callbacks
+    process.nextTick(async () => {
+      const handlerStarted = Date.now();
+      const queueDelay = handlerStarted - eventReceived;
+
+      if (queueDelay > 50) {
+        botLogger.warn('Slow interaction handler queue', {
+          queueDelay,
+          interactionType: interaction.type,
+        });
+      }
+
+      try {
+        await handleInteractionCreate(interaction);
+      } catch (error) {
+        const err = error as Error;
+        botLogger.error('Interaction handler error', {
+          error: err.message,
+          stack: err.stack,
+        });
+      }
+    });
   });
 
   // Message Create event
   client.on(Events.MessageCreate, async (message) => {
     try {
-      const { handleMessageCreate } = await import('../events/message-create');
       await handleMessageCreate(message);
     } catch (error) {
       const err = error as Error;
@@ -64,7 +81,6 @@ export function registerEventHandlers(client: Client, config: BotConfig): void {
   // Error event
   client.on(Events.Error, (error) => {
     try {
-      const { handleError } = require('../events/error');
       handleError(error);
     } catch (err) {
       botLogger.error('Error handler failed', {
@@ -76,7 +92,6 @@ export function registerEventHandlers(client: Client, config: BotConfig): void {
   // Guild Member Add event
   client.on(Events.GuildMemberAdd, async (member) => {
     try {
-      const { handleGuildMemberAdd } = await import('../events/guild-member-add');
       await handleGuildMemberAdd(member);
     } catch (error) {
       const err = error as Error;

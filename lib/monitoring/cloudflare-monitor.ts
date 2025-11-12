@@ -146,15 +146,21 @@ async function monitorCloudflare(client: Client): Promise<void> {
       ) {
         await notifyZoneStatusChange(client, monitoredZone, lastZoneCheck.status);
 
-        // Create alert in database
-        await prisma.monitoringAlert.create({
-          data: {
-            type: 'UPTIME_CHECK',
-            severity: zone.status === 'active' && !zone.paused ? 'INFO' : 'WARNING',
-            source: 'Cloudflare',
-            message: `Zone status changed: ${zone.name}`,
-            metadata: monitoredZone,
-          },
+        // Create alert in database (non-blocking)
+        setImmediate(async () => {
+          try {
+            await prisma.monitoringAlert.create({
+              data: {
+                type: 'UPTIME_CHECK',
+                severity: zone.status === 'active' && !zone.paused ? 'INFO' : 'WARNING',
+                source: 'Cloudflare',
+                message: `Zone status changed: ${zone.name}`,
+                metadata: monitoredZone,
+              },
+            });
+          } catch (error) {
+            logger.error('Failed to create monitoring alert', error);
+          }
         });
       }
     }
@@ -183,15 +189,21 @@ async function monitorCloudflare(client: Client): Promise<void> {
         if (!previous || previous.status !== 'expiring_soon') {
           await notifySSLExpiring(client, monitoredSSL);
 
-          // Create alert
-          await prisma.monitoringAlert.create({
-            data: {
-              type: 'NOTIFICATION',
-              severity: 'WARNING',
-              source: 'Cloudflare',
-              message: `SSL certificate expiring soon: ${cert.hosts.join(', ')}`,
-              metadata: { ...monitoredSSL, daysUntilExpiry: Math.floor(daysUntilExpiry) },
-            },
+          // Create alert (non-blocking)
+          setImmediate(async () => {
+            try {
+              await prisma.monitoringAlert.create({
+                data: {
+                  type: 'NOTIFICATION',
+                  severity: 'WARNING',
+                  source: 'Cloudflare',
+                  message: `SSL certificate expiring soon: ${cert.hosts.join(', ')}`,
+                  metadata: { ...monitoredSSL, daysUntilExpiry: Math.floor(daysUntilExpiry) },
+                },
+              });
+            } catch (error) {
+              logger.error('Failed to create monitoring alert', error);
+            }
           });
 
           // Mark as notified
@@ -230,17 +242,15 @@ export function startCloudflareMonitoring(client: Client): void {
     stopCloudflareMonitoring();
   }
 
-  // Delay initial check by 5 seconds to ensure Discord client is fully ready
-  setTimeout(() => {
-    runCloudflareMonitoring(client);
-  }, 5000);
+  // Run initial check immediately (channels are already cached)
+  runCloudflareMonitoring(client);
 
   // Schedule recurring checks
   cloudflareMonitorInterval = setInterval(() => {
     runCloudflareMonitoring(client);
   }, CLOUDFLARE_POLL_INTERVAL);
 
-  logger.info(`Cloudflare monitoring started (${CLOUDFLARE_POLL_INTERVAL / 60000}-minute interval, first check in 5s)`);
+  logger.info(`Cloudflare monitoring started (${CLOUDFLARE_POLL_INTERVAL / 60000}-minute interval)`);
 }
 
 /**

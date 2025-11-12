@@ -43,28 +43,36 @@ export async function handleInteractionCreate(interaction: Interaction): Promise
   const startTime = Date.now();
   const commandName = interaction.commandName;
 
-  botLogger.info('Command received', {
-    command: commandName,
-    userId: interaction.user.id,
-    username: interaction.user.tag,
-    guildId: interaction.guildId,
-    channelId: interaction.channelId,
-  });
-
-  // CRITICAL: Defer immediately to prevent Discord timeout
+  // CRITICAL: Defer IMMEDIATELY before any logging or processing
   // Must acknowledge within 3 seconds or interaction becomes invalid
   try {
     if (!interaction.deferred && !interaction.replied) {
       await interaction.deferReply();
     }
   } catch (deferError) {
-    botLogger.error('Failed to defer interaction', {
-      command: commandName,
-      error: deferError instanceof Error ? deferError.message : String(deferError),
+    // Log defer failure asynchronously to avoid blocking
+    setImmediate(() => {
+      botLogger.error('Failed to defer interaction', {
+        command: commandName,
+        error: deferError instanceof Error ? deferError.message : String(deferError),
+        timeSinceCommand: Date.now() - startTime,
+        interactionId: interaction.id,
+      });
     });
-    // If defer fails, the interaction is already expired - retrying won't help
     return;
   }
+
+  // Now log after defer succeeded (non-blocking)
+  setImmediate(() => {
+    botLogger.info('Command received', {
+      command: commandName,
+      userId: interaction.user.id,
+      username: interaction.user.tag,
+      guildId: interaction.guildId,
+      channelId: interaction.channelId,
+      deferTime: Date.now() - startTime,
+    });
+  });
 
   try {
     // Get command from registry
