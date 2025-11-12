@@ -419,7 +419,7 @@ Session archives are stored in `trinity/sessions/` for historical reference.
 1. Review the [Employee Directory](.claude/EMPLOYEE-DIRECTORY.md) for agent details
 2. Check [Trinity.md](trinity/knowledge-base/Trinity.md) for methodology guidelines
 3. Open Claude Code and invoke agents as needed
-4. Agents automatically access project context and documentation
+4. Agents automatically access project context and documentation.
 
 ---
 
