@@ -8,7 +8,7 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Dependencies
 # -----------------------------------------------------------------------------
-FROM --platform=linux/arm64 node:25-alpine AS deps
+FROM --platform=linux/arm64 node:18-alpine AS deps
 
 # Install dependencies for native modules
 RUN apk add --no-cache libc6-compat && \
@@ -26,7 +26,7 @@ RUN npm ci --only=production && npm cache clean --force
 # -----------------------------------------------------------------------------
 # Stage 2: Builder
 # -----------------------------------------------------------------------------
-FROM --platform=linux/arm64 node:25-alpine AS builder
+FROM --platform=linux/arm64 node:18-alpine AS builder
 
 # Install build dependencies for native modules
 RUN apk add --no-cache python3 make g++ && \
@@ -41,9 +41,7 @@ COPY package.json package-lock.json* ./
 COPY prisma ./prisma/
 
 # Install ALL dependencies (needed for TypeScript compilation)
-# Increase max memory for npm on Raspberry Pi
-ENV NODE_OPTIONS="--max-old-space-size=2048"
-RUN npm ci --loglevel=error
+RUN npm ci
 
 # Generate Prisma Client (required for TypeScript types)
 RUN npx prisma generate
@@ -75,7 +73,7 @@ RUN ! grep -q 'dotenv' bot/dist/bot/index.js || \
 # -----------------------------------------------------------------------------
 # Stage 3: Runner
 # -----------------------------------------------------------------------------
-FROM --platform=linux/arm64 node:25-alpine AS runner
+FROM --platform=linux/arm64 node:18-alpine AS runner
 
 # Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init && \
