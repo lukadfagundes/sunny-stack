@@ -281,7 +281,7 @@ async function monitorWorkflows(client: Client): Promise<void> {
                 source: 'GitHub',
                 message: `Workflow failed: ${monitored.repository} - ${monitored.name}`,
                 timestamp: new Date(monitored.createdAt),
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {
@@ -308,7 +308,7 @@ async function monitorWorkflows(client: Client): Promise<void> {
                 source: 'GitHub',
                 message: `Workflow recovered: ${monitored.repository} - ${monitored.name}`,
                 timestamp: new Date(monitored.createdAt),
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {
@@ -370,7 +370,7 @@ async function monitorPullRequests(client: Client): Promise<void> {
                 source: 'GitHub',
                 message: `New pull request: #${monitored.number} - ${monitored.title}`,
                 timestamp: new Date(monitored.updatedAt),
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {

@@ -199,7 +199,7 @@ async function monitorDeployments(client: Client): Promise<void> {
                 source: 'Vercel',
                 message: `Deployment failed: ${monitored.name}`,
                 timestamp: new Date(monitored.created),
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {
@@ -227,7 +227,7 @@ async function monitorDeployments(client: Client): Promise<void> {
                 source: 'Vercel',
                 message: `Production deployment: ${monitored.name}`,
                 timestamp: new Date(monitored.created),
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {
@@ -265,7 +265,7 @@ async function monitorDeployments(client: Client): Promise<void> {
                 source: 'Vercel',
                 message: `Deployment recovered: ${monitored.name}`,
                 timestamp: new Date(monitored.created),
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {
