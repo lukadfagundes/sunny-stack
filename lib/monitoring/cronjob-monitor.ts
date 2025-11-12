@@ -160,7 +160,7 @@ async function monitorCronJobs(client: Client): Promise<void> {
                 severity: 'ERROR',
                 source: 'cron-job.org',
                 message: `Cron job failed: ${monitored.title}`,
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {
@@ -182,7 +182,7 @@ async function monitorCronJobs(client: Client): Promise<void> {
                 severity: 'WARNING',
                 source: 'cron-job.org',
                 message: `Cron job disabled: ${monitored.title}`,
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {

@@ -234,7 +234,7 @@ async function monitorApps(client: Client): Promise<void> {
                 severity: 'CRITICAL',
                 source: 'Fly.io',
                 message: `App down: ${monitored.name}`,
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {
@@ -256,7 +256,7 @@ async function monitorApps(client: Client): Promise<void> {
                 severity: 'INFO',
                 source: 'Fly.io',
                 message: `App recovered: ${monitored.name}`,
-                metadata: monitored,
+                metadata: monitored as any,
               },
             });
           } catch (error) {

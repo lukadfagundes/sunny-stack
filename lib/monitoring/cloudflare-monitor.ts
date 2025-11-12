@@ -154,7 +154,7 @@ async function monitorCloudflare(client: Client): Promise<void> {
                 severity: zone.status === 'active' && !zone.paused ? 'INFO' : 'WARNING',
                 source: 'Cloudflare',
                 message: `Zone status changed: ${zone.name}`,
-                metadata: monitoredZone,
+                metadata: monitoredZone as any,
               },
             });
           } catch (error) {
@@ -197,7 +197,7 @@ async function monitorCloudflare(client: Client): Promise<void> {
                   severity: 'WARNING',
                   source: 'Cloudflare',
                   message: `SSL certificate expiring soon: ${cert.hosts.join(', ')}`,
-                  metadata: { ...monitoredSSL, daysUntilExpiry: Math.floor(daysUntilExpiry) },
+                  metadata: { ...monitoredSSL, daysUntilExpiry: Math.floor(daysUntilExpiry) } as any,
                 },
               });
             } catch (error) {

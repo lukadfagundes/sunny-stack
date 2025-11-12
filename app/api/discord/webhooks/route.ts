@@ -7,7 +7,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Client } from 'discord.js';
 import { verifyWebhookRequest } from '@/bot/notifications/verify-webhook';
 import { handleQuoteWebhook, QuoteNotificationPayload } from '@/bot/notifications/quote-notifications';
 import { handleProjectWebhook, ProjectNotificationPayload } from '@/bot/notifications/project-notifications';
@@ -21,12 +20,12 @@ export const runtime = 'nodejs'; // Cannot use edge runtime due to Discord.js de
 export const dynamic = 'force-dynamic';
 
 // Singleton Discord client for webhook notifications
-let discordClient: Client | null = null;
+let discordClient: ReturnType<typeof createDiscordClient> | null = null;
 
 /**
  * Get or create Discord client
  */
-async function getDiscordClient(): Promise<Client> {
+async function getDiscordClient(): Promise<ReturnType<typeof createDiscordClient>> {
   if (discordClient && discordClient.isReady()) {
     return discordClient;
   }
