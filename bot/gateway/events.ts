@@ -81,7 +81,7 @@ export function registerEventHandlers(client: Client, config: BotConfig): void {
   // Error event
   client.on(Events.Error, (error) => {
     try {
-      handleError(error);
+      handleError(client, error);
     } catch (err) {
       botLogger.error('Error handler failed', {
         error: err instanceof Error ? err.message : 'Unknown error',

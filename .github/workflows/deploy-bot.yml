@@ -56,8 +56,8 @@ jobs:
               echo "ℹ️  No previous image to backup (first deployment)"
             fi
 
-            # Export for next steps
-            echo "image=$CURRENT_IMAGE" >> $GITHUB_OUTPUT
+            # Export for next steps (SSH action doesn't support GITHUB_OUTPUT)
+            # This is informational only - rollback uses docker images directly
 
       - name: Deploy to Raspberry Pi
         id: deploy-main
