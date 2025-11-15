@@ -169,8 +169,8 @@ export async function getRecentWorkflowRuns(
     // Get all repos first
     const repos = await getRepositories();
 
-    // Fetch recent workflow runs for each repo (limited to top 10 most active repos)
-    const activeRepos = repos.slice(0, 10);
+    // Fetch recent workflow runs for each repo (limited to top 50 most active repos)
+    const activeRepos = repos.slice(0, 50);
 
     const workflowPromises = activeRepos.map(async (repo) => {
       try {
