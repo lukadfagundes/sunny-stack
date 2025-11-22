@@ -264,6 +264,65 @@ export default function Portfolio() {
                       </a>
                     </div>
                   </div>
+
+                  {/* Stilltide */}
+                  <div className="space-y-4 pt-6 border-t border-sunny-gold/20">
+                    <div className="flex items-start gap-3">
+                      <GitBranch className="w-5 h-5 text-sunny-red mt-1 flex-shrink-0" />
+                      <div>
+                        <h3 className="text-xl font-bold text-sunny-darkRed mb-2">Stilltide - AI Equipment Evaluation Platform</h3>
+                        <p className="text-sunny-brown/80 mb-4">
+                          Production AI platform that transforms equipment photos into professional valuation reports.
+                          Combines Gemini AI with Google Workspace integration for automated equipment analysis,
+                          market research, and comprehensive reporting—all delivered via email in minutes.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-sunny-cream/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-semibold text-sunny-red flex items-center gap-2">
+                        <Zap className="w-4 h-4" />
+                        Key Features
+                      </h4>
+                      <ul className="space-y-2 text-sm text-sunny-brown/80">
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Two-Phase AI Analysis</strong> - Gemini 2.5 Flash for verified extraction + web-grounded market research</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Full Google Integration</strong> - Drive, Docs, Gmail APIs with OAuth 2.0</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Automated Workflow</strong> - Background processing, professional report generation, email delivery</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-sunny-gold mt-1">•</span>
+                          <span><strong>Production Deployed</strong> - Vercel frontend + Fly.io Docker backend with JWT auth</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">React 19</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Vite</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Express</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Gemini AI</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Google APIs</span>
+                      <span className="text-xs px-3 py-1 bg-sunny-gold/20 text-sunny-brown rounded-full">Docker</span>
+                    </div>
+
+                    <a
+                      href="https://stilltide.sunny-stack.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sunny-ocean hover:text-sunny-darkRed transition-colors font-medium"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Live App
+                    </a>
+                  </div>
                   </div>
                 </div>
               </div>
