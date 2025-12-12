@@ -64,11 +64,11 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com", // Allow Google Fonts and Next.js inline styles
               "font-src 'self' fonts.gstatic.com data:",
               "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com https://authjs.dev", // Allow OAuth provider images
-              "connect-src 'self' https://accounts.google.com", // Allow Google OAuth
+              "connect-src 'self' https://accounts.google.com https://oauth2.googleapis.com", // Allow Google OAuth
               "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self'", // Allow form submission to own API routes (NextAuth handles OAuth redirects)
+              "form-action 'self' https://accounts.google.com https://oauth2.googleapis.com", // Allow OAuth form submission and redirects
               "frame-ancestors 'none'",
             ].join("; "),
           },
