@@ -47,9 +47,6 @@ const config: NextAuthConfig = {
   session: {
     strategy: 'jwt',
   },
-  pages: {
-    signIn: '/api/auth/signin',
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
