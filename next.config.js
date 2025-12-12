@@ -68,7 +68,6 @@ const nextConfig = {
               "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self' https://accounts.google.com https://oauth2.googleapis.com", // Allow OAuth form submission and redirects
               "frame-ancestors 'none'",
             ].join("; "),
           },
