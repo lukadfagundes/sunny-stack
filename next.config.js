@@ -68,7 +68,7 @@ const nextConfig = {
               "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self' https://accounts.google.com", // Allow Google OAuth form submission
+              "form-action 'self'", // Allow form submission to own API routes (NextAuth handles OAuth redirects)
               "frame-ancestors 'none'",
             ].join("; "),
           },
