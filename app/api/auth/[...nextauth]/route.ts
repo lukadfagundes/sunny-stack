@@ -40,17 +40,6 @@ const config: NextAuthConfig = {
   session: {
     strategy: 'jwt',
   },
-  cookies: {
-    pkceCodeVerifier: {
-      name: 'next-auth.pkce.code_verifier',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-      },
-    },
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
