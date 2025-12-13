@@ -33,7 +33,7 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     "e2e",
-    "bot/dist",
+    "bot",
     ".next",
     "lib/google/example-gmail-service.ts"
   ]

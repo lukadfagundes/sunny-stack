@@ -18,7 +18,7 @@
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, ReactNode } from 'react';
 import AdminNav from '@/components/admin/AdminNav';
@@ -48,9 +48,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
     // Redirect to signin if no session
     if (!session) {
-      // Store current path for redirect after signin
-      const callbackUrl = encodeURIComponent(pathname);
-      router.push(`/api/auth/signin?callbackUrl=${callbackUrl}`);
+      // Use signIn() instead of router.push to properly handle CSRF tokens
+      // This ensures CSRF cookie is set and validated correctly in production
+      signIn('google', { callbackUrl: pathname });
       return;
     }
 
