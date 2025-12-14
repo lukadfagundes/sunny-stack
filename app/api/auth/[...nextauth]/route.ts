@@ -31,7 +31,7 @@ import GoogleProvider from 'next-auth/providers/google';
  * NextAuth configuration
  */
 const config: NextAuthConfig = {
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
