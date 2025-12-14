@@ -14,6 +14,7 @@ export function useTechnicalForm(onComplete: () => void) {
   const [formData, setFormData] = useState<TechnicalFormData>({
     contactName: '',
     contactEmail: '',
+    contactPhone: '',
     companyName: '',
     projectName: '',
     projectType: '',
@@ -90,6 +91,7 @@ export function useTechnicalForm(onComplete: () => void) {
     setFormData({
       contactName: '',
       contactEmail: '',
+      contactPhone: '',
       companyName: '',
       projectName: '',
       projectType: '',

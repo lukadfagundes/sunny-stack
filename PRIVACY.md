@@ -498,6 +498,6 @@ Before publishing this privacy policy, have legal counsel review:
 
 **Policy Version:** Draft 1.0 (Pending Legal Review)
 **Last Updated:** 2025-11-06
-**Author:** Luka D. Fagundes
+**Author:** Luka D Fagundes
 **Review Status:** NOT REVIEWED BY LEGAL COUNSEL
 **Effective Date:** TBD (after legal approval)

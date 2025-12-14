@@ -308,7 +308,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👤 Author
 
-**Luka D. Fagundes**
+**Luka D Fagundes**
 
 - GitHub: [@lukadfagundes](https://github.com/YOUR_USERNAME)
 - Portfolio: [www.your-site.vercel.app](https://www.your-site.vercel.app)
@@ -321,7 +321,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Built with ❤️ by Luka D. Fagundes © 2025
+Built with ❤️ by Luka D Fagundes © 2025
 
 ## 🔱 Trinity Method
 

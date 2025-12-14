@@ -46,6 +46,17 @@ export function ContactSection({ data, errors, onChange }: ContactSectionProps) 
         />
 
         <FormField
+          label="Phone (Optional)"
+          name="phone"
+          type="tel"
+          value={data.phone || ''}
+          onChange={(e) => onChange({ phone: e.target.value })}
+          error={errors.phone}
+          placeholder="(555) 123-4567"
+          maxLength={20}
+        />
+
+        <FormField
           label="Company (Optional)"
           name="company"
           value={data.company || ''}

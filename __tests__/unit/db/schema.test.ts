@@ -157,7 +157,7 @@ describe('Prisma Database Schema', () => {
       const userData = {
         id: 'user-123',
         email: 'admin@sunny-stack.com',
-        name: 'Luka D. Fagundes',
+        name: 'Luka D Fagundes',
         googleId: 'google-oauth-id-123',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -214,7 +214,7 @@ describe('Prisma Database Schema', () => {
         id: 'project-123',
         title: 'Discord Bot Admin Platform',
         description: 'Personal assistant bot with admin dashboard',
-        clientName: 'Luka D. Fagundes',
+        clientName: 'Luka D Fagundes',
         clientEmail: 'luka@sunny-stack.com',
         status: 'IN_PROGRESS',
         createdAt: new Date(),

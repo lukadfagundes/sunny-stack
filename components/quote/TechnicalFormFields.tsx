@@ -103,7 +103,17 @@ function ContactFields({ formData, errors, onFieldChange }: ComponentFieldsProps
           required
         />
       </div>
-      <div className="mt-4">
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
+        <FormField
+          label="Phone (Optional)"
+          name="contactPhone"
+          type="tel"
+          value={formData.contactPhone}
+          onChange={(e) => onFieldChange('contactPhone', e.target.value)}
+          error={errors.contactPhone}
+          placeholder="(555) 123-4567"
+          maxLength={20}
+        />
         <FormField
           label="Company Name"
           name="companyName"
@@ -138,8 +148,8 @@ function ProjectFields({ formData, errors, onFieldChange }: ComponentFieldsProps
           onChange={(e) => onFieldChange('projectType', e.target.value)}
           error={errors.projectType}
           required
+          placeholder="Select type..."
           options={[
-            { value: '', label: 'Select type...' },
             { value: 'website', label: 'Website' },
             { value: 'webapp', label: 'Web Application' },
             { value: 'desktop', label: 'Desktop Application' },
@@ -213,8 +223,8 @@ function TechnicalFields({ formData, errors, onFieldChange }: ComponentFieldsPro
           name="hostingPreference"
           value={formData.hostingPreference}
           onChange={(e) => onFieldChange('hostingPreference', e.target.value)}
+          placeholder="Select preference..."
           options={[
-            { value: '', label: 'Select preference...' },
             { value: 'cloud', label: 'Cloud (AWS, Google Cloud, Azure)' },
             { value: 'vercel', label: 'Vercel/Netlify' },
             { value: 'dedicated', label: 'Dedicated Server' },
@@ -239,8 +249,8 @@ function LogisticsFields({ formData, errors, onFieldChange }: ComponentFieldsPro
           onChange={(e) => onFieldChange('timeline', e.target.value)}
           error={errors.timeline}
           required
+          placeholder="Select timeline..."
           options={[
-            { value: '', label: 'Select timeline...' },
             { value: 'asap', label: 'ASAP (Rush)' },
             { value: '1month', label: '1 Month' },
             { value: '2-3months', label: '2-3 Months' },
@@ -255,8 +265,8 @@ function LogisticsFields({ formData, errors, onFieldChange }: ComponentFieldsPro
           onChange={(e) => onFieldChange('budget', e.target.value)}
           error={errors.budget}
           required
+          placeholder="Select budget..."
           options={[
-            { value: '', label: 'Select budget...' },
             { value: 'under5k', label: 'Under $5,000' },
             { value: '5k-10k', label: '$5,000 - $10,000' },
             { value: '10k-25k', label: '$10,000 - $25,000' },
@@ -271,8 +281,8 @@ function LogisticsFields({ formData, errors, onFieldChange }: ComponentFieldsPro
           name="designStatus"
           value={formData.designStatus}
           onChange={(e) => onFieldChange('designStatus', e.target.value)}
+          placeholder="Select status..."
           options={[
-            { value: '', label: 'Select status...' },
             { value: 'completed', label: 'Design Completed' },
             { value: 'in-progress', label: 'Design In Progress' },
             { value: 'need-design', label: 'Need Design Services' },

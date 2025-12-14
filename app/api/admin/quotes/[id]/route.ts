@@ -11,6 +11,7 @@ import { prisma } from '@/lib/db/prisma';
 import { AppError, ValidationError, NotFoundError } from '@/lib/errors/app-error';
 import logger from '@/lib/logger';
 import { QuoteStatus } from '@prisma/client';
+import { Resend } from 'resend';
 
 /**
  * GET /api/admin/quotes/[id]
@@ -44,13 +45,24 @@ export const GET = withAuth(async (
       throw new NotFoundError('Quote', id);
     }
 
+    // Transform quote data to match frontend expectations
+    const transformedQuote = {
+      ...quote,
+      contactName: quote.name,
+      contactEmail: quote.email,
+      contactPhone: quote.phone,
+      budget: quote.budgetRange,
+      // Parse requirements back into features array if it was stored as newline-separated
+      features: quote.requirements ? quote.requirements.split('\n').filter(Boolean) : [],
+    };
+
     // Log success
     logger.info('Quote retrieved', {
       quoteId: id,
       status: quote.status,
     });
 
-    return NextResponse.json({ quote });
+    return NextResponse.json({ quote: transformedQuote });
   } catch (error) {
     logger.error('Failed to retrieve quote', {
       quoteId: id,
@@ -76,7 +88,7 @@ export const GET = withAuth(async (
 });
 
 /**
- * PUT /api/admin/quotes/[id]
+ * Shared update function for PUT and PATCH
  * Update quote status and reviewedAt
  *
  * Allowed fields:
@@ -86,10 +98,10 @@ export const GET = withAuth(async (
  * Note: Quote data (name, email, etc.) is immutable.
  * Only status and reviewedAt can be updated.
  */
-export const PUT = withAuth(async (
+async function updateQuote(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) => {
+) {
   // Await params at the top of the function for use in error handlers
   const { id } = await params;
 
@@ -159,6 +171,57 @@ export const PUT = withAuth(async (
       },
     });
 
+    // Send email notification if quote was declined
+    if (updateData.status === QuoteStatus.DECLINED && quote.email) {
+      try {
+        const resendApiKey = process.env.RESEND_API_KEY;
+        if (resendApiKey) {
+          const resend = new Resend(resendApiKey);
+
+          await resend.emails.send({
+            from: 'Sunny Stack <noreply@sunny-stack.com>',
+            to: [quote.email],
+            subject: 'Update on Your Project Quote Request',
+            html: `
+              <h2>Thank you for your interest in Sunny Stack</h2>
+
+              <p>Dear ${quote.name},</p>
+
+              <p>Thank you for reaching out to us regarding your project.
+
+              <p>After careful review, we've determined that we won't be able to take on this project at this time. This decision is based on our current capacity and project commitments.</p>
+
+              <p>We appreciate you considering Sunny Stack for your project and wish you the very best of luck in finding the right partner to bring your vision to life.</p>
+
+              <p>If you have any questions or would like to discuss future opportunities, please don't hesitate to reach out.</p>
+
+              <p>Best regards,<br>
+              Luka D Fagundes<br>
+              Sunny Stack<br>
+              <a href="mailto:luka@sunny-stack.com">luka@sunny-stack.com</a></p>
+
+              <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+              <p style="font-size: 12px; color: #6b7280;">
+                This is an automated notification from Sunny Stack. If you believe you received this in error, please contact us at luka@sunny-stack.com
+              </p>
+            `,
+          });
+
+          logger.info('Decline notification email sent', {
+            quoteId: id,
+            recipientEmail: quote.email,
+          });
+        }
+      } catch (emailError) {
+        // Log email error but don't fail the request
+        logger.error('Failed to send decline notification email', {
+          quoteId: id,
+          error: emailError instanceof Error ? emailError.message : 'Unknown error',
+        });
+        // Continue anyway - quote status is updated even if email fails
+      }
+    }
+
     // Log success
     logger.info('Quote updated', {
       quoteId: id,
@@ -196,4 +259,8 @@ export const PUT = withAuth(async (
       { status: 500 }
     );
   }
-});
+}
+
+// Export both PUT and PATCH using the same updateQuote function
+export const PUT = withAuth(updateQuote);
+export const PATCH = withAuth(updateQuote);

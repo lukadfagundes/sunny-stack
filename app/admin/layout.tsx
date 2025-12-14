@@ -4,7 +4,7 @@
  * Admin Layout Component
  *
  * Provides authentication wrapper and layout structure for admin dashboard.
- * Uses custom Google OAuth implementation (bypasses NextAuth).
+ * Uses custom Google OAuth for session management and validates admin email access.
  *
  * Features:
  * - Direct Google OAuth session management
@@ -14,6 +14,9 @@
  *
  * @module app/admin/layout
  */
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState, ReactNode } from 'react';
@@ -27,9 +30,8 @@ interface SessionData {
   user: {
     email: string;
     name: string;
-    image: string;
+    picture?: string;
   };
-  expires: number;
 }
 
 /**
@@ -54,16 +56,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         const res = await fetch('/api/auth/session');
         const data = await res.json();
         setSession(data);
+        setLoading(false);
 
         if (!data) {
           // No session - redirect to signin
-          router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`);
+          const callbackUrl = encodeURIComponent(pathname);
+          router.push(`/api/auth/signin?callbackUrl=${callbackUrl}`);
         }
       } catch (error) {
-        console.error('[Session Check Error]', error);
-        router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`);
-      } finally {
+        console.error('Session check failed:', error);
         setLoading(false);
+        router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`);
       }
     }
 
