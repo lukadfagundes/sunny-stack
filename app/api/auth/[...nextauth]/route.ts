@@ -32,6 +32,7 @@ import GoogleProvider from 'next-auth/providers/google';
  */
 const config: NextAuthConfig = {
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  trustHost: true,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -69,7 +70,6 @@ const config: NextAuthConfig = {
       return false;
     },
   },
-  trustHost: true,
 };
 
 /**
