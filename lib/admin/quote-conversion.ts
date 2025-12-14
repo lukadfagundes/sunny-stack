@@ -61,10 +61,10 @@ export async function convertQuoteToProject(
         throw new NotFoundError('Quote', quoteId);
       }
 
-      // Step 2: Validate quote status is PENDING
-      if (quote.status !== QuoteStatus.PENDING) {
+      // Step 2: Validate quote status is PENDING or APPROVED
+      if (quote.status !== QuoteStatus.PENDING && quote.status !== QuoteStatus.APPROVED) {
         throw new ValidationError(
-          `Quote cannot be converted. Current status: ${quote.status}. Only PENDING quotes can be converted.`,
+          `Quote cannot be converted. Current status: ${quote.status}. Only PENDING or APPROVED quotes can be converted.`,
           'status'
         );
       }
@@ -136,7 +136,7 @@ export async function canConvertQuote(quoteId: string): Promise<boolean> {
       select: { status: true },
     });
 
-    return quote?.status === QuoteStatus.PENDING;
+    return quote?.status === QuoteStatus.PENDING || quote?.status === QuoteStatus.APPROVED;
   } catch (error) {
     logger.error('Error checking quote conversion eligibility', {
       quoteId,

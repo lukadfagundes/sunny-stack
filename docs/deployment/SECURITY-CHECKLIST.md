@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0
 **Last Updated:** 2025-11-06
-**Owner:** Luka D. Fagundes
+**Owner:** Luka D Fagundes
 
 ---
 
@@ -707,7 +707,7 @@ ls -lh docs/deployment/INCIDENT-RESPONSE.md
 
 - [INCIDENT-RESPONSE.md](INCIDENT-RESPONSE.md) accessible to team
 - Contact information up-to-date:
-  - Incident Commander: Luka D. Fagundes
+  - Incident Commander: Luka D Fagundes
   - Email: luka@sunny-stack.com
   - Emergency contact phone number
 - Notification templates ready:
@@ -949,4 +949,4 @@ For urgent hotfixes:
 **Document Version:** 1.0.0
 **Last Updated:** 2025-11-06
 **Next Review:** 2026-02-06
-**Owner:** Luka D. Fagundes
+**Owner:** Luka D Fagundes

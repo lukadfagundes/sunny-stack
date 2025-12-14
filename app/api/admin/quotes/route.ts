@@ -107,6 +107,16 @@ export const GET = withAuth(async (req: NextRequest) => {
       prisma.quote.count({ where }),
     ]);
 
+    // Transform quotes data to match frontend expectations
+    const transformedQuotes = quotes.map(quote => ({
+      ...quote,
+      contactName: quote.name,
+      contactEmail: quote.email,
+      contactPhone: quote.phone,
+      budget: quote.budgetRange,
+      // Don't parse features for list view (only needed in detail view)
+    }));
+
     // Log success
     logger.info('Quotes list retrieved', {
       page,
@@ -119,7 +129,7 @@ export const GET = withAuth(async (req: NextRequest) => {
 
     // Return paginated response
     return NextResponse.json({
-      quotes,
+      quotes: transformedQuotes,
       pagination: {
         page,
         limit,

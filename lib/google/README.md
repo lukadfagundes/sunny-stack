@@ -282,7 +282,7 @@ When adding a new Google service:
 ## License
 
 Part of Sunny Stack Portfolio
-© 2025 Luka D. Fagundes
+© 2025 Luka D Fagundes
 
 ---
 

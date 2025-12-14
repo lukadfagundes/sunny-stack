@@ -23,7 +23,7 @@ _[Your email]_
 **Company Name:**
 _[Your company]_
 
-**Phone Number (Optional):**
+**Phone Number:**
 _[Your phone]_
 
 ---
@@ -298,6 +298,9 @@ _[Your email]_
 
 **Company Name:**
 _[Your company]_
+
+**Phone Number:**
+_[Your phone]_
 
 ---
 

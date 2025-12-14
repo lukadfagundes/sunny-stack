@@ -78,7 +78,7 @@ flyctl orgs list
 
 # Example output:
 # Name                    Slug
-# Luka D. Fagundes        lukadfagundes
+# Luka D Fagundes        lukadfagundes
 # Sunny Stack LLC         sunny-stack
 ```
 
@@ -243,7 +243,7 @@ node tools/test-fly-api.js
    - client-project-api (running)
    - portfolio-site (stopped)
 
-✅ Organization: Luka D. Fagundes
+✅ Organization: Luka D Fagundes
 
 🎉 Fly.io API setup complete!
 ```

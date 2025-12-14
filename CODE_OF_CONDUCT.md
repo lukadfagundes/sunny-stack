@@ -140,7 +140,7 @@ For questions or concerns about this Code of Conduct:
 
 - **Email:** luka@sunny-stack.com
 - **Response Time:** Within 3 business days
-- **Maintainer:** Luka D. Fagundes
+- **Maintainer:** Luka D Fagundes
 
 ## Reporting Process
 
@@ -191,7 +191,7 @@ Thank you for reporting this incident. We take Code of Conduct violations
 seriously and will investigate promptly.
 
 Report ID: COC-2025-001
-Handler: Luka D. Fagundes
+Handler: Luka D Fagundes
 Investigation Timeline: 3-5 business days
 
 We will update you on our progress and final decision.
@@ -583,7 +583,7 @@ To suggest changes to this Code of Conduct:
 
 - **Email:** luka@sunny-stack.com
 - **Response Time:** 24 hours (acknowledgment), 3-5 days (investigation)
-- **Handler:** Luka D. Fagundes
+- **Handler:** Luka D Fagundes
 
 **Alternate Contact (if reporting about primary contact):**
 
@@ -592,7 +592,7 @@ To suggest changes to this Code of Conduct:
 
 ### Project Maintainer
 
-**Luka D. Fagundes**
+**Luka D Fagundes**
 
 - **GitHub:** [@lukadfagundes](https://github.com/lukadfagundes)
 - **Website:** [https://sunny-stack.com](https://sunny-stack.com)

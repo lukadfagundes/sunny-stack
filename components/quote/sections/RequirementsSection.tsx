@@ -91,7 +91,7 @@ export function RequirementsSection({ data, onChange }: RequirementsSectionProps
                   placeholder="Please describe what else you need..."
                   value={getOtherValue()}
                   onChange={(e) => handleOtherFeatureChange(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-red focus:outline-none focus-visible:ring-2 focus-visible:ring-sunny-red focus-visible:ring-offset-1 text-sm"
+                  className="w-full px-3 py-2 rounded-lg border-2 border-sunny-gold/30 focus:border-sunny-gold focus:outline-none text-sunny-brown placeholder:text-sunny-brown/50 text-sm"
                   maxLength={1000}
                 />
               </div>

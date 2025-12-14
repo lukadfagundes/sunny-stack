@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0
 **Last Updated:** 2025-11-06
-**Owner:** Luka D. Fagundes
+**Owner:** Luka D Fagundes
 
 ---
 
@@ -462,14 +462,14 @@ export async function GET(
 
 **Access Matrix:**
 
-| Resource             | Public             | Authenticated User | Admin           |
-| -------------------- | ------------------ | ------------------ | --------------- |
-| **Quotes (All)**     | ❌                 | ❌ Own quotes only | ✅              |
-| **Quote (Single)**   | ❌                 | ✅ If owner        | ✅              |
-| **Projects (All)**   | ✅ Public projects | ✅ Public projects | ✅ All projects |
-| **Project (Single)** | ✅ If public       | ✅ If public       | ✅              |
-| **Analytics**        | ❌                 | ❌                 | ✅ Admin only   |
-| **Settings**         | ❌                 | ❌                 | ✅ Admin only   |
+| Resource             | Public          | Authenticated User | Admin        |
+| -------------------- | --------------- | ------------------ | ------------ |
+| **Quotes (All)**     | No              | Own quotes only    | Yes          |
+| **Quote (Single)**   | No              | If owner           | Yes          |
+| **Projects (All)**   | Public projects | Public projects    | All projects |
+| **Project (Single)** | If public       | If public          | Yes          |
+| **Analytics**        | No              | No                 | Admin only   |
+| **Settings**         | No              | No                 | Admin only   |
 
 ---
 
@@ -1583,4 +1583,4 @@ See [INCIDENT-RESPONSE.md](../../deployment/INCIDENT-RESPONSE.md) for full incid
 **Document Version:** 1.0.0
 **Last Updated:** 2025-11-06
 **Next Review:** 2026-02-06
-**Owner:** Luka D. Fagundes
+**Owner:** Luka D Fagundes

@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0
 **Last Updated:** 2025-11-06
-**Owner:** Luka D. Fagundes
+**Owner:** Luka D Fagundes
 **Review Frequency:** Quarterly
 
 ---
@@ -102,12 +102,12 @@ Security incidents are classified into four severity tiers to prioritize respons
 
 ## Response Team
 
-**Solo Developer Environment:** All roles filled by Luka D. Fagundes
+**Solo Developer Environment:** All roles filled by Luka D Fagundes
 
 ### Incident Commander
 
 **Responsibility:** Overall incident coordination and decision-making
-**Primary Contact:** Luka D. Fagundes
+**Primary Contact:** Luka D Fagundes
 **Phone:** [REDACTED - Emergency Contact]
 **Email:** luka@sunny-stack.com
 
@@ -124,7 +124,7 @@ Security incidents are classified into four severity tiers to prioritize respons
 ### Technical Lead
 
 **Responsibility:** Technical investigation and remediation
-**Primary Contact:** Luka D. Fagundes
+**Primary Contact:** Luka D Fagundes
 **Email:** luka@sunny-stack.com
 
 **Duties:**
@@ -140,7 +140,7 @@ Security incidents are classified into four severity tiers to prioritize respons
 ### Communications Lead
 
 **Responsibility:** User and authority notifications
-**Primary Contact:** Luka D. Fagundes
+**Primary Contact:** Luka D Fagundes
 **Email:** luka@sunny-stack.com
 
 **Duties:**
@@ -814,7 +814,7 @@ For privacy-related requests (access, deletion, correction):
 - GDPR data subject rights: https://gdpr.eu/right-to-be-forgotten/
 
 Sincerely,
-Luka D. Fagundes
+Luka D Fagundes
 Founder, Sunny Stack
 [Date]
 
@@ -840,7 +840,7 @@ Dear Sir/Madam,
 This is a formal notification of a personal data breach pursuant to GDPR Article 33.
 
 **Data Controller Details:**
-- **Name:** Sunny Stack / Luka D. Fagundes
+- **Name:** Sunny Stack / Luka D Fagundes
 - **Contact:** luka@sunny-stack.com
 - **Address:** [Legal entity registered address - TBD]
 - **Phone:** [Emergency contact - REDACTED]
@@ -914,7 +914,7 @@ This is a formal notification of a personal data breach pursuant to GDPR Article
 - **Coordinating Authority:** [Name of lead DPA]
 
 **8. Contact for Further Information:**
-- **Name:** Luka D. Fagundes
+- **Name:** Luka D Fagundes
 - **Email:** luka@sunny-stack.com
 - **Phone:** [Emergency contact]
 - **Availability:** 9am-5pm EST, Mon-Fri
@@ -929,7 +929,7 @@ We take data protection very seriously and have taken all necessary measures to 
 Please contact us if you require additional information or clarification.
 
 Sincerely,
-Luka D. Fagundes
+Luka D Fagundes
 Data Controller
 Sunny Stack
 
@@ -1053,13 +1053,13 @@ tcpdump -r ~/incident-logs/traffic-[date].pcap | head -100
 **Incident ID:** INC-[YYYY]-[NNN]
 **Evidence ID:** EVD-[YYYY]-[NNN]
 
-| Date/Time        | Action                     | Person           | Purpose               |
-| ---------------- | -------------------------- | ---------------- | --------------------- |
-| 2025-11-06 14:45 | Evidence collected         | Luka D. Fagundes | Initial investigation |
-| 2025-11-06 15:00 | Logs compressed            | Luka D. Fagundes | Secure storage        |
-| 2025-11-06 15:10 | Evidence encrypted         | Luka D. Fagundes | Confidentiality       |
-| 2025-11-07 10:00 | Evidence reviewed          | Luka D. Fagundes | Root cause analysis   |
-| 2025-11-10 14:00 | Evidence shared with legal | Luka D. Fagundes | Legal consultation    |
+| Date/Time        | Action                     | Person          | Purpose               |
+| ---------------- | -------------------------- | --------------- | --------------------- |
+| 2025-11-06 14:45 | Evidence collected         | Luka D Fagundes | Initial investigation |
+| 2025-11-06 15:00 | Logs compressed            | Luka D Fagundes | Secure storage        |
+| 2025-11-06 15:10 | Evidence encrypted         | Luka D Fagundes | Confidentiality       |
+| 2025-11-07 10:00 | Evidence reviewed          | Luka D Fagundes | Root cause analysis   |
+| 2025-11-10 14:00 | Evidence shared with legal | Luka D Fagundes | Legal consultation    |
 
 **Storage Location:** `/home/luka/incident-backups/INC-2025-001/`
 **Encryption:** AES-256 (GPG)
@@ -1131,7 +1131,7 @@ tcpdump -r ~/incident-logs/traffic-[date].pcap | head -100
 
 **Incident ID:** INC-[YYYY]-[NNN]
 **Date:** [YYYY-MM-DD]
-**Analyst:** Luka D. Fagundes
+**Analyst:** Luka D Fagundes
 
 ### Problem Statement
 
@@ -1255,7 +1255,7 @@ tcpdump -r ~/incident-logs/traffic-[date].pcap | head -100
 
 **Date:** [YYYY-MM-DD]
 **Duration:** [X] hours
-**Participants:** Luka D. Fagundes (Incident Commander, Technical Lead, Communications Lead)
+**Participants:** Luka D Fagundes (Incident Commander, Technical Lead, Communications Lead)
 **Scenario:** [Brief description]
 
 ### Exercise Objectives
@@ -1375,7 +1375,7 @@ tcpdump -r ~/incident-logs/traffic-[date].pcap | head -100
 
 ### Emergency Contact
 
-**Incident Commander:** Luka D. Fagundes
+**Incident Commander:** Luka D Fagundes
 **Phone:** [REDACTED - Emergency Contact Only]
 **Availability:** 24/7 for Critical incidents
 **Backup:** None (solo developer)
@@ -1468,9 +1468,9 @@ tcpdump -r ~/incident-logs/traffic-[date].pcap | head -100
 
 ## Document Revision History
 
-| Version | Date       | Author           | Changes                     |
-| ------- | ---------- | ---------------- | --------------------------- |
-| 1.0.0   | 2025-11-06 | Luka D. Fagundes | Initial creation for WO-007 |
+| Version | Date       | Author          | Changes                     |
+| ------- | ---------- | --------------- | --------------------------- |
+| 1.0.0   | 2025-11-06 | Luka D Fagundes | Initial creation for WO-007 |
 
 ---
 
@@ -1485,8 +1485,8 @@ tcpdump -r ~/incident-logs/traffic-[date].pcap | head -100
 
 ---
 
-**Document Owner:** Luka D. Fagundes
+**Document Owner:** Luka D Fagundes
 **Review Frequency:** Quarterly
 **Next Review:** 2026-02-06
-**Approved By:** Luka D. Fagundes
+**Approved By:** Luka D Fagundes
 **Approval Date:** 2025-11-06

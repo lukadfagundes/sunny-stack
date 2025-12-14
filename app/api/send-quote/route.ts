@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { prisma } from '@/lib/db/prisma'
 
 // Lazy initialization of Resend to avoid build-time errors
 // You'll need to sign up at https://resend.com and get an API key
@@ -296,6 +297,7 @@ interface GuidedFormData {
   formType: 'guided'
   name: string
   email: string
+  phone?: string
   company?: string
   projectType: string
   projectDescription: string
@@ -308,6 +310,7 @@ interface TechnicalFormData {
   formType: 'technical'
   contactName: string
   contactEmail: string
+  contactPhone?: string
   companyName?: string
   projectName: string
   projectType: string
@@ -384,6 +387,7 @@ export async function POST(request: Request) {
         formType: 'guided',
         name: sanitizeHtml(guidedData.name),
         email: sanitizeHtml(guidedData.email),
+        phone: guidedData.phone ? sanitizeHtml(guidedData.phone) : undefined,
         company: guidedData.company ? sanitizeHtml(guidedData.company) : undefined,
         projectType: sanitizeHtml(guidedData.projectType),
         projectDescription: sanitizeHtml(guidedData.projectDescription),
@@ -398,6 +402,7 @@ export async function POST(request: Request) {
         formType: 'technical',
         contactName: sanitizeHtml(technicalData.contactName),
         contactEmail: sanitizeHtml(technicalData.contactEmail),
+        contactPhone: technicalData.contactPhone ? sanitizeHtml(technicalData.contactPhone) : undefined,
         companyName: technicalData.companyName ? sanitizeHtml(technicalData.companyName) : undefined,
         projectName: sanitizeHtml(technicalData.projectName),
         projectType: sanitizeHtml(technicalData.projectType),
@@ -488,6 +493,65 @@ export async function POST(request: Request) {
       `
     }
 
+    // Save quote to database
+    let quoteId: string | undefined;
+    let quoteDescription = '';
+    let quoteRequirements = '';
+
+    if (sanitizedData.formType === 'guided') {
+      const guidedData = sanitizedData as GuidedFormData
+      quoteDescription = guidedData.projectDescription
+      quoteRequirements = guidedData.features.join('\n')
+
+      const quote = await prisma.quote.create({
+        data: {
+          name: guidedData.name,
+          email: guidedData.email,
+          phone: guidedData.phone || null,
+          company: guidedData.company || null,
+          projectType: guidedData.projectType,
+          budgetRange: guidedData.budget,
+          timeline: guidedData.timeline,
+          description: quoteDescription,
+          requirements: quoteRequirements,
+          status: 'PENDING',
+        },
+      })
+      quoteId = quote.id
+    } else if (sanitizedData.formType === 'technical') {
+      const technicalData = sanitizedData as TechnicalFormData
+      quoteDescription = technicalData.projectDescription
+
+      // Combine technical requirements into a structured format
+      const requirementsParts = [
+        `Features: ${technicalData.features}`,
+        technicalData.targetAudience ? `Target Audience: ${technicalData.targetAudience}` : null,
+        technicalData.techStack ? `Tech Stack: ${technicalData.techStack}` : null,
+        technicalData.integrations ? `Integrations: ${technicalData.integrations}` : null,
+        technicalData.hostingPreference ? `Hosting: ${technicalData.hostingPreference}` : null,
+        technicalData.designStatus ? `Design Status: ${technicalData.designStatus}` : null,
+        technicalData.additionalNotes ? `Notes: ${technicalData.additionalNotes}` : null,
+      ].filter(Boolean)
+
+      quoteRequirements = requirementsParts.join('\n\n')
+
+      const quote = await prisma.quote.create({
+        data: {
+          name: technicalData.contactName,
+          email: technicalData.contactEmail,
+          phone: technicalData.contactPhone || null,
+          company: technicalData.companyName || null,
+          projectType: `${technicalData.projectType} - ${technicalData.projectName}`,
+          budgetRange: technicalData.budget,
+          timeline: technicalData.timeline,
+          description: quoteDescription,
+          requirements: quoteRequirements,
+          status: 'PENDING',
+        },
+      })
+      quoteId = quote.id
+    }
+
     // Send the email using Resend
     const resend = getResendClient();
     const response = await resend.emails.send({
@@ -500,7 +564,11 @@ export async function POST(request: Request) {
 
     // Check if the response has data property (successful send)
     if (response.data) {
-      return NextResponse.json({ success: true, id: response.data.id })
+      return NextResponse.json({
+        success: true,
+        emailId: response.data.id,
+        quoteId: quoteId
+      })
     } else {
       return NextResponse.json(
         { error: 'Failed to send email' },
