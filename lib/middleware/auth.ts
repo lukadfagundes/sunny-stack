@@ -2,14 +2,14 @@
  * API Authentication Middleware
  *
  * Provides 4 authentication methods for Next.js API routes:
- * 1. Google OAuth (NextAuth) - Admin dashboard authentication
+ * 1. Custom Google OAuth - Admin dashboard authentication
  * 2. Bot API Key - Discord bot → Next.js API authentication
  * 3. Webhook Signatures - GitHub/Vercel webhook verification
  * 4. Rate Limiting - Prevent abuse (10 req/min per IP)
  *
  * Usage:
  * ```typescript
- * // Protect admin route with NextAuth
+ * // Protect admin route with custom OAuth
  * export const GET = withAuth(async (req) => { ... });
  *
  * // Protect bot endpoint with API key
@@ -106,11 +106,11 @@ function cleanupRateLimitStore(): void {
 }
 
 /**
- * withAuth - NextAuth Google OAuth Middleware with Bot API Key Fallback
+ * withAuth - Custom Google OAuth Middleware with Bot API Key Fallback
  *
  * Validates authentication using TWO methods (tries in order):
  * 1. Bot API Key (x-api-key header) - for Discord bot requests
- * 2. NextAuth Session - for admin dashboard browser requests
+ * 2. Custom OAuth Session - for admin dashboard browser requests
  *
  * This allows admin routes to be accessed by both the dashboard and the bot.
  *
@@ -131,7 +131,7 @@ export function withAuth(
         return handler(req, context);
       }
 
-      // METHOD 2: Check NextAuth session
+      // METHOD 2: Check custom OAuth session
       // Get admin emails from config or environment variable
       const adminEmails =
         config?.adminEmails ||
@@ -141,9 +141,9 @@ export function withAuth(
         throw new Error('ADMIN_EMAIL environment variable is not defined');
       }
 
-      // NextAuth v5 - use auth() function instead of getServerSession()
-      const { auth } = await import('@/app/api/auth/[...nextauth]/route');
-      const session = await auth();
+      // Use custom OAuth session check
+      const { getSession } = await import('@/lib/auth/google-oauth');
+      const session = await getSession();
 
       // Check if session exists
       if (!session || !session.user || !session.user.email) {

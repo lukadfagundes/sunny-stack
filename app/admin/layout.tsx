@@ -4,10 +4,10 @@
  * Admin Layout Component
  *
  * Provides authentication wrapper and layout structure for admin dashboard.
- * Uses NextAuth for session management and validates admin email access.
+ * Uses custom Google OAuth implementation (bypasses NextAuth).
  *
  * Features:
- * - Client-side session verification
+ * - Direct Google OAuth session management
  * - Admin email whitelist validation
  * - Loading states during auth check
  * - Automatic redirect for unauthorized users
@@ -15,16 +15,21 @@
  * @module app/admin/layout
  */
 
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
-
-import { useSession, signIn } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, ReactNode } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 import AdminNav from '@/components/admin/AdminNav';
 
 interface AdminLayoutProps {
   children: ReactNode;
+}
+
+interface SessionData {
+  user: {
+    email: string;
+    name: string;
+    image: string;
+  };
+  expires: number;
 }
 
 /**
@@ -38,34 +43,35 @@ interface AdminLayoutProps {
  * @returns Protected admin layout or loading/redirect state
  */
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const { data: session, status } = useSession();
+  const [session, setSession] = useState<SessionData | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    // Wait for session to load
-    if (status === 'loading') return;
+    async function checkSession() {
+      try {
+        const res = await fetch('/api/auth/session');
+        const data = await res.json();
+        setSession(data);
 
-    // Redirect to signin if no session
-    if (!session) {
-      // Use signIn() instead of router.push to properly handle CSRF tokens
-      // This ensures CSRF cookie is set and validated correctly in production
-      signIn('google', { callbackUrl: pathname });
-      return;
+        if (!data) {
+          // No session - redirect to signin
+          router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`);
+        }
+      } catch (error) {
+        console.error('[Session Check Error]', error);
+        router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    // Validate admin email
-    const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.split(',').map(e => e.trim()) || [];
-    const userEmail = session.user?.email;
-
-    if (!userEmail || !adminEmails.includes(userEmail)) {
-      // User authenticated but not admin - show error
-      router.push('/unauthorized');
-    }
-  }, [session, status, router, pathname]);
+    checkSession();
+  }, [router, pathname]);
 
   // Show loading state while checking authentication
-  if (status === 'loading') {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -79,14 +85,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // If no session, return null (will redirect in useEffect)
   if (!session) {
     return null;
-  }
-
-  // Validate admin email
-  const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.split(',').map(e => e.trim()) || [];
-  const userEmail = session.user?.email;
-
-  if (!userEmail || !adminEmails.includes(userEmail)) {
-    return null; // Will redirect in useEffect
   }
 
   // User is authenticated and authorized - render layout

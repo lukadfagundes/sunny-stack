@@ -10,8 +10,7 @@
  */
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   FolderKanban,
@@ -60,6 +59,7 @@ const navigationItems: NavItem[] = [
 
 export default function AdminNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -70,7 +70,7 @@ export default function AdminNav() {
   };
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/' });
+    router.push('/api/auth/signout');
   };
 
   return (
