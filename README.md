@@ -5,7 +5,7 @@
 ![React](https://img.shields.io/badge/React-19.0-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4)
-![Node.js](https://img.shields.io/badge/Node.js-20+-339933)
+![Node.js](https://img.shields.io/badge/Node.js-22.x-339933)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen)
 
 A modern, responsive portfolio website showcasing professional web development projects and skills.
@@ -28,7 +28,7 @@ A high-performance portfolio website built with the latest web technologies. Fea
 
 ### Frontend
 
-- **Framework:** Next.js 15.0 (App Router)
+- **Framework:** Next.js 15.5.9 (App Router)
 - **UI Library:** React 19.0
 - **Language:** TypeScript 5.5
 - **Styling:** Tailwind CSS 3.4
@@ -93,7 +93,7 @@ See [docs/deployment/DEPLOYMENT-OVERVIEW.md](docs/deployment/DEPLOYMENT-OVERVIEW
 
 ### Prerequisites
 
-- Node.js 20.0 or higher
+- Node.js 22.x (as specified in package.json engines)
 - npm 10.0 or higher
 
 ### Setup Instructions
@@ -322,103 +322,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Built with ❤️ by Luka D Fagundes © 2025
-
-## 🔱 Trinity Method
-
-This project uses the **Trinity Method** - an investigation-first development methodology powered by AI agents.
-
-### Quick Commands
-
-#### Leadership Team
-
-- **Aly (CTO)** - Strategic planning and work order creation
-
-  ```bash
-  /trinity-aly
-  ```
-
-- **AJ (Implementation Lead)** - Code execution and implementation
-  ```bash
-  /trinity-aj
-  ```
-
-#### Deployment Team
-
-- **TAN (Structure Specialist)** - Directory architecture and organization
-
-  ```bash
-  /trinity-tan
-  ```
-
-- **ZEN (Knowledge Specialist)** - Documentation and knowledge base
-
-  ```bash
-  /trinity-zen
-  ```
-
-- **INO (Context Specialist)** - Codebase analysis and context building
-
-  ```bash
-  /trinity-ino
-  ```
-
-- **Ein (CI/CD Specialist)** - Continuous integration and deployment automation
-  ```bash
-  /trinity-ein
-  ```
-
-#### Audit Team
-
-- **JUNO (Auditor)** - Quality assurance and comprehensive auditing
-  ```bash
-  /trinity-juno
-  ```
-
-### Documentation
-
-**Deployment Guides** (`docs/deployment/`):
-
-- **DEPLOYMENT-OVERVIEW.md** - Architecture and deployment strategy
-- **DEPLOYMENT-CHECKLIST.md** - Quick reference checklist
-- **PI-PRODUCTION-DEPLOYMENT.md** - Raspberry Pi production deployment
-- **PI-TESTING-GUIDE.md** - Pre-production testing workflow
-- **GITHUB-ACTIONS-SETUP.md** - CI/CD configuration
-- **RASPBERRY-PI-SETUP.md** - Initial Pi setup guide
-- **TROUBLESHOOTING.md** - Common issues and solutions
-- **SANITIZE-DOCS.md** - Documentation personalization guide
-
-**Trinity Knowledge Base** (`trinity/knowledge-base/`):
-
-- **ARCHITECTURE.md** - System design and technical decisions
-- **ISSUES.md** - Known problems and their status
-- **To-do.md** - Task tracking and priorities
-- **Technical-Debt.md** - Debt management and refactoring plans
-- **Trinity.md** - Trinity Method guidelines and protocols
-
-### Session Management
-
-Trinity Method uses investigation-first approach:
-
-1. **Assess** - Understand current state
-2. **Investigate** - Deep dive into root causes
-3. **Plan** - Create comprehensive strategy
-4. **Execute** - Implement with precision
-5. **Verify** - Confirm success criteria met
-
-Session archives are stored in `trinity/sessions/` for historical reference.
-
-### Project Info
-
-- **Framework:** React
-- **Trinity Version:** 1.0.0
-- **Agent Configuration:** `.claude/`
-- **Knowledge Base:** `trinity/knowledge-base/`
-
-### Getting Started
-
-1. Review the [Employee Directory](.claude/EMPLOYEE-DIRECTORY.md) for agent details
-2. Check [Trinity.md](trinity/knowledge-base/Trinity.md) for methodology guidelines
-3. Open Claude Code and invoke agents as needed
-4. Agents automatically access project context and documentation.
-
----
