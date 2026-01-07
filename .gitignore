@@ -49,6 +49,7 @@ lerna-debug.log*
 **/out/
 .vercel
 next-env.d.ts
+.swc/
 
 # System files
 .DS_Store
@@ -163,9 +164,10 @@ build-output.txt
 # Additional Test Coverage
 *.lcov
 
-# Trinity Method deployment files
+temp/
+
+# Trinity Method SDK
 .claude/
 trinity/
-trinity-hooks/
-CLAUDE.md
+*CLAUDE.md
 TRINITY.md

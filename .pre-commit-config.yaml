@@ -1,42 +1,70 @@
+# Trinity Method Pre-commit Hooks
+# Customized for sunny-stack (Next.js 15 + TypeScript + Jest + Playwright)
+# Install: pip install pre-commit && pre-commit install
+
 repos:
-  # Standard hooks
+  # Standard file quality checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: '\.md$' # Allow trailing spaces in markdown (for line breaks)
       - id: end-of-file-fixer
       - id: check-yaml
+        exclude: '\.github/workflows/' # GitHub Actions YAML can be complex
+      - id: check-json
+        exclude: 'tsconfig\.json' # Allow JSON with comments
       - id: check-added-large-files
         args: ["--maxkb=1024"]
       - id: check-merge-conflict
-      - id: check-json
       - id: detect-private-key
-        exclude: 'docs/github-secrets\.md'
-      # - id: no-commit-to-branch
-      #   args: ["--branch", "main", "--branch", "master"]
+        exclude: "docs/|trinity/knowledge-base/" # Exclude documentation
 
-  # JavaScript/TypeScript specific - Using local Node.js (Windows compatible)
+  # ESLint for Next.js + TypeScript (local hook for Windows compatibility)
   - repo: local
     hooks:
       - id: eslint
-        name: ESLint
+        name: ESLint (Next.js)
         entry: npx eslint
         language: system
         files: \.(js|jsx|ts|tsx)$
-        args: [--fix]
+        args: ["--fix", "--max-warnings=0"]
+        exclude: '\.next/|node_modules/|deprecated/|archived/'
 
-  # Prettier formatting - Using local Node.js (Windows compatible)
+  # TypeScript type checking (local hook)
+  - repo: local
+    hooks:
+      - id: typescript
+        name: TypeScript Type Check
+        entry: npm run type-check
+        language: system
+        files: \.(ts|tsx)$
+        pass_filenames: false
+        stages: [pre-push] # Only run on push (faster commits)
+
+  # Prettier formatting (local hook for Windows compatibility)
   - repo: local
     hooks:
       - id: prettier
         name: Prettier
         entry: npx prettier
         language: system
-        files: \.(js|jsx|json|css|md|yml|yaml)$
-        exclude: 'deprecated|archived|package-lock\.json|yarn\.lock'
-        args: [--write]
+        files: \.(js|jsx|ts|tsx|json|css|md|yml|yaml)$
+        exclude: 'deprecated/|archived/|package-lock\.json|\.next/'
+        args: ["--write", "--ignore-unknown"]
 
-  # Custom local hooks (including Markdown linting)
+  # Jest tests for changed files (fast local tests)
+  - repo: local
+    hooks:
+      - id: jest-changed
+        name: Jest (Changed Files)
+        entry: npm test -- --findRelatedTests --passWithNoTests --bail
+        language: system
+        files: \.(js|jsx|ts|tsx)$
+        pass_filenames: true
+        stages: [pre-commit]
+
+  # Markdown linting (local hook)
   - repo: local
     hooks:
       - id: markdownlint
@@ -44,16 +72,58 @@ repos:
         entry: npx markdownlint
         language: system
         files: \.md$
-        args: [--fix]
-      - id: npm-audit-check
-        name: NPM Audit Check
+        args: ["--fix"]
+        exclude: "node_modules/|deprecated/"
+
+  # Security audit (pre-push only)
+  - repo: local
+    hooks:
+      - id: npm-audit
+        name: NPM Security Audit
         entry: npm audit --audit-level=high
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [pre-push]
 
+  # Next.js build check (pre-push only, optional)
+  - repo: local
+    hooks:
+      - id: next-build
+        name: Next.js Build Check
+        entry: npm run build
+        language: system
+        pass_filenames: false
+        stages: [manual] # Only run manually via `pre-commit run next-build`
+
+  # Trinity Method compliance checks
+  - repo: local
+    hooks:
+      - id: trinity-todos
+        name: Trinity TODO Check
+        entry: bash -c 'grep -r "TODO" app/ components/ lib/ 2>/dev/null | grep -v "TODO(#" | grep -v "//.*TODO:.*#" && echo "Found TODOs without issue references" && exit 1 || exit 0'
+        language: system
+        pass_filenames: false
+        stages: [manual] # Optional check
+
+# Configuration
 default_language_version:
-  node: system
+  node: system # Use system Node.js (22.x)
 
-default_stages: [pre-commit, pre-push]
-fail_fast: false
+default_stages: [pre-commit] # Run most hooks on commit
+
+fail_fast: false # Run all hooks even if one fails
+
+# Exclude patterns (global)
+exclude: |
+  (?x)^(
+    \.next/.*|
+    node_modules/.*|
+    deprecated/.*|
+    archived/.*|
+    coverage/.*|
+    playwright-report/.*|
+    test-results/.*|
+    \.github/.*|
+    package-lock\.json|
+    yarn\.lock
+  )$
