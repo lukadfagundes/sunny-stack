@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Discord bot with slash commands
 - Hybrid Vercel + Raspberry Pi deployment architecture
 - PostgreSQL database with Prisma ORM
-- Security testing suite (with 29 automated tests)
+- Security testing suite (29 automated tests)
 - CI/CD pipeline with GitHub Actions
 
 ### Changed
