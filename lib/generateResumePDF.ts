@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
 
 export const generateResumePDF = () => {
   const doc = new jsPDF();
@@ -9,13 +9,18 @@ export const generateResumePDF = () => {
   let yPosition = margin + 10;
 
   // Helper function to add text with word wrap
-  const addText = (text: string, fontSize: number, isBold: boolean = false, color: [number, number, number] = [0, 0, 0]) => {
+  const addText = (
+    text: string,
+    fontSize: number,
+    isBold: boolean = false,
+    color: [number, number, number] = [0, 0, 0],
+  ) => {
     doc.setFontSize(fontSize);
     doc.setTextColor(...color);
     if (isBold) {
-      doc.setFont('helvetica', 'bold');
+      doc.setFont("helvetica", "bold");
     } else {
-      doc.setFont('helvetica', 'normal');
+      doc.setFont("helvetica", "normal");
     }
     const lines = doc.splitTextToSize(text, pageWidth - 2 * margin);
     lines.forEach((line: string) => {
@@ -38,20 +43,21 @@ export const generateResumePDF = () => {
 
   // Header - centered
   doc.setFontSize(24);
-  doc.setFont('helvetica', 'bold');
-  const nameWidth = doc.getTextWidth('LUKA FAGUNDES');
-  doc.text('LUKA FAGUNDES', (pageWidth - nameWidth) / 2, yPosition);
+  doc.setFont("helvetica", "bold");
+  const nameWidth = doc.getTextWidth("LUKA FAGUNDES");
+  doc.text("LUKA FAGUNDES", (pageWidth - nameWidth) / 2, yPosition);
   yPosition += 8;
 
   doc.setFontSize(14);
-  doc.setFont('helvetica', 'normal');
+  doc.setFont("helvetica", "normal");
   doc.setTextColor(60, 60, 60);
-  const titleWidth = doc.getTextWidth('Full Stack Developer');
-  doc.text('Full Stack Developer', (pageWidth - titleWidth) / 2, yPosition);
+  const titleWidth = doc.getTextWidth("Full Stack Developer");
+  doc.text("Full Stack Developer", (pageWidth - titleWidth) / 2, yPosition);
   yPosition += 6;
 
   doc.setFontSize(10);
-  const contactInfo = 'Eureka, CA | 318-332-9700 | luka@sunny-stack.com | sunny-stack.com';
+  const contactInfo =
+    "Eureka, CA | 318-332-9700 | luka@sunny-stack.com | sunny-stack.com";
   const contactWidth = doc.getTextWidth(contactInfo);
   doc.text(contactInfo, (pageWidth - contactWidth) / 2, yPosition);
   doc.setTextColor(0, 0, 0);
@@ -59,26 +65,30 @@ export const generateResumePDF = () => {
 
   // Professional Summary
   addSeparator();
-  addText('PROFESSIONAL SUMMARY', 14, true, [0, 0, 0]);
+  addText("PROFESSIONAL SUMMARY", 14, true, [0, 0, 0]);
   yPosition += 2;
-  addText('Full Stack Developer with 10+ years of professional experience transitioning from business operations to software development. Specialized in building scalable web applications using React, Next.js, TypeScript, and Python. Demonstrated ability to identify business needs and develop technical solutions. Strong background in customer relationship management, technical support, and B2B sales.', 10, false);
+  addText(
+    "Full Stack Developer with 10+ years of professional experience transitioning from business operations to software development. Specialized in building scalable web applications using React, Next.js, TypeScript, and Python. Demonstrated ability to identify business needs and develop technical solutions. Strong background in customer relationship management, technical support, and B2B sales.",
+    10,
+    false,
+  );
   yPosition += 5;
 
   // Core Competencies
   addSeparator();
-  addText('CORE COMPETENCIES', 14, true, [0, 0, 0]);
+  addText("CORE COMPETENCIES", 14, true, [0, 0, 0]);
   yPosition += 2;
 
   const competencies = [
-    'Full Stack Development • Web Application Architecture • RESTful API Design • Database Management',
-    'Agile Methodologies • Git Version Control • CI/CD • Test-Driven Development • Code Review',
-    'Technical Sales • B2B Sales • Customer Relationship Management • Technical Documentation',
-    'Problem Solving • Requirements Analysis • Project Management • Cross-functional Collaboration'
+    "Full Stack Development • Web Application Architecture • RESTful API Design • Database Management",
+    "Agile Methodologies • Git Version Control • CI/CD • Test-Driven Development • Code Review",
+    "Technical Sales • B2B Sales • Customer Relationship Management • Technical Documentation",
+    "Problem Solving • Requirements Analysis • Project Management • Cross-functional Collaboration",
   ];
 
-  competencies.forEach(line => {
+  competencies.forEach((line) => {
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     doc.text(line, margin, yPosition);
     yPosition += 6;
   });
@@ -86,26 +96,30 @@ export const generateResumePDF = () => {
 
   // Technical Skills
   addSeparator();
-  addText('TECHNICAL SKILLS', 14, true, [0, 0, 0]);
+  addText("TECHNICAL SKILLS", 14, true, [0, 0, 0]);
   yPosition += 2;
 
   const skills = {
-    'Languages': 'TypeScript, JavaScript, Python, Dart, HTML/CSS, SQL',
-    'Frontend': 'React 19, Next.js 15, Flutter, Tailwind CSS, Framer Motion, Zustand',
-    'Backend': 'FastAPI, Flask, Node.js, Express, SQLAlchemy, Uvicorn',
-    'Database': 'PostgreSQL, SQLite, Redis, Cloudflare D1',
-    'Tools': 'Git, VS Code, Docker, GitHub API, JWT Auth, REST APIs'
+    Languages: "TypeScript, JavaScript, Python, Dart, HTML/CSS, SQL",
+    Frontend:
+      "React 19, Next.js 15, Flutter, Tailwind CSS, Framer Motion, Zustand",
+    Backend: "FastAPI, Flask, Node.js, Express, SQLAlchemy, Uvicorn",
+    Database: "PostgreSQL, SQLite, Redis, Cloudflare D1",
+    Tools: "Git, VS Code, Docker, GitHub API, JWT Auth, REST APIs",
   };
 
   Object.entries(skills).forEach(([category, items]) => {
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont("helvetica", "bold");
     doc.text(`${category}: `, margin, yPosition);
     const categoryWidth = doc.getTextWidth(`${category}: `);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);  // Ensure skills text is same size as body text
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10); // Ensure skills text is same size as body text
     const skillText = items;
-    const skillLines = doc.splitTextToSize(skillText, pageWidth - 2 * margin - categoryWidth);
+    const skillLines = doc.splitTextToSize(
+      skillText,
+      pageWidth - 2 * margin - categoryWidth,
+    );
     doc.text(skillLines[0], margin + categoryWidth, yPosition);
     if (skillLines.length > 1) {
       for (let i = 1; i < skillLines.length; i++) {
@@ -119,46 +133,46 @@ export const generateResumePDF = () => {
 
   // Professional Experience
   addSeparator();
-  addText('PROFESSIONAL EXPERIENCE', 14, true, [0, 0, 0]);
+  addText("PROFESSIONAL EXPERIENCE", 14, true, [0, 0, 0]);
   yPosition += 2;
 
   const experience = [
     {
-      title: 'Account Manager',
-      company: 'Revelation Machinery',
-      period: '2021 - 2025',
-      location: 'Salem, OR (Remote)',
+      title: "Account Manager",
+      company: "Revelation Machinery",
+      period: "2021 - 2025",
+      location: "Salem, OR (Remote)",
       highlights: [
-        'Source and sell used manufacturing equipment including CNC machines, lathes, and industrial tools',
-        'Evaluate equipment condition, specifications, and market value for pricing strategies',
-        'Build relationships with manufacturers and dealers to maintain inventory pipeline',
-        'Identified gaps in equipment valuation tools, inspiring development of automated solutions'
-      ]
+        "Source and sell used manufacturing equipment including CNC machines, lathes, and industrial tools",
+        "Evaluate equipment condition, specifications, and market value for pricing strategies",
+        "Build relationships with manufacturers and dealers to maintain inventory pipeline",
+        "Identified gaps in equipment valuation tools, inspiring development of automated solutions",
+      ],
     },
     {
-      title: 'Customer Service Representative',
-      company: 'TEJ Agency',
-      period: '2013 - 2020',
-      location: 'Louisiana',
+      title: "Customer Service Representative",
+      company: "TEJ Agency",
+      period: "2013 - 2020",
+      location: "Louisiana",
       highlights: [
-        'Supported bank protection and financial insurance products for 50+ financial institutions',
-        'Resolved complex insurance claims and policy inquiries maintaining 99% satisfaction rate',
-        'Navigated federal banking regulations and compliance requirements',
-        'Trained new representatives on insurance products and customer service protocols'
-      ]
+        "Supported bank protection and financial insurance products for 50+ financial institutions",
+        "Resolved complex insurance claims and policy inquiries maintaining 99% satisfaction rate",
+        "Navigated federal banking regulations and compliance requirements",
+        "Trained new representatives on insurance products and customer service protocols",
+      ],
     },
     {
-      title: 'Manager / Server / Bartender',
-      company: 'The Landing Restaurant',
-      period: '2011 - 2020',
-      location: 'Louisiana',
+      title: "Manager / Server / Bartender",
+      company: "The Landing Restaurant",
+      period: "2011 - 2020",
+      location: "Louisiana",
       highlights: [
-        'Managed front-of-house operations at high-volume waterfront restaurant',
-        'Handled staffing, scheduling, and daily crisis management in fast-paced environment',
-        'Developed strong multitasking and problem-solving skills under pressure',
-        'Built loyal customer base through exceptional service despite operational challenges'
-      ]
-    }
+        "Managed front-of-house operations at high-volume waterfront restaurant",
+        "Handled staffing, scheduling, and daily crisis management in fast-paced environment",
+        "Developed strong multitasking and problem-solving skills under pressure",
+        "Built loyal customer base through exceptional service despite operational challenges",
+      ],
+    },
   ];
 
   experience.forEach((job) => {
@@ -169,12 +183,12 @@ export const generateResumePDF = () => {
     }
 
     // Job title - bold
-    doc.setFont('helvetica', 'bold');
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
     doc.text(job.title, margin, yPosition);
 
     // Company - right aligned
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     const companyText = job.company;
     const companyWidth = doc.getTextWidth(companyText);
     doc.text(companyText, pageWidth - margin - companyWidth, yPosition);
@@ -206,35 +220,46 @@ export const generateResumePDF = () => {
 
   // Projects Section
   addSeparator();
-  addText('PROJECTS', 14, true, [0, 0, 0]);
+  addText("PROJECTS", 14, true, [0, 0, 0]);
   yPosition += 2;
 
   const projects = [
     {
-      name: 'Trinity Method SDK - Open Source Development Methodology',
-      tech: 'TypeScript, Node.js, CLI Development, AI Agent Architecture, Development Tooling',
-      description: 'Created comprehensive development methodology SDK optimized for AI-assisted coding with 7 specialized agents, automatic quality setup, and investigation-first approach. Deployed 49 components with sub-15 second installation across multiple tech stacks'
+      name: "Trinity Method SDK - Open Source Development Methodology",
+      tech: "TypeScript, Node.js, CLI Development, AI Agent Architecture, Development Tooling",
+      description:
+        "Created comprehensive development methodology SDK optimized for AI-assisted coding with 7 specialized agents, automatic quality setup, and investigation-first approach. Deployed 49 components with sub-15 second installation across multiple tech stacks",
     },
     {
-      name: 'Bwaincell - Personal Productivity API & Discord Bot',
-      tech: 'TypeScript, Discord.js, Express, SQLite, Google OAuth 2.0, Docker, Fly.io',
-      description: 'Built dual-purpose productivity platform combining Discord bot with REST API for task management, lists, notes, reminders, and budget tracking. Production-ready deployment with comprehensive testing and multi-user authentication'
+      name: "Bwaincell - Personal Productivity API & Discord Bot",
+      tech: "TypeScript, Discord.js, Express, SQLite, Google OAuth 2.0, Docker, Fly.io",
+      description:
+        "Built dual-purpose productivity platform combining Discord bot with REST API for task management, lists, notes, reminders, and budget tracking. Production-ready deployment with comprehensive testing and multi-user authentication",
     },
     {
-      name: 'Bwain.app - Progressive Web Application',
-      tech: 'Next.js 14, React 18, TypeScript, NextAuth.js, TanStack Query, Tailwind CSS, PWA',
-      description: 'Developed modern PWA companion app with offline support, Google OAuth authentication, and cross-platform compatibility. Achieved 95+ Lighthouse score and 100/100 PWA score with installable functionality on all major platforms'
+      name: "Bwain.app - Progressive Web Application",
+      tech: "Next.js 14, React 18, TypeScript, NextAuth.js, TanStack Query, Tailwind CSS, PWA",
+      description:
+        "Developed modern PWA companion app with offline support, Google OAuth authentication, and cross-platform compatibility. Achieved 95+ Lighthouse score and 100/100 PWA score with installable functionality on all major platforms",
     },
     {
-      name: 'Enterprise Web Application - Portfolio Platform',
-      tech: 'Next.js 15, React 19, TypeScript, Tailwind CSS, Responsive Design',
-      description: 'Architected and deployed full-stack portfolio application with dynamic routing, interactive UI components, and PDF generation'
+      name: "Enterprise Web Application - Portfolio Platform",
+      tech: "Next.js 15, React 19, TypeScript, Tailwind CSS, Responsive Design",
+      description:
+        "Architected and deployed full-stack portfolio application with dynamic routing, interactive UI components, and PDF generation",
     },
     {
-      name: 'Cross-Platform Desktop Application',
-      tech: 'Flutter, Dart, State Management (Riverpod), REST API Integration, GitHub API',
-      description: 'Engineered desktop application with 22+ microservices, implementing MVC architecture and real-time data synchronization'
-    }
+      name: "Cross-Platform Desktop Application",
+      tech: "Flutter, Dart, State Management (Riverpod), REST API Integration, GitHub API",
+      description:
+        "Engineered desktop application with 22+ microservices, implementing MVC architecture and real-time data synchronization",
+    },
+    {
+      name: "Rinoa - Hybrid Cloud-Edge Data Platform",
+      tech: "Next.js 15, React 19, PostgreSQL 18, Express.js, Docker, Playwright, Raspberry Pi 5, NextAuth v5",
+      description:
+        "Built production-grade hybrid cloud-edge platform for proprietary client application. Combines Vercel serverless frontend with Raspberry Pi 5 edge computing backend, managing 13,000+ database records with sub-3ms query performance and 99.9% uptime. Features automated scheduling, full-text search with PostgreSQL GIN indexing, and support for 19 concurrent data sources",
+    },
   ];
 
   projects.forEach((project) => {
@@ -244,12 +269,12 @@ export const generateResumePDF = () => {
       yPosition = margin;
     }
 
-    doc.setFont('helvetica', 'bold');
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
     doc.text(project.name, margin, yPosition);
     yPosition += 5;
 
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(60, 60, 60);
     doc.text(project.tech, margin, yPosition);
@@ -257,7 +282,10 @@ export const generateResumePDF = () => {
 
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
-    const descLines = doc.splitTextToSize(project.description, pageWidth - 2 * margin);
+    const descLines = doc.splitTextToSize(
+      project.description,
+      pageWidth - 2 * margin,
+    );
     descLines.forEach((line: string) => {
       doc.text(line, margin, yPosition);
       yPosition += 5;
@@ -266,5 +294,5 @@ export const generateResumePDF = () => {
   });
 
   // Save the PDF
-  doc.save('Luka Fagundes Resume.pdf');
+  doc.save("Luka Fagundes Resume.pdf");
 };
