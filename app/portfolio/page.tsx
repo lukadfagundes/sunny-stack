@@ -85,7 +85,7 @@ export default function Portfolio() {
               <div
                 className={`transition-all duration-300 ease-in-out ${
                   expandedCard === "personal"
-                    ? "max-h-[500px] opacity-100"
+                    ? "max-h-[700px] opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >

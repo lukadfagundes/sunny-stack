@@ -242,6 +242,106 @@ export const personalProjects: ProjectData[] = [
     footer:
       "💡 <strong>Windows Desktop Enhancement</strong> - MIT licensed open-source project with 1-second real-time polling for instant track updates. Fully customizable colors, fonts, and layout.",
   },
+  {
+    id: "hytale-server-manager",
+    icon: <GitBranch className="w-5 h-5" />,
+    title: "Hytale Server Manager",
+    description:
+      "Desktop application built with Electron that enables users to manage Hytale dedicated game servers from a unified graphical interface. Features real-time log monitoring, player administration, mod configuration, and automatic updates—eliminating the need for command-line operations.",
+    keyFeatures: {
+      title: "Key Features",
+      items: [
+        {
+          label: "Server Management",
+          description:
+            "Start/stop servers with real-time log monitoring and ANSI color support",
+        },
+        {
+          label: "Player Administration",
+          description:
+            "View connected players with expandable cards displaying inventory, armor, tools, and statistics",
+        },
+        {
+          label: "Mod Configuration",
+          description:
+            "Toggle server modifications with server-state awareness and live reloading",
+        },
+        {
+          label: "Auto-Update System",
+          description:
+            "Checks GitHub Releases for updates, downloads in background, and installs with restart",
+        },
+        {
+          label: "Comprehensive Testing",
+          description:
+            "17 test suites with 240+ tests covering main process, parsers, stores, and UI components",
+        },
+      ],
+    },
+    techStack: [
+      "Electron 40",
+      "React 19",
+      "TypeScript",
+      "Zustand",
+      "Tailwind CSS",
+      "Vite",
+      "Jest",
+    ],
+    externalLinks: [
+      {
+        label: "View on GitHub",
+        url: "https://github.com/lukadfagundes/hytale-server-manager",
+        icon: <ExternalLink className="w-4 h-4" />,
+      },
+    ],
+  },
+  {
+    id: "cola-records",
+    icon: <GitBranch className="w-5 h-5" />,
+    title: "Cola Records - Open Source Contribution Hub",
+    description:
+      "Desktop application that streamlines open-source contribution workflows by centralizing issue discovery, development work, and community interaction in a single unified interface. Features an embedded IDE, built-in Git operations, and integrations with Spotify and Discord.",
+    keyFeatures: {
+      title: "Key Features",
+      items: [
+        {
+          label: "Issue Discovery",
+          description:
+            "Search GitHub for beginner-friendly contributions across repositories with smart filtering",
+        },
+        {
+          label: "Embedded IDE",
+          description:
+            "Built-in code-server (VS Code in Docker) for development without leaving the app",
+        },
+        {
+          label: "Git Workflow Integration",
+          description:
+            "Native branching, commits, and push operations with fork and clone tracking",
+        },
+        {
+          label: "Multi-Tab Terminal",
+          description:
+            "Support for Git Bash, PowerShell, CMD, and SSH remote connections",
+        },
+      ],
+    },
+    techStack: [
+      "Electron",
+      "React",
+      "TypeScript",
+      "SQLite",
+      "Docker",
+      "code-server",
+    ],
+    externalLinks: [
+      {
+        label: "View on GitHub",
+        url: "https://github.com/lukadfagundes/cola-records",
+        icon: <ExternalLink className="w-4 h-4" />,
+      },
+    ],
+  },
 ];
 
 export const professionalProjects: ProjectData[] = [
