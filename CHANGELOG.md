@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Cola Records project showcase on Portfolio page (professional projects)
+- Trinity Method SDK moved from personal to professional projects
 - Release workflow gating all deployments behind GitHub Releases (#75)
 - CHANGELOG.md for tracking release notes
 - Release helper scripts (release:patch, release:minor, release:major)

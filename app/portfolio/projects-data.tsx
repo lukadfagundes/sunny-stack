@@ -8,54 +8,6 @@ import { ProjectData } from "@/components/portfolio/ProjectModal";
 
 export const personalProjects: ProjectData[] = [
   {
-    id: "trinity-sdk",
-    icon: <GitBranch className="w-5 h-5" />,
-    title: "Trinity Method SDK",
-    description:
-      "An innovative development methodology and toolkit designed to revolutionize AI-assisted coding. Built specifically for Claude Code, Trinity Method brings structure, consistency, and systematic approaches to AI-powered software development.",
-    keyFeatures: {
-      title: "Key Features",
-      items: [
-        {
-          label: "7 Specialized AI Agents",
-          description:
-            "Each with distinct roles (ALY as CTO, AJ as Chief Code, etc.)",
-        },
-        {
-          label: "Investigation-First Methodology",
-          description: "Understand before implementing",
-        },
-        {
-          label: "Automatic Quality Setup",
-          description: "Linting, pre-commit hooks, and quality gates",
-        },
-        {
-          label: "Hierarchical Knowledge Base",
-          description: "Persistent learning across development sessions",
-        },
-        {
-          label: "Lightning-Fast Deployment",
-          description: "49 components deployed in under 15 seconds",
-        },
-      ],
-    },
-    callToAction: {
-      title: "Join the Development",
-      description:
-        "Trinity Method SDK is open-source and actively seeking contributors! Whether you're working with Claude Code, Cursor, Windsurf, or other AI coding assistants, your insights can help shape the future of AI-assisted development.",
-      techStack: ["TypeScript", "AI Agents", "Dev Methodology", "CLI Tool"],
-      links: [
-        {
-          label: "View on GitHub & Contribute",
-          url: "https://github.com/lukadfagundes/trinity-method-sdk",
-          icon: <ExternalLink className="w-4 h-4" />,
-        },
-      ],
-    },
-    footer:
-      '💡 Get started: <code class="bg-sunny-brown/10 px-2 py-0.5 rounded text-sunny-red">npx @trinity-method/cli deploy</code>',
-  },
-  {
     id: "bwaincell",
     icon: <GitBranch className="w-5 h-5" />,
     title: "Bwaincell - Personal Productivity API",
@@ -245,6 +197,115 @@ export const personalProjects: ProjectData[] = [
 ];
 
 export const professionalProjects: ProjectData[] = [
+  {
+    id: "trinity-sdk",
+    icon: <GitBranch className="w-5 h-5" />,
+    title: "Trinity Method SDK",
+    description:
+      "An innovative development methodology and toolkit designed to revolutionize AI-assisted coding. Built specifically for Claude Code, Trinity Method brings structure, consistency, and systematic approaches to AI-powered software development.",
+    keyFeatures: {
+      title: "Key Features",
+      items: [
+        {
+          label: "7 Specialized AI Agents",
+          description:
+            "Each with distinct roles (ALY as CTO, AJ as Chief Code, etc.)",
+        },
+        {
+          label: "Investigation-First Methodology",
+          description: "Understand before implementing",
+        },
+        {
+          label: "Automatic Quality Setup",
+          description: "Linting, pre-commit hooks, and quality gates",
+        },
+        {
+          label: "Hierarchical Knowledge Base",
+          description: "Persistent learning across development sessions",
+        },
+        {
+          label: "Lightning-Fast Deployment",
+          description: "49 components deployed in under 15 seconds",
+        },
+      ],
+    },
+    callToAction: {
+      title: "Join the Development",
+      description:
+        "Trinity Method SDK is open-source and actively seeking contributors! Whether you're working with Claude Code, Cursor, Windsurf, or other AI coding assistants, your insights can help shape the future of AI-assisted development.",
+      techStack: ["TypeScript", "AI Agents", "Dev Methodology", "CLI Tool"],
+      links: [
+        {
+          label: "View on GitHub & Contribute",
+          url: "https://github.com/lukadfagundes/trinity-method-sdk",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+      ],
+    },
+    footer:
+      '💡 Get started: <code class="bg-sunny-brown/10 px-2 py-0.5 rounded text-sunny-red">npx @trinity-method/cli deploy</code>',
+  },
+  {
+    id: "cola-records",
+    icon: <GitBranch className="w-5 h-5" />,
+    title: "Cola Records - Developer Contribution Manager",
+    description:
+      "Electron desktop application for managing developer contributions to open-source projects. Features issue discovery, contribution tracking, built-in Git operations, an embedded IDE via Docker-hosted code-server, multi-tab terminal, Spotify integration, and a dashboard with real-time GitHub activity.",
+    keyFeatures: {
+      title: "Key Features",
+      items: [
+        {
+          label: "Issue Discovery & Tracking",
+          description:
+            "Search GitHub for good first issues, fork repositories, and track contribution progress through completion",
+        },
+        {
+          label: "Embedded IDE & Terminal",
+          description:
+            "Code-server (VS Code) running in Docker with multi-project tab support, plus multi-tab terminal with Git Bash, PowerShell, and Zsh",
+        },
+        {
+          label: "Full Git Integration",
+          description:
+            "Built-in Git operations with 17 IPC channels for clone, branch, commit, push, pull, and remote management",
+        },
+        {
+          label: "GitHub Ecosystem",
+          description:
+            "Actions workflow viewer, Releases management, Pull Request management, and profile dashboard with 6 widgets",
+        },
+        {
+          label: "Developer Experience",
+          description:
+            "Spotify playback, Discord community client, in-app documentation viewer with Mermaid diagram support, and auto-updates",
+        },
+      ],
+    },
+    callToAction: {
+      title: "Open Source Desktop App",
+      description:
+        "108 React components, 15 main process services, and 163 IPC channels powering a full-featured desktop development environment. Cross-platform builds for Windows, macOS, and Linux with automatic updates via GitHub Releases.",
+      techStack: [
+        "Electron",
+        "React 19",
+        "TypeScript",
+        "Vite",
+        "SQLite",
+        "Zustand",
+        "Tailwind CSS",
+        "Docker",
+      ],
+      links: [
+        {
+          label: "View on GitHub",
+          url: "https://github.com/lukadfagundes/cola-records",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+      ],
+    },
+    footer:
+      "Available as NSIS installer (Windows), DMG (macOS), and AppImage/deb/rpm (Linux) with auto-updates via electron-updater.",
+  },
   {
     id: "rinoa-platform",
     icon: <GitBranch className="w-5 h-5" />,
