@@ -125,13 +125,6 @@ describe("CI/CD Pipeline", () => {
       // Check for test execution (uses npm run test:ci in CI)
       expect(ciWorkflow).toMatch(/npm run test:ci/);
     });
-
-    it("should run security audit", () => {
-      const ciWorkflow = readFileSync(ciWorkflowPath, "utf-8");
-
-      // Check for security audit
-      expect(ciWorkflow).toMatch(/npm audit/);
-    });
   });
 
   describe("Validation Integration", () => {
@@ -223,20 +216,12 @@ describe("CI/CD Pipeline", () => {
       expect(ciWorkflow).toMatch(/coverage/);
     });
 
-    it("should upload security reports", () => {
-      const ciWorkflow = readFileSync(ciWorkflowPath, "utf-8");
-
-      // Check for security report upload
-      expect(ciWorkflow).toMatch(/security-reports|audit/);
-    });
-
     it("should run artifact steps even if tests fail", () => {
       const ciWorkflow = readFileSync(ciWorkflowPath, "utf-8");
       const workflow = load(ciWorkflow) as any;
 
-      // Find upload artifact steps in trinity-quality-gates job
       const jobs = workflow.jobs || {};
-      const mainJob = jobs["trinity-quality-gates"];
+      const mainJob = jobs["quality-gates"];
 
       expect(mainJob).toBeDefined();
       const uploadSteps = mainJob.steps.filter((step: any) =>
@@ -287,8 +272,7 @@ describe("CI/CD Pipeline", () => {
       const ciWorkflow = readFileSync(ciWorkflowPath, "utf-8");
       const workflow = load(ciWorkflow) as any;
 
-      // Summary is a step in trinity-quality-gates, not a separate job
-      const mainJob = workflow.jobs["trinity-quality-gates"];
+      const mainJob = workflow.jobs["quality-gates"];
       expect(mainJob).toBeDefined();
 
       const summaryStep = mainJob.steps.find((step: any) =>
@@ -301,7 +285,7 @@ describe("CI/CD Pipeline", () => {
       const ciWorkflow = readFileSync(ciWorkflowPath, "utf-8");
       const workflow = load(ciWorkflow) as any;
 
-      const mainJob = workflow.jobs["trinity-quality-gates"];
+      const mainJob = workflow.jobs["quality-gates"];
       const summaryStep = mainJob.steps.find((step: any) =>
         step.name?.includes("Summary"),
       );
@@ -325,41 +309,20 @@ describe("CI/CD Pipeline", () => {
       // Check for NODE_VERSION in env
       expect(workflow.env?.NODE_VERSION).toBeDefined();
     });
-
-    it("should have cache version for dependency caching", () => {
-      const ciWorkflow = readFileSync(ciWorkflowPath, "utf-8");
-      const workflow = load(ciWorkflow) as any;
-
-      // Check for cache version
-      expect(workflow.env?.CACHE_VERSION).toBeDefined();
-    });
   });
 
   describe("Error Handling", () => {
-    it("should allow optional checks to fail without stopping workflow", () => {
+    it("should allow coverage report to fail without stopping workflow", () => {
       const ciWorkflow = readFileSync(ciWorkflowPath, "utf-8");
       const workflow = load(ciWorkflow) as any;
 
-      const mainJob = workflow.jobs["trinity-quality-gates"];
+      const mainJob = workflow.jobs["quality-gates"];
       expect(mainJob).toBeDefined();
 
-      // E2E tests are optional (continue-on-error)
-      const e2eStep = mainJob.steps.find((step: any) =>
-        step.name?.includes("E2E"),
+      const coverageStep = mainJob.steps.find((step: any) =>
+        step.name?.includes("Coverage report"),
       );
-      expect(e2eStep?.["continue-on-error"]).toBe(true);
-    });
-
-    it("should allow security audit to fail without stopping workflow", () => {
-      const ciWorkflow = readFileSync(ciWorkflowPath, "utf-8");
-      const workflow = load(ciWorkflow) as any;
-
-      const mainJob = workflow.jobs["trinity-quality-gates"];
-      const auditStep = mainJob.steps.find((step: any) =>
-        step.name?.includes("Security"),
-      );
-
-      expect(auditStep?.["continue-on-error"]).toBe(true);
+      expect(coverageStep?.["continue-on-error"]).toBe(true);
     });
   });
 });

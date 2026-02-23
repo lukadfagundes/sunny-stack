@@ -20,9 +20,8 @@
  * ```
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-// NextAuth v5 - import auth function from route config
-import { auth } from '@/app/api/auth/[...nextauth]/route';
+import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "@/lib/auth/google-oauth";
 
 /**
  * Configuration for admin authentication wrapper
@@ -63,7 +62,7 @@ type NextHandler = (req: NextRequest) => Promise<NextResponse>;
  */
 export function withAdminAuth(
   handler: NextHandler,
-  config?: AdminAuthConfig
+  config?: AdminAuthConfig,
 ): NextHandler {
   return async (req: NextRequest) => {
     try {
@@ -73,17 +72,17 @@ export function withAdminAuth(
         (process.env.ADMIN_EMAIL ? [process.env.ADMIN_EMAIL] : null);
 
       if (!adminEmails) {
-        throw new Error('ADMIN_EMAIL environment variable is not defined');
+        throw new Error("ADMIN_EMAIL environment variable is not defined");
       }
 
-      // Get server session from NextAuth v5
-      const session = await auth();
+      // Get server session
+      const session = await getSession();
 
       // Check if session exists
       if (!session || !session.user) {
         return NextResponse.json(
-          { error: 'Unauthorized - No session found' },
-          { status: 401 }
+          { error: "Unauthorized - No session found" },
+          { status: 401 },
         );
       }
 
@@ -91,8 +90,8 @@ export function withAdminAuth(
       const userEmail = session.user.email;
       if (!userEmail || !adminEmails.includes(userEmail)) {
         return NextResponse.json(
-          { error: 'Forbidden - Admin access required' },
-          { status: 403 }
+          { error: "Forbidden - Admin access required" },
+          { status: 403 },
         );
       }
 
@@ -100,17 +99,17 @@ export function withAdminAuth(
       return handler(req);
     } catch (error) {
       // Handle errors (e.g., session retrieval failure)
-      if (error instanceof Error && error.message.includes('ADMIN_EMAIL')) {
+      if (error instanceof Error && error.message.includes("ADMIN_EMAIL")) {
         throw error; // Re-throw configuration errors
       }
 
       return NextResponse.json(
         {
           error:
-            'Authentication failed - ' +
-            (error instanceof Error ? error.message : 'Unknown error'),
+            "Authentication failed - " +
+            (error instanceof Error ? error.message : "Unknown error"),
         },
-        { status: 401 }
+        { status: 401 },
       );
     }
   };
