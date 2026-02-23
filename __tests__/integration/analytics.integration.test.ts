@@ -5,14 +5,23 @@
  */
 
 // IMPORTANT: Unmock Prisma for integration tests - we need real DB access
-jest.unmock('@prisma/client');
+jest.unmock("@prisma/client");
 
-import { setupTestDatabase, teardownTestDatabase, testPrisma } from '../helpers/test-db';
-import { createTestProject, createTestQuote, createTestTimeEntry } from '../helpers/test-factories';
-import { ProjectStatus, QuoteStatus } from '@prisma/client';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanDatabase,
+  testPrisma,
+} from "../helpers/test-db";
+import {
+  createTestProject,
+  createTestQuote,
+  createTestTimeEntry,
+} from "../helpers/test-factories";
+import { ProjectStatus, QuoteStatus } from "@prisma/client";
 
 // Mock logger
-jest.mock('@/lib/logger', () => ({
+jest.mock("@/lib/logger", () => ({
   info: jest.fn(),
   error: jest.fn(),
   warn: jest.fn(),
@@ -25,7 +34,7 @@ jest.mock('@/lib/logger', () => ({
   },
 }));
 
-describe('Analytics Integration', () => {
+describe("Analytics Integration", () => {
   beforeAll(async () => {
     await setupTestDatabase();
   });
@@ -35,15 +44,12 @@ describe('Analytics Integration', () => {
   });
 
   beforeEach(async () => {
-    // Clean all data before each test
-    await testPrisma.timeEntry.deleteMany();
-    await testPrisma.proposal.deleteMany();
-    await testPrisma.quote.deleteMany();
-    await testPrisma.project.deleteMany();
+    // Clean all data before each test (handles FK ordering correctly)
+    await cleanDatabase();
   });
 
-  describe('Active Projects Count', () => {
-    it('should count PLANNING projects as active', async () => {
+  describe("Active Projects Count", () => {
+    it("should count PLANNING projects as active", async () => {
       // ARRANGE
       await createTestProject({ status: ProjectStatus.PLANNING });
       await createTestProject({ status: ProjectStatus.PLANNING });
@@ -60,7 +66,7 @@ describe('Analytics Integration', () => {
       expect(count).toBe(2);
     });
 
-    it('should count IN_PROGRESS projects as active', async () => {
+    it("should count IN_PROGRESS projects as active", async () => {
       // ARRANGE
       await createTestProject({ status: ProjectStatus.IN_PROGRESS });
       await createTestProject({ status: ProjectStatus.IN_PROGRESS });
@@ -78,7 +84,7 @@ describe('Analytics Integration', () => {
       expect(count).toBe(3);
     });
 
-    it('should count REVIEW projects as active', async () => {
+    it("should count REVIEW projects as active", async () => {
       // ARRANGE
       await createTestProject({ status: ProjectStatus.REVIEW });
 
@@ -94,7 +100,7 @@ describe('Analytics Integration', () => {
       expect(count).toBe(1);
     });
 
-    it('should NOT count COMPLETE projects as active', async () => {
+    it("should NOT count COMPLETE projects as active", async () => {
       // ARRANGE
       await createTestProject({ status: ProjectStatus.COMPLETE });
       await createTestProject({ status: ProjectStatus.IN_PROGRESS });
@@ -111,7 +117,7 @@ describe('Analytics Integration', () => {
       expect(count).toBe(1);
     });
 
-    it('should NOT count ARCHIVED projects as active', async () => {
+    it("should NOT count ARCHIVED projects as active", async () => {
       // ARRANGE
       await createTestProject({ status: ProjectStatus.ARCHIVED });
       await createTestProject({ status: ProjectStatus.PLANNING });
@@ -128,9 +134,11 @@ describe('Analytics Integration', () => {
       expect(count).toBe(1);
     });
 
-    it('should NOT count soft-deleted projects as active', async () => {
+    it("should NOT count soft-deleted projects as active", async () => {
       // ARRANGE
-      const project = await createTestProject({ status: ProjectStatus.IN_PROGRESS });
+      const project = await createTestProject({
+        status: ProjectStatus.IN_PROGRESS,
+      });
       await testPrisma.project.update({
         where: { id: project.id },
         data: { deletedAt: new Date() },
@@ -149,8 +157,8 @@ describe('Analytics Integration', () => {
     });
   });
 
-  describe('Pending Quotes Count', () => {
-    it('should count PENDING quotes', async () => {
+  describe("Pending Quotes Count", () => {
+    it("should count PENDING quotes", async () => {
       // ARRANGE
       await createTestQuote({ status: QuoteStatus.PENDING });
       await createTestQuote({ status: QuoteStatus.PENDING });
@@ -165,7 +173,7 @@ describe('Analytics Integration', () => {
       expect(count).toBe(3);
     });
 
-    it('should NOT count APPROVED quotes', async () => {
+    it("should NOT count APPROVED quotes", async () => {
       // ARRANGE
       await createTestQuote({ status: QuoteStatus.PENDING });
       await createTestQuote({ status: QuoteStatus.APPROVED });
@@ -179,7 +187,7 @@ describe('Analytics Integration', () => {
       expect(count).toBe(1);
     });
 
-    it('should NOT count DECLINED quotes', async () => {
+    it("should NOT count DECLINED quotes", async () => {
       // ARRANGE
       await createTestQuote({ status: QuoteStatus.PENDING });
       await createTestQuote({ status: QuoteStatus.DECLINED });
@@ -193,11 +201,14 @@ describe('Analytics Integration', () => {
       expect(count).toBe(1);
     });
 
-    it('should NOT count CONVERTED quotes', async () => {
+    it("should NOT count CONVERTED quotes", async () => {
       // ARRANGE
       const project = await createTestProject();
       await createTestQuote({ status: QuoteStatus.PENDING });
-      await createTestQuote({ status: QuoteStatus.CONVERTED, projectId: project.id });
+      await createTestQuote({
+        status: QuoteStatus.CONVERTED,
+        projectId: project.id,
+      });
 
       // ACT
       const count = await testPrisma.quote.count({
@@ -209,8 +220,8 @@ describe('Analytics Integration', () => {
     });
   });
 
-  describe('Total Revenue Calculation', () => {
-    it('should sum all project budgets', async () => {
+  describe("Total Revenue Calculation", () => {
+    it("should sum all project budgets", async () => {
       // ARRANGE
       await createTestProject({ budget: 10000 });
       await createTestProject({ budget: 25000 });
@@ -223,10 +234,10 @@ describe('Analytics Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('50000');
+      expect(result._sum.budget?.toString()).toBe("50000");
     });
 
-    it('should handle projects with null budgets', async () => {
+    it("should handle projects with null budgets", async () => {
       // ARRANGE
       await createTestProject({ budget: 10000 });
       await createTestProject({ budget: null });
@@ -239,10 +250,10 @@ describe('Analytics Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('15000');
+      expect(result._sum.budget?.toString()).toBe("15000");
     });
 
-    it('should return null for zero projects', async () => {
+    it("should return null for zero projects", async () => {
       // ACT
       const result = await testPrisma.project.aggregate({
         _sum: { budget: true },
@@ -253,7 +264,7 @@ describe('Analytics Integration', () => {
       expect(result._sum.budget).toBeNull();
     });
 
-    it('should exclude soft-deleted projects from revenue', async () => {
+    it("should exclude soft-deleted projects from revenue", async () => {
       // ARRANGE
       await createTestProject({ budget: 10000 });
       const deletedProject = await createTestProject({ budget: 20000 });
@@ -269,10 +280,10 @@ describe('Analytics Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('10000');
+      expect(result._sum.budget?.toString()).toBe("10000");
     });
 
-    it('should handle large budget amounts', async () => {
+    it("should handle large budget amounts", async () => {
       // ARRANGE
       await createTestProject({ budget: 100000 });
       await createTestProject({ budget: 250000 });
@@ -284,12 +295,12 @@ describe('Analytics Integration', () => {
       });
 
       // ASSERT
-      expect(result._sum.budget?.toString()).toBe('350000');
+      expect(result._sum.budget?.toString()).toBe("350000");
     });
   });
 
-  describe('Hours Tracked Calculation', () => {
-    it('should sum time entries for current week', async () => {
+  describe("Hours Tracked Calculation", () => {
+    it("should sum time entries for current week", async () => {
       // ARRANGE
       const now = new Date();
       const startOfWeek = new Date(now);
@@ -318,7 +329,7 @@ describe('Analytics Integration', () => {
       expect(result._sum.durationMinutes).toBe(300); // 5 hours = 300 minutes
     });
 
-    it('should NOT include time entries from previous week', async () => {
+    it("should NOT include time entries from previous week", async () => {
       // ARRANGE
       const now = new Date();
       const startOfWeek = new Date(now);
@@ -350,7 +361,7 @@ describe('Analytics Integration', () => {
       expect(result._sum.durationMinutes).toBe(120);
     });
 
-    it('should return 0 for no time entries', async () => {
+    it("should return 0 for no time entries", async () => {
       // ARRANGE
       const now = new Date();
       const startOfWeek = new Date(now);
@@ -367,7 +378,7 @@ describe('Analytics Integration', () => {
       expect(result._sum.durationMinutes).toBeNull();
     });
 
-    it('should handle multiple projects', async () => {
+    it("should handle multiple projects", async () => {
       // ARRANGE
       const now = new Date();
       const startOfWeek = new Date(now);
@@ -398,48 +409,48 @@ describe('Analytics Integration', () => {
     });
   });
 
-  describe('Recent Activity', () => {
-    it('should fetch recent projects', async () => {
+  describe("Recent Activity", () => {
+    it("should fetch recent projects", async () => {
       // ARRANGE
-      await createTestProject({ title: 'Project 1' });
-      await new Promise(resolve => setTimeout(resolve, 10));
-      await createTestProject({ title: 'Project 2' });
-      await new Promise(resolve => setTimeout(resolve, 10));
-      await createTestProject({ title: 'Project 3' });
+      await createTestProject({ title: "Project 1" });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      await createTestProject({ title: "Project 2" });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      await createTestProject({ title: "Project 3" });
 
       // ACT
       const recentProjects = await testPrisma.project.findMany({
         where: { deletedAt: null },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 5,
       });
 
       // ASSERT
       expect(recentProjects).toHaveLength(3);
-      expect(recentProjects[0].title).toBe('Project 3');
-      expect(recentProjects[1].title).toBe('Project 2');
-      expect(recentProjects[2].title).toBe('Project 1');
+      expect(recentProjects[0].title).toBe("Project 3");
+      expect(recentProjects[1].title).toBe("Project 2");
+      expect(recentProjects[2].title).toBe("Project 1");
     });
 
-    it('should fetch recent quotes', async () => {
+    it("should fetch recent quotes", async () => {
       // ARRANGE
-      await createTestQuote({ name: 'Client 1' });
-      await new Promise(resolve => setTimeout(resolve, 10));
-      await createTestQuote({ name: 'Client 2' });
+      await createTestQuote({ name: "Client 1" });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      await createTestQuote({ name: "Client 2" });
 
       // ACT
       const recentQuotes = await testPrisma.quote.findMany({
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 5,
       });
 
       // ASSERT
       expect(recentQuotes).toHaveLength(2);
-      expect(recentQuotes[0].name).toBe('Client 2');
-      expect(recentQuotes[1].name).toBe('Client 1');
+      expect(recentQuotes[0].name).toBe("Client 2");
+      expect(recentQuotes[1].name).toBe("Client 1");
     });
 
-    it('should limit results to specified count', async () => {
+    it("should limit results to specified count", async () => {
       // ARRANGE
       for (let i = 1; i <= 10; i++) {
         await createTestProject({ title: `Project ${i}` });
@@ -448,7 +459,7 @@ describe('Analytics Integration', () => {
       // ACT
       const recentProjects = await testPrisma.project.findMany({
         where: { deletedAt: null },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 5,
       });
 
@@ -457,8 +468,8 @@ describe('Analytics Integration', () => {
     });
   });
 
-  describe('Dashboard Metrics Combined', () => {
-    it('should calculate all metrics simultaneously', async () => {
+  describe("Dashboard Metrics Combined", () => {
+    it("should calculate all metrics simultaneously", async () => {
       // ARRANGE
       const now = new Date();
       const startOfWeek = new Date(now);
@@ -496,7 +507,9 @@ describe('Analytics Integration', () => {
         await Promise.all([
           testPrisma.project.count({
             where: {
-              status: { notIn: [ProjectStatus.COMPLETE, ProjectStatus.ARCHIVED] },
+              status: {
+                notIn: [ProjectStatus.COMPLETE, ProjectStatus.ARCHIVED],
+              },
               deletedAt: null,
             },
           }),
@@ -516,22 +529,23 @@ describe('Analytics Integration', () => {
       // ASSERT
       expect(activeProjects).toBe(2);
       expect(pendingQuotes).toBe(2);
-      expect(totalRevenue._sum.budget?.toString()).toBe('70000');
+      expect(totalRevenue._sum.budget?.toString()).toBe("70000");
       expect(hoursTracked._sum.durationMinutes).toBe(120);
     });
   });
 
-  describe('Performance and Optimization', () => {
-    it('should handle large datasets efficiently', async () => {
+  describe("Performance and Optimization", () => {
+    it("should handle large datasets efficiently", async () => {
       // ARRANGE - Create 100 projects
       const promises = [];
       for (let i = 1; i <= 100; i++) {
         promises.push(
           createTestProject({
             title: `Project ${i}`,
-            status: i % 2 === 0 ? ProjectStatus.IN_PROGRESS : ProjectStatus.COMPLETE,
+            status:
+              i % 2 === 0 ? ProjectStatus.IN_PROGRESS : ProjectStatus.COMPLETE,
             budget: 10000 + i * 100,
-          })
+          }),
         );
       }
       await Promise.all(promises);

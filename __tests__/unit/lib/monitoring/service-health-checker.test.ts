@@ -3,16 +3,16 @@
  * @description Tests for service health monitoring, batch operations, and alert creation
  */
 
-import { prisma } from '@/lib/db/prisma';
+import { prisma } from "@/lib/db/prisma";
 import {
   runServiceHealthChecks,
   startServiceHealthMonitoring,
   stopServiceHealthMonitoring,
-} from '@/lib/monitoring/service-health-checker';
-import { MONITORED_SERVICES } from '@/lib/monitoring/config';
+} from "@/lib/monitoring/service-health-checker";
+import { MONITORED_SERVICES } from "@/lib/monitoring/config";
 
 // Mock dependencies
-jest.mock('@/lib/db/prisma', () => ({
+jest.mock("@/lib/db/prisma", () => ({
   prisma: {
     serviceHealthCheck: {
       findFirst: jest.fn(),
@@ -24,7 +24,7 @@ jest.mock('@/lib/db/prisma', () => ({
   },
 }));
 
-jest.mock('@/lib/logger', () => ({
+jest.mock("@/lib/logger", () => ({
   info: jest.fn(),
   error: jest.fn(),
   warn: jest.fn(),
@@ -33,8 +33,14 @@ jest.mock('@/lib/logger', () => ({
 // Mock fetch globally
 global.fetch = jest.fn();
 
-describe('Service Health Checker', () => {
-  beforeEach(() => {
+// Helper to flush setImmediate callbacks (source defers DB writes via setImmediate)
+const flushImmediate = () => new Promise((resolve) => setImmediate(resolve));
+
+describe("Service Health Checker", () => {
+  beforeEach(async () => {
+    // Drain any pending setImmediate callbacks leaked from previous tests FIRST,
+    // then clear mocks so leaked calls don't register on fresh mocks
+    await flushImmediate();
     jest.clearAllMocks();
   });
 
@@ -42,97 +48,120 @@ describe('Service Health Checker', () => {
     jest.useRealTimers();
   });
 
-  describe('checkService (via runServiceHealthChecks)', () => {
-    it('should mark service as operational for fast successful response', async () => {
+  describe("checkService (via runServiceHealthChecks)", () => {
+    it("should mark service as operational for fast successful response", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
         status: 200,
       });
 
-      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(null);
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert
       expect(prisma.serviceHealthCheck.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({
             serviceName: expect.any(String),
-            status: 'operational',
+            status: "operational",
             responseTime: expect.any(Number),
           }),
         ]),
       });
     });
 
-    it('should mark service as degraded for slow successful response', async () => {
+    it("should mark service as degraded for slow successful response", async () => {
       // Arrange - Mock slow response (>2 seconds)
       // Use real timers for this test to properly simulate delay
       jest.useRealTimers();
 
-      (global.fetch as jest.Mock).mockImplementation(() =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({ ok: true, status: 200 });
-          }, 2500);
-        })
+      (global.fetch as jest.Mock).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve({ ok: true, status: 200 });
+            }, 2500);
+          }),
       );
 
-      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(null);
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert
-      const createManyCall = (prisma.serviceHealthCheck.createMany as jest.Mock).mock.calls[0][0];
+      const createManyCall = (prisma.serviceHealthCheck.createMany as jest.Mock)
+        .mock.calls[0][0];
       const hasDegradedService = createManyCall.data.some(
-        (service: any) => service.status === 'degraded' && service.responseTime >= 2000
+        (service: any) =>
+          service.status === "degraded" && service.responseTime >= 2000,
       );
       expect(hasDegradedService).toBe(true);
     });
 
-    it('should mark service as down for failed response', async () => {
+    it("should mark service as down for failed response", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: false,
         status: 500,
       });
 
-      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(null);
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert
       expect(prisma.serviceHealthCheck.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({
-            status: 'down',
+            status: "down",
           }),
         ]),
       });
     });
 
-    it('should mark service as down on network error', async () => {
+    it("should mark service as down on network error", async () => {
       // Arrange
-      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+      (global.fetch as jest.Mock).mockRejectedValue(new Error("Network error"));
 
-      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(null);
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert
       expect(prisma.serviceHealthCheck.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({
-            status: 'down',
+            status: "down",
             responseTime: null,
             statusCode: null,
           }),
@@ -140,23 +169,28 @@ describe('Service Health Checker', () => {
       });
     });
 
-    it('should handle abort signal for timeout', async () => {
+    it("should handle abort signal for timeout", async () => {
       // Arrange - Mock fetch that rejects with abort error
-      const abortError = new Error('The operation was aborted');
-      abortError.name = 'AbortError';
+      const abortError = new Error("The operation was aborted");
+      abortError.name = "AbortError";
       (global.fetch as jest.Mock).mockRejectedValue(abortError);
 
-      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(null);
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert - Should be marked as down when aborted
       expect(prisma.serviceHealthCheck.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({
-            status: 'down',
+            status: "down",
             responseTime: null,
           }),
         ]),
@@ -164,8 +198,8 @@ describe('Service Health Checker', () => {
     });
   });
 
-  describe('Alert Creation', () => {
-    it('should create CRITICAL alert when service goes down', async () => {
+  describe("Alert Creation", () => {
+    it("should create CRITICAL alert when service goes down", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: false,
@@ -174,64 +208,77 @@ describe('Service Health Checker', () => {
 
       // Mock previous status as operational
       (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue({
-        serviceName: 'Fly.io',
-        status: 'operational',
+        serviceName: "Fly.io",
+        status: "operational",
       });
 
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
-      (prisma.monitoringAlert.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
+      (prisma.monitoringAlert.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert
       expect(prisma.monitoringAlert.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({
-            severity: 'CRITICAL',
-            type: 'ERROR',
+            severity: "CRITICAL",
+            type: "ERROR",
             source: expect.any(String),
-            message: expect.stringContaining('changed from operational to down'),
+            message: expect.stringContaining(
+              "changed from operational to down",
+            ),
           }),
         ]),
       });
     });
 
-    it('should create WARNING alert when service becomes degraded', async () => {
+    it("should create WARNING alert when service becomes degraded", async () => {
       // Arrange - Use real timers to properly simulate delay
       jest.useRealTimers();
 
-      (global.fetch as jest.Mock).mockImplementation(() =>
-        new Promise((resolve) => {
-          setTimeout(() => resolve({ ok: true, status: 200 }), 2500);
-        })
+      (global.fetch as jest.Mock).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            setTimeout(() => resolve({ ok: true, status: 200 }), 2500);
+          }),
       );
 
       // Mock previous status as operational
       (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue({
-        serviceName: 'Cloudflare',
-        status: 'operational',
+        serviceName: "Cloudflare",
+        status: "operational",
       });
 
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
-      (prisma.monitoringAlert.createMany as jest.Mock).mockResolvedValue({ count: 1 });
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
+      (prisma.monitoringAlert.createMany as jest.Mock).mockResolvedValue({
+        count: 1,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert
       expect(prisma.monitoringAlert.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({
-            severity: 'WARNING',
-            type: 'UPTIME_CHECK',
-            message: expect.stringContaining('degraded'),
+            severity: "WARNING",
+            type: "UPTIME_CHECK",
+            message: expect.stringContaining("degraded"),
           }),
         ]),
       });
     });
 
-    it('should create INFO alert when service recovers from down', async () => {
+    it("should create INFO alert when service recovers from down", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -240,29 +287,36 @@ describe('Service Health Checker', () => {
 
       // Mock previous status as down
       (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue({
-        serviceName: 'Vercel',
-        status: 'down',
+        serviceName: "Vercel",
+        status: "down",
       });
 
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
-      (prisma.monitoringAlert.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
+      (prisma.monitoringAlert.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert
       expect(prisma.monitoringAlert.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({
-            severity: 'INFO',
-            type: 'UPTIME_CHECK',
-            message: expect.stringContaining('changed from down to operational'),
+            severity: "INFO",
+            type: "UPTIME_CHECK",
+            message: expect.stringContaining(
+              "changed from down to operational",
+            ),
           }),
         ]),
       });
     });
 
-    it('should NOT create alert when status unchanged', async () => {
+    it("should NOT create alert when status unchanged", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -271,20 +325,23 @@ describe('Service Health Checker', () => {
 
       // Mock previous status as operational (same as new status)
       (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue({
-        serviceName: 'Fly.io',
-        status: 'operational',
+        serviceName: "Fly.io",
+        status: "operational",
       });
 
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert - Should NOT create any alerts
       expect(prisma.monitoringAlert.createMany).not.toHaveBeenCalled();
     });
 
-    it('should NOT create alert on first check (no previous status)', async () => {
+    it("should NOT create alert on first check (no previous status)", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -292,8 +349,12 @@ describe('Service Health Checker', () => {
       });
 
       // Mock no previous status (first check)
-      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(null);
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
@@ -303,21 +364,24 @@ describe('Service Health Checker', () => {
     });
   });
 
-  describe('Batch Operations', () => {
-    it('should save all health checks in single createMany call', async () => {
+  describe("Batch Operations", () => {
+    it("should save all health checks in single createMany call", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
         status: 200,
       });
 
-      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(null);
+      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
       (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
         count: MONITORED_SERVICES.length,
       });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert - Should be exactly ONE createMany call with all services
       expect(prisma.serviceHealthCheck.createMany).toHaveBeenCalledTimes(1);
@@ -328,13 +392,13 @@ describe('Service Health Checker', () => {
               serviceName: service.name,
               endpoint: service.endpoint,
               status: expect.any(String),
-            })
-          )
+            }),
+          ),
         ),
       });
     });
 
-    it('should fetch previous statuses in parallel', async () => {
+    it("should fetch previous statuses in parallel", async () => {
       // Arrange
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -342,23 +406,29 @@ describe('Service Health Checker', () => {
       });
 
       const findFirstMock = prisma.serviceHealthCheck.findFirst as jest.Mock;
-      findFirstMock.mockResolvedValue({ serviceName: 'test', status: 'operational' });
+      findFirstMock.mockResolvedValue({
+        serviceName: "test",
+        status: "operational",
+      });
 
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       await runServiceHealthChecks();
+      await flushImmediate();
 
       // Assert - Should call findFirst for each service
       expect(findFirstMock).toHaveBeenCalledTimes(MONITORED_SERVICES.length);
     });
   });
 
-  describe('Monitoring Lifecycle', () => {
-    it('should start monitoring with 5-minute interval', () => {
+  describe("Monitoring Lifecycle", () => {
+    it("should start monitoring with 5-minute interval", () => {
       // Arrange
       jest.useFakeTimers();
-      const setIntervalSpy = jest.spyOn(global, 'setInterval');
+      const setIntervalSpy = jest.spyOn(global, "setInterval");
 
       // Act
       startServiceHealthMonitoring();
@@ -366,19 +436,23 @@ describe('Service Health Checker', () => {
       // Assert
       expect(setIntervalSpy).toHaveBeenCalledWith(
         expect.any(Function),
-        5 * 60 * 1000 // 5 minutes
+        5 * 60 * 1000, // 5 minutes
       );
 
       // Cleanup
       jest.useRealTimers();
     });
 
-    it('should run immediate health check on start', async () => {
+    it("should run immediate health check on start", async () => {
       // Arrange
       jest.useFakeTimers();
       (global.fetch as jest.Mock).mockResolvedValue({ ok: true, status: 200 });
-      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(null);
-      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({ count: 4 });
+      (prisma.serviceHealthCheck.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (prisma.serviceHealthCheck.createMany as jest.Mock).mockResolvedValue({
+        count: 4,
+      });
 
       // Act
       startServiceHealthMonitoring();
@@ -394,10 +468,10 @@ describe('Service Health Checker', () => {
       jest.useRealTimers();
     });
 
-    it('should clear existing interval when restarting monitoring', () => {
+    it("should clear existing interval when restarting monitoring", () => {
       // Arrange
       jest.useFakeTimers();
-      const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
+      const clearIntervalSpy = jest.spyOn(global, "clearInterval");
       startServiceHealthMonitoring();
 
       // Act - Start again
@@ -410,10 +484,10 @@ describe('Service Health Checker', () => {
       jest.useRealTimers();
     });
 
-    it('should stop monitoring and clear interval', () => {
+    it("should stop monitoring and clear interval", () => {
       // Arrange
       jest.useFakeTimers();
-      const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
+      const clearIntervalSpy = jest.spyOn(global, "clearInterval");
       startServiceHealthMonitoring();
 
       // Act
@@ -426,7 +500,7 @@ describe('Service Health Checker', () => {
       jest.useRealTimers();
     });
 
-    it('should handle stop when monitoring not running', () => {
+    it("should handle stop when monitoring not running", () => {
       // Act & Assert - Should not throw
       expect(() => stopServiceHealthMonitoring()).not.toThrow();
     });

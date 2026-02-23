@@ -5,15 +5,24 @@
  */
 
 // IMPORTANT: Unmock Prisma for integration tests - we need real DB access
-jest.unmock('@prisma/client');
+jest.unmock("@prisma/client");
 
-import { setupTestDatabase, teardownTestDatabase, testPrisma } from '../helpers/test-db';
-import { createTestProject, createTestQuote, createTestProposal } from '../helpers/test-factories';
-import { QuoteStatus } from '@prisma/client';
-import { NotFoundError, ValidationError } from '@/lib/errors/app-error';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanDatabase,
+  testPrisma,
+} from "../helpers/test-db";
+import {
+  createTestProject,
+  createTestQuote,
+  createTestProposal,
+} from "../helpers/test-factories";
+import { QuoteStatus } from "@prisma/client";
+import { NotFoundError, ValidationError } from "@/lib/errors/app-error";
 
 // Mock logger
-jest.mock('@/lib/logger', () => ({
+jest.mock("@/lib/logger", () => ({
   info: jest.fn(),
   error: jest.fn(),
   warn: jest.fn(),
@@ -27,15 +36,15 @@ jest.mock('@/lib/logger', () => ({
 }));
 
 // Mock Resend email service
-jest.mock('resend', () => ({
+jest.mock("resend", () => ({
   Resend: jest.fn().mockImplementation(() => ({
     emails: {
-      send: jest.fn().mockResolvedValue({ id: 'email_123' }),
+      send: jest.fn().mockResolvedValue({ id: "email_123" }),
     },
   })),
 }));
 
-describe('Proposal Generation Integration', () => {
+describe("Proposal Generation Integration", () => {
   beforeAll(async () => {
     await setupTestDatabase();
   });
@@ -45,14 +54,12 @@ describe('Proposal Generation Integration', () => {
   });
 
   beforeEach(async () => {
-    // Clean proposal-related data before each test
-    await testPrisma.proposal.deleteMany();
-    await testPrisma.quote.deleteMany();
-    await testPrisma.project.deleteMany();
+    // Clean all data before each test (handles FK ordering correctly)
+    await cleanDatabase();
   });
 
-  describe('Create Proposal', () => {
-    it('should create proposal with quote and project', async () => {
+  describe("Create Proposal", () => {
+    it("should create proposal with quote and project", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -69,11 +76,11 @@ describe('Proposal Generation Integration', () => {
       expect(proposal.quoteId).toBe(quote.id);
       expect(proposal.projectId).toBe(project.id);
       expect(proposal.pdfUrl).toBeDefined();
-      expect(proposal.pdfUrl).toContain('data:application/pdf');
+      expect(proposal.pdfUrl).toContain("data:application/pdf");
       expect(proposal.sentAt).toBeNull();
     });
 
-    it('should create proposal with sentAt timestamp', async () => {
+    it("should create proposal with sentAt timestamp", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -90,7 +97,7 @@ describe('Proposal Generation Integration', () => {
       expect(proposal.sentAt).toEqual(sentAt);
     });
 
-    it('should allow multiple proposals for same quote', async () => {
+    it("should allow multiple proposals for same quote", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -112,8 +119,8 @@ describe('Proposal Generation Integration', () => {
     });
   });
 
-  describe('Read Proposals', () => {
-    it('should find proposal by id', async () => {
+  describe("Read Proposals", () => {
+    it("should find proposal by id", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -132,7 +139,7 @@ describe('Proposal Generation Integration', () => {
       expect(foundProposal?.id).toBe(createdProposal.id);
     });
 
-    it('should find proposals by quoteId', async () => {
+    it("should find proposals by quoteId", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -148,11 +155,11 @@ describe('Proposal Generation Integration', () => {
       expect(proposals).toHaveLength(2);
     });
 
-    it('should include quote and project relations', async () => {
+    it("should include quote and project relations", async () => {
       // ARRANGE
-      const project = await createTestProject({ title: 'Test Project' });
+      const project = await createTestProject({ title: "Test Project" });
       const quote = await createTestQuote({
-        name: 'Test Client',
+        name: "Test Client",
         projectId: project.id,
       });
       const proposal = await createTestProposal({
@@ -170,12 +177,12 @@ describe('Proposal Generation Integration', () => {
 
       // ASSERT
       expect(proposalWithRelations).toBeDefined();
-      expect(proposalWithRelations?.quote.name).toBe('Test Client');
+      expect(proposalWithRelations?.quote.name).toBe("Test Client");
     });
   });
 
-  describe('Update Proposal', () => {
-    it('should update sentAt timestamp', async () => {
+  describe("Update Proposal", () => {
+    it("should update sentAt timestamp", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -195,7 +202,7 @@ describe('Proposal Generation Integration', () => {
       expect(updated.sentAt).toEqual(sentAt);
     });
 
-    it('should track updatedAt timestamp', async () => {
+    it("should track updatedAt timestamp", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -205,7 +212,7 @@ describe('Proposal Generation Integration', () => {
       });
       const originalUpdatedAt = proposal.updatedAt;
 
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       // ACT
       const updated = await testPrisma.proposal.update({
@@ -215,13 +222,13 @@ describe('Proposal Generation Integration', () => {
 
       // ASSERT
       expect(updated.updatedAt.getTime()).toBeGreaterThan(
-        originalUpdatedAt.getTime()
+        originalUpdatedAt.getTime(),
       );
     });
   });
 
-  describe('Delete Proposal', () => {
-    it('should delete proposal', async () => {
+  describe("Delete Proposal", () => {
+    it("should delete proposal", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -241,8 +248,8 @@ describe('Proposal Generation Integration', () => {
     });
   });
 
-  describe('Proposal Cascade Behavior', () => {
-    it('should cascade delete when quote is deleted', async () => {
+  describe("Proposal Cascade Behavior", () => {
+    it("should cascade delete when quote is deleted", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -261,7 +268,7 @@ describe('Proposal Generation Integration', () => {
       expect(foundProposal).toBeNull();
     });
 
-    it('should allow project deletion (no FK constraint on projectId)', async () => {
+    it("should allow project deletion (no FK constraint on projectId)", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -288,8 +295,8 @@ describe('Proposal Generation Integration', () => {
     });
   });
 
-  describe('Proposal Listing and Filtering', () => {
-    it('should list all proposals', async () => {
+  describe("Proposal Listing and Filtering", () => {
+    it("should list all proposals", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote1 = await createTestQuote({ projectId: project.id });
@@ -304,10 +311,10 @@ describe('Proposal Generation Integration', () => {
       expect(proposals).toHaveLength(2);
     });
 
-    it('should filter proposals by projectId', async () => {
+    it("should filter proposals by projectId", async () => {
       // ARRANGE
-      const project1 = await createTestProject({ title: 'Project 1' });
-      const project2 = await createTestProject({ title: 'Project 2' });
+      const project1 = await createTestProject({ title: "Project 1" });
+      const project2 = await createTestProject({ title: "Project 2" });
       const quote1 = await createTestQuote({ projectId: project1.id });
       const quote2 = await createTestQuote({ projectId: project2.id });
       await createTestProposal({ quoteId: quote1.id, projectId: project1.id });
@@ -323,7 +330,7 @@ describe('Proposal Generation Integration', () => {
       expect(project1Proposals[0].projectId).toBe(project1.id);
     });
 
-    it('should filter proposals with sentAt not null', async () => {
+    it("should filter proposals with sentAt not null", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote1 = await createTestQuote({ projectId: project.id });
@@ -348,7 +355,7 @@ describe('Proposal Generation Integration', () => {
       expect(sentProposals).toHaveLength(1);
     });
 
-    it('should sort proposals by createdAt descending', async () => {
+    it("should sort proposals by createdAt descending", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote = await createTestQuote({ projectId: project.id });
@@ -356,7 +363,7 @@ describe('Proposal Generation Integration', () => {
         quoteId: quote.id,
         projectId: project.id,
       });
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
       const proposal2 = await createTestProposal({
         quoteId: quote.id,
         projectId: project.id,
@@ -364,7 +371,7 @@ describe('Proposal Generation Integration', () => {
 
       // ACT
       const proposals = await testPrisma.proposal.findMany({
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       });
 
       // ASSERT
@@ -373,82 +380,82 @@ describe('Proposal Generation Integration', () => {
     });
   });
 
-  describe('Proposal Validation', () => {
-    it('should require quoteId', async () => {
+  describe("Proposal Validation", () => {
+    it("should require quoteId", async () => {
       // ACT & ASSERT
       await expect(
         testPrisma.proposal.create({
           data: {
             // @ts-expect-error - Testing missing quoteId
-            projectId: 'project_123',
-            pdfUrl: 'data:application/pdf;base64,test',
+            projectId: "project_123",
+            pdfUrl: "data:application/pdf;base64,test",
           },
-        })
+        }),
       ).rejects.toThrow();
     });
 
-    it('should require projectId', async () => {
+    it("should require projectId", async () => {
       // ACT & ASSERT
       await expect(
         testPrisma.proposal.create({
           data: {
             // @ts-expect-error - Testing missing projectId
-            quoteId: 'quote_123',
-            pdfUrl: 'data:application/pdf;base64,test',
+            quoteId: "quote_123",
+            pdfUrl: "data:application/pdf;base64,test",
           },
-        })
+        }),
       ).rejects.toThrow();
     });
 
-    it('should require pdfUrl', async () => {
+    it("should require pdfUrl", async () => {
       // ACT & ASSERT
       await expect(
         testPrisma.proposal.create({
           data: {
             // @ts-expect-error - Testing missing pdfUrl
-            quoteId: 'quote_123',
-            projectId: 'project_123',
+            quoteId: "quote_123",
+            projectId: "project_123",
           },
-        })
+        }),
       ).rejects.toThrow();
     });
 
-    it('should enforce foreign key constraint for quoteId', async () => {
+    it("should enforce foreign key constraint for quoteId", async () => {
       // ACT & ASSERT
       await expect(
         createTestProposal({
-          quoteId: 'nonexistent_quote',
-          projectId: 'nonexistent_project',
-        })
+          quoteId: "nonexistent_quote",
+          projectId: "nonexistent_project",
+        }),
       ).rejects.toThrow();
     });
   });
 
-  describe('Proposal Error Handling', () => {
-    it('should throw NotFoundError for non-existent proposal', () => {
+  describe("Proposal Error Handling", () => {
+    it("should throw NotFoundError for non-existent proposal", () => {
       // ACT & ASSERT
-      const error = new NotFoundError('Proposal', 'nonexistent_id');
+      const error = new NotFoundError("Proposal", "nonexistent_id");
 
       expect(error).toBeInstanceOf(NotFoundError);
-      expect(error.message).toBe('Proposal not found: nonexistent_id');
+      expect(error.message).toBe("Proposal not found: nonexistent_id");
       expect(error.statusCode).toBe(404);
     });
 
-    it('should throw ValidationError for invalid quote', () => {
+    it("should throw ValidationError for invalid quote", () => {
       // ACT & ASSERT
       const error = new ValidationError(
-        'Quote must be converted to project before generating proposal',
-        'projectId'
+        "Quote must be converted to project before generating proposal",
+        "projectId",
       );
 
       expect(error).toBeInstanceOf(ValidationError);
       expect(error.statusCode).toBe(400);
-      expect(error.field).toBe('projectId');
+      expect(error.field).toBe("projectId");
     });
   });
 
-  describe('Proposal Count and Aggregation', () => {
-    it('should count proposals by projectId', async () => {
+  describe("Proposal Count and Aggregation", () => {
+    it("should count proposals by projectId", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote1 = await createTestQuote({ projectId: project.id });
@@ -465,7 +472,7 @@ describe('Proposal Generation Integration', () => {
       expect(count).toBe(2);
     });
 
-    it('should count total proposals', async () => {
+    it("should count total proposals", async () => {
       // ARRANGE
       const project = await createTestProject();
       const quote1 = await createTestQuote({ projectId: project.id });

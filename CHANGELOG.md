@@ -17,3 +17,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bot deployment now triggered only via release publish (not push to main)
 - CI pipeline now reusable via workflow_call
+
+### Removed
+
+- `markdown-lint.yml` workflow (redundant with pre-commit markdownlint hook)
+
+### Fixed
+
+- CI/CD test assertions to match actual workflow structure (job names, cache strategy, test command)
+- Config validation tests aligned to actual 37-variable schema (was 44)
+- Monitoring tests account for non-blocking setImmediate DB writes
+- Quote conversion tests reflect current business logic (APPROVED quotes are convertible)
+- Integration test cross-suite data pollution from parallel execution (`maxWorkers: 1`)
+- FK-ordered `cleanDatabase()` in all 4 integration test suites (analytics, projects, quotes, proposals)
+- Auth test mocks migrated from stale NextAuth route to `@/lib/auth/google-oauth`
+- Removed stale `next-auth/next` mock from admin-auth tests
+- Transaction atomicity test now functional (was skipped) via prisma client routing through testPrisma
