@@ -135,34 +135,17 @@ jobs:
           fetch-depth: 0 # Fetch all history for better detection
 
       - name: Run Gitleaks
-        id: gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
 
-      - name: Check Gitleaks results
-        if: steps.gitleaks.outcome == 'failure'
-        run: |
-          echo "::warning::Gitleaks found potential secrets - please review"
-          echo "Check the .gitleaks.toml configuration for false positive handling"
-
-      # Alternative secret scanner
       - name: TruffleHog OSS
-        id: trufflehog
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           base: ${{ github.event.before || github.event.repository.default_branch }}
           head: ${{ github.sha }}
           extra_args: --force-skip-binaries --force-skip-archives --only-verified
-        continue-on-error: true
-
-      - name: Check TruffleHog results
-        if: steps.trufflehog.outcome == 'failure'
-        run: |
-          echo "::warning::TruffleHog found potential secrets - please review"
-          echo "Note: Only verified secrets are reported to reduce false positives"
 
   # OWASP Dependency Check (for JavaScript)
   owasp-check:
@@ -210,6 +193,8 @@ jobs:
     needs: [analyze, dependency-check, secret-scan, owasp-check]
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Create security summary

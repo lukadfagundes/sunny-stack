@@ -12,11 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release workflow gating all deployments behind GitHub Releases (#75)
 - CHANGELOG.md for tracking release notes
 - Release helper scripts (release:patch, release:minor, release:major)
+- `vercel.json` for version-controlled Vercel project configuration
 
 ### Changed
 
 - Bot deployment now triggered only via release publish (not push to main)
 - CI pipeline now reusable via workflow_call
+- Vercel production deploys now use Vercel CLI instead of deploy hook (more reliable, includes deployment URL in notifications)
+- Push to main creates preview deployment only (production requires release publish)
 
 ### Removed
 
@@ -33,3 +36,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auth test mocks migrated from stale NextAuth route to `@/lib/auth/google-oauth`
 - Removed stale `next-auth/next` mock from admin-auth tests
 - Transaction atomicity test now functional (was skipped) via prisma client routing through testPrisma
+- Pre-commit `jest-changed` hook CLI conflict (`--testPathIgnorePatterns` incompatible with `--findRelatedTests`)
+- Replaced `VERCEL_DEPLOY_HOOK_URL` with Vercel CLI for reliable production deploys
