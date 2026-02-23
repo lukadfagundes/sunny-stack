@@ -122,7 +122,7 @@ jobs:
         id: tests
         run: |
           echo "🧪 Running unit tests with Jest (integration tests require database)..."
-          npm run test:ci -- --testPathIgnorePatterns=integration
+          npm run test:ci -- --testPathIgnorePatterns='integration|e2e/|__tests__/helpers/'
           echo "✅ All unit tests passed"
 
       # =============================================
@@ -132,7 +132,7 @@ jobs:
         id: coverage
         run: |
           echo "📊 Checking test coverage..."
-          npm run test:coverage -- --ci --testPathIgnorePatterns=integration
+          npm run test:coverage -- --ci --testPathIgnorePatterns='integration|e2e/|__tests__/helpers/'
 
           # Jest enforces threshold via jest.config.mjs
           # Coverage requirement: 80% for branches, functions, lines, statements
