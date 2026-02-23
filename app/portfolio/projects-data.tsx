@@ -63,6 +63,11 @@ export const personalProjects: ProjectData[] = [
           url: "https://github.com/lukadfagundes/hytale-server-manager",
           icon: <ExternalLink className="w-4 h-4" />,
         },
+        {
+          label: "Download",
+          url: "https://github.com/lukadfagundes/hytale-server-manager/releases",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
       ],
     },
     footer:
@@ -341,6 +346,11 @@ export const professionalProjects: ProjectData[] = [
         {
           label: "View on GitHub",
           url: "https://github.com/lukadfagundes/cola-records",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+        {
+          label: "Download",
+          url: "https://github.com/lukadfagundes/cola-records/releases",
           icon: <ExternalLink className="w-4 h-4" />,
         },
       ],
