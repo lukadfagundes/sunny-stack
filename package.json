@@ -31,7 +31,10 @@
     "validate:env:pi": "tsx scripts/validate-env.ts --mode=pi",
     "validate:env:vercel": "tsx scripts/validate-env.ts --mode=vercel",
     "validate:env": "tsx scripts/validate-env.ts",
-    "validate:prerequisites": "bash scripts/validate-prerequisites.sh"
+    "validate:prerequisites": "bash scripts/validate-prerequisites.sh",
+    "release:patch": "npm version patch && git push --follow-tags",
+    "release:minor": "npm version minor && git push --follow-tags",
+    "release:major": "npm version major && git push --follow-tags"
   },
   "dependencies": {
     "@discordjs/builders": "^1.7.0",

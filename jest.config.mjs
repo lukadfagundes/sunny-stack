@@ -42,9 +42,10 @@ const config = {
       statements: 80
     }
   },
-  // Increase worker limits for CI stability
+  // Integration tests share a database and must run sequentially to avoid
+  // cross-suite data pollution. Use maxWorkers=1 to serialize all suites.
   workerIdleMemoryLimit: '512MB',
-  maxWorkers: process.env.CI ? 1 : 2,
+  maxWorkers: 1,
   testTimeout: 30000,
 }
 

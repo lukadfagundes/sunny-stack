@@ -16,19 +16,17 @@
  * Follows TDD RED-GREEN-REFACTOR methodology
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-// Mock NextAuth v5 route configuration
-jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
-  auth: jest.fn(),
-  signIn: jest.fn(),
-  signOut: jest.fn(),
-  GET: jest.fn(),
-  POST: jest.fn(),
+// Mock Google OAuth session (withAuth dynamically imports this)
+jest.mock("@/lib/auth/google-oauth", () => ({
+  getSession: jest.fn(),
+  getGoogleAuthUrl: jest.fn(),
+  clearSession: jest.fn(),
 }));
 
 // Mock webhook verification functions
-jest.mock('@/lib/webhooks/verify', () => ({
+jest.mock("@/lib/webhooks/verify", () => ({
   verifyGitHubWebhook: jest.fn(),
   verifyVercelWebhook: jest.fn(),
 }));
@@ -43,14 +41,14 @@ import {
   type BotAuthConfig,
   type WebhookAuthConfig,
   type RateLimitConfig,
-} from '@/lib/middleware/auth';
+} from "@/lib/middleware/auth";
 
 import {
   verifyGitHubWebhook,
   verifyVercelWebhook,
-} from '@/lib/webhooks/verify';
+} from "@/lib/webhooks/verify";
 
-describe('Authentication Middleware', () => {
+describe("Authentication Middleware", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Clear environment variables
@@ -60,25 +58,25 @@ describe('Authentication Middleware', () => {
     delete process.env.VERCEL_WEBHOOK_SECRET;
   });
 
-  describe('withAuth (NextAuth Google OAuth)', () => {
-    test('should allow authenticated admin user', async () => {
+  describe("withAuth (NextAuth Google OAuth)", () => {
+    test("should allow authenticated admin user", async () => {
       // ARRANGE
-      process.env.ADMIN_EMAIL = 'admin@example.com';
+      process.env.ADMIN_EMAIL = "admin@example.com";
       const mockSession = {
         user: {
-          email: 'admin@example.com',
-          name: 'Admin User',
-          image: 'https://example.com/avatar.jpg',
+          email: "admin@example.com",
+          name: "Admin User",
+          image: "https://example.com/avatar.jpg",
         },
       };
 
-      const { auth } = require('@/app/api/auth/[...nextauth]/route');
-      auth.mockResolvedValue(mockSession);
+      const { getSession } = require("@/lib/auth/google-oauth");
+      getSession.mockResolvedValue(mockSession);
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin');
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockRequest = new NextRequest("http://localhost:3000/api/admin");
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withAuth(mockHandler)(mockRequest);
@@ -87,16 +85,16 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).toHaveBeenCalled();
       expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
-      expect(auth).toHaveBeenCalled();
+      expect(getSession).toHaveBeenCalled();
     });
 
-    test('should reject unauthenticated user with 401', async () => {
+    test("should reject unauthenticated user with 401", async () => {
       // ARRANGE
-      process.env.ADMIN_EMAIL = 'admin@example.com';
-      const { auth } = require('@/app/api/auth/[...nextauth]/route');
-      auth.mockResolvedValue(null); // No session
+      process.env.ADMIN_EMAIL = "admin@example.com";
+      const { getSession } = require("@/lib/auth/google-oauth");
+      getSession.mockResolvedValue(null); // No session
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin');
+      const mockRequest = new NextRequest("http://localhost:3000/api/admin");
       const mockHandler = jest.fn();
 
       // ACT
@@ -106,23 +104,25 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).not.toHaveBeenCalled();
       expect(result.status).toBe(401);
       const body = await result.json();
-      expect(body.error).toBe('Unauthorized - No session found and no valid API key');
+      expect(body.error).toBe(
+        "Unauthorized - No session found and no valid API key",
+      );
     });
 
-    test('should reject non-admin user with 403', async () => {
+    test("should reject non-admin user with 403", async () => {
       // ARRANGE
-      process.env.ADMIN_EMAIL = 'admin@example.com';
+      process.env.ADMIN_EMAIL = "admin@example.com";
       const mockSession = {
         user: {
-          email: 'user@example.com', // Not admin
-          name: 'Regular User',
+          email: "user@example.com", // Not admin
+          name: "Regular User",
         },
       };
 
-      const { auth } = require('@/app/api/auth/[...nextauth]/route');
-      auth.mockResolvedValue(mockSession);
+      const { getSession } = require("@/lib/auth/google-oauth");
+      getSession.mockResolvedValue(mockSession);
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin');
+      const mockRequest = new NextRequest("http://localhost:3000/api/admin");
       const mockHandler = jest.fn();
 
       // ACT
@@ -132,41 +132,41 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).not.toHaveBeenCalled();
       expect(result.status).toBe(403);
       const body = await result.json();
-      expect(body.error).toBe('Forbidden - Admin access required');
+      expect(body.error).toBe("Forbidden - Admin access required");
     });
 
-    test('should throw error when ADMIN_EMAIL is not configured', async () => {
+    test("should throw error when ADMIN_EMAIL is not configured", async () => {
       // ARRANGE
       // No ADMIN_EMAIL set
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin');
+      const mockRequest = new NextRequest("http://localhost:3000/api/admin");
       const mockHandler = jest.fn();
 
       // ACT & ASSERT
       await expect(withAuth(mockHandler)(mockRequest)).rejects.toThrow(
-        'ADMIN_EMAIL environment variable is not defined'
+        "ADMIN_EMAIL environment variable is not defined",
       );
     });
 
-    test('should accept custom admin email list', async () => {
+    test("should accept custom admin email list", async () => {
       // ARRANGE
       const config: AuthMiddlewareConfig = {
-        adminEmails: ['admin1@example.com', 'admin2@example.com'],
+        adminEmails: ["admin1@example.com", "admin2@example.com"],
       };
 
       const mockSession = {
         user: {
-          email: 'admin2@example.com',
-          name: 'Admin 2',
+          email: "admin2@example.com",
+          name: "Admin 2",
         },
       };
 
-      const { auth } = require('@/app/api/auth/[...nextauth]/route');
-      auth.mockResolvedValue(mockSession);
+      const { getSession } = require("@/lib/auth/google-oauth");
+      getSession.mockResolvedValue(mockSession);
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin');
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockRequest = new NextRequest("http://localhost:3000/api/admin");
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withAuth(mockHandler, config)(mockRequest);
@@ -177,13 +177,13 @@ describe('Authentication Middleware', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle session callback errors gracefully', async () => {
+    test("should handle session callback errors gracefully", async () => {
       // ARRANGE
-      process.env.ADMIN_EMAIL = 'admin@example.com';
-      const { auth } = require('@/app/api/auth/[...nextauth]/route');
-      auth.mockRejectedValue(new Error('Session retrieval failed'));
+      process.env.ADMIN_EMAIL = "admin@example.com";
+      const { getSession } = require("@/lib/auth/google-oauth");
+      getSession.mockRejectedValue(new Error("Session retrieval failed"));
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin');
+      const mockRequest = new NextRequest("http://localhost:3000/api/admin");
       const mockHandler = jest.fn();
 
       // ACT
@@ -193,24 +193,27 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).not.toHaveBeenCalled();
       expect(result.status).toBe(401);
       const body = await result.json();
-      expect(body.error).toContain('Authentication failed');
+      expect(body.error).toContain("Authentication failed");
     });
   });
 
-  describe('withBotAuth (Bot API Key)', () => {
-    test('should allow request with valid Bot API key', async () => {
+  describe("withBotAuth (Bot API Key)", () => {
+    test("should allow request with valid Bot API key", async () => {
       // ARRANGE
-      process.env.BOT_API_KEY = 'test-bot-key-12345';
+      process.env.BOT_API_KEY = "test-bot-key-12345";
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/bot/sync', {
-        headers: {
-          'x-api-key': 'test-bot-key-12345',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/bot/sync",
+        {
+          headers: {
+            "x-api-key": "test-bot-key-12345",
+          },
         },
-      });
-
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
       );
+
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withBotAuth(mockHandler)(mockRequest);
@@ -221,11 +224,11 @@ describe('Authentication Middleware', () => {
       expect(result).toBeDefined();
     });
 
-    test('should reject request with missing API key header', async () => {
+    test("should reject request with missing API key header", async () => {
       // ARRANGE
-      process.env.BOT_API_KEY = 'test-bot-key-12345';
+      process.env.BOT_API_KEY = "test-bot-key-12345";
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/bot/sync');
+      const mockRequest = new NextRequest("http://localhost:3000/api/bot/sync");
       const mockHandler = jest.fn();
 
       // ACT
@@ -235,18 +238,21 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).not.toHaveBeenCalled();
       expect(result.status).toBe(401);
       const body = await result.json();
-      expect(body.error).toBe('Unauthorized - Missing API key');
+      expect(body.error).toBe("Unauthorized - Missing API key");
     });
 
-    test('should reject request with invalid API key', async () => {
+    test("should reject request with invalid API key", async () => {
       // ARRANGE
-      process.env.BOT_API_KEY = 'test-bot-key-12345';
+      process.env.BOT_API_KEY = "test-bot-key-12345";
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/bot/sync', {
-        headers: {
-          'x-api-key': 'wrong-key',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/bot/sync",
+        {
+          headers: {
+            "x-api-key": "wrong-key",
+          },
         },
-      });
+      );
 
       const mockHandler = jest.fn();
 
@@ -257,42 +263,48 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).not.toHaveBeenCalled();
       expect(result.status).toBe(403);
       const body = await result.json();
-      expect(body.error).toBe('Forbidden - Invalid API key');
+      expect(body.error).toBe("Forbidden - Invalid API key");
     });
 
-    test('should throw error when BOT_API_KEY is not configured', async () => {
+    test("should throw error when BOT_API_KEY is not configured", async () => {
       // ARRANGE
       // No BOT_API_KEY set
-      const mockRequest = new NextRequest('http://localhost:3000/api/bot/sync', {
-        headers: {
-          'x-api-key': 'some-key',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/bot/sync",
+        {
+          headers: {
+            "x-api-key": "some-key",
+          },
         },
-      });
+      );
       const mockHandler = jest.fn();
 
       // ACT & ASSERT
       await expect(withBotAuth(mockHandler)(mockRequest)).rejects.toThrow(
-        'BOT_API_KEY environment variable is not defined'
+        "BOT_API_KEY environment variable is not defined",
       );
     });
 
-    test('should accept custom API key header name', async () => {
+    test("should accept custom API key header name", async () => {
       // ARRANGE
-      process.env.BOT_API_KEY = 'test-bot-key-12345';
+      process.env.BOT_API_KEY = "test-bot-key-12345";
       const config: BotAuthConfig = {
-        headerName: 'authorization',
-        prefix: 'Bearer ',
+        headerName: "authorization",
+        prefix: "Bearer ",
       };
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/bot/sync', {
-        headers: {
-          authorization: 'Bearer test-bot-key-12345',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/bot/sync",
+        {
+          headers: {
+            authorization: "Bearer test-bot-key-12345",
+          },
         },
-      });
-
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
       );
+
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withBotAuth(mockHandler, config)(mockRequest);
@@ -303,21 +315,24 @@ describe('Authentication Middleware', () => {
       expect(result).toBeDefined();
     });
 
-    test('should support multiple valid API keys', async () => {
+    test("should support multiple valid API keys", async () => {
       // ARRANGE
       const config: BotAuthConfig = {
-        apiKeys: ['key-1', 'key-2', 'key-3'],
+        apiKeys: ["key-1", "key-2", "key-3"],
       };
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/bot/sync', {
-        headers: {
-          'x-api-key': 'key-2',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/bot/sync",
+        {
+          headers: {
+            "x-api-key": "key-2",
+          },
         },
-      });
-
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
       );
+
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withBotAuth(mockHandler, config)(mockRequest);
@@ -329,34 +344,37 @@ describe('Authentication Middleware', () => {
     });
   });
 
-  describe('withWebhookAuth (Webhook Signatures)', () => {
-    test('should verify valid GitHub webhook signature', async () => {
+  describe("withWebhookAuth (Webhook Signatures)", () => {
+    test("should verify valid GitHub webhook signature", async () => {
       // ARRANGE
-      process.env.GITHUB_WEBHOOK_SECRET = 'github-secret-12345';
+      process.env.GITHUB_WEBHOOK_SECRET = "github-secret-12345";
 
       const payload = JSON.stringify({
-        action: 'opened',
+        action: "opened",
         pull_request: { id: 1 },
       });
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/webhooks/github', {
-        method: 'POST',
-        headers: {
-          'x-hub-signature-256': 'sha256=valid-signature',
-          'content-type': 'application/json',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/webhooks/github",
+        {
+          method: "POST",
+          headers: {
+            "x-hub-signature-256": "sha256=valid-signature",
+            "content-type": "application/json",
+          },
+          body: payload,
         },
-        body: payload,
-      });
-
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
       );
+
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // Mock verifyGitHubWebhook to return true
       (verifyGitHubWebhook as jest.Mock).mockReturnValue(true);
 
       // ACT
-      const config: WebhookAuthConfig = { provider: 'github' };
+      const config: WebhookAuthConfig = { provider: "github" };
       const result = await withWebhookAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
@@ -365,23 +383,26 @@ describe('Authentication Middleware', () => {
       expect(result).toBeDefined();
     });
 
-    test('should reject GitHub webhook with invalid signature', async () => {
+    test("should reject GitHub webhook with invalid signature", async () => {
       // ARRANGE
-      process.env.GITHUB_WEBHOOK_SECRET = 'github-secret-12345';
+      process.env.GITHUB_WEBHOOK_SECRET = "github-secret-12345";
 
       const payload = JSON.stringify({
-        action: 'opened',
+        action: "opened",
         pull_request: { id: 1 },
       });
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/webhooks/github', {
-        method: 'POST',
-        headers: {
-          'x-hub-signature-256': 'sha256=invalid-signature',
-          'content-type': 'application/json',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/webhooks/github",
+        {
+          method: "POST",
+          headers: {
+            "x-hub-signature-256": "sha256=invalid-signature",
+            "content-type": "application/json",
+          },
+          body: payload,
         },
-        body: payload,
-      });
+      );
 
       const mockHandler = jest.fn();
 
@@ -389,68 +410,74 @@ describe('Authentication Middleware', () => {
       (verifyGitHubWebhook as jest.Mock).mockReturnValue(false);
 
       // ACT
-      const config: WebhookAuthConfig = { provider: 'github' };
+      const config: WebhookAuthConfig = { provider: "github" };
       const result = await withWebhookAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
       expect(mockHandler).not.toHaveBeenCalled();
       expect(result.status).toBe(403);
       const body = await result.json();
-      expect(body.error).toBe('Forbidden - Invalid webhook signature');
+      expect(body.error).toBe("Forbidden - Invalid webhook signature");
     });
 
-    test('should reject GitHub webhook with missing signature', async () => {
+    test("should reject GitHub webhook with missing signature", async () => {
       // ARRANGE
-      process.env.GITHUB_WEBHOOK_SECRET = 'github-secret-12345';
+      process.env.GITHUB_WEBHOOK_SECRET = "github-secret-12345";
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/webhooks/github', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/webhooks/github",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({ action: "opened" }),
         },
-        body: JSON.stringify({ action: 'opened' }),
-      });
+      );
 
       const mockHandler = jest.fn();
 
       // ACT
-      const config: WebhookAuthConfig = { provider: 'github' };
+      const config: WebhookAuthConfig = { provider: "github" };
       const result = await withWebhookAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
       expect(mockHandler).not.toHaveBeenCalled();
       expect(result.status).toBe(401);
       const body = await result.json();
-      expect(body.error).toBe('Unauthorized - Missing webhook signature');
+      expect(body.error).toBe("Unauthorized - Missing webhook signature");
     });
 
-    test('should verify valid Vercel webhook signature', async () => {
+    test("should verify valid Vercel webhook signature", async () => {
       // ARRANGE
-      process.env.VERCEL_WEBHOOK_SECRET = 'vercel-secret-12345';
+      process.env.VERCEL_WEBHOOK_SECRET = "vercel-secret-12345";
 
       const payload = JSON.stringify({
-        type: 'deployment',
-        payload: { state: 'READY' },
+        type: "deployment",
+        payload: { state: "READY" },
       });
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/webhooks/vercel', {
-        method: 'POST',
-        headers: {
-          'x-vercel-signature': 'valid-signature',
-          'content-type': 'application/json',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/webhooks/vercel",
+        {
+          method: "POST",
+          headers: {
+            "x-vercel-signature": "valid-signature",
+            "content-type": "application/json",
+          },
+          body: payload,
         },
-        body: payload,
-      });
-
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
       );
+
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // Mock verifyVercelWebhook to return true
       (verifyVercelWebhook as jest.Mock).mockReturnValue(true);
 
       // ACT
-      const config: WebhookAuthConfig = { provider: 'vercel' };
+      const config: WebhookAuthConfig = { provider: "vercel" };
       const result = await withWebhookAuth(mockHandler, config)(mockRequest);
 
       // ASSERT
@@ -459,48 +486,56 @@ describe('Authentication Middleware', () => {
       expect(result).toBeDefined();
     });
 
-    test('should throw error when webhook secret is not configured', async () => {
+    test("should throw error when webhook secret is not configured", async () => {
       // ARRANGE
       // No GITHUB_WEBHOOK_SECRET set
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/webhooks/github', {
-        method: 'POST',
-        headers: {
-          'x-hub-signature-256': 'sha256=signature',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/webhooks/github",
+        {
+          method: "POST",
+          headers: {
+            "x-hub-signature-256": "sha256=signature",
+          },
         },
-      });
+      );
 
       const mockHandler = jest.fn();
 
       // ACT & ASSERT
-      const config: WebhookAuthConfig = { provider: 'github' };
-      await expect(withWebhookAuth(mockHandler, config)(mockRequest)).rejects.toThrow(
-        'GITHUB_WEBHOOK_SECRET environment variable is not defined'
+      const config: WebhookAuthConfig = { provider: "github" };
+      await expect(
+        withWebhookAuth(mockHandler, config)(mockRequest),
+      ).rejects.toThrow(
+        "GITHUB_WEBHOOK_SECRET environment variable is not defined",
       );
     });
 
-    test('should support custom webhook providers', async () => {
+    test("should support custom webhook providers", async () => {
       // ARRANGE
       const config: WebhookAuthConfig = {
-        provider: 'custom',
-        secret: 'custom-secret',
-        headerName: 'x-custom-signature',
+        provider: "custom",
+        secret: "custom-secret",
+        headerName: "x-custom-signature",
         verifyFn: (payload: string, signature: string, secret: string) => {
           return signature === `custom-${secret}`;
         },
       };
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/webhooks/custom', {
-        method: 'POST',
-        headers: {
-          'x-custom-signature': 'custom-custom-secret',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/webhooks/custom",
+        {
+          method: "POST",
+          headers: {
+            "x-custom-signature": "custom-custom-secret",
+          },
+          body: JSON.stringify({ data: "test" }),
         },
-        body: JSON.stringify({ data: 'test' }),
-      });
-
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
       );
+
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withWebhookAuth(mockHandler, config)(mockRequest);
@@ -512,18 +547,18 @@ describe('Authentication Middleware', () => {
     });
   });
 
-  describe('withRateLimit (Rate Limiting)', () => {
-    test('should allow requests within rate limit (10 req/min)', async () => {
+  describe("withRateLimit (Rate Limiting)", () => {
+    test("should allow requests within rate limit (10 req/min)", async () => {
       // ARRANGE
-      const mockRequest = new NextRequest('http://localhost:3000/api/data', {
+      const mockRequest = new NextRequest("http://localhost:3000/api/data", {
         headers: {
-          'x-forwarded-for': '192.168.1.1',
+          "x-forwarded-for": "192.168.1.1",
         },
       });
 
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withRateLimit(mockHandler)(mockRequest);
@@ -532,21 +567,21 @@ describe('Authentication Middleware', () => {
       expect(mockHandler).toHaveBeenCalled();
       expect(mockHandler.mock.calls[0][0]).toBe(mockRequest);
       expect(result).toBeDefined();
-      expect(result.headers.get('x-ratelimit-limit')).toBe('10');
-      expect(result.headers.get('x-ratelimit-remaining')).toBe('9');
+      expect(result.headers.get("x-ratelimit-limit")).toBe("10");
+      expect(result.headers.get("x-ratelimit-remaining")).toBe("9");
     });
 
-    test('should reject requests exceeding rate limit with 429', async () => {
+    test("should reject requests exceeding rate limit with 429", async () => {
       // ARRANGE
-      const mockRequest = new NextRequest('http://localhost:3000/api/data', {
+      const mockRequest = new NextRequest("http://localhost:3000/api/data", {
         headers: {
-          'x-forwarded-for': '192.168.1.2',
+          "x-forwarded-for": "192.168.1.2",
         },
       });
 
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       const middleware = withRateLimit(mockHandler);
 
@@ -560,29 +595,29 @@ describe('Authentication Middleware', () => {
       const lastResult = results[10];
       expect(lastResult.status).toBe(429);
       const body = await lastResult.json();
-      expect(body.error).toBe('Too Many Requests - Rate limit exceeded');
-      expect(lastResult.headers.get('x-ratelimit-limit')).toBe('10');
-      expect(lastResult.headers.get('x-ratelimit-remaining')).toBe('0');
-      expect(lastResult.headers.get('retry-after')).toBeDefined();
+      expect(body.error).toBe("Too Many Requests - Rate limit exceeded");
+      expect(lastResult.headers.get("x-ratelimit-limit")).toBe("10");
+      expect(lastResult.headers.get("x-ratelimit-remaining")).toBe("0");
+      expect(lastResult.headers.get("retry-after")).toBeDefined();
     });
 
-    test('should track rate limit per IP address', async () => {
+    test("should track rate limit per IP address", async () => {
       // ARRANGE
-      const mockRequest1 = new NextRequest('http://localhost:3000/api/data', {
+      const mockRequest1 = new NextRequest("http://localhost:3000/api/data", {
         headers: {
-          'x-forwarded-for': '192.168.1.3',
+          "x-forwarded-for": "192.168.1.3",
         },
       });
 
-      const mockRequest2 = new NextRequest('http://localhost:3000/api/data', {
+      const mockRequest2 = new NextRequest("http://localhost:3000/api/data", {
         headers: {
-          'x-forwarded-for': '192.168.1.4',
+          "x-forwarded-for": "192.168.1.4",
         },
       });
 
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       const middleware = withRateLimit(mockHandler);
 
@@ -594,23 +629,25 @@ describe('Authentication Middleware', () => {
 
       // ASSERT - IP2 should still be allowed
       expect(mockHandler).toHaveBeenCalled();
-      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest2);
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(
+        mockRequest2,
+      );
       expect(result.status).not.toBe(429);
-      expect(result.headers.get('x-ratelimit-remaining')).toBe('9');
+      expect(result.headers.get("x-ratelimit-remaining")).toBe("9");
     });
 
-    test('should reset rate limit after time window expires', async () => {
+    test("should reset rate limit after time window expires", async () => {
       // ARRANGE
       jest.useFakeTimers();
-      const mockRequest = new NextRequest('http://localhost:3000/api/data', {
+      const mockRequest = new NextRequest("http://localhost:3000/api/data", {
         headers: {
-          'x-forwarded-for': '192.168.1.5',
+          "x-forwarded-for": "192.168.1.5",
         },
       });
 
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       const middleware = withRateLimit(mockHandler);
 
@@ -627,27 +664,27 @@ describe('Authentication Middleware', () => {
 
       // ASSERT
       expect(result.status).not.toBe(429);
-      expect(result.headers.get('x-ratelimit-remaining')).toBe('9');
+      expect(result.headers.get("x-ratelimit-remaining")).toBe("9");
 
       jest.useRealTimers();
     });
 
-    test('should support custom rate limit configuration', async () => {
+    test("should support custom rate limit configuration", async () => {
       // ARRANGE
       const config: RateLimitConfig = {
         limit: 5,
         windowMs: 60000, // 1 minute
       };
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/data', {
+      const mockRequest = new NextRequest("http://localhost:3000/api/data", {
         headers: {
-          'x-forwarded-for': '192.168.1.6',
+          "x-forwarded-for": "192.168.1.6",
         },
       });
 
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       const middleware = withRateLimit(mockHandler, config);
 
@@ -660,36 +697,38 @@ describe('Authentication Middleware', () => {
       // ASSERT
       const lastResult = results[5];
       expect(lastResult.status).toBe(429);
-      expect(lastResult.headers.get('x-ratelimit-limit')).toBe('5');
+      expect(lastResult.headers.get("x-ratelimit-limit")).toBe("5");
     });
 
-    test('should extract IP from x-real-ip header if x-forwarded-for is missing', async () => {
+    test("should extract IP from x-real-ip header if x-forwarded-for is missing", async () => {
       // ARRANGE
-      const mockRequest = new NextRequest('http://localhost:3000/api/data', {
+      const mockRequest = new NextRequest("http://localhost:3000/api/data", {
         headers: {
-          'x-real-ip': '192.168.1.7',
+          "x-real-ip": "192.168.1.7",
         },
       });
 
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withRateLimit(mockHandler)(mockRequest);
 
       // ASSERT
       expect(mockHandler).toHaveBeenCalled();
-      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest);
-      expect(result.headers.get('x-ratelimit-remaining')).toBe('9');
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(
+        mockRequest,
+      );
+      expect(result.headers.get("x-ratelimit-remaining")).toBe("9");
     });
 
-    test('should handle missing IP headers gracefully', async () => {
+    test("should handle missing IP headers gracefully", async () => {
       // ARRANGE
-      const mockRequest = new NextRequest('http://localhost:3000/api/data');
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockRequest = new NextRequest("http://localhost:3000/api/data");
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const result = await withRateLimit(mockHandler)(mockRequest);
@@ -697,24 +736,26 @@ describe('Authentication Middleware', () => {
       // ASSERT
       // Should use a fallback IP (e.g., 'unknown')
       expect(mockHandler).toHaveBeenCalled();
-      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest);
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(
+        mockRequest,
+      );
       expect(result).toBeDefined();
     });
 
-    test('should cleanup old rate limit entries automatically', async () => {
+    test("should cleanup old rate limit entries automatically", async () => {
       // ARRANGE
       jest.useFakeTimers();
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       const middleware = withRateLimit(mockHandler);
 
       // ACT - Create entries for 100 different IPs
       for (let i = 0; i < 100; i++) {
-        const mockRequest = new NextRequest('http://localhost:3000/api/data', {
+        const mockRequest = new NextRequest("http://localhost:3000/api/data", {
           headers: {
-            'x-forwarded-for': `192.168.1.${i}`,
+            "x-forwarded-for": `192.168.1.${i}`,
           },
         });
         await middleware(mockRequest);
@@ -724,9 +765,9 @@ describe('Authentication Middleware', () => {
       jest.advanceTimersByTime(10 * 60 * 1000);
 
       // Make a new request (should trigger cleanup)
-      const newRequest = new NextRequest('http://localhost:3000/api/data', {
+      const newRequest = new NextRequest("http://localhost:3000/api/data", {
         headers: {
-          'x-forwarded-for': '192.168.1.200',
+          "x-forwarded-for": "192.168.1.200",
         },
       });
       await middleware(newRequest);
@@ -738,29 +779,29 @@ describe('Authentication Middleware', () => {
     });
   });
 
-  describe('Middleware Composition', () => {
-    test('should compose withAuth and withRateLimit', async () => {
+  describe("Middleware Composition", () => {
+    test("should compose withAuth and withRateLimit", async () => {
       // ARRANGE
-      process.env.ADMIN_EMAIL = 'admin@example.com';
+      process.env.ADMIN_EMAIL = "admin@example.com";
       const mockSession = {
         user: {
-          email: 'admin@example.com',
-          name: 'Admin',
+          email: "admin@example.com",
+          name: "Admin",
         },
       };
 
-      const { auth } = require('@/app/api/auth/[...nextauth]/route');
-      auth.mockResolvedValue(mockSession);
+      const { getSession } = require("@/lib/auth/google-oauth");
+      getSession.mockResolvedValue(mockSession);
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin', {
+      const mockRequest = new NextRequest("http://localhost:3000/api/admin", {
         headers: {
-          'x-forwarded-for': '192.168.1.100',
+          "x-forwarded-for": "192.168.1.100",
         },
       });
 
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
-      );
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT - Apply both middleware
       const composedHandler = withRateLimit(withAuth(mockHandler));
@@ -768,24 +809,29 @@ describe('Authentication Middleware', () => {
 
       // ASSERT
       expect(mockHandler).toHaveBeenCalled();
-      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest);
-      expect(result.headers.get('x-ratelimit-limit')).toBeDefined();
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(
+        mockRequest,
+      );
+      expect(result.headers.get("x-ratelimit-limit")).toBeDefined();
     });
 
-    test('should compose withBotAuth and withRateLimit', async () => {
+    test("should compose withBotAuth and withRateLimit", async () => {
       // ARRANGE
-      process.env.BOT_API_KEY = 'test-bot-key';
+      process.env.BOT_API_KEY = "test-bot-key";
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/bot/sync', {
-        headers: {
-          'x-api-key': 'test-bot-key',
-          'x-forwarded-for': '192.168.1.101',
+      const mockRequest = new NextRequest(
+        "http://localhost:3000/api/bot/sync",
+        {
+          headers: {
+            "x-api-key": "test-bot-key",
+            "x-forwarded-for": "192.168.1.101",
+          },
         },
-      });
-
-      const mockHandler = jest.fn().mockResolvedValue(
-        NextResponse.json({ success: true })
       );
+
+      const mockHandler = jest
+        .fn()
+        .mockResolvedValue(NextResponse.json({ success: true }));
 
       // ACT
       const composedHandler = withRateLimit(withBotAuth(mockHandler));
@@ -793,45 +839,47 @@ describe('Authentication Middleware', () => {
 
       // ASSERT
       expect(mockHandler).toHaveBeenCalled();
-      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(mockRequest);
-      expect(result.headers.get('x-ratelimit-limit')).toBeDefined();
+      expect(mockHandler.mock.calls[mockHandler.mock.calls.length - 1][0]).toBe(
+        mockRequest,
+      );
+      expect(result.headers.get("x-ratelimit-limit")).toBeDefined();
     });
   });
 
-  describe('TypeScript Type Safety', () => {
-    test('should enforce AuthMiddlewareConfig type', () => {
+  describe("TypeScript Type Safety", () => {
+    test("should enforce AuthMiddlewareConfig type", () => {
       // ARRANGE
       const config: AuthMiddlewareConfig = {
-        adminEmails: ['admin@example.com'],
+        adminEmails: ["admin@example.com"],
       };
 
       // ASSERT - TypeScript compilation will enforce this
       expect(config.adminEmails).toHaveLength(1);
     });
 
-    test('should enforce BotAuthConfig type', () => {
+    test("should enforce BotAuthConfig type", () => {
       // ARRANGE
       const config: BotAuthConfig = {
-        headerName: 'x-api-key',
-        apiKeys: ['key1', 'key2'],
+        headerName: "x-api-key",
+        apiKeys: ["key1", "key2"],
       };
 
       // ASSERT - TypeScript compilation will enforce this
-      expect(config.headerName).toBe('x-api-key');
+      expect(config.headerName).toBe("x-api-key");
       expect(config.apiKeys).toHaveLength(2);
     });
 
-    test('should enforce WebhookAuthConfig type', () => {
+    test("should enforce WebhookAuthConfig type", () => {
       // ARRANGE
       const config: WebhookAuthConfig = {
-        provider: 'github',
+        provider: "github",
       };
 
       // ASSERT - TypeScript compilation will enforce this
-      expect(config.provider).toBe('github');
+      expect(config.provider).toBe("github");
     });
 
-    test('should enforce RateLimitConfig type', () => {
+    test("should enforce RateLimitConfig type", () => {
       // ARRANGE
       const config: RateLimitConfig = {
         limit: 10,

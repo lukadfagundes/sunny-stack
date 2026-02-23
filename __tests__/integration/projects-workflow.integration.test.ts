@@ -5,15 +5,24 @@
  */
 
 // IMPORTANT: Unmock Prisma for integration tests - we need real DB access
-jest.unmock('@prisma/client');
+jest.unmock("@prisma/client");
 
-import { setupTestDatabase, teardownTestDatabase, testPrisma } from '../helpers/test-db';
-import { createTestProject, createTestTimeEntry, createTestQuote } from '../helpers/test-factories';
-import { ProjectStatus } from '@prisma/client';
-import { NotFoundError } from '@/lib/errors/app-error';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanDatabase,
+  testPrisma,
+} from "../helpers/test-db";
+import {
+  createTestProject,
+  createTestTimeEntry,
+  createTestQuote,
+} from "../helpers/test-factories";
+import { ProjectStatus } from "@prisma/client";
+import { NotFoundError } from "@/lib/errors/app-error";
 
 // Mock logger
-jest.mock('@/lib/logger', () => ({
+jest.mock("@/lib/logger", () => ({
   info: jest.fn(),
   error: jest.fn(),
   warn: jest.fn(),
@@ -26,7 +35,7 @@ jest.mock('@/lib/logger', () => ({
   },
 }));
 
-describe('Projects Workflow Integration', () => {
+describe("Projects Workflow Integration", () => {
   beforeAll(async () => {
     await setupTestDatabase();
   });
@@ -36,74 +45,72 @@ describe('Projects Workflow Integration', () => {
   });
 
   beforeEach(async () => {
-    // Clean project-related data before each test
-    await testPrisma.timeEntry.deleteMany();
-    await testPrisma.quote.deleteMany();
-    await testPrisma.project.deleteMany();
+    // Clean all data before each test (handles FK ordering correctly)
+    await cleanDatabase();
   });
 
-  describe('Create Project', () => {
-    it('should create project with required fields', async () => {
+  describe("Create Project", () => {
+    it("should create project with required fields", async () => {
       // ACT
       const project = await createTestProject({
-        title: 'E-commerce Platform',
-        clientName: 'John Doe',
-        clientEmail: 'john@example.com',
+        title: "E-commerce Platform",
+        clientName: "John Doe",
+        clientEmail: "john@example.com",
       });
 
       // ASSERT
       expect(project).toBeDefined();
       expect(project.id).toBeDefined();
-      expect(project.title).toBe('E-commerce Platform');
-      expect(project.clientName).toBe('John Doe');
-      expect(project.clientEmail).toBe('john@example.com');
+      expect(project.title).toBe("E-commerce Platform");
+      expect(project.clientName).toBe("John Doe");
+      expect(project.clientEmail).toBe("john@example.com");
       expect(project.status).toBe(ProjectStatus.PLANNING);
       expect(project.deletedAt).toBeNull();
     });
 
-    it('should create project with all optional fields', async () => {
+    it("should create project with all optional fields", async () => {
       // ARRANGE
-      const deadline = new Date('2025-12-31');
+      const deadline = new Date("2025-12-31");
 
       // ACT
       const project = await createTestProject({
-        title: 'Full-Stack App',
-        description: 'A comprehensive web application',
-        clientName: 'Jane Smith',
-        clientEmail: 'jane@example.com',
+        title: "Full-Stack App",
+        description: "A comprehensive web application",
+        clientName: "Jane Smith",
+        clientEmail: "jane@example.com",
         status: ProjectStatus.IN_PROGRESS,
-        budget: 50000.00,
+        budget: 50000.0,
         deadline,
       });
 
       // ASSERT
-      expect(project.description).toBe('A comprehensive web application');
+      expect(project.description).toBe("A comprehensive web application");
       expect(project.status).toBe(ProjectStatus.IN_PROGRESS);
       expect(Number(project.budget)).toBe(50000);
       expect(project.deadline).toEqual(deadline);
     });
 
-    it('should create multiple projects', async () => {
+    it("should create multiple projects", async () => {
       // ACT
-      const project1 = await createTestProject({ title: 'Project 1' });
-      const project2 = await createTestProject({ title: 'Project 2' });
-      const project3 = await createTestProject({ title: 'Project 3' });
+      const project1 = await createTestProject({ title: "Project 1" });
+      const project2 = await createTestProject({ title: "Project 2" });
+      const project3 = await createTestProject({ title: "Project 3" });
 
       // ASSERT
       expect(project1.id).not.toBe(project2.id);
       expect(project2.id).not.toBe(project3.id);
-      expect(project1.title).toBe('Project 1');
-      expect(project2.title).toBe('Project 2');
-      expect(project3.title).toBe('Project 3');
+      expect(project1.title).toBe("Project 1");
+      expect(project2.title).toBe("Project 2");
+      expect(project3.title).toBe("Project 3");
     });
   });
 
-  describe('Read Projects', () => {
-    it('should list all projects', async () => {
+  describe("Read Projects", () => {
+    it("should list all projects", async () => {
       // ARRANGE
-      await createTestProject({ title: 'Project A' });
-      await createTestProject({ title: 'Project B' });
-      await createTestProject({ title: 'Project C' });
+      await createTestProject({ title: "Project A" });
+      await createTestProject({ title: "Project B" });
+      await createTestProject({ title: "Project C" });
 
       // ACT
       const projects = await testPrisma.project.findMany({
@@ -112,16 +119,25 @@ describe('Projects Workflow Integration', () => {
 
       // ASSERT
       expect(projects).toHaveLength(3);
-      expect(projects.map(p => p.title)).toContain('Project A');
-      expect(projects.map(p => p.title)).toContain('Project B');
-      expect(projects.map(p => p.title)).toContain('Project C');
+      expect(projects.map((p) => p.title)).toContain("Project A");
+      expect(projects.map((p) => p.title)).toContain("Project B");
+      expect(projects.map((p) => p.title)).toContain("Project C");
     });
 
-    it('should filter projects by status', async () => {
+    it("should filter projects by status", async () => {
       // ARRANGE
-      await createTestProject({ title: 'Planning', status: ProjectStatus.PLANNING });
-      await createTestProject({ title: 'In Progress', status: ProjectStatus.IN_PROGRESS });
-      await createTestProject({ title: 'Review', status: ProjectStatus.REVIEW });
+      await createTestProject({
+        title: "Planning",
+        status: ProjectStatus.PLANNING,
+      });
+      await createTestProject({
+        title: "In Progress",
+        status: ProjectStatus.IN_PROGRESS,
+      });
+      await createTestProject({
+        title: "Review",
+        status: ProjectStatus.REVIEW,
+      });
 
       // ACT
       const planningProjects = await testPrisma.project.findMany({
@@ -130,10 +146,10 @@ describe('Projects Workflow Integration', () => {
 
       // ASSERT
       expect(planningProjects).toHaveLength(1);
-      expect(planningProjects[0].title).toBe('Planning');
+      expect(planningProjects[0].title).toBe("Planning");
     });
 
-    it('should paginate projects', async () => {
+    it("should paginate projects", async () => {
       // ARRANGE
       for (let i = 1; i <= 10; i++) {
         await createTestProject({ title: `Project ${i}` });
@@ -142,14 +158,14 @@ describe('Projects Workflow Integration', () => {
       // ACT
       const page1 = await testPrisma.project.findMany({
         where: { deletedAt: null },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 5,
         skip: 0,
       });
 
       const page2 = await testPrisma.project.findMany({
         where: { deletedAt: null },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 5,
         skip: 5,
       });
@@ -160,7 +176,7 @@ describe('Projects Workflow Integration', () => {
       expect(page1[0].id).not.toBe(page2[0].id);
     });
 
-    it('should get project with related data', async () => {
+    it("should get project with related data", async () => {
       // ARRANGE
       const project = await createTestProject();
       await createTestQuote({ projectId: project.id });
@@ -190,25 +206,27 @@ describe('Projects Workflow Integration', () => {
     });
   });
 
-  describe('Update Project', () => {
-    it('should update project title', async () => {
+  describe("Update Project", () => {
+    it("should update project title", async () => {
       // ARRANGE
-      const project = await createTestProject({ title: 'Old Title' });
+      const project = await createTestProject({ title: "Old Title" });
 
       // ACT
       const updated = await testPrisma.project.update({
         where: { id: project.id },
-        data: { title: 'New Title' },
+        data: { title: "New Title" },
       });
 
       // ASSERT
-      expect(updated.title).toBe('New Title');
+      expect(updated.title).toBe("New Title");
       expect(updated.id).toBe(project.id);
     });
 
-    it('should update project status', async () => {
+    it("should update project status", async () => {
       // ARRANGE
-      const project = await createTestProject({ status: ProjectStatus.PLANNING });
+      const project = await createTestProject({
+        status: ProjectStatus.PLANNING,
+      });
 
       // ACT
       const updated = await testPrisma.project.update({
@@ -220,7 +238,7 @@ describe('Projects Workflow Integration', () => {
       expect(updated.status).toBe(ProjectStatus.IN_PROGRESS);
     });
 
-    it('should update project budget', async () => {
+    it("should update project budget", async () => {
       // ARRANGE
       const project = await createTestProject({ budget: 10000 });
 
@@ -234,10 +252,10 @@ describe('Projects Workflow Integration', () => {
       expect(Number(updated.budget)).toBe(25000);
     });
 
-    it('should update project deadline', async () => {
+    it("should update project deadline", async () => {
       // ARRANGE
       const project = await createTestProject();
-      const newDeadline = new Date('2026-06-30');
+      const newDeadline = new Date("2026-06-30");
 
       // ACT
       const updated = await testPrisma.project.update({
@@ -249,28 +267,28 @@ describe('Projects Workflow Integration', () => {
       expect(updated.deadline).toEqual(newDeadline);
     });
 
-    it('should track updatedAt timestamp', async () => {
+    it("should track updatedAt timestamp", async () => {
       // ARRANGE
       const project = await createTestProject();
       const originalUpdatedAt = project.updatedAt;
 
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       // ACT
       const updated = await testPrisma.project.update({
         where: { id: project.id },
-        data: { title: 'Updated Title' },
+        data: { title: "Updated Title" },
       });
 
       // ASSERT
       expect(updated.updatedAt.getTime()).toBeGreaterThan(
-        originalUpdatedAt.getTime()
+        originalUpdatedAt.getTime(),
       );
     });
   });
 
-  describe('Soft Delete Project', () => {
-    it('should soft delete project', async () => {
+  describe("Soft Delete Project", () => {
+    it("should soft delete project", async () => {
       // ARRANGE
       const project = await createTestProject();
 
@@ -285,10 +303,12 @@ describe('Projects Workflow Integration', () => {
       expect(deleted.deletedAt).toBeInstanceOf(Date);
     });
 
-    it('should exclude soft-deleted projects from list', async () => {
+    it("should exclude soft-deleted projects from list", async () => {
       // ARRANGE
-      await createTestProject({ title: 'Active Project' });
-      const deletedProject = await createTestProject({ title: 'Deleted Project' });
+      await createTestProject({ title: "Active Project" });
+      const deletedProject = await createTestProject({
+        title: "Deleted Project",
+      });
       await testPrisma.project.update({
         where: { id: deletedProject.id },
         data: { deletedAt: new Date() },
@@ -301,10 +321,10 @@ describe('Projects Workflow Integration', () => {
 
       // ASSERT
       expect(activeProjects).toHaveLength(1);
-      expect(activeProjects[0].title).toBe('Active Project');
+      expect(activeProjects[0].title).toBe("Active Project");
     });
 
-    it('should restore soft-deleted project', async () => {
+    it("should restore soft-deleted project", async () => {
       // ARRANGE
       const project = await createTestProject();
       await testPrisma.project.update({
@@ -323,8 +343,8 @@ describe('Projects Workflow Integration', () => {
     });
   });
 
-  describe('Delete Project (Hard Delete)', () => {
-    it('should hard delete project', async () => {
+  describe("Delete Project (Hard Delete)", () => {
+    it("should hard delete project", async () => {
       // ARRANGE
       const project = await createTestProject();
 
@@ -338,7 +358,7 @@ describe('Projects Workflow Integration', () => {
       expect(found).toBeNull();
     });
 
-    it('should cascade delete related time entries', async () => {
+    it("should cascade delete related time entries", async () => {
       // ARRANGE
       const project = await createTestProject();
       const timeEntry = await createTestTimeEntry({ projectId: project.id });
@@ -354,96 +374,105 @@ describe('Projects Workflow Integration', () => {
     });
   });
 
-  describe('Project Sorting and Ordering', () => {
-    it('should sort projects by createdAt descending', async () => {
+  describe("Project Sorting and Ordering", () => {
+    it("should sort projects by createdAt descending", async () => {
       // ARRANGE
-      const project1 = await createTestProject({ title: 'First' });
-      await new Promise(resolve => setTimeout(resolve, 10));
-      const project2 = await createTestProject({ title: 'Second' });
-      await new Promise(resolve => setTimeout(resolve, 10));
-      const project3 = await createTestProject({ title: 'Third' });
+      const project1 = await createTestProject({ title: "First" });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const project2 = await createTestProject({ title: "Second" });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const project3 = await createTestProject({ title: "Third" });
 
       // ACT
       const projects = await testPrisma.project.findMany({
         where: { deletedAt: null },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       });
 
       // ASSERT
-      expect(projects[0].title).toBe('Third');
-      expect(projects[1].title).toBe('Second');
-      expect(projects[2].title).toBe('First');
+      expect(projects[0].title).toBe("Third");
+      expect(projects[1].title).toBe("Second");
+      expect(projects[2].title).toBe("First");
     });
 
-    it('should sort projects by title ascending', async () => {
+    it("should sort projects by title ascending", async () => {
       // ARRANGE
-      await createTestProject({ title: 'Zebra' });
-      await createTestProject({ title: 'Apple' });
-      await createTestProject({ title: 'Mango' });
+      await createTestProject({ title: "Zebra" });
+      await createTestProject({ title: "Apple" });
+      await createTestProject({ title: "Mango" });
 
       // ACT
       const projects = await testPrisma.project.findMany({
         where: { deletedAt: null },
-        orderBy: { title: 'asc' },
+        orderBy: { title: "asc" },
       });
 
       // ASSERT
-      expect(projects[0].title).toBe('Apple');
-      expect(projects[1].title).toBe('Mango');
-      expect(projects[2].title).toBe('Zebra');
+      expect(projects[0].title).toBe("Apple");
+      expect(projects[1].title).toBe("Mango");
+      expect(projects[2].title).toBe("Zebra");
     });
 
-    it('should sort projects by deadline', async () => {
+    it("should sort projects by deadline", async () => {
       // ARRANGE
-      await createTestProject({ title: 'Late', deadline: new Date('2026-12-31') });
-      await createTestProject({ title: 'Early', deadline: new Date('2025-06-30') });
-      await createTestProject({ title: 'Mid', deadline: new Date('2026-06-30') });
+      await createTestProject({
+        title: "Late",
+        deadline: new Date("2026-12-31"),
+      });
+      await createTestProject({
+        title: "Early",
+        deadline: new Date("2025-06-30"),
+      });
+      await createTestProject({
+        title: "Mid",
+        deadline: new Date("2026-06-30"),
+      });
 
       // ACT
       const projects = await testPrisma.project.findMany({
         where: { deletedAt: null, deadline: { not: null } },
-        orderBy: { deadline: 'asc' },
+        orderBy: { deadline: "asc" },
       });
 
       // ASSERT
-      expect(projects[0].title).toBe('Early');
-      expect(projects[1].title).toBe('Mid');
-      expect(projects[2].title).toBe('Late');
+      expect(projects[0].title).toBe("Early");
+      expect(projects[1].title).toBe("Mid");
+      expect(projects[2].title).toBe("Late");
     });
   });
 
-  describe('Project Error Handling', () => {
-    it('should throw NotFoundError for non-existent project', () => {
+  describe("Project Error Handling", () => {
+    it("should throw NotFoundError for non-existent project", () => {
       // ACT & ASSERT
-      const error = new NotFoundError('Project', 'nonexistent_id');
+      const error = new NotFoundError("Project", "nonexistent_id");
 
       expect(error).toBeInstanceOf(NotFoundError);
-      expect(error.message).toBe('Project not found: nonexistent_id');
+      expect(error.message).toBe("Project not found: nonexistent_id");
       expect(error.statusCode).toBe(404);
-      expect(error.resource).toBe('Project');
-      expect(error.id).toBe('nonexistent_id');
+      expect(error.resource).toBe("Project");
+      expect(error.id).toBe("nonexistent_id");
     });
 
-    it('should handle update on non-existent project', async () => {
+    it("should handle update on non-existent project", async () => {
       // ACT & ASSERT
       await expect(
         testPrisma.project.update({
-          where: { id: 'nonexistent_id' },
-          data: { title: 'Updated' },
-        })
+          where: { id: "nonexistent_id" },
+          data: { title: "Updated" },
+        }),
       ).rejects.toThrow();
     });
 
-    it('should handle delete on non-existent project', async () => {
+    it("should handle delete on non-existent project", async () => {
       // ACT & ASSERT
       await expect(
-        testPrisma.project.delete({ where: { id: 'nonexistent_id' } })
+        testPrisma.project.delete({ where: { id: "nonexistent_id" } }),
       ).rejects.toThrow();
     });
   });
 
-  describe('Project Count and Aggregation', () => {
-    it('should count projects by status', async () => {
+  describe("Project Count and Aggregation", () => {
+    it("should count projects by status", async () => {
       // ARRANGE
       await createTestProject({ status: ProjectStatus.PLANNING });
       await createTestProject({ status: ProjectStatus.PLANNING });
@@ -463,7 +492,7 @@ describe('Projects Workflow Integration', () => {
       expect(inProgressCount).toBe(1);
     });
 
-    it('should aggregate project budgets', async () => {
+    it("should aggregate project budgets", async () => {
       // ARRANGE
       await createTestProject({ budget: 10000 });
       await createTestProject({ budget: 25000 });

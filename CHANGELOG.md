@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to sunny-stack will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -9,41 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Release workflow gating all deployments behind GitHub Releases (#75)
+- CHANGELOG.md for tracking release notes
+- Release helper scripts (release:patch, release:minor, release:major)
+
 ### Changed
 
-### Deprecated
+- Bot deployment now triggered only via release publish (not push to main)
+- CI pipeline now reusable via workflow_call
 
 ### Removed
 
-### Fixed
-
-### Security
-
-## [2.0.2] - 2025-12-12
-
-### Added
-
-- Trinity Method v2.0.7 integration
-- Comprehensive documentation suite
-- Discord bot with slash commands
-- Hybrid Vercel + Raspberry Pi deployment architecture
-- PostgreSQL database with Prisma ORM
-- Security testing suite (29 automated tests)
-- CI/CD pipeline with GitHub Actions
-
-### Changed
-
-- Updated to Next.js 15.5.9
-- Updated to React 19.0
-- Updated to Node.js 22.x requirement
+- `markdown-lint.yml` workflow (redundant with pre-commit markdownlint hook)
 
 ### Fixed
 
-- Pre-commit configuration type tag errors
-- TypeScript build configuration for Next.js 15 compatibility
-
-### Security
-
-- Implemented CSP headers
-- Added Rollbar error monitoring
-- Configured Dependabot for automatic security updates
+- CI/CD test assertions to match actual workflow structure (job names, cache strategy, test command)
+- Config validation tests aligned to actual 37-variable schema (was 44)
+- Monitoring tests account for non-blocking setImmediate DB writes
+- Quote conversion tests reflect current business logic (APPROVED quotes are convertible)
+- Integration test cross-suite data pollution from parallel execution (`maxWorkers: 1`)
+- FK-ordered `cleanDatabase()` in all 4 integration test suites (analytics, projects, quotes, proposals)
+- Auth test mocks migrated from stale NextAuth route to `@/lib/auth/google-oauth`
+- Removed stale `next-auth/next` mock from admin-auth tests
+- Transaction atomicity test now functional (was skipped) via prisma client routing through testPrisma

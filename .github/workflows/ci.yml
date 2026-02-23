@@ -9,12 +9,11 @@ on:
     branches:
       - main
       - dev
-      - develop
   pull_request:
     branches:
       - main
       - dev
-      - develop
+  workflow_call:  # Allows release.yml to reuse this pipeline
   workflow_dispatch:
 
 permissions:

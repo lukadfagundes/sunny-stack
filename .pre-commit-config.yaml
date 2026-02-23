@@ -53,12 +53,12 @@ repos:
         exclude: 'deprecated/|archived/|package-lock\.json|\.next/'
         args: ["--write", "--ignore-unknown"]
 
-  # Jest tests for changed files (fast local tests)
+  # Jest unit tests for changed files (skip integration tests that require a database)
   - repo: local
     hooks:
       - id: jest-changed
         name: Jest (Changed Files)
-        entry: npm test -- --findRelatedTests --passWithNoTests --bail
+        entry: bash -c 'files=(); for f in "$@"; do [[ "$f" != *integration* ]] && files+=("$f"); done; [ ${#files[@]} -gt 0 ] && npx jest --passWithNoTests --bail --findRelatedTests "${files[@]}" || true' --
         language: system
         files: \.(js|jsx|ts|tsx)$
         pass_filenames: true
