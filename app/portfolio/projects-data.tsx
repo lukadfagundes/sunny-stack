@@ -8,6 +8,67 @@ import { ProjectData } from "@/components/portfolio/ProjectModal";
 
 export const personalProjects: ProjectData[] = [
   {
+    id: "hytale-server-manager",
+    icon: <GitBranch className="w-5 h-5" />,
+    title: "Hytale Server Manager",
+    description:
+      "A desktop application for managing a Hytale dedicated game server. Monitor server status, view connected players with their gear and stats, manage warps, toggle mods, and browse game assets — all from a single interface.",
+    keyFeatures: {
+      title: "Key Features",
+      items: [
+        {
+          label: "Server Control",
+          description:
+            "Start and stop the Hytale server with a single toggle, real-time log streaming with ANSI color support",
+        },
+        {
+          label: "Player & Warp Viewer",
+          description:
+            "Browse online players with inventory, equipped armor, tools, and stat bars. View and sort server warp points with coordinates",
+        },
+        {
+          label: "Mod Manager",
+          description:
+            "Enable or disable server mods with a toggle switch, server-state aware to prevent changes while running",
+        },
+        {
+          label: "Game Asset Rendering",
+          description:
+            "Extracts icons and portraits from Assets.zip at runtime, served via a custom asset:// protocol with text fallback",
+        },
+        {
+          label: "Auto-Updater",
+          description:
+            "Checks GitHub Releases for updates, downloads in the background, and installs with a restart",
+        },
+      ],
+    },
+    callToAction: {
+      title: "Open Source Game Server Tool",
+      description:
+        "Built with Electron's multi-process architecture and strict context isolation. 17 invoke + 13 event IPC channels, 7 Zustand stores, 18 React components, and 240+ tests across 17 suites.",
+      techStack: [
+        "Electron 40",
+        "React 19",
+        "TypeScript",
+        "Vite 6",
+        "Zustand",
+        "Tailwind CSS",
+        "Jest",
+        "Chokidar",
+      ],
+      links: [
+        {
+          label: "View on GitHub",
+          url: "https://github.com/lukadfagundes/hytale-server-manager",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+      ],
+    },
+    footer:
+      "Available as NSIS installer + portable (Windows) and AppImage/deb (Linux) with auto-updates via GitHub Releases.",
+  },
+  {
     id: "bwaincell",
     icon: <GitBranch className="w-5 h-5" />,
     title: "Bwaincell - Unified Productivity Platform",
