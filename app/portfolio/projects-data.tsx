@@ -10,80 +10,61 @@ export const personalProjects: ProjectData[] = [
   {
     id: "bwaincell",
     icon: <GitBranch className="w-5 h-5" />,
-    title: "Bwaincell - Personal Productivity API",
+    title: "Bwaincell - Unified Productivity Platform",
     description:
-      "A comprehensive dual-purpose productivity platform combining Discord bot functionality with a RESTful API. Features task management, lists, notes, reminders, budget tracking, and random generators—all accessible via Discord slash commands and secure HTTP endpoints.",
+      "A monorepo productivity platform providing task management, reminders, lists, notes, budgets, scheduling, AI-powered suggestions, and random generators through three integrated interfaces: Discord Bot (10 slash commands with 49+ subcommands), REST API (39 authenticated endpoints), and Progressive Web App (Next.js 14).",
     keyFeatures: {
       title: "Key Features",
       items: [
         {
-          label: "Dual Interface",
-          description: "Discord bot + REST API with Google OAuth 2.0",
+          label: "Triple Interface",
+          description:
+            "Discord bot, REST API with JWT auth, and installable PWA — all sharing the same backend",
         },
         {
           label: "Full Productivity Suite",
-          description: "Tasks, lists, notes, reminders, budget tracking",
-        },
-        {
-          label: "Advanced Scheduling",
-          description: "One-time, daily, and weekly recurring reminders",
-        },
-        {
-          label: "Production Ready",
-          description: "Deployed on Fly.io with Docker, comprehensive testing",
-        },
-      ],
-    },
-    techStack: ["TypeScript", "Discord.js", "Express", "SQLite", "OAuth 2.0"],
-    externalLinks: [
-      {
-        label: "View on GitHub",
-        url: "https://github.com/lukadfagundes/bwaincell",
-        icon: <ExternalLink className="w-4 h-4" />,
-      },
-    ],
-  },
-  {
-    id: "bwain-app",
-    icon: <GitBranch className="w-5 h-5" />,
-    title: "Bwain.app - Productivity PWA",
-    description:
-      'Modern Progressive Web App companion to Bwaincell, featuring Google OAuth authentication, offline support, and a beautiful design inspired by "Your Name" (Kimi no Na wa). Installable on any device with full cross-platform compatibility.',
-    keyFeatures: {
-      title: "Key Features",
-      items: [
-        {
-          label: "Progressive Web App",
-          description: "Installable, offline-capable, push notifications ready",
-        },
-        {
-          label: "Modern Stack",
           description:
-            "Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn/ui",
+            "Tasks, lists, notes, reminders, budgets, event scheduling, and AI-powered date ideas via Gemini",
         },
         {
-          label: "Optimized Performance",
-          description: "95+ Lighthouse score, PWA 100/100",
+          label: "Smart Reminders",
+          description:
+            "One-time, daily, weekly, monthly, and yearly recurring reminders with timezone support",
         },
         {
-          label: "Cross-Platform",
-          description: "Works on iOS, Android, Windows, macOS, Linux",
+          label: "Monorepo Architecture",
+          description:
+            "npm workspaces (backend, frontend, shared) with shared TypeScript types and 282 tests across 13 suites",
+        },
+        {
+          label: "Self-Hosted Production",
+          description:
+            "Raspberry Pi 4B (backend + PostgreSQL via Docker) and Vercel (PWA frontend) with GitHub Actions CI/CD",
         },
       ],
     },
-    techStack: ["Next.js", "React", "TypeScript", "PWA", "NextAuth.js"],
-    externalLinks: [
-      {
-        label: "Live App",
-        url: "https://bwain-app.vercel.app",
-        icon: <ExternalLink className="w-4 h-4" />,
-      },
-      {
-        label: "View on GitHub",
-        url: "https://github.com/lukadfagundes/bwain.app",
-        icon: <ExternalLink className="w-4 h-4" />,
-      },
-    ],
+    callToAction: {
+      title: "Open Source Productivity Platform",
+      description:
+        "Built for personal and household productivity with guild-based data sharing. 10 Discord slash commands, 39 REST API endpoints, and a full Next.js 14 PWA with offline support.",
+      techStack: [
+        "TypeScript",
+        "Discord.js",
+        "Express",
+        "Next.js 14",
+        "PostgreSQL",
+        "Sequelize",
+        "Docker",
+        "Gemini AI",
+      ],
+      links: [
+        {
+          label: "View on GitHub",
+          url: "https://github.com/lukadfagundes/bwaincell",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+      ],
+    },
   },
   {
     id: "stilltide",

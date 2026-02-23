@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bwaincell portfolio entry updated to reflect unified monorepo platform (Discord bot + REST API + PWA)
 - Bot deployment now triggered only via release publish (not push to main)
 - CI pipeline now reusable via workflow_call
 - Vercel production deploys now use Vercel CLI instead of deploy hook (more reliable, includes deployment URL in notifications)
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Bwain.app standalone portfolio entry (merged into Bwaincell monorepo entry)
 - `markdown-lint.yml` workflow (redundant with pre-commit markdownlint hook)
 
 ### Fixed
