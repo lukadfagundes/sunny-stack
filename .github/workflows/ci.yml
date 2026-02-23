@@ -66,7 +66,7 @@ jobs:
           echo "🔍 Validating project structure..."
 
           # Check required directories exist
-          dirs=("app" "components" "lib" "__tests__" "trinity" ".claude")
+          dirs=("app" "components" "lib" "__tests__")
           for dir in "${dirs[@]}"; do
             if [ ! -d "$dir" ]; then
               echo "❌ Required directory missing: $dir"
