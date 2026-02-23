@@ -15,6 +15,7 @@ on:
       - main
       - dev
       - develop
+  workflow_call:  # Allows release.yml to reuse this pipeline
   workflow_dispatch:
 
 permissions:
