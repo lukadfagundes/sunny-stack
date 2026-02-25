@@ -73,6 +73,9 @@ jobs:
       - name: Pull Vercel project configuration
         if: steps.check.outputs.skip != 'true'
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Build for production
         if: steps.check.outputs.skip != 'true'
