@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.4] - 2026-02-24
+
 ### Added
 
 - `.markdownlintignore` to exclude `.claude/` from markdownlint
@@ -16,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CodeQL alerts for incomplete URL substring sanitization in portfolio tests
 - `release.yml` workflow_call permissions for CI quality gates job
 - Markdownlint pre-commit failures on Trinity SDK template files in `.claude/`
+- Vercel deploy workflow failing at `vercel pull` by creating `.vercel/project.json` from secrets before pull
 
 ## [2.0.3] - 2026-02-24
 

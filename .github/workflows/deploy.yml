@@ -64,12 +64,15 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: npm install -g vercel@latest
 
+      - name: Link Vercel project
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          mkdir -p .vercel
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+
       - name: Pull Vercel project configuration
         if: steps.check.outputs.skip != 'true'
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Build for production
         if: steps.check.outputs.skip != 'true'
