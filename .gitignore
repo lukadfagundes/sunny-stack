@@ -167,6 +167,5 @@ build-output.txt
 temp/
 
 # Trinity Method SDK
-.claude/trinity/archive/
-.claude/trinity/templates/
+.claude/
 *CLAUDE.md
