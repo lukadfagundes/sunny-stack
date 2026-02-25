@@ -249,48 +249,57 @@ export const professionalProjects: ProjectData[] = [
     icon: <GitBranch className="w-5 h-5" />,
     title: "Trinity Method SDK",
     description:
-      "An innovative development methodology and toolkit designed to revolutionize AI-assisted coding. Built specifically for Claude Code, Trinity Method brings structure, consistency, and systematic approaches to AI-powered software development.",
+      "Investigation-first development methodology and toolkit for Claude Code. Deploys 18 specialized AI agents, 21 slash commands, and BAS 6-phase quality gates to any project in 90 seconds via npx trinity-method-sdk deploy.",
     keyFeatures: {
       title: "Key Features",
       items: [
         {
-          label: "7 Specialized AI Agents",
+          label: "18 Specialized AI Agents",
           description:
-            "Each with distinct roles (ALY as CTO, AJ as Chief Code, etc.)",
+            "5 teams: Planning (MON, ROR, TRA, EUS), Execution (KIL, BAS, DRA), Support (APO, BON, CAP, URO), Leadership (ALY, AJ MAESTRO), Deployment (TAN, ZEN, INO, EIN), and Audit (JUNO)",
         },
         {
           label: "Investigation-First Methodology",
-          description: "Understand before implementing",
+          description:
+            "Systematic investigation before implementation with evidence-based decisions and scale-based workflows (SMALL / MEDIUM / LARGE)",
         },
         {
-          label: "Automatic Quality Setup",
-          description: "Linting, pre-commit hooks, and quality gates",
+          label: "BAS 6-Phase Quality Gates",
+          description:
+            "Lint, Structure, Build, Test, Coverage (\u226580%), and Review enforced automatically after every task",
         },
         {
-          label: "Hierarchical Knowledge Base",
-          description: "Persistent learning across development sessions",
+          label: "21 Slash Commands",
+          description:
+            "Session management, planning, execution, maintenance, investigation, infrastructure, and utility commands for Claude Code",
         },
         {
-          label: "Lightning-Fast Deployment",
-          description: "49 components deployed in under 15 seconds",
+          label: "Multi-Framework Support",
+          description:
+            "Node.js (ESLint + Prettier + Husky), Python (Black + Flake8), Flutter (Dart Analyzer), and Rust (Clippy + Rustfmt) with automated linting setup",
         },
       ],
     },
     callToAction: {
-      title: "Join the Development",
+      title: "Published on npm",
       description:
-        "Trinity Method SDK is open-source and actively seeking contributors! Whether you're working with Claude Code, Cursor, Windsurf, or other AI coding assistants, your insights can help shape the future of AI-assisted development.",
-      techStack: ["TypeScript", "AI Agents", "Dev Methodology", "CLI Tool"],
+        "88 production-ready components deployed in 90 seconds. Open-source methodology with persistent knowledge base, investigation templates, work orders, and crisis management across sessions.",
+      techStack: ["TypeScript", "Node.js", "CLI", "AI Agents", "npm"],
       links: [
         {
-          label: "View on GitHub & Contribute",
+          label: "View on GitHub",
           url: "https://github.com/lukadfagundes/trinity-method-sdk",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+        {
+          label: "View on npm",
+          url: "https://www.npmjs.com/package/trinity-method-sdk",
           icon: <ExternalLink className="w-4 h-4" />,
         },
       ],
     },
     footer:
-      '💡 Get started: <code class="bg-sunny-brown/10 px-2 py-0.5 rounded text-sunny-red">npx @trinity-method/cli deploy</code>',
+      '\ud83d\udca1 Get started: <code class="bg-sunny-brown/10 px-2 py-0.5 rounded text-sunny-red">npx trinity-method-sdk deploy</code>',
   },
   {
     id: "cola-records",
