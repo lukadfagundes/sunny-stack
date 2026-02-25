@@ -102,6 +102,10 @@ jobs:
   ci:
     name: CI Quality Gates
     needs: [version]
+    permissions:
+      contents: read
+      actions: read
+      checks: write
     uses: ./.github/workflows/ci.yml
 
   # ---------------------------------------------------------------------------
