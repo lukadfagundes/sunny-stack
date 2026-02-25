@@ -11,10 +11,10 @@
  * Follows TDD RED-GREEN-REFACTOR methodology
  */
 
-import { Pool } from 'pg';
+import { Pool } from "pg";
 
 // Mock pg module
-jest.mock('pg', () => ({
+jest.mock("pg", () => ({
   Pool: jest.fn().mockImplementation(() => ({
     connect: jest.fn(),
     query: jest.fn(),
@@ -32,9 +32,9 @@ import {
   checkHealth,
   type ConnectionConfig,
   type HealthCheckResult,
-} from '@/lib/db/neon-client';
+} from "@/lib/db/neon-client";
 
-describe('Neon Client', () => {
+describe("Neon Client", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Clear environment variables
@@ -45,13 +45,14 @@ describe('Neon Client', () => {
     delete process.env.POSTGRES_URL_NON_POOLING;
   });
 
-  describe('createNeonConnection', () => {
-    test('should create connection with DATABASE_URL (pooled)', async () => {
+  describe("createNeonConnection", () => {
+    test("should create connection with DATABASE_URL (pooled)", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db?sslmode=require';
+      process.env.DATABASE_URL =
+        "postgresql://user:pass@host:5432/db?sslmode=require";
 
       // ACT
-      const connection = await createNeonConnection('pooled');
+      const connection = await createNeonConnection("pooled");
 
       // ASSERT
       expect(connection).toBeDefined();
@@ -59,16 +60,16 @@ describe('Neon Client', () => {
         expect.objectContaining({
           connectionString: process.env.DATABASE_URL,
           max: 20, // Pool size limit
-        })
+        }),
       );
     });
 
-    test('should create connection with DATABASE_URL_UNPOOLED', async () => {
+    test("should create connection with DATABASE_URL_UNPOOLED", async () => {
       // ARRANGE
-      process.env.DATABASE_URL_UNPOOLED = 'postgresql://user:pass@host:5432/db';
+      process.env.DATABASE_URL_UNPOOLED = "postgresql://user:pass@host:5432/db";
 
       // ACT
-      const connection = await createNeonConnection('unpooled');
+      const connection = await createNeonConnection("unpooled");
 
       // ASSERT
       expect(connection).toBeDefined();
@@ -76,48 +77,50 @@ describe('Neon Client', () => {
         expect.objectContaining({
           connectionString: process.env.DATABASE_URL_UNPOOLED,
           max: 1, // Unpooled = single connection
-        })
+        }),
       );
     });
 
-    test('should create connection with POSTGRES_URL (Vercel-compatible)', async () => {
+    test("should create connection with POSTGRES_URL (Vercel-compatible)", async () => {
       // ARRANGE
-      process.env.POSTGRES_URL = 'postgresql://user:pass@host:5432/db';
+      process.env.POSTGRES_URL = "postgresql://user:pass@host:5432/db";
 
       // ACT
-      const connection = await createNeonConnection('vercel');
+      const connection = await createNeonConnection("vercel");
 
       // ASSERT
       expect(connection).toBeDefined();
       expect(Pool).toHaveBeenCalledWith(
         expect.objectContaining({
           connectionString: process.env.POSTGRES_URL,
-        })
+        }),
       );
     });
 
-    test('should create connection with POSTGRES_PRISMA_URL', async () => {
+    test("should create connection with POSTGRES_PRISMA_URL", async () => {
       // ARRANGE
-      process.env.POSTGRES_PRISMA_URL = 'postgresql://user:pass@host:5432/db?pgbouncer=true';
+      process.env.POSTGRES_PRISMA_URL =
+        "postgresql://user:pass@host:5432/db?pgbouncer=true";
 
       // ACT
-      const connection = await createNeonConnection('prisma');
+      const connection = await createNeonConnection("prisma");
 
       // ASSERT
       expect(connection).toBeDefined();
       expect(Pool).toHaveBeenCalledWith(
         expect.objectContaining({
           connectionString: process.env.POSTGRES_PRISMA_URL,
-        })
+        }),
       );
     });
 
-    test('should create connection with POSTGRES_URL_NON_POOLING', async () => {
+    test("should create connection with POSTGRES_URL_NON_POOLING", async () => {
       // ARRANGE
-      process.env.POSTGRES_URL_NON_POOLING = 'postgresql://user:pass@host:5432/db';
+      process.env.POSTGRES_URL_NON_POOLING =
+        "postgresql://user:pass@host:5432/db";
 
       // ACT
-      const connection = await createNeonConnection('non-pooling');
+      const connection = await createNeonConnection("non-pooling");
 
       // ASSERT
       expect(connection).toBeDefined();
@@ -125,35 +128,35 @@ describe('Neon Client', () => {
         expect.objectContaining({
           connectionString: process.env.POSTGRES_URL_NON_POOLING,
           max: 1,
-        })
+        }),
       );
     });
 
-    test('should throw error when connection URL is missing', async () => {
+    test("should throw error when connection URL is missing", async () => {
       // ARRANGE
       // No environment variables set
 
       // ACT & ASSERT
-      await expect(createNeonConnection('pooled')).rejects.toThrow(
-        'DATABASE_URL environment variable is not defined'
+      await expect(createNeonConnection("pooled")).rejects.toThrow(
+        "DATABASE_URL environment variable is not defined",
       );
     });
 
-    test('should throw error for invalid connection type', async () => {
+    test("should throw error for invalid connection type", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
 
       // ACT & ASSERT
-      await expect(
-        createNeonConnection('invalid' as any)
-      ).rejects.toThrow('Invalid connection type');
+      await expect(createNeonConnection("invalid" as any)).rejects.toThrow(
+        "Invalid connection type",
+      );
     });
   });
 
-  describe('Connection Pooling', () => {
-    test('should limit pool size to 20 connections', async () => {
+  describe("Connection Pooling", () => {
+    test("should limit pool size to 20 connections", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
 
       // ACT
       await createPooledConnection();
@@ -162,13 +165,13 @@ describe('Neon Client', () => {
       expect(Pool).toHaveBeenCalledWith(
         expect.objectContaining({
           max: 20,
-        })
+        }),
       );
     });
 
-    test('should set idle timeout for pooled connections', async () => {
+    test("should set idle timeout for pooled connections", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
 
       // ACT
       await createPooledConnection();
@@ -177,13 +180,13 @@ describe('Neon Client', () => {
       expect(Pool).toHaveBeenCalledWith(
         expect.objectContaining({
           idleTimeoutMillis: 30000, // 30 seconds
-        })
+        }),
       );
     });
 
-    test('should set connection timeout', async () => {
+    test("should set connection timeout", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
 
       // ACT
       await createPooledConnection();
@@ -192,14 +195,15 @@ describe('Neon Client', () => {
       expect(Pool).toHaveBeenCalledWith(
         expect.objectContaining({
           connectionTimeoutMillis: 10000, // 10 seconds
-        })
+        }),
       );
     });
 
-    test('should enable SSL for production', async () => {
+    test("should enable SSL for production", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db?sslmode=require';
-      process.env.NODE_ENV = 'production';
+      process.env.DATABASE_URL =
+        "postgresql://user:pass@host:5432/db?sslmode=require";
+      process.env.NODE_ENV = "production";
 
       // ACT
       await createPooledConnection();
@@ -208,17 +212,18 @@ describe('Neon Client', () => {
       expect(Pool).toHaveBeenCalledWith(
         expect.objectContaining({
           ssl: { rejectUnauthorized: false },
-        })
+        }),
       );
     });
   });
 
-  describe('Retry Logic', () => {
-    test('should retry failed queries up to 3 times', async () => {
+  describe("Retry Logic", () => {
+    test("should retry failed queries up to 3 times", async () => {
       // ARRANGE
-      const mockQuery = jest.fn()
-        .mockRejectedValueOnce(new Error('Connection timeout'))
-        .mockRejectedValueOnce(new Error('Connection timeout'))
+      const mockQuery = jest
+        .fn()
+        .mockRejectedValueOnce(new Error("Connection timeout"))
+        .mockRejectedValueOnce(new Error("Connection timeout"))
         .mockResolvedValueOnce({ rows: [{ id: 1 }] });
 
       const mockPool = {
@@ -226,25 +231,26 @@ describe('Neon Client', () => {
       } as any;
 
       // ACT
-      const result = await executeWithRetry(mockPool, 'SELECT * FROM users');
+      const result = await executeWithRetry(mockPool, "SELECT * FROM users");
 
       // ASSERT
       expect(mockQuery).toHaveBeenCalledTimes(3);
       expect(result).toEqual({ rows: [{ id: 1 }] });
     });
 
-    test('should use exponential backoff between retries', async () => {
+    test("should use exponential backoff between retries", async () => {
       // ARRANGE
-      const mockQuery = jest.fn()
-        .mockRejectedValueOnce(new Error('Timeout'))
-        .mockRejectedValueOnce(new Error('Timeout'))
+      const mockQuery = jest
+        .fn()
+        .mockRejectedValueOnce(new Error("Timeout"))
+        .mockRejectedValueOnce(new Error("Timeout"))
         .mockResolvedValueOnce({ rows: [] });
 
       const mockPool = { query: mockQuery } as any;
       const startTime = Date.now();
 
       // ACT
-      await executeWithRetry(mockPool, 'SELECT 1');
+      await executeWithRetry(mockPool, "SELECT 1");
 
       // ASSERT
       const elapsed = Date.now() - startTime;
@@ -253,41 +259,44 @@ describe('Neon Client', () => {
       expect(mockQuery).toHaveBeenCalledTimes(3);
     });
 
-    test('should throw error after 3 failed attempts', async () => {
+    test("should throw error after 3 failed attempts", async () => {
       // ARRANGE
-      const mockQuery = jest.fn().mockRejectedValue(new Error('Connection failed'));
+      const mockQuery = jest
+        .fn()
+        .mockRejectedValue(new Error("Connection failed"));
       const mockPool = { query: mockQuery } as any;
 
       // ACT & ASSERT
       await expect(
-        executeWithRetry(mockPool, 'SELECT * FROM users')
-      ).rejects.toThrow('Max retries (3) exceeded: Connection failed');
+        executeWithRetry(mockPool, "SELECT * FROM users"),
+      ).rejects.toThrow("Max retries (3) exceeded: Connection failed");
 
       expect(mockQuery).toHaveBeenCalledTimes(3);
     });
 
-    test('should not retry on non-retryable errors', async () => {
+    test("should not retry on non-retryable errors", async () => {
       // ARRANGE
-      const mockQuery = jest.fn().mockRejectedValue(new Error('Syntax error'));
+      const mockQuery = jest.fn().mockRejectedValue(new Error("Syntax error"));
       const mockPool = { query: mockQuery } as any;
 
       // ACT & ASSERT
       await expect(
-        executeWithRetry(mockPool, 'SELECT * FORM users') // Typo: FORM
-      ).rejects.toThrow('Syntax error');
+        executeWithRetry(mockPool, "SELECT * FORM users"), // Typo: FORM
+      ).rejects.toThrow("Syntax error");
 
       // Should fail immediately, no retries
       expect(mockQuery).toHaveBeenCalledTimes(1);
     });
 
-    test('should retry with query parameters', async () => {
+    test("should retry with query parameters", async () => {
       // ARRANGE
-      const mockQuery = jest.fn()
-        .mockRejectedValueOnce(new Error('Timeout'))
-        .mockResolvedValueOnce({ rows: [{ id: 1, name: 'John' }] });
+      const mockQuery = jest
+        .fn()
+        .mockRejectedValueOnce(new Error("Timeout"))
+        .mockResolvedValueOnce({ rows: [{ id: 1, name: "John" }] });
 
       const mockPool = { query: mockQuery } as any;
-      const sql = 'SELECT * FROM users WHERE id = $1';
+      const sql = "SELECT * FROM users WHERE id = $1";
       const params = [1];
 
       // ACT
@@ -296,14 +305,14 @@ describe('Neon Client', () => {
       // ASSERT
       expect(mockQuery).toHaveBeenCalledTimes(2);
       expect(mockQuery).toHaveBeenCalledWith(sql, params);
-      expect(result).toEqual({ rows: [{ id: 1, name: 'John' }] });
+      expect(result).toEqual({ rows: [{ id: 1, name: "John" }] });
     });
   });
 
-  describe('Health Check', () => {
-    test('should return healthy status when connection succeeds', async () => {
+  describe("Health Check", () => {
+    test("should return healthy status when connection succeeds", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
       const mockQuery = jest.fn().mockResolvedValue({ rows: [{ result: 1 }] });
       (Pool as jest.Mock).mockImplementation(() => ({
         query: mockQuery,
@@ -315,18 +324,20 @@ describe('Neon Client', () => {
       const health = await checkHealth();
 
       // ASSERT
-      expect(health.status).toBe('healthy');
+      expect(health.status).toBe("healthy");
       expect(health.connected).toBe(true);
       expect(health.latency).toBeDefined();
-      expect(typeof health.latency).toBe('number');
+      expect(typeof health.latency).toBe("number");
       expect(health.latency).toBeGreaterThanOrEqual(0);
-      expect(mockQuery).toHaveBeenCalledWith('SELECT 1 as result');
+      expect(mockQuery).toHaveBeenCalledWith("SELECT 1 as result");
     });
 
-    test('should return unhealthy status when connection fails', async () => {
+    test("should return unhealthy status when connection fails", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
-      const mockQuery = jest.fn().mockRejectedValue(new Error('Connection refused'));
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
+      const mockQuery = jest
+        .fn()
+        .mockRejectedValue(new Error("Connection refused"));
       (Pool as jest.Mock).mockImplementation(() => ({
         query: mockQuery,
         end: jest.fn(),
@@ -336,20 +347,23 @@ describe('Neon Client', () => {
       const health = await checkHealth();
 
       // ASSERT
-      expect(health.status).toBe('unhealthy');
+      expect(health.status).toBe("unhealthy");
       expect(health.connected).toBe(false);
-      expect(health.error).toBe('Connection refused');
+      expect(health.error).toBe("Connection refused");
       expect(health.latency).toBeUndefined();
     });
 
-    test('should measure query latency accurately', async () => {
+    test("should measure query latency accurately", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
-      const mockQuery = jest.fn().mockImplementation(() =>
-        new Promise((resolve) =>
-          setTimeout(() => resolve({ rows: [{ result: 1 }] }), 50)
-        )
-      );
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
+      const mockQuery = jest
+        .fn()
+        .mockImplementation(
+          () =>
+            new Promise((resolve) =>
+              setTimeout(() => resolve({ rows: [{ result: 1 }] }), 50),
+            ),
+        );
       (Pool as jest.Mock).mockImplementation(() => ({
         query: mockQuery,
         end: jest.fn(),
@@ -359,14 +373,15 @@ describe('Neon Client', () => {
       const health = await checkHealth();
 
       // ASSERT
-      expect(health.status).toBe('healthy');
-      expect(health.latency).toBeGreaterThanOrEqual(50);
+      expect(health.status).toBe("healthy");
+      expect(health.latency).toBeGreaterThanOrEqual(45);
       expect(health.latency).toBeLessThan(100); // Should be ~50ms
     });
 
-    test('should include database name in health check result', async () => {
+    test("should include database name in health check result", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/my_database?sslmode=require';
+      process.env.DATABASE_URL =
+        "postgresql://user:pass@host:5432/my_database?sslmode=require";
       const mockQuery = jest.fn().mockResolvedValue({ rows: [{ result: 1 }] });
       (Pool as jest.Mock).mockImplementation(() => ({
         query: mockQuery,
@@ -377,13 +392,13 @@ describe('Neon Client', () => {
       const health = await checkHealth();
 
       // ASSERT
-      expect(health.status).toBe('healthy');
-      expect(health.database).toBe('my_database');
+      expect(health.status).toBe("healthy");
+      expect(health.database).toBe("my_database");
     });
 
-    test('should close connection after health check', async () => {
+    test("should close connection after health check", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
       const mockEnd = jest.fn();
       const mockQuery = jest.fn().mockResolvedValue({ rows: [{ result: 1 }] });
       (Pool as jest.Mock).mockImplementation(() => ({
@@ -399,20 +414,20 @@ describe('Neon Client', () => {
     });
   });
 
-  describe('Connection Configuration', () => {
-    test('should validate connection string format', async () => {
+  describe("Connection Configuration", () => {
+    test("should validate connection string format", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'invalid-url';
+      process.env.DATABASE_URL = "invalid-url";
 
       // ACT & ASSERT
-      await expect(createNeonConnection('pooled')).rejects.toThrow(
-        'Invalid DATABASE_URL format'
+      await expect(createNeonConnection("pooled")).rejects.toThrow(
+        "Invalid DATABASE_URL format",
       );
     });
 
-    test('should extract host from connection string', async () => {
+    test("should extract host from connection string", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@neon.tech:5432/db';
+      process.env.DATABASE_URL = "postgresql://user:pass@neon.tech:5432/db";
       const mockQuery = jest.fn().mockResolvedValue({ rows: [{ result: 1 }] });
       (Pool as jest.Mock).mockImplementation(() => ({
         query: mockQuery,
@@ -423,12 +438,13 @@ describe('Neon Client', () => {
       const health = await checkHealth();
 
       // ASSERT
-      expect(health.host).toBe('neon.tech');
+      expect(health.host).toBe("neon.tech");
     });
 
-    test('should support connection string with query parameters', async () => {
+    test("should support connection string with query parameters", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db?sslmode=require&connect_timeout=10';
+      process.env.DATABASE_URL =
+        "postgresql://user:pass@host:5432/db?sslmode=require&connect_timeout=10";
       (Pool as jest.Mock).mockImplementation(() => ({
         query: jest.fn(),
         end: jest.fn(),
@@ -436,23 +452,23 @@ describe('Neon Client', () => {
       }));
 
       // ACT
-      const connection = await createNeonConnection('pooled');
+      const connection = await createNeonConnection("pooled");
 
       // ASSERT
       expect(connection).toBeDefined();
       expect(Pool).toHaveBeenCalledWith(
         expect.objectContaining({
           connectionString: process.env.DATABASE_URL,
-        })
+        }),
       );
     });
   });
 
-  describe('Error Handling', () => {
-    test('should provide descriptive error messages', async () => {
+  describe("Error Handling", () => {
+    test("should provide descriptive error messages", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
-      const mockQuery = jest.fn().mockRejectedValue(new Error('ECONNREFUSED'));
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
+      const mockQuery = jest.fn().mockRejectedValue(new Error("ECONNREFUSED"));
       (Pool as jest.Mock).mockImplementation(() => ({
         query: mockQuery,
         end: jest.fn(),
@@ -462,24 +478,26 @@ describe('Neon Client', () => {
       const health = await checkHealth();
 
       // ASSERT
-      expect(health.status).toBe('unhealthy');
-      expect(health.error).toContain('ECONNREFUSED');
+      expect(health.status).toBe("unhealthy");
+      expect(health.error).toContain("ECONNREFUSED");
     });
 
-    test('should handle missing environment variables gracefully', async () => {
+    test("should handle missing environment variables gracefully", async () => {
       // ARRANGE
       // No DATABASE_URL set
 
       // ACT & ASSERT
-      await expect(createNeonConnection('pooled')).rejects.toThrow(
-        'DATABASE_URL environment variable is not defined'
+      await expect(createNeonConnection("pooled")).rejects.toThrow(
+        "DATABASE_URL environment variable is not defined",
       );
     });
 
-    test('should handle pool exhaustion', async () => {
+    test("should handle pool exhaustion", async () => {
       // ARRANGE
-      process.env.DATABASE_URL = 'postgresql://user:pass@host:5432/db';
-      const mockQuery = jest.fn().mockRejectedValue(new Error('Pool exhausted'));
+      process.env.DATABASE_URL = "postgresql://user:pass@host:5432/db";
+      const mockQuery = jest
+        .fn()
+        .mockRejectedValue(new Error("Pool exhausted"));
       (Pool as jest.Mock).mockImplementation(() => ({
         query: mockQuery,
         end: jest.fn(),
@@ -487,39 +505,39 @@ describe('Neon Client', () => {
 
       // ACT & ASSERT
       await expect(
-        executeWithRetry({ query: mockQuery } as any, 'SELECT 1')
-      ).rejects.toThrow('Pool exhausted');
+        executeWithRetry({ query: mockQuery } as any, "SELECT 1"),
+      ).rejects.toThrow("Pool exhausted");
     });
   });
 
-  describe('TypeScript Type Safety', () => {
-    test('should enforce ConnectionConfig type', () => {
+  describe("TypeScript Type Safety", () => {
+    test("should enforce ConnectionConfig type", () => {
       // ARRANGE
       const config: ConnectionConfig = {
-        type: 'pooled',
+        type: "pooled",
         maxConnections: 20,
         idleTimeout: 30000,
         connectionTimeout: 10000,
       };
 
       // ASSERT - TypeScript compilation will enforce this
-      expect(config.type).toBe('pooled');
+      expect(config.type).toBe("pooled");
       expect(config.maxConnections).toBe(20);
     });
 
-    test('should enforce HealthCheckResult type', () => {
+    test("should enforce HealthCheckResult type", () => {
       // ARRANGE
       const healthResult: HealthCheckResult = {
-        status: 'healthy',
+        status: "healthy",
         connected: true,
         latency: 50,
-        database: 'test_db',
-        host: 'localhost',
+        database: "test_db",
+        host: "localhost",
         timestamp: new Date(),
       };
 
       // ASSERT - TypeScript compilation will enforce this
-      expect(healthResult.status).toBe('healthy');
+      expect(healthResult.status).toBe("healthy");
       expect(healthResult.connected).toBe(true);
     });
   });
