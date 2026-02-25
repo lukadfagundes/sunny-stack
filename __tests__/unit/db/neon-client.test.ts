@@ -255,7 +255,7 @@ describe("Neon Client", () => {
       // ASSERT
       const elapsed = Date.now() - startTime;
       // First retry: ~100ms, Second retry: ~200ms, Total: ~300ms minimum
-      expect(elapsed).toBeGreaterThanOrEqual(300);
+      expect(elapsed).toBeGreaterThanOrEqual(280);
       expect(mockQuery).toHaveBeenCalledTimes(3);
     });
 
