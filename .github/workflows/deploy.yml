@@ -120,8 +120,10 @@ jobs:
           fi
 
       - name: Send Discord notification
-        if: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
+        if: env.DISCORD_WEBHOOK_URL != ''
         uses: sarisia/actions-status-discord@v1
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: ${{ steps.status.outputs.status == 'success' && 'success' || 'failure' }}

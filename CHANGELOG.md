@@ -9,13 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Hytale Server Manager project showcase on Portfolio page (personal projects)
+- Cola Records project showcase on Portfolio page (professional projects)
+- Trinity Method SDK moved from personal to professional projects
+- Download links to Hytale Server Manager and Cola Records showcases
+- Unit tests for portfolio projects data (39 tests)
+
+### Changed
+
+- Trinity Method SDK showcase updated to reflect current project (18 agents, 88 components, 21 slash commands, npm package link, corrected CLI command)
+- Bwaincell portfolio entry updated to reflect unified monorepo platform (Discord bot + REST API + PWA)
 - Release workflow gating all deployments behind GitHub Releases (#75)
 - CHANGELOG.md for tracking release notes
 - Release helper scripts (release:patch, release:minor, release:major)
 - `vercel.json` for version-controlled Vercel project configuration
-
-### Changed
-
 - Bot deployment now triggered only via release publish (not push to main)
 - CI pipeline now reusable via workflow_call
 - Vercel production deploys now use Vercel CLI instead of deploy hook (more reliable, includes deployment URL in notifications)
@@ -23,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Bwain.app standalone portfolio entry (merged into Bwaincell monorepo entry)
 - `markdown-lint.yml` workflow (redundant with pre-commit markdownlint hook)
 
 ### Fixed

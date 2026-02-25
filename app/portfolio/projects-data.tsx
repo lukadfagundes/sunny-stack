@@ -8,130 +8,129 @@ import { ProjectData } from "@/components/portfolio/ProjectModal";
 
 export const personalProjects: ProjectData[] = [
   {
-    id: "trinity-sdk",
+    id: "hytale-server-manager",
     icon: <GitBranch className="w-5 h-5" />,
-    title: "Trinity Method SDK",
+    title: "Hytale Server Manager",
     description:
-      "An innovative development methodology and toolkit designed to revolutionize AI-assisted coding. Built specifically for Claude Code, Trinity Method brings structure, consistency, and systematic approaches to AI-powered software development.",
+      "A desktop application for managing a Hytale dedicated game server. Monitor server status, view connected players with their gear and stats, manage warps, toggle mods, and browse game assets — all from a single interface.",
     keyFeatures: {
       title: "Key Features",
       items: [
         {
-          label: "7 Specialized AI Agents",
+          label: "Server Control",
           description:
-            "Each with distinct roles (ALY as CTO, AJ as Chief Code, etc.)",
+            "Start and stop the Hytale server with a single toggle, real-time log streaming with ANSI color support",
         },
         {
-          label: "Investigation-First Methodology",
-          description: "Understand before implementing",
+          label: "Player & Warp Viewer",
+          description:
+            "Browse online players with inventory, equipped armor, tools, and stat bars. View and sort server warp points with coordinates",
         },
         {
-          label: "Automatic Quality Setup",
-          description: "Linting, pre-commit hooks, and quality gates",
+          label: "Mod Manager",
+          description:
+            "Enable or disable server mods with a toggle switch, server-state aware to prevent changes while running",
         },
         {
-          label: "Hierarchical Knowledge Base",
-          description: "Persistent learning across development sessions",
+          label: "Game Asset Rendering",
+          description:
+            "Extracts icons and portraits from Assets.zip at runtime, served via a custom asset:// protocol with text fallback",
         },
         {
-          label: "Lightning-Fast Deployment",
-          description: "49 components deployed in under 15 seconds",
+          label: "Auto-Updater",
+          description:
+            "Checks GitHub Releases for updates, downloads in the background, and installs with a restart",
         },
       ],
     },
     callToAction: {
-      title: "Join the Development",
+      title: "Open Source Game Server Tool",
       description:
-        "Trinity Method SDK is open-source and actively seeking contributors! Whether you're working with Claude Code, Cursor, Windsurf, or other AI coding assistants, your insights can help shape the future of AI-assisted development.",
-      techStack: ["TypeScript", "AI Agents", "Dev Methodology", "CLI Tool"],
+        "Built with Electron's multi-process architecture and strict context isolation. 17 invoke + 13 event IPC channels, 7 Zustand stores, 18 React components, and 240+ tests across 17 suites.",
+      techStack: [
+        "Electron 40",
+        "React 19",
+        "TypeScript",
+        "Vite 6",
+        "Zustand",
+        "Tailwind CSS",
+        "Jest",
+        "Chokidar",
+      ],
       links: [
         {
-          label: "View on GitHub & Contribute",
-          url: "https://github.com/lukadfagundes/trinity-method-sdk",
+          label: "View on GitHub",
+          url: "https://github.com/lukadfagundes/hytale-server-manager",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+        {
+          label: "Download",
+          url: "https://github.com/lukadfagundes/hytale-server-manager/releases",
           icon: <ExternalLink className="w-4 h-4" />,
         },
       ],
     },
     footer:
-      '💡 Get started: <code class="bg-sunny-brown/10 px-2 py-0.5 rounded text-sunny-red">npx @trinity-method/cli deploy</code>',
+      "Available as NSIS installer + portable (Windows) and AppImage/deb (Linux) with auto-updates via GitHub Releases.",
   },
   {
     id: "bwaincell",
     icon: <GitBranch className="w-5 h-5" />,
-    title: "Bwaincell - Personal Productivity API",
+    title: "Bwaincell - Unified Productivity Platform",
     description:
-      "A comprehensive dual-purpose productivity platform combining Discord bot functionality with a RESTful API. Features task management, lists, notes, reminders, budget tracking, and random generators—all accessible via Discord slash commands and secure HTTP endpoints.",
+      "A monorepo productivity platform providing task management, reminders, lists, notes, budgets, scheduling, AI-powered suggestions, and random generators through three integrated interfaces: Discord Bot (10 slash commands with 49+ subcommands), REST API (39 authenticated endpoints), and Progressive Web App (Next.js 14).",
     keyFeatures: {
       title: "Key Features",
       items: [
         {
-          label: "Dual Interface",
-          description: "Discord bot + REST API with Google OAuth 2.0",
+          label: "Triple Interface",
+          description:
+            "Discord bot, REST API with JWT auth, and installable PWA — all sharing the same backend",
         },
         {
           label: "Full Productivity Suite",
-          description: "Tasks, lists, notes, reminders, budget tracking",
-        },
-        {
-          label: "Advanced Scheduling",
-          description: "One-time, daily, and weekly recurring reminders",
-        },
-        {
-          label: "Production Ready",
-          description: "Deployed on Fly.io with Docker, comprehensive testing",
-        },
-      ],
-    },
-    techStack: ["TypeScript", "Discord.js", "Express", "SQLite", "OAuth 2.0"],
-    externalLinks: [
-      {
-        label: "View on GitHub",
-        url: "https://github.com/lukadfagundes/bwaincell",
-        icon: <ExternalLink className="w-4 h-4" />,
-      },
-    ],
-  },
-  {
-    id: "bwain-app",
-    icon: <GitBranch className="w-5 h-5" />,
-    title: "Bwain.app - Productivity PWA",
-    description:
-      'Modern Progressive Web App companion to Bwaincell, featuring Google OAuth authentication, offline support, and a beautiful design inspired by "Your Name" (Kimi no Na wa). Installable on any device with full cross-platform compatibility.',
-    keyFeatures: {
-      title: "Key Features",
-      items: [
-        {
-          label: "Progressive Web App",
-          description: "Installable, offline-capable, push notifications ready",
-        },
-        {
-          label: "Modern Stack",
           description:
-            "Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn/ui",
+            "Tasks, lists, notes, reminders, budgets, event scheduling, and AI-powered date ideas via Gemini",
         },
         {
-          label: "Optimized Performance",
-          description: "95+ Lighthouse score, PWA 100/100",
+          label: "Smart Reminders",
+          description:
+            "One-time, daily, weekly, monthly, and yearly recurring reminders with timezone support",
         },
         {
-          label: "Cross-Platform",
-          description: "Works on iOS, Android, Windows, macOS, Linux",
+          label: "Monorepo Architecture",
+          description:
+            "npm workspaces (backend, frontend, shared) with shared TypeScript types and 282 tests across 13 suites",
+        },
+        {
+          label: "Self-Hosted Production",
+          description:
+            "Raspberry Pi 4B (backend + PostgreSQL via Docker) and Vercel (PWA frontend) with GitHub Actions CI/CD",
         },
       ],
     },
-    techStack: ["Next.js", "React", "TypeScript", "PWA", "NextAuth.js"],
-    externalLinks: [
-      {
-        label: "Live App",
-        url: "https://bwain-app.vercel.app",
-        icon: <ExternalLink className="w-4 h-4" />,
-      },
-      {
-        label: "View on GitHub",
-        url: "https://github.com/lukadfagundes/bwain.app",
-        icon: <ExternalLink className="w-4 h-4" />,
-      },
-    ],
+    callToAction: {
+      title: "Open Source Productivity Platform",
+      description:
+        "Built for personal and household productivity with guild-based data sharing. 10 Discord slash commands, 39 REST API endpoints, and a full Next.js 14 PWA with offline support.",
+      techStack: [
+        "TypeScript",
+        "Discord.js",
+        "Express",
+        "Next.js 14",
+        "PostgreSQL",
+        "Sequelize",
+        "Docker",
+        "Gemini AI",
+      ],
+      links: [
+        {
+          label: "View on GitHub",
+          url: "https://github.com/lukadfagundes/bwaincell",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+      ],
+    },
   },
   {
     id: "stilltide",
@@ -245,6 +244,129 @@ export const personalProjects: ProjectData[] = [
 ];
 
 export const professionalProjects: ProjectData[] = [
+  {
+    id: "trinity-sdk",
+    icon: <GitBranch className="w-5 h-5" />,
+    title: "Trinity Method SDK",
+    description:
+      "Investigation-first development methodology and toolkit for Claude Code. Deploys 18 specialized AI agents, 21 slash commands, and BAS 6-phase quality gates to any project in 90 seconds via npx trinity-method-sdk deploy.",
+    keyFeatures: {
+      title: "Key Features",
+      items: [
+        {
+          label: "18 Specialized AI Agents",
+          description:
+            "5 teams: Planning (MON, ROR, TRA, EUS), Execution (KIL, BAS, DRA), Support (APO, BON, CAP, URO), Leadership (ALY, AJ MAESTRO), Deployment (TAN, ZEN, INO, EIN), and Audit (JUNO)",
+        },
+        {
+          label: "Investigation-First Methodology",
+          description:
+            "Systematic investigation before implementation with evidence-based decisions and scale-based workflows (SMALL / MEDIUM / LARGE)",
+        },
+        {
+          label: "BAS 6-Phase Quality Gates",
+          description:
+            "Lint, Structure, Build, Test, Coverage (\u226580%), and Review enforced automatically after every task",
+        },
+        {
+          label: "21 Slash Commands",
+          description:
+            "Session management, planning, execution, maintenance, investigation, infrastructure, and utility commands for Claude Code",
+        },
+        {
+          label: "Multi-Framework Support",
+          description:
+            "Node.js (ESLint + Prettier + Husky), Python (Black + Flake8), Flutter (Dart Analyzer), and Rust (Clippy + Rustfmt) with automated linting setup",
+        },
+      ],
+    },
+    callToAction: {
+      title: "Published on npm",
+      description:
+        "88 production-ready components deployed in 90 seconds. Open-source methodology with persistent knowledge base, investigation templates, work orders, and crisis management across sessions.",
+      techStack: ["TypeScript", "Node.js", "CLI", "AI Agents", "npm"],
+      links: [
+        {
+          label: "View on GitHub",
+          url: "https://github.com/lukadfagundes/trinity-method-sdk",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+        {
+          label: "View on npm",
+          url: "https://www.npmjs.com/package/trinity-method-sdk",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+      ],
+    },
+    footer:
+      '\ud83d\udca1 Get started: <code class="bg-sunny-brown/10 px-2 py-0.5 rounded text-sunny-red">npx trinity-method-sdk deploy</code>',
+  },
+  {
+    id: "cola-records",
+    icon: <GitBranch className="w-5 h-5" />,
+    title: "Cola Records - Developer Contribution Manager",
+    description:
+      "Electron desktop application for managing developer contributions to open-source projects. Features issue discovery, contribution tracking, built-in Git operations, an embedded IDE via Docker-hosted code-server, multi-tab terminal, Spotify integration, and a dashboard with real-time GitHub activity.",
+    keyFeatures: {
+      title: "Key Features",
+      items: [
+        {
+          label: "Issue Discovery & Tracking",
+          description:
+            "Search GitHub for good first issues, fork repositories, and track contribution progress through completion",
+        },
+        {
+          label: "Embedded IDE & Terminal",
+          description:
+            "Code-server (VS Code) running in Docker with multi-project tab support, plus multi-tab terminal with Git Bash, PowerShell, and Zsh",
+        },
+        {
+          label: "Full Git Integration",
+          description:
+            "Built-in Git operations with 17 IPC channels for clone, branch, commit, push, pull, and remote management",
+        },
+        {
+          label: "GitHub Ecosystem",
+          description:
+            "Actions workflow viewer, Releases management, Pull Request management, and profile dashboard with 6 widgets",
+        },
+        {
+          label: "Developer Experience",
+          description:
+            "Spotify playback, Discord community client, in-app documentation viewer with Mermaid diagram support, and auto-updates",
+        },
+      ],
+    },
+    callToAction: {
+      title: "Open Source Desktop App",
+      description:
+        "108 React components, 15 main process services, and 163 IPC channels powering a full-featured desktop development environment. Cross-platform builds for Windows, macOS, and Linux with automatic updates via GitHub Releases.",
+      techStack: [
+        "Electron",
+        "React 19",
+        "TypeScript",
+        "Vite",
+        "SQLite",
+        "Zustand",
+        "Tailwind CSS",
+        "Docker",
+      ],
+      links: [
+        {
+          label: "View on GitHub",
+          url: "https://github.com/lukadfagundes/cola-records",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+        {
+          label: "Download",
+          url: "https://github.com/lukadfagundes/cola-records/releases",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+      ],
+    },
+    footer:
+      "Available as NSIS installer (Windows), DMG (macOS), and AppImage/deb/rpm (Linux) with auto-updates via electron-updater.",
+  },
   {
     id: "rinoa-platform",
     icon: <GitBranch className="w-5 h-5" />,
