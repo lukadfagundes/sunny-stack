@@ -122,18 +122,15 @@ describe("Portfolio Projects Data", () => {
     });
 
     test("has NPM link", () => {
-      const npmLink = trinitySdk!.callToAction!.links.find((l) =>
-        l.url.includes("npmjs.com"),
+      const npmLink = trinitySdk!.callToAction!.links.find(
+        (l) => l.url === "https://www.npmjs.com/package/trinity-method-sdk",
       );
       expect(npmLink).toBeDefined();
-      expect(npmLink!.url).toBe(
-        "https://www.npmjs.com/package/trinity-method-sdk",
-      );
     });
 
     test("has GitHub link", () => {
-      const ghLink = trinitySdk!.callToAction!.links.find((l) =>
-        l.url.includes("github.com"),
+      const ghLink = trinitySdk!.callToAction!.links.find(
+        (l) => l.url === "https://github.com/lukadfagundes/trinity-method-sdk",
       );
       expect(ghLink).toBeDefined();
     });
