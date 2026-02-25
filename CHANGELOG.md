@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `.markdownlintignore` to exclude `.claude/` from markdownlint
+
+### Fixed
+
+- CodeQL alerts for incomplete URL substring sanitization in portfolio tests
+- `release.yml` workflow_call permissions for CI quality gates job
+- Markdownlint pre-commit failures on Trinity SDK template files in `.claude/`
+
 ## [2.0.3] - 2026-02-24
 
 ### Added

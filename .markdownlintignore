@@ -1,0 +1,4 @@
+# Trinity SDK deployed files (templates, not project source)
+.claude/
+node_modules/
+deprecated/
