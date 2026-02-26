@@ -3,18 +3,18 @@
  * @description Background monitoring for GitHub workflows, PRs, and deployments with Discord notifications
  */
 
-import { Client, EmbedBuilder, TextChannel } from 'discord.js';
-import { prisma } from '@/lib/db/prisma';
-import logger from '@/lib/logger';
+import { Client, EmbedBuilder, TextChannel } from "discord.js";
+import { prisma } from "@/lib/db/prisma";
+import logger from "@/lib/logger";
 import {
   getFailedWorkflows,
   getOpenPullRequests,
   getRecentWorkflowRuns,
   getGitHubHealth,
-} from '@/lib/integrations/github';
+} from "@/lib/integrations/github";
 
 const GITHUB_POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
-const GITHUB_NOTIFICATION_CHANNEL = process.env.DISCORD_CHANNEL_ADMIN_LOGS;
+const getNotificationChannel = () => process.env.DISCORD_CHANNEL_ADMIN_LOGS;
 
 // Track when monitoring started to avoid alerting on old workflows/PRs
 const monitoringStartTime = Date.now();
@@ -52,16 +52,20 @@ let lastPRCheck: Map<number, MonitoredPullRequest> = new Map();
  */
 async function notifyWorkflowFailure(
   client: Client,
-  workflow: MonitoredWorkflow
+  workflow: MonitoredWorkflow,
 ): Promise<void> {
-  if (!GITHUB_NOTIFICATION_CHANNEL) {
-    logger.warn('DISCORD_CHANNEL_ADMIN_LOGS not configured, skipping notification');
+  if (!getNotificationChannel()) {
+    logger.warn(
+      "DISCORD_CHANNEL_ADMIN_LOGS not configured, skipping notification",
+    );
     return;
   }
 
   // Check if client exists and is ready before attempting to send notifications
   if (!client || !client.isReady()) {
-    logger.debug('Discord client not available or not ready, skipping notification');
+    logger.debug(
+      "Discord client not available or not ready, skipping notification",
+    );
     return;
   }
 
@@ -69,35 +73,43 @@ async function notifyWorkflowFailure(
     // Use guild cache instead of fetching from API - faster and more reliable
     const guild = client.guilds.cache.first();
     if (!guild) {
-      logger.error('No guild found in cache');
+      logger.error("No guild found in cache");
       return;
     }
 
-    const channel = guild.channels.cache.get(GITHUB_NOTIFICATION_CHANNEL);
+    const channel = guild.channels.cache.get(getNotificationChannel()!);
 
     if (!channel || !channel.isTextBased()) {
-      logger.error('Admin logs channel not found or not a text channel');
+      logger.error("Admin logs channel not found or not a text channel");
       return;
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('❌ GitHub Workflow Failed')
+      .setTitle("❌ GitHub Workflow Failed")
       .setColor(0xff0000)
-      .setDescription(`**${workflow.name}** failed in **${workflow.repository}**`)
+      .setDescription(
+        `**${workflow.name}** failed in **${workflow.repository}**`,
+      )
       .addFields(
-        { name: '📂 Repository', value: workflow.repository, inline: true },
-        { name: '🌿 Branch', value: workflow.branch, inline: true },
-        { name: '⚡ Event', value: workflow.event, inline: true },
-        { name: '🔗 Workflow URL', value: `[View Workflow](${workflow.url})`, inline: false }
+        { name: "📂 Repository", value: workflow.repository, inline: true },
+        { name: "🌿 Branch", value: workflow.branch, inline: true },
+        { name: "⚡ Event", value: workflow.event, inline: true },
+        {
+          name: "🔗 Workflow URL",
+          value: `[View Workflow](${workflow.url})`,
+          inline: false,
+        },
       )
       .setTimestamp(new Date(workflow.createdAt))
-      .setFooter({ text: 'GitHub Monitoring' });
+      .setFooter({ text: "GitHub Monitoring" });
 
     await channel.send({ embeds: [embed] });
 
-    logger.info(`Sent workflow failure notification for ${workflow.repository} - ${workflow.name}`);
+    logger.info(
+      `Sent workflow failure notification for ${workflow.repository} - ${workflow.name}`,
+    );
   } catch (error) {
-    logger.error('Failed to send workflow failure notification:', error);
+    logger.error("Failed to send workflow failure notification:", error);
   }
 }
 
@@ -106,50 +118,62 @@ async function notifyWorkflowFailure(
  */
 async function notifyNewPullRequest(
   client: Client,
-  pr: MonitoredPullRequest
+  pr: MonitoredPullRequest,
 ): Promise<void> {
-  if (!GITHUB_NOTIFICATION_CHANNEL) {
-    logger.warn('DISCORD_CHANNEL_ADMIN_LOGS not configured, skipping notification');
+  if (!getNotificationChannel()) {
+    logger.warn(
+      "DISCORD_CHANNEL_ADMIN_LOGS not configured, skipping notification",
+    );
     return;
   }
 
   // Check if client is ready before attempting to send notifications
   if (!client || !client.isReady()) {
-    logger.debug('Discord client not available or not ready, skipping notification');
+    logger.debug(
+      "Discord client not available or not ready, skipping notification",
+    );
     return;
   }
 
   try {
     const guild = client.guilds.cache.first();
     if (!guild) {
-      logger.error('No guild found in cache');
+      logger.error("No guild found in cache");
       return;
     }
 
-    const channel = guild.channels.cache.get(GITHUB_NOTIFICATION_CHANNEL);
+    const channel = guild.channels.cache.get(getNotificationChannel()!);
 
-    if (!channel || !(channel instanceof TextChannel)) {
-      logger.error('Admin logs channel not found or not a text channel');
+    if (!channel || !channel.isTextBased()) {
+      logger.error("Admin logs channel not found or not a text channel");
       return;
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('🔀 New Pull Request')
+      .setTitle("🔀 New Pull Request")
       .setColor(pr.draft ? 0xffa500 : 0x00ff00)
       .setDescription(`**#${pr.number}** - ${pr.title}`)
       .addFields(
-        { name: '👤 Author', value: pr.author, inline: true },
-        { name: '📝 Status', value: pr.draft ? '📋 Draft' : '✅ Ready for Review', inline: true },
-        { name: '🔗 Pull Request URL', value: `[View PR](${pr.url})`, inline: false }
+        { name: "👤 Author", value: pr.author, inline: true },
+        {
+          name: "📝 Status",
+          value: pr.draft ? "📋 Draft" : "✅ Ready for Review",
+          inline: true,
+        },
+        {
+          name: "🔗 Pull Request URL",
+          value: `[View PR](${pr.url})`,
+          inline: false,
+        },
       )
       .setTimestamp(new Date(pr.updatedAt))
-      .setFooter({ text: 'GitHub Monitoring' });
+      .setFooter({ text: "GitHub Monitoring" });
 
     await channel.send({ embeds: [embed] });
 
     logger.info(`Sent new PR notification for #${pr.number} - ${pr.title}`);
   } catch (error) {
-    logger.error('Failed to send PR notification:', error);
+    logger.error("Failed to send PR notification:", error);
   }
 }
 
@@ -158,46 +182,56 @@ async function notifyNewPullRequest(
  */
 async function notifyWorkflowSuccess(
   client: Client,
-  workflow: MonitoredWorkflow
+  workflow: MonitoredWorkflow,
 ): Promise<void> {
-  if (!GITHUB_NOTIFICATION_CHANNEL) return;
+  if (!getNotificationChannel()) return;
 
   if (!client || !client.isReady()) {
-    logger.debug('Discord client not available or not ready, skipping notification');
+    logger.debug(
+      "Discord client not available or not ready, skipping notification",
+    );
     return;
   }
 
   try {
     const guild = client.guilds.cache.first();
     if (!guild) {
-      logger.error('No guild found in cache');
+      logger.error("No guild found in cache");
       return;
     }
 
-    const channel = guild.channels.cache.get(GITHUB_NOTIFICATION_CHANNEL);
+    const channel = guild.channels.cache.get(getNotificationChannel()!);
 
-    if (!channel || !(channel instanceof TextChannel)) {
-      logger.error('Admin logs channel not found');
+    if (!channel || !channel.isTextBased()) {
+      logger.error("Admin logs channel not found");
       return;
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('✅ GitHub Workflow Recovered')
+      .setTitle("✅ GitHub Workflow Recovered")
       .setColor(0x00ff00)
-      .setDescription(`**${workflow.name}** succeeded in **${workflow.repository}**`)
+      .setDescription(
+        `**${workflow.name}** succeeded in **${workflow.repository}**`,
+      )
       .addFields(
-        { name: '📂 Repository', value: workflow.repository, inline: true },
-        { name: '🌿 Branch', value: workflow.branch, inline: true },
-        { name: '🔗 Workflow URL', value: `[View Workflow](${workflow.url})`, inline: false }
+        { name: "📂 Repository", value: workflow.repository, inline: true },
+        { name: "🌿 Branch", value: workflow.branch, inline: true },
+        {
+          name: "🔗 Workflow URL",
+          value: `[View Workflow](${workflow.url})`,
+          inline: false,
+        },
       )
       .setTimestamp(new Date(workflow.createdAt))
-      .setFooter({ text: 'GitHub Monitoring' });
+      .setFooter({ text: "GitHub Monitoring" });
 
     await channel.send({ embeds: [embed] });
 
-    logger.info(`Sent workflow success notification for ${workflow.repository} - ${workflow.name}`);
+    logger.info(
+      `Sent workflow success notification for ${workflow.repository} - ${workflow.name}`,
+    );
   } catch (error) {
-    logger.error('Failed to send workflow success notification:', error);
+    logger.error("Failed to send workflow success notification:", error);
   }
 }
 
@@ -208,36 +242,38 @@ async function notifyRateLimitWarning(
   client: Client,
   remaining: number,
   limit: number,
-  resetAt: Date
+  resetAt: Date,
 ): Promise<void> {
-  if (!GITHUB_NOTIFICATION_CHANNEL) return;
+  if (!getNotificationChannel()) return;
 
   if (!client || !client.isReady()) {
-    logger.debug('Discord client not available or not ready, skipping notification');
+    logger.debug(
+      "Discord client not available or not ready, skipping notification",
+    );
     return;
   }
 
   try {
-    const channel = await client.channels.fetch(GITHUB_NOTIFICATION_CHANNEL);
+    const channel = await client.channels.fetch(getNotificationChannel()!);
 
-    if (!channel || !(channel instanceof TextChannel)) return;
+    if (!channel || !channel.isTextBased()) return;
 
     const embed = new EmbedBuilder()
-      .setTitle('⚠️ GitHub API Rate Limit Warning')
+      .setTitle("⚠️ GitHub API Rate Limit Warning")
       .setColor(0xffa500)
       .setDescription(`GitHub API rate limit is running low!`)
       .addFields(
-        { name: '📊 Remaining', value: `${remaining}/${limit}`, inline: true },
-        { name: '🔄 Resets At', value: resetAt.toLocaleString(), inline: true }
+        { name: "📊 Remaining", value: `${remaining}/${limit}`, inline: true },
+        { name: "🔄 Resets At", value: resetAt.toLocaleString(), inline: true },
       )
       .setTimestamp()
-      .setFooter({ text: 'GitHub Monitoring' });
+      .setFooter({ text: "GitHub Monitoring" });
 
     await channel.send({ embeds: [embed] });
 
     logger.warn(`Sent rate limit warning: ${remaining}/${limit} remaining`);
   } catch (error) {
-    logger.error('Failed to send rate limit warning:', error);
+    logger.error("Failed to send rate limit warning:", error);
   }
 }
 
@@ -246,7 +282,7 @@ async function notifyRateLimitWarning(
  */
 async function monitorWorkflows(client: Client): Promise<void> {
   try {
-    const recentWorkflows = await getRecentWorkflowRuns(20, 'completed');
+    const recentWorkflows = await getRecentWorkflowRuns(20, "completed");
 
     for (const workflow of recentWorkflows) {
       const monitored: MonitoredWorkflow = {
@@ -268,7 +304,7 @@ async function monitorWorkflows(client: Client): Promise<void> {
       const isRecentWorkflow = workflowTime > monitoringStartTime;
 
       // New workflow failure detected
-      if (workflow.conclusion === 'failure' && !previous && isRecentWorkflow) {
+      if (workflow.conclusion === "failure" && !previous && isRecentWorkflow) {
         await notifyWorkflowFailure(client, monitored);
 
         // Create alert in database (non-blocking)
@@ -276,25 +312,25 @@ async function monitorWorkflows(client: Client): Promise<void> {
           try {
             await prisma.monitoringAlert.create({
               data: {
-                type: 'ERROR',
-                severity: 'ERROR',
-                source: 'GitHub',
+                type: "ERROR",
+                severity: "ERROR",
+                source: "GitHub",
                 message: `Workflow failed: ${monitored.repository} - ${monitored.name}`,
                 timestamp: new Date(monitored.createdAt),
                 metadata: monitored as any,
               },
             });
           } catch (error) {
-            logger.error('Failed to create monitoring alert', error);
+            logger.error("Failed to create monitoring alert", error);
           }
         });
       }
 
       // Workflow recovered (was failing, now succeeded)
       if (
-        workflow.conclusion === 'success' &&
+        workflow.conclusion === "success" &&
         previous &&
-        previous.conclusion === 'failure'
+        previous.conclusion === "failure"
       ) {
         await notifyWorkflowSuccess(client, monitored);
 
@@ -303,16 +339,16 @@ async function monitorWorkflows(client: Client): Promise<void> {
           try {
             await prisma.monitoringAlert.create({
               data: {
-                type: 'UPTIME_CHECK',
-                severity: 'INFO',
-                source: 'GitHub',
+                type: "UPTIME_CHECK",
+                severity: "INFO",
+                source: "GitHub",
                 message: `Workflow recovered: ${monitored.repository} - ${monitored.name}`,
                 timestamp: new Date(monitored.createdAt),
                 metadata: monitored as any,
               },
             });
           } catch (error) {
-            logger.error('Failed to create monitoring alert', error);
+            logger.error("Failed to create monitoring alert", error);
           }
         });
       }
@@ -326,7 +362,7 @@ async function monitorWorkflows(client: Client): Promise<void> {
       lastWorkflowCheck = new Map(entries.slice(-100));
     }
   } catch (error) {
-    logger.error('Failed to monitor GitHub workflows:', error);
+    logger.error("Failed to monitor GitHub workflows:", error);
   }
 }
 
@@ -342,7 +378,7 @@ async function monitorPullRequests(client: Client): Promise<void> {
         id: pr.id,
         number: pr.number,
         title: pr.title,
-        repository: '', // PR search doesn't include repo, we'll parse from URL
+        repository: "", // PR search doesn't include repo, we'll parse from URL
         state: pr.state,
         url: pr.html_url,
         author: pr.user.login,
@@ -365,16 +401,16 @@ async function monitorPullRequests(client: Client): Promise<void> {
           try {
             await prisma.monitoringAlert.create({
               data: {
-                type: 'NOTIFICATION',
-                severity: 'INFO',
-                source: 'GitHub',
+                type: "NOTIFICATION",
+                severity: "INFO",
+                source: "GitHub",
                 message: `New pull request: #${monitored.number} - ${monitored.title}`,
                 timestamp: new Date(monitored.updatedAt),
                 metadata: monitored as any,
               },
             });
           } catch (error) {
-            logger.error('Failed to create monitoring alert', error);
+            logger.error("Failed to create monitoring alert", error);
           }
         });
       }
@@ -388,7 +424,7 @@ async function monitorPullRequests(client: Client): Promise<void> {
       lastPRCheck = new Map(entries.slice(-100));
     }
   } catch (error) {
-    logger.error('Failed to monitor GitHub pull requests:', error);
+    logger.error("Failed to monitor GitHub pull requests:", error);
   }
 }
 
@@ -406,7 +442,7 @@ async function checkRateLimit(client: Client): Promise<void> {
       await notifyRateLimitWarning(client, remaining, limit, reset);
     }
   } catch (error) {
-    logger.error('Failed to check GitHub rate limit:', error);
+    logger.error("Failed to check GitHub rate limit:", error);
   }
 }
 
@@ -415,7 +451,7 @@ async function checkRateLimit(client: Client): Promise<void> {
  */
 async function runGitHubMonitoring(client: Client): Promise<void> {
   try {
-    logger.info('Running GitHub monitoring checks...');
+    logger.info("Running GitHub monitoring checks...");
 
     await Promise.all([
       monitorWorkflows(client),
@@ -423,9 +459,9 @@ async function runGitHubMonitoring(client: Client): Promise<void> {
       checkRateLimit(client),
     ]);
 
-    logger.info('GitHub monitoring checks complete');
+    logger.info("GitHub monitoring checks complete");
   } catch (error) {
-    logger.error('GitHub monitoring failed:', error);
+    logger.error("GitHub monitoring failed:", error);
   }
 }
 
@@ -434,7 +470,7 @@ async function runGitHubMonitoring(client: Client): Promise<void> {
  */
 export function startGitHubMonitoring(client: Client): void {
   if (githubMonitorInterval) {
-    logger.warn('GitHub monitoring already running, restarting...');
+    logger.warn("GitHub monitoring already running, restarting...");
     stopGitHubMonitoring();
   }
 
@@ -446,7 +482,9 @@ export function startGitHubMonitoring(client: Client): void {
     runGitHubMonitoring(client);
   }, GITHUB_POLL_INTERVAL);
 
-  logger.info(`GitHub monitoring started (${GITHUB_POLL_INTERVAL / 60000}-minute interval)`);
+  logger.info(
+    `GitHub monitoring started (${GITHUB_POLL_INTERVAL / 60000}-minute interval)`,
+  );
 }
 
 /**
@@ -456,6 +494,6 @@ export function stopGitHubMonitoring(): void {
   if (githubMonitorInterval) {
     clearInterval(githubMonitorInterval);
     githubMonitorInterval = null;
-    logger.info('GitHub monitoring stopped');
+    logger.info("GitHub monitoring stopped");
   }
 }

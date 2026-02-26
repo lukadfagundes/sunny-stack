@@ -3,13 +3,13 @@
  * @description Background monitoring for Cloudflare DNS, SSL, and zone status with Discord notifications
  */
 
-import { Client, EmbedBuilder, TextChannel } from 'discord.js';
-import { prisma } from '@/lib/db/prisma';
-import logger from '@/lib/logger';
-import { getZone, getSSLStatus } from '@/lib/integrations/cloudflare';
+import { Client, EmbedBuilder, TextChannel } from "discord.js";
+import { prisma } from "@/lib/db/prisma";
+import logger from "@/lib/logger";
+import { getZone, getSSLStatus } from "@/lib/integrations/cloudflare";
 
 const CLOUDFLARE_POLL_INTERVAL = 10 * 60 * 1000; // 10 minutes (less frequent)
-const CLOUDFLARE_NOTIFICATION_CHANNEL = process.env.DISCORD_CHANNEL_ADMIN_LOGS;
+const getNotificationChannel = () => process.env.DISCORD_CHANNEL_ADMIN_LOGS;
 
 interface MonitoredZone {
   name: string;
@@ -34,93 +34,108 @@ const lastSSLCheck: Map<string, MonitoredSSL> = new Map();
 async function notifyZoneStatusChange(
   client: Client,
   zone: MonitoredZone,
-  previousStatus: string
+  previousStatus: string,
 ): Promise<void> {
-  if (!CLOUDFLARE_NOTIFICATION_CHANNEL) return;
+  if (!getNotificationChannel()) return;
 
   if (!client || !client.isReady()) {
-    logger.debug('Discord client not available or not ready, skipping notification');
+    logger.debug(
+      "Discord client not available or not ready, skipping notification",
+    );
     return;
   }
 
   try {
     const guild = client.guilds.cache.first();
     if (!guild) {
-      logger.error('No guild found in cache');
+      logger.error("No guild found in cache");
       return;
     }
 
-    const channel = guild.channels.cache.get(CLOUDFLARE_NOTIFICATION_CHANNEL);
+    const channel = guild.channels.cache.get(getNotificationChannel()!);
 
     if (!channel || !channel.isTextBased()) return;
 
-    const isDown = zone.status !== 'active' || zone.paused;
+    const isDown = zone.status !== "active" || zone.paused;
 
     const embed = new EmbedBuilder()
-      .setTitle(isDown ? '⚠️ Cloudflare Zone Issue' : '✅ Cloudflare Zone Recovered')
+      .setTitle(
+        isDown ? "⚠️ Cloudflare Zone Issue" : "✅ Cloudflare Zone Recovered",
+      )
       .setColor(isDown ? 0xffa500 : 0x00ff00)
       .setDescription(`Zone **${zone.name}** status changed`)
       .addFields(
-        { name: 'Previous Status', value: previousStatus, inline: true },
-        { name: 'Current Status', value: zone.status, inline: true },
-        { name: 'Paused', value: zone.paused ? 'Yes' : 'No', inline: true }
+        { name: "Previous Status", value: previousStatus, inline: true },
+        { name: "Current Status", value: zone.status, inline: true },
+        { name: "Paused", value: zone.paused ? "Yes" : "No", inline: true },
       )
       .setTimestamp()
-      .setFooter({ text: 'Cloudflare Monitoring' });
+      .setFooter({ text: "Cloudflare Monitoring" });
 
     await channel.send({ embeds: [embed] });
 
     logger.info(`Sent zone status change notification for ${zone.name}`);
   } catch (error) {
-    logger.error('Failed to send Cloudflare zone status notification:', error);
+    logger.error("Failed to send Cloudflare zone status notification:", error);
   }
 }
 
 /**
  * Send Discord notification for SSL certificate expiring soon
  */
-async function notifySSLExpiring(client: Client, cert: MonitoredSSL): Promise<void> {
-  if (!CLOUDFLARE_NOTIFICATION_CHANNEL) return;
+async function notifySSLExpiring(
+  client: Client,
+  cert: MonitoredSSL,
+): Promise<void> {
+  if (!getNotificationChannel()) return;
 
   if (!client || !client.isReady()) {
-    logger.debug('Discord client not available or not ready, skipping notification');
+    logger.debug(
+      "Discord client not available or not ready, skipping notification",
+    );
     return;
   }
 
   try {
     const guild = client.guilds.cache.first();
     if (!guild) {
-      logger.error('No guild found in cache');
+      logger.error("No guild found in cache");
       return;
     }
 
-    const channel = guild.channels.cache.get(CLOUDFLARE_NOTIFICATION_CHANNEL);
+    const channel = guild.channels.cache.get(getNotificationChannel()!);
 
     if (!channel || !channel.isTextBased()) return;
 
     const expiresAt = new Date(cert.expiresOn);
     const daysUntilExpiry = Math.floor(
-      (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+      (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
     );
 
     const embed = new EmbedBuilder()
-      .setTitle('⚠️ Cloudflare SSL Certificate Expiring Soon')
+      .setTitle("⚠️ Cloudflare SSL Certificate Expiring Soon")
       .setColor(0xffa500)
-      .setDescription(`SSL certificate for **${cert.hosts.join(', ')}** expires in ${daysUntilExpiry} days`)
+      .setDescription(
+        `SSL certificate for **${cert.hosts.join(", ")}** expires in ${daysUntilExpiry} days`,
+      )
       .addFields(
-        { name: 'Type', value: cert.type, inline: true },
-        { name: 'Status', value: cert.status, inline: true },
-        { name: 'Expires On', value: expiresAt.toLocaleDateString(), inline: true },
-        { name: 'Hosts', value: cert.hosts.join('\n'), inline: false }
+        { name: "Type", value: cert.type, inline: true },
+        { name: "Status", value: cert.status, inline: true },
+        {
+          name: "Expires On",
+          value: expiresAt.toLocaleDateString(),
+          inline: true,
+        },
+        { name: "Hosts", value: cert.hosts.join("\n"), inline: false },
       )
       .setTimestamp()
-      .setFooter({ text: 'Cloudflare Monitoring' });
+      .setFooter({ text: "Cloudflare Monitoring" });
 
     await channel.send({ embeds: [embed] });
 
-    logger.info(`Sent SSL expiring notification for ${cert.hosts.join(', ')}`);
+    logger.info(`Sent SSL expiring notification for ${cert.hosts.join(", ")}`);
   } catch (error) {
-    logger.error('Failed to send SSL expiring notification:', error);
+    logger.error("Failed to send SSL expiring notification:", error);
   }
 }
 
@@ -143,22 +158,27 @@ async function monitorCloudflare(client: Client): Promise<void> {
         lastZoneCheck.status !== zone.status ||
         lastZoneCheck.paused !== zone.paused
       ) {
-        await notifyZoneStatusChange(client, monitoredZone, lastZoneCheck.status);
+        await notifyZoneStatusChange(
+          client,
+          monitoredZone,
+          lastZoneCheck.status,
+        );
 
         // Create alert in database (non-blocking)
         setImmediate(async () => {
           try {
             await prisma.monitoringAlert.create({
               data: {
-                type: 'UPTIME_CHECK',
-                severity: zone.status === 'active' && !zone.paused ? 'INFO' : 'WARNING',
-                source: 'Cloudflare',
+                type: "UPTIME_CHECK",
+                severity:
+                  zone.status === "active" && !zone.paused ? "INFO" : "WARNING",
+                source: "Cloudflare",
                 message: `Zone status changed: ${zone.name}`,
                 metadata: monitoredZone as any,
               },
             });
           } catch (error) {
-            logger.error('Failed to create monitoring alert', error);
+            logger.error("Failed to create monitoring alert", error);
           }
         });
       }
@@ -168,9 +188,9 @@ async function monitorCloudflare(client: Client): Promise<void> {
 
     // Check SSL certificates
     for (const cert of sslCerts) {
-      if (cert.status !== 'active') continue;
+      if (cert.status !== "active") continue;
 
-      const certKey = cert.hosts.join(',');
+      const certKey = cert.hosts.join(",");
       const monitoredSSL: MonitoredSSL = {
         type: cert.type,
         status: cert.status,
@@ -179,13 +199,14 @@ async function monitorCloudflare(client: Client): Promise<void> {
       };
 
       const expiresAt = new Date(cert.expires_on);
-      const daysUntilExpiry = (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+      const daysUntilExpiry =
+        (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
 
       // Warn if cert expires in less than 30 days
       const previous = lastSSLCheck.get(certKey);
       if (daysUntilExpiry < 30 && daysUntilExpiry > 0) {
         // Only notify once per cert (not already notified)
-        if (!previous || previous.status !== 'expiring_soon') {
+        if (!previous || previous.status !== "expiring_soon") {
           await notifySSLExpiring(client, monitoredSSL);
 
           // Create alert (non-blocking)
@@ -193,27 +214,33 @@ async function monitorCloudflare(client: Client): Promise<void> {
             try {
               await prisma.monitoringAlert.create({
                 data: {
-                  type: 'NOTIFICATION',
-                  severity: 'WARNING',
-                  source: 'Cloudflare',
-                  message: `SSL certificate expiring soon: ${cert.hosts.join(', ')}`,
-                  metadata: { ...monitoredSSL, daysUntilExpiry: Math.floor(daysUntilExpiry) } as any,
+                  type: "NOTIFICATION",
+                  severity: "WARNING",
+                  source: "Cloudflare",
+                  message: `SSL certificate expiring soon: ${cert.hosts.join(", ")}`,
+                  metadata: {
+                    ...monitoredSSL,
+                    daysUntilExpiry: Math.floor(daysUntilExpiry),
+                  } as any,
                 },
               });
             } catch (error) {
-              logger.error('Failed to create monitoring alert', error);
+              logger.error("Failed to create monitoring alert", error);
             }
           });
 
           // Mark as notified
-          lastSSLCheck.set(certKey, { ...monitoredSSL, status: 'expiring_soon' });
+          lastSSLCheck.set(certKey, {
+            ...monitoredSSL,
+            status: "expiring_soon",
+          });
         }
       } else {
         lastSSLCheck.set(certKey, monitoredSSL);
       }
     }
   } catch (error) {
-    logger.error('Failed to monitor Cloudflare:', error);
+    logger.error("Failed to monitor Cloudflare:", error);
   }
 }
 
@@ -222,13 +249,13 @@ async function monitorCloudflare(client: Client): Promise<void> {
  */
 async function runCloudflareMonitoring(client: Client): Promise<void> {
   try {
-    logger.info('Running Cloudflare monitoring checks...');
+    logger.info("Running Cloudflare monitoring checks...");
 
     await monitorCloudflare(client);
 
-    logger.info('Cloudflare monitoring checks complete');
+    logger.info("Cloudflare monitoring checks complete");
   } catch (error) {
-    logger.error('Cloudflare monitoring failed:', error);
+    logger.error("Cloudflare monitoring failed:", error);
   }
 }
 
@@ -237,7 +264,7 @@ async function runCloudflareMonitoring(client: Client): Promise<void> {
  */
 export function startCloudflareMonitoring(client: Client): void {
   if (cloudflareMonitorInterval) {
-    logger.warn('Cloudflare monitoring already running, restarting...');
+    logger.warn("Cloudflare monitoring already running, restarting...");
     stopCloudflareMonitoring();
   }
 
@@ -249,7 +276,9 @@ export function startCloudflareMonitoring(client: Client): void {
     runCloudflareMonitoring(client);
   }, CLOUDFLARE_POLL_INTERVAL);
 
-  logger.info(`Cloudflare monitoring started (${CLOUDFLARE_POLL_INTERVAL / 60000}-minute interval)`);
+  logger.info(
+    `Cloudflare monitoring started (${CLOUDFLARE_POLL_INTERVAL / 60000}-minute interval)`,
+  );
 }
 
 /**
@@ -259,6 +288,6 @@ export function stopCloudflareMonitoring(): void {
   if (cloudflareMonitorInterval) {
     clearInterval(cloudflareMonitorInterval);
     cloudflareMonitorInterval = null;
-    logger.info('Cloudflare monitoring stopped');
+    logger.info("Cloudflare monitoring stopped");
   }
 }

@@ -3,13 +3,13 @@
  * @description Background monitoring for cron-job.org scheduled jobs with Discord notifications
  */
 
-import { Client, EmbedBuilder, TextChannel } from 'discord.js';
-import { prisma } from '@/lib/db/prisma';
-import logger from '@/lib/logger';
-import { getCronJobs, getJobExecutions } from '@/lib/integrations/cronjob';
+import { Client, EmbedBuilder, TextChannel } from "discord.js";
+import { prisma } from "@/lib/db/prisma";
+import logger from "@/lib/logger";
+import { getCronJobs, getJobExecutions } from "@/lib/integrations/cronjob";
 
 const CRONJOB_POLL_INTERVAL = 10 * 60 * 1000; // 10 minutes
-const CRONJOB_NOTIFICATION_CHANNEL = process.env.DISCORD_CHANNEL_ADMIN_LOGS;
+const getNotificationChannel = () => process.env.DISCORD_CHANNEL_ADMIN_LOGS;
 
 interface MonitoredJob {
   id: number;
@@ -36,81 +36,96 @@ async function notifyJobFailure(
     date: string;
     httpStatus: number;
     statusText: string;
-  }
+  },
 ): Promise<void> {
-  if (!CRONJOB_NOTIFICATION_CHANNEL) return;
+  if (!getNotificationChannel()) return;
 
   if (!client || !client.isReady()) {
-    logger.debug('Discord client not available or not ready, skipping notification');
+    logger.debug(
+      "Discord client not available or not ready, skipping notification",
+    );
     return;
   }
 
   try {
     const guild = client.guilds.cache.first();
     if (!guild) {
-      logger.error('No guild found in cache');
+      logger.error("No guild found in cache");
       return;
     }
 
-    const channel = guild.channels.cache.get(CRONJOB_NOTIFICATION_CHANNEL);
+    const channel = guild.channels.cache.get(getNotificationChannel()!);
 
     if (!channel || !channel.isTextBased()) return;
 
     const embed = new EmbedBuilder()
-      .setTitle('❌ Cron Job Failed')
+      .setTitle("❌ Cron Job Failed")
       .setColor(0xff0000)
       .setDescription(`Job **${job.title}** failed to execute`)
       .addFields(
-        { name: '🔗 URL', value: job.url, inline: false },
-        { name: '📊 HTTP Status', value: execution.httpStatus.toString(), inline: true },
-        { name: '⏰ Execution Time', value: new Date(execution.date).toLocaleString(), inline: true }
+        { name: "🔗 URL", value: job.url, inline: false },
+        {
+          name: "📊 HTTP Status",
+          value: execution.httpStatus.toString(),
+          inline: true,
+        },
+        {
+          name: "⏰ Execution Time",
+          value: new Date(execution.date).toLocaleString(),
+          inline: true,
+        },
       )
       .setTimestamp(new Date(execution.date))
-      .setFooter({ text: 'cron-job.org Monitoring' });
+      .setFooter({ text: "cron-job.org Monitoring" });
 
     await channel.send({ embeds: [embed] });
 
     logger.info(`Sent job failure notification for ${job.title}`);
   } catch (error) {
-    logger.error('Failed to send cron job failure notification:', error);
+    logger.error("Failed to send cron job failure notification:", error);
   }
 }
 
 /**
  * Send Discord notification for job disabled
  */
-async function notifyJobDisabled(client: Client, job: MonitoredJob): Promise<void> {
-  if (!CRONJOB_NOTIFICATION_CHANNEL) return;
+async function notifyJobDisabled(
+  client: Client,
+  job: MonitoredJob,
+): Promise<void> {
+  if (!getNotificationChannel()) return;
 
   if (!client || !client.isReady()) {
-    logger.debug('Discord client not available or not ready, skipping notification');
+    logger.debug(
+      "Discord client not available or not ready, skipping notification",
+    );
     return;
   }
 
   try {
     const guild = client.guilds.cache.first();
     if (!guild) {
-      logger.error('No guild found in cache');
+      logger.error("No guild found in cache");
       return;
     }
 
-    const channel = guild.channels.cache.get(CRONJOB_NOTIFICATION_CHANNEL);
+    const channel = guild.channels.cache.get(getNotificationChannel()!);
 
     if (!channel || !channel.isTextBased()) return;
 
     const embed = new EmbedBuilder()
-      .setTitle('⚠️ Cron Job Disabled')
+      .setTitle("⚠️ Cron Job Disabled")
       .setColor(0xffa500)
       .setDescription(`Job **${job.title}** has been disabled`)
-      .addFields({ name: '🔗 URL', value: job.url, inline: false })
+      .addFields({ name: "🔗 URL", value: job.url, inline: false })
       .setTimestamp()
-      .setFooter({ text: 'cron-job.org Monitoring' });
+      .setFooter({ text: "cron-job.org Monitoring" });
 
     await channel.send({ embeds: [embed] });
 
     logger.info(`Sent job disabled notification for ${job.title}`);
   } catch (error) {
-    logger.error('Failed to send job disabled notification:', error);
+    logger.error("Failed to send job disabled notification:", error);
   }
 }
 
@@ -141,14 +156,14 @@ async function monitorCronJobs(client: Client): Promise<void> {
       // Check for new failures
       if (
         job.lastExecution &&
-        job.lastExecution.status === 'FAILED' &&
+        job.lastExecution.status === "FAILED" &&
         (!previous?.lastExecution ||
           previous.lastExecution.date !== job.lastExecution.date)
       ) {
         await notifyJobFailure(client, monitored, {
           date: job.lastExecution.date,
           httpStatus: job.lastExecution.httpStatus,
-          statusText: '',
+          statusText: "",
         });
 
         // Create alert in database (non-blocking)
@@ -156,15 +171,15 @@ async function monitorCronJobs(client: Client): Promise<void> {
           try {
             await prisma.monitoringAlert.create({
               data: {
-                type: 'ERROR',
-                severity: 'ERROR',
-                source: 'cron-job.org',
+                type: "ERROR",
+                severity: "ERROR",
+                source: "cron-job.org",
                 message: `Cron job failed: ${monitored.title}`,
                 metadata: monitored as any,
               },
             });
           } catch (error) {
-            logger.error('Failed to create monitoring alert', error);
+            logger.error("Failed to create monitoring alert", error);
           }
         });
       }
@@ -178,15 +193,15 @@ async function monitorCronJobs(client: Client): Promise<void> {
           try {
             await prisma.monitoringAlert.create({
               data: {
-                type: 'NOTIFICATION',
-                severity: 'WARNING',
-                source: 'cron-job.org',
+                type: "NOTIFICATION",
+                severity: "WARNING",
+                source: "cron-job.org",
                 message: `Cron job disabled: ${monitored.title}`,
                 metadata: monitored as any,
               },
             });
           } catch (error) {
-            logger.error('Failed to create monitoring alert', error);
+            logger.error("Failed to create monitoring alert", error);
           }
         });
       }
@@ -202,7 +217,7 @@ async function monitorCronJobs(client: Client): Promise<void> {
       }
     }
   } catch (error) {
-    logger.error('Failed to monitor cron jobs:', error);
+    logger.error("Failed to monitor cron jobs:", error);
   }
 }
 
@@ -211,13 +226,13 @@ async function monitorCronJobs(client: Client): Promise<void> {
  */
 async function runCronJobMonitoring(client: Client): Promise<void> {
   try {
-    logger.info('Running cron-job.org monitoring checks...');
+    logger.info("Running cron-job.org monitoring checks...");
 
     await monitorCronJobs(client);
 
-    logger.info('cron-job.org monitoring checks complete');
+    logger.info("cron-job.org monitoring checks complete");
   } catch (error) {
-    logger.error('cron-job.org monitoring failed:', error);
+    logger.error("cron-job.org monitoring failed:", error);
   }
 }
 
@@ -226,7 +241,7 @@ async function runCronJobMonitoring(client: Client): Promise<void> {
  */
 export function startCronJobMonitoring(client: Client): void {
   if (cronjobMonitorInterval) {
-    logger.warn('cron-job.org monitoring already running, restarting...');
+    logger.warn("cron-job.org monitoring already running, restarting...");
     stopCronJobMonitoring();
   }
 
@@ -238,7 +253,9 @@ export function startCronJobMonitoring(client: Client): void {
     runCronJobMonitoring(client);
   }, CRONJOB_POLL_INTERVAL);
 
-  logger.info(`cron-job.org monitoring started (${CRONJOB_POLL_INTERVAL / 60000}-minute interval)`);
+  logger.info(
+    `cron-job.org monitoring started (${CRONJOB_POLL_INTERVAL / 60000}-minute interval)`,
+  );
 }
 
 /**
@@ -248,6 +265,6 @@ export function stopCronJobMonitoring(): void {
   if (cronjobMonitorInterval) {
     clearInterval(cronjobMonitorInterval);
     cronjobMonitorInterval = null;
-    logger.info('cron-job.org monitoring stopped');
+    logger.info("cron-job.org monitoring stopped");
   }
 }
