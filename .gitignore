@@ -164,6 +164,7 @@ build-output.txt
 # Additional Test Coverage
 *.lcov
 
+# Temp Files
 temp/
 
 # Trinity Method SDK

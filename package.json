@@ -91,6 +91,9 @@
     "tsx": "^4.20.6",
     "typescript": "^5.5.0"
   },
+  "optionalDependencies": {
+    "@next/swc-linux-x64-gnu": "^16.1.6"
+  },
   "engines": {
     "node": "22.x"
   }

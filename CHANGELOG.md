@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Unit tests for core lib modules: DataLoader factories, config validation, QueryOptimizer, GoogleQuotaManager (147 tests)
+- Unit tests for admin components: ProjectTable, ProjectForm, TimeEntryForm, Skeletons, QuoteCard, QuoteReviewModal, AdminNav, HealthIndicator, DashboardCard, AnalyticsChart (183 tests)
+- Unit tests for portfolio/quote components: ProjectModal, TechnicalFormFields, ErrorBoundary (72 tests)
+- Unit tests for admin pages: QuotesListPage, QuoteDetailPage, ProjectsListPage (34 tests)
+- Comprehensive API route tests: analytics, auth, health, monitor, projects, proposals, quotes, reports, send-quote, sync, test-notification, time-entries (542 tests)
+
+### Fixed
+
+- Timer leak in `base-service.test.ts` — GoogleQuotaManager timers not destroyed in afterEach
+- Flaky cache retrieval timing test in `performance.benchmark.test.ts` (1ms → 5ms threshold)
+- `example-gmail-service.ts` excluded from coverage metrics (dead example code with `@ts-nocheck`)
+- Branch coverage threshold aligned to 70% to match project acceptance criteria
+
 ## [2.0.4] - 2026-02-24
 
 ### Added
