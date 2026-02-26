@@ -18,10 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Removed Jest (Changed Files) pre-commit hook to speed up commits
+- Split Jest config into unit (parallel) and integration (serial `maxWorkers=1`) for ~71% faster test runs (57s → 16s)
 
 ### Fixed
 
 - Timer leak in `base-service.test.ts` — GoogleQuotaManager timers not destroyed in afterEach
+- GoogleQuotaManager timer leak causing "worker failed to exit gracefully" — added `.unref()` to all timers and fixed `clearInterval`/`clearTimeout` mismatch in `destroy()`
 - Flaky cache retrieval timing test in `performance.benchmark.test.ts` (1ms → 5ms threshold)
 - `example-gmail-service.ts` excluded from coverage metrics (dead example code with `@ts-nocheck`)
 - Branch coverage threshold aligned to 70% to match project acceptance criteria

@@ -16,7 +16,8 @@ const config = {
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
     '<rootDir>/e2e/',
-    '<rootDir>/__tests__/helpers/'
+    '<rootDir>/__tests__/helpers/',
+    '<rootDir>/__tests__/integration/'
   ],
   coveragePathIgnorePatterns: ['/node_modules/', '/.next/', '/e2e/'],
   collectCoverageFrom: [
@@ -43,10 +44,7 @@ const config = {
       statements: 80
     }
   },
-  // Integration tests share a database and must run sequentially to avoid
-  // cross-suite data pollution. Use maxWorkers=1 to serialize all suites.
   workerIdleMemoryLimit: '512MB',
-  maxWorkers: 1,
   testTimeout: 30000,
 }
 
