@@ -268,9 +268,13 @@ async function monitorDeployments(client: Client): Promise<void> {
           .setTimestamp(monitored.created)
           .setFooter({ text: "Vercel Monitoring" });
 
-        const channel = await client.channels.fetch(getNotificationChannel()!);
-        if (channel && channel.isTextBased()) {
-          await channel.send({ embeds: [recoveryEmbed] });
+        const fetchedChannel = await client.channels.fetch(
+          getNotificationChannel()!,
+        );
+        if (fetchedChannel && fetchedChannel.isTextBased()) {
+          await (fetchedChannel as TextChannel).send({
+            embeds: [recoveryEmbed],
+          });
         }
 
         // Create recovery alert (non-blocking)

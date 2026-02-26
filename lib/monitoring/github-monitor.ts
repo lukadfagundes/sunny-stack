@@ -254,9 +254,12 @@ async function notifyRateLimitWarning(
   }
 
   try {
-    const channel = await client.channels.fetch(getNotificationChannel()!);
+    const fetchedChannel = await client.channels.fetch(
+      getNotificationChannel()!,
+    );
 
-    if (!channel || !channel.isTextBased()) return;
+    if (!fetchedChannel || !fetchedChannel.isTextBased()) return;
+    const channel = fetchedChannel as TextChannel;
 
     const embed = new EmbedBuilder()
       .setTitle("⚠️ GitHub API Rate Limit Warning")
