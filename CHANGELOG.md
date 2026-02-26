@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed markdown-it ReDoS vulnerability via `npm audit fix`
 - Fixed @isaacs/brace-expansion uncontrolled resource consumption via `npm audit fix`
 - Added npm overrides for transitive dependencies: undici (6.23.0), minimatch (10.2.4)
+- Scoped minimatch override to `markdownlint-cli` only (global override broke `babel-plugin-istanbul` in CI)
 
 ## [2.0.4] - 2026-02-24
 

@@ -99,7 +99,9 @@
   },
   "overrides": {
     "undici": "6.23.0",
-    "minimatch": "10.2.4"
+    "markdownlint-cli": {
+      "minimatch": "10.2.4"
+    }
   },
   "engines": {
     "node": "22.x"
