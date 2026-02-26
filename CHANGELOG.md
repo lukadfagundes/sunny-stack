@@ -15,12 +15,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unit tests for admin pages: QuotesListPage, QuoteDetailPage, ProjectsListPage (34 tests)
 - Comprehensive API route tests: analytics, auth, health, monitor, projects, proposals, quotes, reports, send-quote, sync, test-notification, time-entries (542 tests)
 
+### Changed
+
+- Removed Jest (Changed Files) pre-commit hook to speed up commits
+
 ### Fixed
 
 - Timer leak in `base-service.test.ts` — GoogleQuotaManager timers not destroyed in afterEach
 - Flaky cache retrieval timing test in `performance.benchmark.test.ts` (1ms → 5ms threshold)
 - `example-gmail-service.ts` excluded from coverage metrics (dead example code with `@ts-nocheck`)
 - Branch coverage threshold aligned to 70% to match project acceptance criteria
+
+### Security
+
+- Resolved 12 npm dependency vulnerabilities (5 high, 7 moderate → 0)
+- Upgraded Next.js 15.5.9 → 15.5.12 (DoS via Image Optimizer, HTTP request deserialization)
+- Upgraded jspdf to patched version (PDF injection, XSS, DoS — 7 advisories)
+- Upgraded markdownlint-cli 0.46.0 → 0.47.0
+- Fixed ajv ReDoS vulnerability via `npm audit fix`
+- Fixed lodash prototype pollution vulnerability via `npm audit fix`
+- Fixed markdown-it ReDoS vulnerability via `npm audit fix`
+- Fixed @isaacs/brace-expansion uncontrolled resource consumption via `npm audit fix`
+- Added npm overrides for transitive dependencies: undici (6.23.0), minimatch (10.2.4)
 
 ## [2.0.4] - 2026-02-24
 
