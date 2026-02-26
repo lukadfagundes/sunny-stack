@@ -2,6 +2,9 @@
  * @jest-environment node
  */
 
+// Set env var before imports so module-level const captures it
+process.env.DISCORD_CHANNEL_ADMIN_LOGS = "test-channel-id";
+
 // Polyfill timer functions for jsdom environment (next/jest overrides @jest-environment)
 if (typeof globalThis.setInterval === "undefined") {
   globalThis.setInterval = ((fn: Function, ms: number) =>

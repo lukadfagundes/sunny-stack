@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Flaky cache retrieval timing test in `performance.benchmark.test.ts` (1ms → 5ms threshold)
 - `example-gmail-service.ts` excluded from coverage metrics (dead example code with `@ts-nocheck`)
 - Branch coverage threshold aligned to 70% to match project acceptance criteria
+- Monitor test notifications silently skipped in CI — set `DISCORD_CHANNEL_ADMIN_LOGS` before module imports so module-level `const` captures the value
 
 ### Security
 
