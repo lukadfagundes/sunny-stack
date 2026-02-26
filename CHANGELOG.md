@@ -15,10 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unit tests for admin pages: QuotesListPage, QuoteDetailPage, ProjectsListPage (34 tests)
 - Comprehensive API route tests: analytics, auth, health, monitor, projects, proposals, quotes, reports, send-quote, sync, test-notification, time-entries (542 tests)
 
+### Removed
+
+- Stale `app/portfolio/page-old.tsx` backup file (570 LOC dead code)
+
 ### Changed
 
 - Removed Jest (Changed Files) pre-commit hook to speed up commits
 - Split Jest config into unit (parallel) and integration (serial `maxWorkers=1`) for ~71% faster test runs (57s → 16s)
+- Added explicit `bot/dist/` to `.gitignore`
 
 ### Fixed
 
