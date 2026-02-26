@@ -4,7 +4,7 @@
  * @module lib/google/quota-manager
  */
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 /**
  * Google API quota limits for each service
@@ -126,6 +126,7 @@ export class GoogleQuotaManager {
     this.minuteResetTimer = setInterval(() => {
       this.resetMinutely();
     }, 60000);
+    this.minuteResetTimer.unref();
 
     // Reset day quotas at midnight
     const now = new Date();
@@ -140,7 +141,9 @@ export class GoogleQuotaManager {
       this.dayResetTimer = setInterval(() => {
         this.resetDaily();
       }, 86400000);
+      this.dayResetTimer.unref();
     }, msUntilMidnight);
+    this.dayResetTimer.unref();
   }
 
   /**
@@ -163,7 +166,7 @@ export class GoogleQuotaManager {
     }
 
     if (cost < 0) {
-      throw new Error('Quota cost cannot be negative');
+      throw new Error("Quota cost cannot be negative");
     }
 
     if (cost === 0) {
@@ -196,9 +199,9 @@ export class GoogleQuotaManager {
     // Log warnings
     const usage = this.getUsage(serviceName);
     if (usage.minuteWarning) {
-      logger.warn('Google API quota warning', {
+      logger.warn("Google API quota warning", {
         service: serviceName,
-        type: 'per-minute',
+        type: "per-minute",
         usage: usage.minuteUsage,
         limit: usage.perMinuteLimit,
         percent: usage.minuteUsagePercent,
@@ -206,9 +209,9 @@ export class GoogleQuotaManager {
     }
 
     if (usage.dayWarning) {
-      logger.warn('Google API quota warning', {
+      logger.warn("Google API quota warning", {
         service: serviceName,
-        type: 'per-day',
+        type: "per-day",
         usage: usage.dayUsage,
         limit: usage.perDayLimit,
         percent: usage.dayUsagePercent,
@@ -256,10 +259,10 @@ export class GoogleQuotaManager {
 
     // Calculate percentages
     const minuteUsagePercent = Math.round(
-      (quota.minuteUsage / quota.perMinuteLimit) * 100
+      (quota.minuteUsage / quota.perMinuteLimit) * 100,
     );
     const dayUsagePercent = Math.round(
-      (quota.dayUsage / quota.perDayLimit) * 100
+      (quota.dayUsage / quota.perDayLimit) * 100,
     );
 
     // Check thresholds
@@ -324,7 +327,7 @@ export class GoogleQuotaManager {
     const currentMinute = Math.floor(Date.now() / 60000);
 
     this.quotas.forEach((quota, service) => {
-      logger.debug('Resetting per-minute quota', {
+      logger.debug("Resetting per-minute quota", {
         service,
         previousUsage: quota.minuteUsage,
         limit: quota.perMinuteLimit,
@@ -348,7 +351,7 @@ export class GoogleQuotaManager {
     const currentDay = Math.floor(Date.now() / 86400000);
 
     this.quotas.forEach((quota, service) => {
-      logger.info('Resetting per-day quota', {
+      logger.info("Resetting per-day quota", {
         service,
         previousUsage: quota.dayUsage,
         limit: quota.perDayLimit,
@@ -369,6 +372,7 @@ export class GoogleQuotaManager {
     }
 
     if (this.dayResetTimer) {
+      clearInterval(this.dayResetTimer);
       clearTimeout(this.dayResetTimer);
       this.dayResetTimer = null;
     }

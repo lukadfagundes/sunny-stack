@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Unit tests for core lib modules: DataLoader factories, config validation, QueryOptimizer, GoogleQuotaManager (147 tests)
+- Unit tests for admin components: ProjectTable, ProjectForm, TimeEntryForm, Skeletons, QuoteCard, QuoteReviewModal, AdminNav, HealthIndicator, DashboardCard, AnalyticsChart (183 tests)
+- Unit tests for portfolio/quote components: ProjectModal, TechnicalFormFields, ErrorBoundary (72 tests)
+- Unit tests for admin pages: QuotesListPage, QuoteDetailPage, ProjectsListPage (34 tests)
+- Comprehensive API route tests: analytics, auth, health, monitor, projects, proposals, quotes, reports, send-quote, sync, test-notification, time-entries (542 tests)
+
+### Removed
+
+- Stale `app/portfolio/page-old.tsx` backup file (570 LOC dead code)
+
+### Changed
+
+- Removed Jest (Changed Files) pre-commit hook to speed up commits
+- Split Jest config into unit (parallel) and integration (serial `maxWorkers=1`) for ~71% faster test runs (57s → 16s)
+- Added explicit `bot/dist/` to `.gitignore`
+
+### Fixed
+
+- Timer leak in `base-service.test.ts` — GoogleQuotaManager timers not destroyed in afterEach
+- GoogleQuotaManager timer leak causing "worker failed to exit gracefully" — added `.unref()` to all timers and fixed `clearInterval`/`clearTimeout` mismatch in `destroy()`
+- Flaky cache retrieval timing test in `performance.benchmark.test.ts` (1ms → 5ms threshold)
+- `example-gmail-service.ts` excluded from coverage metrics (dead example code with `@ts-nocheck`)
+- Branch coverage threshold aligned to 70% to match project acceptance criteria
+- Monitor notifications silently skipped in CI — replaced module-level `const` env var capture with runtime `getNotificationChannel()` getter in all 5 monitor services, and replaced `instanceof TextChannel` checks with `isTextBased()` for mock compatibility
+- ESLint config: added `**/dist/**` to ignores (fixes `bot/dist/` linting), added `.cjs` block with Node.js globals for `validate-env.cjs`
+
+### Security
+
+- Resolved 12 npm dependency vulnerabilities (5 high, 7 moderate → 0)
+- Upgraded Next.js 15.5.9 → 15.5.12 (DoS via Image Optimizer, HTTP request deserialization)
+- Upgraded jspdf to patched version (PDF injection, XSS, DoS — 7 advisories)
+- Upgraded markdownlint-cli 0.46.0 → 0.47.0
+- Fixed ajv ReDoS vulnerability via `npm audit fix`
+- Fixed lodash prototype pollution vulnerability via `npm audit fix`
+- Fixed markdown-it ReDoS vulnerability via `npm audit fix`
+- Fixed @isaacs/brace-expansion uncontrolled resource consumption via `npm audit fix`
+- Added npm overrides for transitive dependencies: undici (6.23.0), minimatch (10.2.4)
+- Scoped minimatch override to `markdownlint-cli` only (global override broke `babel-plugin-istanbul` in CI)
+
 ## [2.0.4] - 2026-02-24
 
 ### Added

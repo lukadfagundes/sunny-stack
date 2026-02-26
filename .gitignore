@@ -153,6 +153,9 @@ e2e/videos/
 .nyc_output/
 playwright/.cache/
 
+# Bot build output
+bot/dist/
+
 # TypeScript Build Info
 tsconfig.tsbuildinfo
 *.tsbuildinfo
@@ -164,9 +167,9 @@ build-output.txt
 # Additional Test Coverage
 *.lcov
 
+# Temp Files
 temp/
 
 # Trinity Method SDK
-.claude/trinity/archive/
-.claude/trinity/templates/
+.claude/
 *CLAUDE.md

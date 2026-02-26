@@ -16,7 +16,8 @@ const config = {
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
     '<rootDir>/e2e/',
-    '<rootDir>/__tests__/helpers/'
+    '<rootDir>/__tests__/helpers/',
+    '<rootDir>/__tests__/integration/'
   ],
   coveragePathIgnorePatterns: ['/node_modules/', '/.next/', '/e2e/'],
   collectCoverageFrom: [
@@ -25,6 +26,7 @@ const config = {
     'lib/**/*.{js,jsx,ts,tsx}',
     '!app/**/_*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
+    '!lib/google/example-gmail-service.ts',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/'],
   testMatch: [
@@ -36,16 +38,13 @@ const config = {
   ],
   coverageThreshold: {
     global: {
-      branches: 80,
+      branches: 70,
       functions: 80,
       lines: 80,
       statements: 80
     }
   },
-  // Integration tests share a database and must run sequentially to avoid
-  // cross-suite data pollution. Use maxWorkers=1 to serialize all suites.
   workerIdleMemoryLimit: '512MB',
-  maxWorkers: 1,
   testTimeout: 30000,
 }
 

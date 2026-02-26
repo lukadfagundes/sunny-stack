@@ -53,17 +53,6 @@ repos:
         exclude: 'deprecated/|archived/|package-lock\.json|\.next/'
         args: ["--write", "--ignore-unknown"]
 
-  # Jest unit tests for changed files (skip integration tests that require a database)
-  - repo: local
-    hooks:
-      - id: jest-changed
-        name: Jest (Changed Files)
-        entry: bash -c 'files=(); for f in "$@"; do [[ "$f" != *integration* ]] && files+=("$f"); done; [ ${#files[@]} -gt 0 ] && npx jest --passWithNoTests --bail --findRelatedTests "${files[@]}" || true' --
-        language: system
-        files: \.(js|jsx|ts|tsx)$
-        pass_filenames: true
-        stages: [pre-commit]
-
   # Markdown linting (local hook)
   - repo: local
     hooks:
