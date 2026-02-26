@@ -21,7 +21,6 @@ if (typeof global.TextEncoder === "undefined") {
 
 // Polyfill Request, Response, and Streams for Next.js in test environment
 if (typeof global.Request === "undefined") {
-  const { Readable } = require("stream");
   const {
     ReadableStream,
     WritableStream,

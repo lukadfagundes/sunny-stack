@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `example-gmail-service.ts` excluded from coverage metrics (dead example code with `@ts-nocheck`)
 - Branch coverage threshold aligned to 70% to match project acceptance criteria
 - Monitor notifications silently skipped in CI — replaced module-level `const` env var capture with runtime `getNotificationChannel()` getter in all 5 monitor services, and replaced `instanceof TextChannel` checks with `isTextBased()` for mock compatibility
+- ESLint config: added `**/dist/**` to ignores (fixes `bot/dist/` linting), added `.cjs` block with Node.js globals for `validate-env.cjs`
 
 ### Security
 
