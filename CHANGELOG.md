@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+- Implement a dynamic portfolio page (`src/app/portfolio/page.tsx`) to replace the "Coming Soon" placeholder, enabling display of categorized projects (resolves #84).
+- Create `src/components/portfolio/CategorySection.tsx` to group and display projects by category (resolves #84).
+- Create `src/components/portfolio/ProjectCard.tsx` to display individual project details within the portfolio (resolves #84).
+- Add `src/lib/data/projects.ts` to manage and retrieve project data, including `getProjectsByCategory` (resolves #84).
+- Define project-related TypeScript types in `src/lib/data/types.ts`, including `ProjectCategory` (resolves #84).
 - Configure ESLint for the project by adding `eslint.config.mjs`.
 - Configure Next.js project settings by adding `next.config.ts`
 - Generate `package-lock.json` to lock project dependencies.
@@ -26,3 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create `src/components/StatCounter.tsx` for animating numerical statistics
 - Create `src/components/StatsSection.tsx` to display key statistics
 - Configure TypeScript for the project by adding `tsconfig.json`.
+
+### Changed
+
+- Refactor `src/components/ShipWheel.tsx` to use fixed, cardinal positions for navigation labels instead of dynamic radial positioning.

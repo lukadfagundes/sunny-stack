@@ -22,7 +22,7 @@ const NAV_ITEMS: NavItem[] = [
 const WHEEL_SIZE = 80;
 const HUB_RADIUS = 10;
 const RIM_RADIUS = 36;
-const LABEL_RADIUS = 50;
+const LABEL_OFFSET = 18;
 
 function ShipWheelSVG({
   hovered,
@@ -131,6 +131,33 @@ function ShipWheelSVG({
   );
 }
 
+// Fixed label positions: top, right, bottom, left of the wheel
+const LABEL_POSITIONS: {
+  style: React.CSSProperties;
+  align: string;
+}[] = [
+  {
+    // Top
+    style: { bottom: `${WHEEL_SIZE + LABEL_OFFSET}px`, left: "50%" },
+    align: "-translate-x-1/2",
+  },
+  {
+    // Right
+    style: { left: `${WHEEL_SIZE + LABEL_OFFSET}px`, top: "50%" },
+    align: "-translate-y-1/2",
+  },
+  {
+    // Bottom
+    style: { top: `${WHEEL_SIZE + LABEL_OFFSET}px`, left: "50%" },
+    align: "-translate-x-1/2",
+  },
+  {
+    // Left
+    style: { right: `${WHEEL_SIZE + LABEL_OFFSET}px`, top: "50%" },
+    align: "-translate-y-1/2",
+  },
+];
+
 export default function ShipWheel() {
   const pathname = usePathname();
   const [hovered, setHovered] = useState(false);
@@ -139,6 +166,19 @@ export default function ShipWheel() {
   // Calculate wheel rotation based on current page
   const currentItem = NAV_ITEMS.find((item) => item.href === pathname);
   const currentAngle = currentItem ? -currentItem.angle : 0;
+
+  // Map each spoke position (top/right/bottom/left) to the nav item
+  // whose spoke currently points there after rotation.
+  // Spoke i in the SVG is at angle i*90°. After CSS rotation by currentAngle,
+  // it visually points at (i*90 + currentAngle)°. We need: which item's spoke
+  // ends up at position p (0=top, 1=right, 2=bottom, 3=left)?
+  // A spoke drawn at svgAngle rotates to visual angle = svgAngle + currentAngle.
+  // Position p corresponds to visual angle p*90.
+  // So svgAngle = p*90 - currentAngle. The item at that svgAngle has item.angle = svgAngle.
+  const labelsAtPositions = [0, 1, 2, 3].map((p) => {
+    const targetSvgAngle = ((p * 90 - currentAngle) % 360 + 360) % 360;
+    return NAV_ITEMS.find((item) => item.angle === targetSvgAngle)!;
+  });
 
   const handleZoroClick = useCallback(() => {
     console.log("Zoro!");
@@ -152,8 +192,9 @@ export default function ShipWheel() {
         aria-label="Main navigation"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        style={{ padding: LABEL_OFFSET + 40 }}
       >
-        <div className="relative">
+        <div className="relative" style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}>
           {/* Wheel */}
           <div
             className={`transition-opacity duration-300 ${
@@ -177,31 +218,22 @@ export default function ShipWheel() {
             tabIndex={-1}
           />
 
-          {/* Navigation labels */}
+          {/* Navigation labels — fixed at top/right/bottom/left of wheel */}
           <AnimatePresence>
             {hovered &&
-              NAV_ITEMS.map((item) => {
-                const angleRad =
-                  ((item.angle + currentAngle) * Math.PI) / 180;
-                const x =
-                  WHEEL_SIZE / 2 + LABEL_RADIUS * Math.sin(angleRad);
-                const y =
-                  WHEEL_SIZE / 2 - LABEL_RADIUS * Math.cos(angleRad);
+              labelsAtPositions.map((item, posIndex) => {
+                const pos = LABEL_POSITIONS[posIndex];
                 const isActive = pathname === item.href;
 
                 return (
                   <motion.div
-                    key={item.href}
+                    key={`pos-${posIndex}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute pointer-events-auto"
-                    style={{
-                      left: x,
-                      top: y,
-                      transform: "translate(-50%, -50%)",
-                    }}
+                    className={`absolute pointer-events-auto ${pos.align}`}
+                    style={pos.style}
                   >
                     <Link
                       href={item.href}
