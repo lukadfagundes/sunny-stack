@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Implement a comprehensive About page (`src/app/about/page.tsx`) to replace the "Coming Soon" placeholder, displaying personal details, interests, contacts, and blog entries (resolves #84).
+- Add `src/components/about/BioSections.tsx` to display biographical sections on the About page (resolves #84).
+- Add `src/components/about/BlogEntry.tsx` component for displaying individual blog entries on the About page (resolves #84).
+- Add `src/components/about/CommentsWall.tsx` component to feature a wall of comments on the About page (resolves #84).
+- Add `src/components/about/ContactTable.tsx` component to display contact information in a table format on the About page (resolves #84).
+- Add `src/components/about/DetailsBox.tsx` component for showcasing various personal details on the About page (resolves #84).
+- Add `src/components/about/InterestsTable.tsx` component to list interests in a table format on the About page (resolves #84).
+- Add `src/components/about/MusicPlayer.tsx` component to embed a music player on the About page (resolves #84).
+- Add `src/components/about/MySpaceUrl.tsx` component for displaying a MySpace-style URL on the About page (resolves #84).
+- Add `src/components/about/NetworkBanner.tsx` component to display a network banner on the About page (resolves #84).
+- Add `src/components/about/ProfileCard.tsx` component to present a user profile card on the About page (resolves #84).
+- Add `src/components/about/SectionHeader.tsx` component for consistent section titling across the About page (resolves #84).
+- Add `src/components/about/TopEight.tsx` component to display a 'Top 8' friends/contacts section on the About page (resolves #84).
+- Add `src/lib/data/personal.ts` to manage and retrieve personal data for the About page (resolves #84).
 - Implement a dynamic portfolio page (`src/app/portfolio/page.tsx`) to replace the "Coming Soon" placeholder, enabling display of categorized projects (resolves #84).
 - Create `src/components/portfolio/CategorySection.tsx` to group and display projects by category (resolves #84).
 - Create `src/components/portfolio/ProjectCard.tsx` to display individual project details within the portfolio (resolves #84).
