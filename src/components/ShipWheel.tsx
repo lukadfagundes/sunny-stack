@@ -16,7 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/", angle: 0 },
   { label: "Portfolio", href: "/portfolio", angle: 90 },
   { label: "About", href: "/about", angle: 180 },
-  { label: "Contact", href: "/contact", angle: 270 },
+  { label: "The One Piece", href: "/the-one-piece", angle: 270 },
 ];
 
 const WHEEL_SIZE = 80;
@@ -304,7 +304,7 @@ export default function ShipWheel() {
                           : "bg-sunny-surface text-sunny-cream border border-sunny-surface-light hover:border-sunny-gold"
                       }`}
                     >
-                      {item.label.slice(0, 3)}
+                      {item.href === "/the-one-piece" ? "???" : item.label.slice(0, 3)}
                     </Link>
                   </motion.div>
                 );

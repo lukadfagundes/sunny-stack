@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `src/app/not-found.tsx` to provide a custom 404 Not Found page.
 - Implement a comprehensive About page (`src/app/about/page.tsx`) to replace the "Coming Soon" placeholder, displaying personal details, interests, contacts, and blog entries (resolves #84).
 - Add `src/components/about/BioSections.tsx` to display biographical sections on the About page (resolves #84).
 - Add `src/components/about/BlogEntry.tsx` component for displaying individual blog entries on the About page (resolves #84).
@@ -49,4 +50,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `src/components/ShipWheel.tsx` to replace the "Contact" navigation link with "The One Piece".
+- Modify `src/components/ShipWheel.tsx` to display '???' for the "The One Piece" navigation link instead of the first three characters of its label.
 - Refactor `src/components/ShipWheel.tsx` to use fixed, cardinal positions for navigation labels instead of dynamic radial positioning.
+
+### Removed
+
+- Remove `src/app/contact/page.tsx`.
