@@ -8,10 +8,15 @@ import {
   ChevronDown,
   Code2,
   Briefcase,
+  GitMerge,
 } from "lucide-react";
 import Link from "next/link";
 import { ProjectModal, ProjectData } from "@/components/portfolio/ProjectModal";
-import { personalProjects, professionalProjects } from "./projects-data";
+import {
+  personalProjects,
+  professionalProjects,
+  contributionProjects,
+} from "./projects-data";
 
 export default function Portfolio() {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
@@ -216,6 +221,65 @@ export default function Portfolio() {
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+            </div>
+
+            {/* Contributions Card */}
+            <div className="bg-white/90 backdrop-blur border-2 border-sunny-ocean/30 rounded-2xl shadow-lg hover:shadow-xl transition-all overflow-hidden">
+              <button
+                onClick={() => toggleCard("contributions")}
+                className="w-full p-6 flex items-center justify-between hover:bg-sunny-ocean/5 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-sunny-ocean/20 rounded-full flex items-center justify-center">
+                    <GitMerge className="w-6 h-6 text-sunny-ocean" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="text-2xl font-bold text-sunny-darkRed">
+                      Contributions
+                    </h2>
+                    <p className="text-sm text-sunny-brown/60">
+                      Merged contributions to open-source projects
+                    </p>
+                  </div>
+                </div>
+                <ChevronDown
+                  className={`w-6 h-6 text-sunny-brown/60 transition-transform duration-200 ${
+                    expandedCard === "contributions" ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              <div
+                className={`transition-all duration-300 ease-in-out ${
+                  expandedCard === "contributions"
+                    ? "max-h-[500px] opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="px-6 pb-6 pt-2 border-t border-sunny-ocean/20">
+                  <div className="space-y-2">
+                    {contributionProjects.map((project) => (
+                      <button
+                        key={project.id}
+                        onClick={() => openProjectModal(project)}
+                        className="w-full text-left px-4 py-3 rounded-lg hover:bg-sunny-ocean/10 transition-colors group"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="text-sunny-ocean">
+                              {project.icon}
+                            </div>
+                            <span className="text-sunny-darkRed font-medium group-hover:text-sunny-ocean transition-colors">
+                              {project.title}
+                            </span>
+                          </div>
+                          <ChevronDown className="w-4 h-4 text-sunny-brown/40 -rotate-90 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

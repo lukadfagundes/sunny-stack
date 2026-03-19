@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Implement a new "Contributions Card" section in `app/portfolio/page.tsx` to display contribution projects.
+- Define `contributionProjects` array in `app/portfolio/projects-data.tsx` to store data for open-source contributions, including details for "Reactive Resume - Job Search, AI Tailoring & DOCX Export".
+- Add a `typecheck` script to `package.json` using `tsc --noEmit` for type checking.
+
+### Changed
+
+- Update `app/portfolio/page.tsx` to import `contributionProjects` and `GitMerge` icon.
+- Modify `lint` and `lint:fix` scripts in `package.json` to use `eslint .` and `eslint . --fix` respectively.
+
 ## [2.0.5] - 2026-02-26
 
 ### Added
