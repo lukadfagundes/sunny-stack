@@ -243,6 +243,74 @@ export const personalProjects: ProjectData[] = [
   },
 ];
 
+export const contributionProjects: ProjectData[] = [
+  {
+    id: "reactive-resume",
+    icon: <GitBranch className="w-5 h-5" />,
+    title: "Reactive Resume - Job Search, AI Tailoring & DOCX Export",
+    description:
+      "A feature contribution to Reactive Resume that adds three interconnected capabilities: job search from within the app using a pluggable provider system, AI-powered resume tailoring that creates optimized copies for specific job listings, and DOCX export with clean ATS-friendly formatting.",
+    keyFeatures: {
+      title: "Key Features",
+      items: [
+        {
+          label: "Job Search Provider System",
+          description:
+            "Abstract provider interface with JSearch integration, search filters (employment type, location, remote, experience level), and real-time RapidAPI quota tracking",
+        },
+        {
+          label: "AI Resume Tailoring Pipeline",
+          description:
+            "Select a job listing → duplicate resume → AI rewrites summary, experience, and skills for ATS optimization → apply structured patches",
+        },
+        {
+          label: "Skill Sync",
+          description:
+            "AI infers additional skills from experience, presents them for selection, and saves chosen skills back to the original base resume — improving it with every tailoring session",
+        },
+        {
+          label: "DOCX Export",
+          description:
+            "Client-side Word document generation supporting all 15 resume sections with clean typography and ATS-friendly structure",
+        },
+        {
+          label: "Quota Tracking",
+          description:
+            "Real-time API usage display from RapidAPI response headers, shown on both the Job Search page and Settings panel",
+        },
+      ],
+    },
+    callToAction: {
+      title: "Merged Open-Source Contribution",
+      description:
+        "Full-stack feature spanning provider adapters, Zustand stores, Zod schemas, API routes, and React components with unit tests. Built to integrate seamlessly with Reactive Resume's existing architecture.",
+      techStack: [
+        "React",
+        "TypeScript",
+        "Zustand",
+        "Zod",
+        "docx",
+        "tRPC/oRPC",
+        "Vitest",
+      ],
+      links: [
+        {
+          label: "View Fork",
+          url: "https://github.com/lukadfagundes/reactive-resume",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+        {
+          label: "Reactive Resume",
+          url: "https://rxresu.me",
+          icon: <ExternalLink className="w-4 h-4" />,
+        },
+      ],
+    },
+    footer:
+      "Contributed to <strong>Reactive Resume</strong> — an open-source resume builder with 30k+ GitHub stars.",
+  },
+];
+
 export const professionalProjects: ProjectData[] = [
   {
     id: "trinity-sdk",
