@@ -82,6 +82,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `src/components/landing/ContributionHeatmap.tsx` to use a parchment-themed color palette and replace the static "Contribution Activity" heading with a new `CompassRose` SVG component, integrating `framer-motion` for animations.
+- Refactor `src/components/landing/CurrentlyBuilding.tsx` to adopt a "Through the Spyglass" theme, changing headings and replacing the direct display of the latest GitHub repository with a spyglass-themed `motion.div` with hover interactions.
+- Refactor `src/components/landing/StatsDashboard.tsx` by replacing the `StatCard` component with a new `Gauge` component, implementing animated gauge visuals with an "elastic ease-out" needle sweep and number count-up effect, and removing several `lucide-react` icons.
+- Refactor `src/components/landing/TechArsenal.tsx` by replacing the `CategoryRow` and individual tech item display with a new `CrateItem` component, implementing interactive "crate" visuals with hover effects and updating item animations to include Y-axis translation.
 - Update `.gitignore` to specifically ignore `.env` and `.env.local` instead of a broad `.env*` pattern.
 - Refactor `src/app/not-found.tsx` to replace the previous static 404 experience with dynamic `ZoroGame` or `StaticNotFound` components based on user motion preferences, addressing issue #84.
 - Refactor `src/app/page.tsx` to introduce new landing page sections (`ContributionHeatmap`, `StatsDashboard`, `TechArsenal`, `CurrentlyBuilding`, `VoyageSail`) and integrate `fetchGitHubData` for dynamic content, removing the previous `StatsSection` and placeholder.
