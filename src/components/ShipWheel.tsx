@@ -158,6 +158,8 @@ const LABEL_POSITIONS: {
   },
 ];
 
+const KNOWN_ROUTES = new Set(["/", "/portfolio", "/about"]);
+
 export default function ShipWheel() {
   const pathname = usePathname();
   const [hovered, setHovered] = useState(false);
@@ -183,6 +185,9 @@ export default function ShipWheel() {
   const handleZoroClick = useCallback(() => {
     console.log("Zoro!");
   }, []);
+
+  // Hide the wheel on 404 / unknown routes
+  if (!KNOWN_ROUTES.has(pathname)) return null;
 
   return (
     <>

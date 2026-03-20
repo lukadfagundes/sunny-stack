@@ -9,6 +9,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `.env.example` to provide a template for environment variables.
+- Add `src/components/404/DPad.tsx` component for game input controls, addressing issue #84.
+- Add `src/components/404/GameBoard.tsx` component to render the game board, addressing issue #84.
+- Add `src/components/404/GameHUD.tsx` component to display game-related information, addressing issue #84.
+- Add `src/components/404/GameTile.tsx` component to represent individual game tiles, addressing issue #84.
+- Add `src/components/404/StaticNotFound.tsx` component for a simplified 404 page experience, addressing issue #84.
+- Add `src/components/404/WinCelebration.tsx` component to display win animations, addressing issue #84.
+- Add `src/components/404/ZoroGame.tsx` as the main interactive 404 game component, addressing issue #84.
+- Add `src/components/404/grid.ts` utility file for game grid logic, addressing issue #84.
+- Add `src/components/404/quotes.ts` utility file for game-related quotes, addressing issue #84.
+- Add `src/components/404/reducer.ts` for managing game state logic, addressing issue #84.
+- Add `src/components/404/types.ts` for defining game-related TypeScript types, addressing issue #84.
+- Add `src/components/404/useGameInput.ts` custom hook for handling game input, addressing issue #84.
+- Add `src/components/landing/ContributionHeatmap.tsx` component for displaying GitHub contributions.
+- Add `src/components/landing/CurrentlyBuilding.tsx` component to highlight current projects.
+- Add `src/components/landing/StatsDashboard.tsx` component for displaying developer statistics.
+- Add `src/components/landing/TechArsenal.tsx` component to showcase technologies used.
+- Add `src/components/landing/VoyageSail.tsx` component for the landing page background animation.
+- Add `src/lib/github.ts` utility file for fetching GitHub data.
+- Add `src/components/404/DPad.tsx` component for game input controls.
+- Add `src/components/404/GameBoard.tsx` component to render the game board.
+- Add `src/components/404/GameHUD.tsx` component to display game-related information.
+- Add `src/components/404/GameTile.tsx` component to represent individual game tiles.
+- Add `src/components/404/StaticNotFound.tsx` component for a simplified 404 page experience.
+- Add `src/components/404/WinCelebration.tsx` component to display win animations.
+- Add `src/components/404/ZoroGame.tsx` as the main interactive 404 game component.
+- Add `src/components/404/grid.ts` utility file for game grid logic.
+- Add `src/components/404/quotes.ts` utility file for game-related quotes.
+- Add `src/components/404/reducer.ts` utility file for game state management.
+- Add `src/components/404/types.ts` utility file for game type definitions.
+- Add `src/components/404/useGameInput.ts` custom hook for handling game input.
+- Implement new 404 Not Found page experience in `src/app/not-found.tsx` by conditionally rendering `ZoroGame` or `StaticNotFound`.
 - Add `src/app/not-found.tsx` to provide a custom 404 Not Found page.
 - Implement a comprehensive About page (`src/app/about/page.tsx`) to replace the "Coming Soon" placeholder, displaying personal details, interests, contacts, and blog entries (resolves #84).
 - Add `src/components/about/BioSections.tsx` to display biographical sections on the About page (resolves #84).
@@ -50,10 +82,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `.gitignore` to specifically ignore `.env` and `.env.local` instead of a broad `.env*` pattern.
+- Refactor `src/app/not-found.tsx` to replace the previous static 404 experience with dynamic `ZoroGame` or `StaticNotFound` components based on user motion preferences, addressing issue #84.
+- Refactor `src/app/page.tsx` to introduce new landing page sections (`ContributionHeatmap`, `StatsDashboard`, `TechArsenal`, `CurrentlyBuilding`, `VoyageSail`) and integrate `fetchGitHubData` for dynamic content, removing the previous `StatsSection` and placeholder.
+- Simplify `src/components/HeroSection.tsx` by removing mouse tracking, parallax effects, and associated state/hooks.
+- Add conditional rendering to `src/components/ShipWheel.tsx` to hide the component on unknown or 404 routes.
+- Modify `src/components/ShipWheel.tsx` to hide the component on unknown or 404 routes.
 - Update `src/components/ShipWheel.tsx` to replace the "Contact" navigation link with "The One Piece".
 - Modify `src/components/ShipWheel.tsx` to display '???' for the "The One Piece" navigation link instead of the first three characters of its label.
 - Refactor `src/components/ShipWheel.tsx` to use fixed, cardinal positions for navigation labels instead of dynamic radial positioning.
 
 ### Removed
 
+- Remove `src/components/StatCounter.tsx` as it is no longer used.
+- Remove `src/components/StatsSection.tsx` as it is no longer used.
+- Remove old 404 page implementation, including `WanderingCompass` component and related styling and motion logic from `src/app/not-found.tsx`.
 - Remove `src/app/contact/page.tsx`.
