@@ -20,36 +20,56 @@ interface GaugeProps {
   maxValue: number;
   delay: number;
   color: string;
-  icon: React.ReactNode;
+  isInView: boolean;
 }
 
-function Gauge({ label, value, maxValue, delay, color, icon }: GaugeProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
-  const [animatedValue, setAnimatedValue] = useState(0);
+// Gauge uses circle + stroke-dasharray (not SVG arc paths).
+// Every gauge has identical geometry — only the dashoffset differs per value.
+// This eliminates arc-flag / coordinate-system misalignment entirely.
+// Ref: https://tomekdev.com/posts/interactive-radial-gauge-in-react
+
+const SIZE = 100;                // viewBox is 100×100
+const CX = SIZE / 2;             // center X = 50
+const CY = SIZE / 2;             // center Y = 50
+const STROKE = 6;                // track width
+const R = (SIZE - STROKE) / 2;   // radius = 47, keeps stroke inside viewBox
+const CIRCUMFERENCE = 2 * Math.PI * R;
+const TRACK_DEG = 270;           // 270° arc, 90° gap at bottom
+const TRACK_FRACTION = TRACK_DEG / 360; // 0.75
+const TRACK_LENGTH = CIRCUMFERENCE * TRACK_FRACTION;
+const TRACK_GAP = CIRCUMFERENCE - TRACK_LENGTH;
+// Rotation: a circle's stroke starts at 3-o'clock (0°).
+// We need the gap centered at 6-o'clock (bottom).
+// Gap spans 90°, so it goes from 225° to 315° (centered on 270°).
+// 3-o'clock = 0° in SVG. To move stroke start to 7:30 (225° in compass = 135° in SVG),
+// we rotate by 135°.
+const ROTATION = 135;
+const NEEDLE_LEN = 32;
+
+function Gauge({ label, value, maxValue, delay, color, isInView }: GaugeProps) {
+  const [progress, setProgress] = useState(0);
   const [displayNum, setDisplayNum] = useState(0);
 
-  // Animate the needle sweep and number count-up
   useEffect(() => {
     if (!isInView) return;
 
     let start: number;
     let frame: number;
     const duration = 1800;
+    const ratio = Math.min(value / maxValue, 1);
 
     const animate = (ts: number) => {
       if (!start) start = ts;
-      const progress = Math.min((ts - start) / duration, 1);
-      // Elastic ease-out for needle overshoot
+      const t = Math.min((ts - start) / duration, 1);
       const eased =
-        progress === 1
+        t === 1
           ? 1
-          : 1 - Math.pow(2, -10 * progress) * Math.cos((progress * 10 - 0.75) * (2 * Math.PI / 3));
+          : 1 - Math.pow(2, -10 * t) * Math.cos((t * 10 - 0.75) * (2 * Math.PI / 3));
       const clamped = Math.min(eased, 1);
 
-      setAnimatedValue(clamped * Math.min(value / maxValue, 1));
+      setProgress(clamped * ratio);
       setDisplayNum(Math.round(clamped * value));
-      if (progress < 1) frame = requestAnimationFrame(animate);
+      if (t < 1) frame = requestAnimationFrame(animate);
     };
 
     const timeout = setTimeout(() => {
@@ -62,169 +82,97 @@ function Gauge({ label, value, maxValue, delay, color, icon }: GaugeProps) {
     };
   }, [isInView, value, maxValue, delay]);
 
-  // SVG gauge arc params
-  const cx = 70;
-  const cy = 70;
-  const r = 54;
-  const startAngle = 225; // degrees (bottom-left)
-  const totalArc = 270;   // degrees of sweep
+  // How much of the track to hide (0 = full, TRACK_LENGTH = empty)
+  const valueOffset = TRACK_LENGTH * (1 - progress);
 
-  // Convert angle to radians for SVG
-  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  // Needle angle in SVG degrees (clockwise from 3-o'clock).
+  // At progress=0 the needle points to the start of the arc (ROTATION°).
+  // At progress=1 it points to the end (ROTATION + TRACK_DEG°).
+  const needleDeg = ROTATION + progress * TRACK_DEG;
+  const needleRad = (needleDeg * Math.PI) / 180;
+  const nx = CX + NEEDLE_LEN * Math.cos(needleRad);
+  const ny = CY + NEEDLE_LEN * Math.sin(needleRad);
 
-  // Arc path
-  const arcStart = toRad(startAngle);
-  const arcEnd = toRad(startAngle - totalArc);
-  const x1 = cx + r * Math.cos(arcStart);
-  const y1 = cy - r * Math.sin(arcStart);
-  const x2 = cx + r * Math.cos(arcEnd);
-  const y2 = cy - r * Math.sin(arcEnd);
-
-  // Needle position
-  const needleAngle = startAngle - animatedValue * totalArc;
-  const needleRad = toRad(needleAngle);
-  const needleLen = 42;
-  const nx = cx + needleLen * Math.cos(needleRad);
-  const ny = cy - needleLen * Math.sin(needleRad);
-
-  // Filled arc
-  const filledSweep = animatedValue * totalArc;
-  const filledEnd = toRad(startAngle - filledSweep);
-  const fx = cx + r * Math.cos(filledEnd);
-  const fy = cy - r * Math.sin(filledEnd);
+  // Tick marks — also use SVG angles (clockwise from 3-o'clock)
+  const ticks = Array.from({ length: 19 }, (_, i) => {
+    const deg = ROTATION + (i / 18) * TRACK_DEG;
+    const rad = (deg * Math.PI) / 180;
+    const isMajor = i % 3 === 0;
+    const innerR = isMajor ? R - 8 : R - 5;
+    const outerR = R + 1;
+    return (
+      <line
+        key={i}
+        x1={CX + innerR * Math.cos(rad)}
+        y1={CY + innerR * Math.sin(rad)}
+        x2={CX + outerR * Math.cos(rad)}
+        y2={CY + outerR * Math.sin(rad)}
+        stroke="rgba(184, 134, 11, 0.2)"
+        strokeWidth={isMajor ? 1.2 : 0.5}
+      />
+    );
+  });
 
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={isInView ? { opacity: 1, scale: 1 } : {}}
       transition={{ duration: 0.5, delay, ease: "easeOut" }}
       className="flex flex-col items-center"
     >
-      <div className="relative" style={{ width: 140, height: 120 }}>
-        <svg width={140} height={120} viewBox="0 0 140 120" fill="none">
-          {/* Tick marks */}
-          {Array.from({ length: 19 }, (_, i) => {
-            const tickAngle = toRad(startAngle - (i / 18) * totalArc);
-            const isMajor = i % 3 === 0;
-            const innerR = isMajor ? r - 8 : r - 5;
-            const outerR = r + 2;
-            return (
-              <line
-                key={i}
-                x1={cx + innerR * Math.cos(tickAngle)}
-                y1={cy - innerR * Math.sin(tickAngle)}
-                x2={cx + outerR * Math.cos(tickAngle)}
-                y2={cy - outerR * Math.sin(tickAngle)}
-                stroke="rgba(184, 134, 11, 0.2)"
-                strokeWidth={isMajor ? 1.5 : 0.7}
-              />
-            );
-          })}
+      <svg
+        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        fill="none"
+        style={{ width: 140, height: 140 }}
+      >
+        {ticks}
 
-          {/* Background arc */}
-          <path
-            d={`M ${x1} ${y1} A ${r} ${r} 0 1 0 ${x2} ${y2}`}
-            stroke="rgba(42, 31, 20, 0.8)"
-            strokeWidth="6"
-            strokeLinecap="round"
-            fill="none"
-          />
+        {/* Background track */}
+        <circle
+          cx={CX} cy={CY} r={R}
+          stroke="rgba(42, 31, 20, 0.8)"
+          strokeWidth={STROKE}
+          strokeLinecap="round"
+          strokeDasharray={`${TRACK_LENGTH} ${TRACK_GAP}`}
+          transform={`rotate(${ROTATION} ${CX} ${CY})`}
+          fill="none"
+        />
 
-          {/* Filled arc */}
-          {animatedValue > 0.01 && (
-            <path
-              d={`M ${x1} ${y1} A ${r} ${r} 0 ${filledSweep > 180 ? 1 : 0} 0 ${fx} ${fy}`}
-              stroke={color}
-              strokeWidth="6"
-              strokeLinecap="round"
-              fill="none"
-              style={{ filter: `drop-shadow(0 0 4px ${color}60)` }}
-            />
-          )}
+        {/* Filled track */}
+        <circle
+          cx={CX} cy={CY} r={R}
+          stroke={color}
+          strokeWidth={STROKE}
+          strokeLinecap="round"
+          strokeDasharray={`${TRACK_LENGTH} ${TRACK_GAP}`}
+          strokeDashoffset={valueOffset}
+          transform={`rotate(${ROTATION} ${CX} ${CY})`}
+          fill="none"
+          style={{ filter: `drop-shadow(0 0 3px ${color}60)`, transition: "stroke-dashoffset 0.05s linear" }}
+        />
 
-          {/* Needle */}
-          <line
-            x1={cx}
-            y1={cy}
-            x2={nx}
-            y2={ny}
-            stroke="#F5E6D3"
-            strokeWidth="2"
-            strokeLinecap="round"
-            style={{ filter: "drop-shadow(0 0 2px rgba(245, 230, 211, 0.3))" }}
-          />
+        {/* Needle */}
+        <line
+          x1={CX} y1={CY} x2={nx} y2={ny}
+          stroke="#F5E6D3" strokeWidth="1.5" strokeLinecap="round"
+          style={{ filter: "drop-shadow(0 0 2px rgba(245, 230, 211, 0.3))" }}
+        />
 
-          {/* Center cap */}
-          <circle cx={cx} cy={cy} r="5" fill="rgba(42, 31, 20, 0.9)" stroke={color} strokeWidth="1.5" />
-          <circle cx={cx} cy={cy} r="2" fill={color} />
+        {/* Center cap */}
+        <circle cx={CX} cy={CY} r="4" fill="rgba(42, 31, 20, 0.9)" stroke={color} strokeWidth="1.2" />
+        <circle cx={CX} cy={CY} r="1.5" fill={color} />
+      </svg>
 
-          {/* Icon area */}
-          <foreignObject x={cx - 10} y={cy + 12} width={20} height={20}>
-            <div className="flex items-center justify-center w-full h-full opacity-50">
-              {icon}
-            </div>
-          </foreignObject>
-        </svg>
-
-        {/* Value display */}
-        <div
-          className="absolute text-center"
-          style={{ bottom: 0, left: "50%", transform: "translateX(-50%)" }}
-        >
-          <span
-            className="text-2xl sm:text-3xl font-bold tabular-nums"
-            style={{ color }}
-          >
-            {displayNum.toLocaleString()}
-          </span>
-        </div>
-      </div>
-
-      <span className="mt-1 text-xs sm:text-sm text-sunny-cream-muted font-serif">
+      {/* Value + label below the gauge */}
+      <span className="text-xl sm:text-2xl font-bold tabular-nums mt-1" style={{ color }}>
+        {displayNum.toLocaleString()}
+      </span>
+      <span className="text-[10px] sm:text-xs text-sunny-cream-muted font-serif mt-0.5">
         {label}
       </span>
     </motion.div>
   );
 }
-
-// ── Gauge Icons (simple SVG inline) ──
-
-const CommitIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-sunny-cream-muted">
-    <circle cx="12" cy="12" r="4" />
-    <line x1="1.05" y1="12" x2="7" y2="12" />
-    <line x1="17.01" y1="12" x2="22.96" y2="12" />
-  </svg>
-);
-
-const PRIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-sunny-cream-muted">
-    <circle cx="18" cy="18" r="3" />
-    <circle cx="6" cy="6" r="3" />
-    <path d="M6 21V9a9 9 0 0 0 9 9" />
-  </svg>
-);
-
-const IssueIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-sunny-cream-muted">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="8" x2="12" y2="12" />
-    <line x1="12" y1="16" x2="12.01" y2="16" />
-  </svg>
-);
-
-const RepoIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-sunny-cream-muted">
-    <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
-  </svg>
-);
-
-const StarIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-sunny-cream-muted">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-  </svg>
-);
 
 // ── Main Component ──
 
@@ -237,10 +185,9 @@ export default function StatsDashboard({
   totalContributions,
 }: StatsDashboardProps) {
   const hasData = totalContributions > 0;
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
-  // Compute reasonable max values for gauge fill (so needles don't all peg at 100%)
   const commitMax = Math.max(totalCommits * 1.2, 100);
   const prMax = Math.max(totalPRs * 1.3, 50);
   const issueMax = Math.max(totalIssues * 1.3, 50);
@@ -248,103 +195,24 @@ export default function StatsDashboard({
   const starMax = Math.max(totalStars * 1.4, 10);
 
   return (
-    <section ref={ref} className="py-16 px-6">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-        className="max-w-5xl mx-auto p-6 sm:p-8 relative overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 0%, rgba(42, 31, 20, 0.9) 0%, rgba(26, 18, 9, 0.95) 70%)",
-          borderRadius: 16,
-          border: "1px solid rgba(184, 134, 11, 0.2)",
-        }}
-      >
-        {/* Subtle brass panel texture */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, rgba(184, 134, 11, 1) 0px, transparent 1px, transparent 3px)",
-          }}
-        />
+    <div ref={ref}>
+      <h3 className="text-lg sm:text-xl font-serif font-bold text-sunny-cream mb-4 text-center italic">
+        Ship&apos;s Instruments
+      </h3>
 
-        {/* Rivets in corners */}
-        {[
-          { top: 12, left: 12 },
-          { top: 12, right: 12 },
-          { bottom: 12, left: 12 },
-          { bottom: 12, right: 12 },
-        ].map((pos, i) => (
-          <div
-            key={i}
-            className="absolute"
-            style={{
-              ...pos,
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background:
-                "radial-gradient(circle at 35% 35%, rgba(240, 180, 41, 0.4), rgba(107, 66, 38, 0.6))",
-              boxShadow: "inset 0 1px 2px rgba(0,0,0,0.4)",
-            }}
-          />
-        ))}
-
-        <h2 className="relative text-2xl sm:text-3xl font-serif font-bold text-sunny-cream mb-8 text-center italic">
-          Ship&apos;s Instruments
-        </h2>
-
-        {!hasData ? (
-          <p className="text-sunny-cream-muted/60 text-sm text-center italic font-serif">
-            Instruments offline — no signal from port
-          </p>
-        ) : (
-          <div className="relative grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-            <Gauge
-              label="Commits"
-              value={totalCommits}
-              maxValue={commitMax}
-              delay={0}
-              color="rgba(240, 180, 41, 0.9)"
-              icon={<CommitIcon />}
-            />
-            <Gauge
-              label="PRs Merged"
-              value={totalPRs}
-              maxValue={prMax}
-              delay={0.1}
-              color="rgba(220, 160, 30, 0.85)"
-              icon={<PRIcon />}
-            />
-            <Gauge
-              label="Issues"
-              value={totalIssues}
-              maxValue={issueMax}
-              delay={0.2}
-              color="rgba(200, 140, 20, 0.8)"
-              icon={<IssueIcon />}
-            />
-            <Gauge
-              label="Public Repos"
-              value={totalRepos}
-              maxValue={repoMax}
-              delay={0.3}
-              color="rgba(184, 134, 11, 0.85)"
-              icon={<RepoIcon />}
-            />
-            <Gauge
-              label="Total Stars"
-              value={totalStars}
-              maxValue={starMax}
-              delay={0.4}
-              color="rgba(245, 200, 66, 0.9)"
-              icon={<StarIcon />}
-            />
-          </div>
-        )}
-      </motion.div>
-    </section>
+      {!hasData ? (
+        <p className="text-sunny-cream-muted/60 text-sm text-center italic font-serif">
+          Instruments offline
+        </p>
+      ) : (
+        <div className="grid grid-cols-5 gap-2">
+          <Gauge label="Commits" value={totalCommits} maxValue={commitMax} delay={0} color="rgba(240, 180, 41, 0.9)" isInView={isInView} />
+          <Gauge label="PRs" value={totalPRs} maxValue={prMax} delay={0.1} color="rgba(220, 160, 30, 0.85)" isInView={isInView} />
+          <Gauge label="Issues" value={totalIssues} maxValue={issueMax} delay={0.2} color="rgba(200, 140, 20, 0.8)" isInView={isInView} />
+          <Gauge label="Repos" value={totalRepos} maxValue={repoMax} delay={0.3} color="rgba(184, 134, 11, 0.85)" isInView={isInView} />
+          <Gauge label="Stars" value={totalStars} maxValue={starMax} delay={0.4} color="rgba(245, 200, 66, 0.9)" isInView={isInView} />
+        </div>
+      )}
+    </div>
   );
 }

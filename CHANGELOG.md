@@ -82,6 +82,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refactor `src/app/page.tsx` to introduce a unified `<section>` container with new background styling, consolidating the rendering of landing page components.
+- Update `src/components/landing/ContributionHeatmap.tsx` to adjust the size of the Compass Rose SVG, refine color palette comments, define new layout constants (`CELL`, `GAP`, `STEP`), and modify the main heading from `h2` to `h3`.
+- Modify `src/components/landing/CurrentlyBuilding.tsx` to display the top three repositories instead of only the latest, adjust the "Nothing sighted on the horizon" message container, and change main headings from `h2` to `h3`.
+- Rework the gauge rendering in `src/components/landing/StatsDashboard.tsx` to use `circle` elements with `stroke-dasharray` for progress indication, removing `framer-motion` animation logic and SVG arc path calculations.
+- Adjust `src/components/landing/TechArsenal.tsx` to simplify internal styling for "wooden plank lines" and "shelf label" elements, including changing the label heading from `h3` to `h4`, and update padding from `py-2.5` to `py-2`.
 - Update `src/components/landing/ContributionHeatmap.tsx` to use a parchment-themed color palette and replace the static "Contribution Activity" heading with a new `CompassRose` SVG component, integrating `framer-motion` for animations.
 - Refactor `src/components/landing/CurrentlyBuilding.tsx` to adopt a "Through the Spyglass" theme, changing headings and replacing the direct display of the latest GitHub repository with a spyglass-themed `motion.div` with hover interactions.
 - Refactor `src/components/landing/StatsDashboard.tsx` by replacing the `StatCard` component with a new `Gauge` component, implementing animated gauge visuals with an "elastic ease-out" needle sweep and number count-up effect, and removing several `lucide-react` icons.
