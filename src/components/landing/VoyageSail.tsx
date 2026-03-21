@@ -325,35 +325,6 @@ export default function VoyageSail() {
           "linear-gradient(180deg, #0D0A06 0%, #1A1209 25%, #2A1F14 50%, #3D2E1F 65%, #6B4226 80%, #B8860B 95%)",
       }}
     >
-      {/* Global keyframes for all sub-components */}
-      <style jsx global>{`
-        @keyframes voyage-wave-drift {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @keyframes voyage-ship-bob {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          25% { transform: translateY(-2px) rotate(1.5deg); }
-          50% { transform: translateY(1px) rotate(-1deg); }
-          75% { transform: translateY(-1px) rotate(0.5deg); }
-        }
-        @keyframes voyage-twinkle {
-          0%, 100% { opacity: 0.15; }
-          50% { opacity: 0.8; }
-        }
-        @keyframes voyage-shooting-star {
-          0% { opacity: 1; transform: translate(0, 0) scale(1); }
-          70% { opacity: 1; }
-          100% { opacity: 0; transform: translate(150px, 75px) scale(0.2); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .voyage-animate-bob,
-          .voyage-animate-twinkle {
-            animation: none !important;
-          }
-        }
-      `}</style>
-
       {isClient && <StarField reducedMotion={reducedMotion} />}
       {isClient && <ShootingStars reducedMotion={reducedMotion} />}
       <SunGlow />

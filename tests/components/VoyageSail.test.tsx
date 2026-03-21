@@ -66,4 +66,14 @@ describe("VoyageSail", () => {
     // Ship SVG + 3 wave SVGs = at least 4
     expect(waveSvgs.length).toBeGreaterThanOrEqual(4);
   });
+
+  it("applies wave-drift animation to wave SVGs", () => {
+    const { container } = render(<VoyageSail />);
+    const animatedSvgs = Array.from(
+      container.querySelectorAll("svg[aria-hidden='true']")
+    ).filter((svg) =>
+      (svg as HTMLElement).style.animation?.includes("voyage-wave-drift")
+    );
+    expect(animatedSvgs.length).toBe(3);
+  });
 });
