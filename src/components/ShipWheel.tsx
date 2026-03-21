@@ -193,7 +193,7 @@ export default function ShipWheel() {
     <>
       {/* Desktop: Fixed ship's wheel */}
       <nav
-        className="fixed bottom-6 right-6 z-50 hidden lg:block"
+        className="fixed bottom-6 right-16 z-50 hidden lg:block"
         aria-label="Main navigation"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
