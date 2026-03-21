@@ -18,11 +18,6 @@ export interface DetailRow {
   value: string;
 }
 
-export interface ContactAction {
-  label: string;
-  icon: "mail" | "user-plus" | "forward" | "star" | "message-square" | "ban" | "users" | "award";
-}
-
 export interface InterestRow {
   label: string;
   value: string;
@@ -49,7 +44,7 @@ export interface WallComment {
 export interface ContactLink {
   label: string;
   url: string;
-  type: "github" | "linkedin" | "email";
+  type: "instagram" | "twitter" | "bluesky" | "twitch" | "youtube" | "linkedin" | "github" | "email";
 }
 
 export interface BlogEntry {
@@ -69,19 +64,6 @@ export const profile: ProfileData = {
   status: "Online Now!",
   lastLogin: "1/1/2025",
 };
-
-// ── Contacting Actions (MySpace 8-link table) ──
-
-export const contactActions: ContactAction[] = [
-  { label: "Send Message", icon: "mail" },
-  { label: "Forward to Friend", icon: "forward" },
-  { label: "Add to Friends", icon: "user-plus" },
-  { label: "Add to Favorites", icon: "star" },
-  { label: "Instant Message", icon: "message-square" },
-  { label: "Block User", icon: "ban" },
-  { label: "Add to Group", icon: "users" },
-  { label: "Rank User", icon: "award" },
-];
 
 // ── MySpace URL ──
 
@@ -164,7 +146,12 @@ export const comments: WallComment[] = [
 // ── Contact Links (modern) ──
 
 export const contactLinks: ContactLink[] = [
-  { label: "GitHub", url: "https://github.com/placeholder", type: "github" },
-  { label: "LinkedIn", url: "https://linkedin.com/in/placeholder", type: "linkedin" },
-  { label: "Email", url: "mailto:placeholder@example.com", type: "email" },
+  { label: "Instagram", url: "https://www.instagram.com/strawhatluka/", type: "instagram" },
+  { label: "X", url: "https://x.com/strawhatluka", type: "twitter" },
+  { label: "Bluesky", url: "https://bsky.app/profile/strawhatluka.bsky.social", type: "bluesky" },
+  { label: "Twitch", url: "https://www.twitch.tv/xxwishkeeperxx", type: "twitch" },
+  { label: "YouTube", url: "https://www.youtube.com/@strawhatluka", type: "youtube" },
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/luka-fagundes-54785a102/", type: "linkedin" },
+  { label: "GitHub", url: "https://github.com/strawhatluka", type: "github" },
+  { label: "Email", url: "mailto:luka@sunny-stack.com", type: "email" },
 ];

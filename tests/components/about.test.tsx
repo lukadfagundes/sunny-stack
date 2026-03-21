@@ -44,17 +44,31 @@ describe("ProfileCard", () => {
 });
 
 describe("ContactTable", () => {
-  it("renders all 8 contact action buttons", () => {
+  it("renders all 8 social links", () => {
     render(<ContactTable />);
-    expect(screen.getByText("Send Message")).toBeInTheDocument();
-    expect(screen.getByText("Add to Friends")).toBeInTheDocument();
-    expect(screen.getByText("Block User")).toBeInTheDocument();
-    expect(screen.getByText("Rank User")).toBeInTheDocument();
+    const labels = ["Instagram", "X", "Bluesky", "Twitch", "YouTube", "LinkedIn", "GitHub", "Email"];
+    for (const label of labels) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
   });
 
   it("renders the section header", () => {
     render(<ContactTable />);
     expect(screen.getByText(/Contacting/)).toBeInTheDocument();
+  });
+
+  it("renders links with target _blank", () => {
+    render(<ContactTable />);
+    const link = screen.getByText("GitHub").closest("a");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  it("renders email link without target _blank", () => {
+    render(<ContactTable />);
+    const emailLink = screen.getByText("Email").closest("a");
+    expect(emailLink).toHaveAttribute("href", "mailto:luka@sunny-stack.com");
+    expect(emailLink).not.toHaveAttribute("target");
   });
 });
 

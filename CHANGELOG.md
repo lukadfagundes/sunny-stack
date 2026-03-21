@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `social-media-api-guide.md` for social media API guidance.
+- Add `Instagram`, `CloudSun` (for Bluesky), `Twitch`, `Youtube`, `Linkedin`, `Github`, and `XIcon` components to `src/components/about/ContactTable.tsx` for new social media links.
+- Add `COLOR_MAP` to `src/components/about/ContactTable.tsx` for social link styling.
+- Add test cases to `tests/components/about.test.tsx` to verify rendering of social links, `target="_blank"` attribute for external links, and absence of `target="_blank"` for email links.
 - Add `jest.config.ts` for Jest test runner configuration.
 - Add `tests/404/grid.test.ts` for testing 404 game grid logic, addressing issue #84.
 - Add `tests/404/quotes.test.ts` for testing 404 game quotes, addressing issue #84.
@@ -118,6 +122,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refactor `src/components/about/ContactTable.tsx` to display social media links instead of MySpace-era contact actions, replacing `contactActions` with `contactLinks` from `src/lib/data/personal.ts`.
+- Update `src/lib/data/personal.ts` to remove the `ContactAction` interface and `contactActions` array, and to modify the `ContactLink` interface and `contactLinks` array to include Instagram, X, Bluesky, Twitch, YouTube, LinkedIn, GitHub, and Email.
+- Update `tests/components/about-edges.test.tsx` to remove the `contactActions` mock, aligning with the removal of `contactActions` from `src/lib/data/personal.ts`.
+- Update `tests/components/about.test.tsx` to remove tests for old contact action buttons, replacing them with tests for the new social media links.
 - Update `eslint.config.mjs` to ignore the `coverage/**` directory.
 - Update `package-lock.json` to reflect changes in development dependencies, including the addition of Jest and testing-library related packages.
 - Refactor `src/app/about/page.tsx` to remove page-specific background and horizon glow styles, updating the main container to `relative z-10`.
@@ -148,6 +156,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `UserPlus`, `Forward`, `Star`, `MessageSquare`, `Ban`, `Users`, `Award` icon imports from `src/components/about/ContactTable.tsx`.
+- Remove `contactActions` array and its associated `ContactAction` interface from `src/lib/data/personal.ts`.
+- Remove MySpace-era contact action buttons and their rendering logic from `src/components/about/ContactTable.tsx`.
 - Remove `src/components/StatCounter.tsx` as it is no longer used.
 - Remove `src/components/StatsSection.tsx` as it is no longer used.
 - Remove old 404 page implementation, including `WanderingCompass` component and related styling and motion logic from `src/app/not-found.tsx`.

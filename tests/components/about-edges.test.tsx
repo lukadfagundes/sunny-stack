@@ -11,7 +11,6 @@ jest.mock("../../src/lib/data/personal", () => ({
     { name: "Real Friend", reason: "Best coding buddy" },
     { name: "Other Friend", reason: "Placeholder" },
   ],
-  contactActions: [],
   myspaceUrl: "",
   details: [],
   latestBlog: { title: "", preview: "" },
