@@ -9,6 +9,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `jest.config.ts` for Jest test runner configuration.
+- Add `tests/404/grid.test.ts` for testing 404 game grid logic, addressing issue #84.
+- Add `tests/404/quotes.test.ts` for testing 404 game quotes, addressing issue #84.
+- Add `tests/404/reducer.test.ts` for testing 404 game reducer logic, addressing issue #84.
+- Add `tests/404/useGameInput.test.ts` for testing the `useGameInput` hook, addressing issue #84.
+- Add `tests/components/CategorySection.test.tsx` for testing the `CategorySection` component.
+- Add `tests/components/ContributionHeatmap.test.tsx` for testing the `ContributionHeatmap` component.
+- Add `tests/components/CurrentlyBuilding.test.tsx` for testing the `CurrentlyBuilding` component.
+- Add `tests/components/DPad.test.tsx` for testing the `DPad` component, addressing issue #84.
+- Add `tests/components/GameBoard.test.tsx` for testing the `GameBoard` component, addressing issue #84.
+- Add `tests/components/GameHUD.test.tsx` for testing the `GameHUD` component, addressing issue #84.
+- Add `tests/components/GameTile.test.tsx` for testing the `GameTile` component, addressing issue #84.
+- Add `tests/components/HeroSection.test.tsx` for testing the `HeroSection` component.
+- Add `tests/components/LetterReveal.test.tsx` for testing the `LetterReveal` component.
+- Add `tests/components/ProjectCard.test.tsx` for testing the `ProjectCard` component.
+- Add `tests/components/ShipWheel.test.tsx` for testing the `ShipWheel` component.
+- Add `tests/components/StaticNotFound.test.tsx` for testing the `StaticNotFound` component.
+- Add `tests/components/StatsDashboard.test.tsx` for testing the `StatsDashboard` component.
+- Add `tests/components/TechArsenal.test.tsx` for testing the `TechArsenal` component.
+- Add `tests/components/VoyageSail.test.tsx` for testing the `VoyageSail` component.
+- Add `tests/components/WinCelebration.test.tsx` for testing the `WinCelebration` component, addressing issue #84.
+- Add `tests/components/ZoroGame.test.tsx` for testing the `ZoroGame` component, addressing issue #84.
+- Add `tests/components/about-edges.test.tsx` for testing the `AboutEdges` component.
+- Add `tests/components/about.test.tsx` for testing the `About` component.
+- Add `tests/helpers/mocks.ts` to provide mock data and functions for testing.
+- Add `tests/lib/github.test.ts` for testing GitHub API utility functions.
+- Add `tests/lib/projects.test.ts` for testing project data utility functions.
+- Add `tests/pages/about.test.tsx` for testing the About page.
+- Add `tests/pages/not-found.test.tsx` for testing the 404 Not Found page, addressing issue #84.
+- Add `tests/pages/portfolio.test.tsx` for testing the Portfolio page.
+- Add `tests/setup.ts` for Jest test environment setup.
+- Add `test`, `test:coverage`, and `test:watch` scripts to `package.json` for Jest testing.
+- Add Jest, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `@types/jest`, and `ts-jest` as development dependencies in `package.json`.
 - Add `VoyageSail` component to `src/app/layout.tsx` for a global background and ship animation.
 - Add `disabled` parameter to `useGameInput` in `src/components/404/useGameInput.ts` to conditionally prevent input handling, addressing issue #84.
 - Add title, description, and a fixed-height top spacer to `src/components/404/ZoroGame.tsx` for improved game presentation, addressing issue #84.
@@ -85,6 +118,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `eslint.config.mjs` to ignore the `coverage/**` directory.
+- Update `package-lock.json` to reflect changes in development dependencies, including the addition of Jest and testing-library related packages.
 - Refactor `src/app/about/page.tsx` to remove page-specific background and horizon glow styles, updating the main container to `relative z-10`.
 - Refactor `src/app/not-found.tsx` to wrap the 404 content in a `main` element with `relative z-10` positioning.
 - Refactor `src/app/page.tsx` to remove the page-specific `VoyageSail` component and its associated background and horizon glow, updating the main container to `relative z-10`.
