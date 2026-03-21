@@ -93,7 +93,9 @@ function Gauge({ label, value, maxValue, delay, color, isInView }: GaugeProps) {
   const nx = CX + NEEDLE_LEN * Math.cos(needleRad);
   const ny = CY + NEEDLE_LEN * Math.sin(needleRad);
 
-  // Tick marks — also use SVG angles (clockwise from 3-o'clock)
+  // Tick marks — also use SVG angles (clockwise from 3-o'clock).
+  // Round to 2 decimals to avoid server/client hydration mismatch from float precision.
+  const rd = (n: number) => Math.round(n * 100) / 100;
   const ticks = Array.from({ length: 19 }, (_, i) => {
     const deg = ROTATION + (i / 18) * TRACK_DEG;
     const rad = (deg * Math.PI) / 180;
@@ -103,10 +105,10 @@ function Gauge({ label, value, maxValue, delay, color, isInView }: GaugeProps) {
     return (
       <line
         key={i}
-        x1={CX + innerR * Math.cos(rad)}
-        y1={CY + innerR * Math.sin(rad)}
-        x2={CX + outerR * Math.cos(rad)}
-        y2={CY + outerR * Math.sin(rad)}
+        x1={rd(CX + innerR * Math.cos(rad))}
+        y1={rd(CY + innerR * Math.sin(rad))}
+        x2={rd(CX + outerR * Math.cos(rad))}
+        y2={rd(CY + outerR * Math.sin(rad))}
         stroke="rgba(184, 134, 11, 0.2)"
         strokeWidth={isMajor ? 1.2 : 0.5}
       />
