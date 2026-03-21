@@ -20,9 +20,9 @@ function useReducedMotion() {
 export default function NotFound() {
   const reduced = useReducedMotion();
 
-  if (reduced) {
-    return <StaticNotFound />;
-  }
-
-  return <ZoroGame />;
+  return (
+    <main className="flex-1 relative z-10">
+      {reduced ? <StaticNotFound /> : <ZoroGame />}
+    </main>
+  );
 }

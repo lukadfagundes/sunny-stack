@@ -11,29 +11,8 @@ const TIPS = [
 
 export default function StaticNotFound() {
   return (
-    <main
-      className="flex-1 min-h-screen flex items-center justify-center relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(180deg, #1A1209 0%, #2A1F14 30%, #3D2E1F 55%, #6B4226 75%, #B8860B 95%)",
-      }}
-    >
-      {/* Horizon glow */}
-      <div
-        className="absolute w-full pointer-events-none"
-        style={{ top: "70%" }}
-      >
-        <div
-          className="w-full h-px"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent 5%, #F0B429 30%, #F0B429 70%, transparent 95%)",
-            boxShadow: "0 0 20px 2px rgba(240, 180, 41, 0.3)",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
+    <div className="flex-1 min-h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
         <h1
           className="text-8xl md:text-9xl font-bold text-sunny-gold/30 mb-6 select-none"
           style={{ fontFamily: "var(--font-display), sans-serif" }}
@@ -100,6 +79,6 @@ export default function StaticNotFound() {
           ago)
         </p>
       </div>
-    </main>
+    </div>
   );
 }

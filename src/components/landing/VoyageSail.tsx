@@ -3,9 +3,8 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import {
   motion,
-  useScroll,
+  useMotionValue,
   useTransform,
-  useMotionValueEvent,
 } from "framer-motion";
 import { useSyncExternalStore } from "react";
 
@@ -281,30 +280,42 @@ function SunGlow() {
 
 // ── Main Component ──
 
-interface VoyageSailProps {
-  children: React.ReactNode;
-}
-
-export default function VoyageSail({ children }: VoyageSailProps) {
+export default function VoyageSail() {
   const isClient = useIsClient();
   const reducedMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
+  const scrollProgress = useMotionValue(0);
   const prevProgress = useRef(0);
   const [facingRight, setFacingRight] = useState(true);
 
-  const shipX = useTransform(scrollYProgress, [0, 1], [5, 90]);
-  const shipLeft = useTransform(shipX, (v) => `${v}vw`);
+  // Manual scroll tracking — computes progress from actual scroll position.
+  // Naturally returns 0 on pages with no scrollable content (like 404),
+  // and resets correctly on navigation without stale MotionValue issues.
+  useEffect(() => {
+    const update = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
+      const clamped = Math.min(Math.max(progress, 0), 1);
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const delta = latest - prevProgress.current;
-    if (Math.abs(delta) > 0.001) {
-      const shouldFaceRight = delta > 0;
-      if (shouldFaceRight !== facingRight) {
-        setFacingRight(shouldFaceRight);
+      scrollProgress.set(clamped);
+
+      const delta = clamped - prevProgress.current;
+      if (Math.abs(delta) > 0.001) {
+        setFacingRight(delta > 0);
       }
-    }
-    prevProgress.current = latest;
-  });
+      prevProgress.current = clamped;
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [scrollProgress]);
+
+  const shipX = useTransform(scrollProgress, [0, 1], [5, 90]);
+  const shipLeft = useTransform(shipX, (v) => `${v}vw`);
 
   return (
     <div
@@ -346,7 +357,26 @@ export default function VoyageSail({ children }: VoyageSailProps) {
       {isClient && <StarField reducedMotion={reducedMotion} />}
       {isClient && <ShootingStars reducedMotion={reducedMotion} />}
       <SunGlow />
-      {children}
+
+      {/* Horizon glow line */}
+      <div className="absolute w-full" style={{ top: "70%" }}>
+        <div
+          className="w-full h-px"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent 5%, #F0B429 30%, #F0B429 70%, transparent 95%)",
+            boxShadow: "0 0 20px 2px rgba(240, 180, 41, 0.3)",
+          }}
+        />
+        <div
+          className="w-full h-8 -mt-4"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(240, 180, 41, 0.15) 0%, transparent 70%)",
+          }}
+        />
+      </div>
+
       <OceanWaves reducedMotion={reducedMotion} />
 
       {/* Ship on the horizon */}

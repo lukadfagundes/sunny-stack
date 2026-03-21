@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `VoyageSail` component to `src/app/layout.tsx` for a global background and ship animation.
+- Add `disabled` parameter to `useGameInput` in `src/components/404/useGameInput.ts` to conditionally prevent input handling, addressing issue #84.
+- Add title, description, and a fixed-height top spacer to `src/components/404/ZoroGame.tsx` for improved game presentation, addressing issue #84.
 - Add `.env.example` to provide a template for environment variables.
 - Add `src/components/404/DPad.tsx` component for game input controls, addressing issue #84.
 - Add `src/components/404/GameBoard.tsx` component to render the game board, addressing issue #84.
@@ -82,6 +85,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refactor `src/app/about/page.tsx` to remove page-specific background and horizon glow styles, updating the main container to `relative z-10`.
+- Refactor `src/app/not-found.tsx` to wrap the 404 content in a `main` element with `relative z-10` positioning.
+- Refactor `src/app/page.tsx` to remove the page-specific `VoyageSail` component and its associated background and horizon glow, updating the main container to `relative z-10`.
+- Refactor `src/app/portfolio/page.tsx` to add `relative z-10` positioning to the `main` element.
+- Refactor `src/components/404/StaticNotFound.tsx` to remove page-specific background and horizon glow styles, replacing the `main` tag with a `div` wrapper.
+- Refactor `src/components/404/ZoroGame.tsx` to remove page-specific background and horizon glow styles, and update the `useGameInput` call to pass the `namiTakeover` state, addressing issue #84.
+- Refactor `src/components/landing/VoyageSail.tsx` to become a standalone global component, removing the `children` prop, `useScroll`, `useMotionValueEvent`, and implementing manual scroll tracking with `useMotionValue`.
 - Refactor `src/app/page.tsx` to introduce a unified `<section>` container with new background styling, consolidating the rendering of landing page components.
 - Update `src/components/landing/ContributionHeatmap.tsx` to adjust the size of the Compass Rose SVG, refine color palette comments, define new layout constants (`CELL`, `GAP`, `STEP`), and modify the main heading from `h2` to `h3`.
 - Modify `src/components/landing/CurrentlyBuilding.tsx` to display the top three repositories instead of only the latest, adjust the "Nothing sighted on the horizon" message container, and change main headings from `h2` to `h3`.

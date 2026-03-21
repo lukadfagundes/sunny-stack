@@ -16,7 +16,7 @@ export default function PortfolioPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <main className="flex-1 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+    <main className="flex-1 relative z-10 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="font-display text-4xl sm:text-5xl font-bold text-sunny-gold mb-12">
           Portfolio

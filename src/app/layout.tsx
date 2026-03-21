@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import ShipWheel from "@/components/ShipWheel";
+import VoyageSail from "@/components/landing/VoyageSail";
 import "./globals.css";
 
 const inter = Inter({
@@ -44,6 +45,7 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+          <VoyageSail />
           {children}
           <ShipWheel />
         </body>
