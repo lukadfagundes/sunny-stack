@@ -33,6 +33,7 @@ const mockGamesResponse = {
     game_count: 5,
     games: [
       { appid: 730, name: "Counter-Strike 2", playtime_forever: 14040, img_icon_url: "icon730", playtime_2weeks: 120 },
+      { appid: 431960, name: "Wallpaper Engine", playtime_forever: 10000, img_icon_url: "icon431960" },
       { appid: 570, name: "Dota 2", playtime_forever: 8520, img_icon_url: "icon570" },
       { appid: 440, name: "Team Fortress 2", playtime_forever: 6000, img_icon_url: "icon440", playtime_2weeks: 60 },
       { appid: 1245620, name: "Elden Ring", playtime_forever: 3000, img_icon_url: "icon1245620" },
@@ -122,6 +123,8 @@ describe("GET /api/steam", () => {
     expect(data.games[1].name).toBe("Dota 2");
     expect(data.games[1].recentlyPlayed).toBe(false);
     expect(data.games[7].name).toBe("Cyberpunk 2077");
+    // Wallpaper Engine (appid 431960) should be excluded
+    expect(data.games.every((g: { appid: number }) => g.appid !== 431960)).toBe(true);
   });
 
   it("passes API key and Steam ID in URL", async () => {

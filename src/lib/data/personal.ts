@@ -111,7 +111,7 @@ export const interests: InterestRow[] = [
   { label: "Movies", value: "Mean Girls, Secondhand Lions, Spirited Away, Troll 2, Life Aquatic" },
   { label: "Television", value: "One Piece, HIMYM, Frieren, New Girl, Fullmetal Alchemist Brotherhood" },
   { label: "Books", value: "The Hitchhiker's Guide to the Galaxy, House of Leaves, The Salmon of Doubt" },
-  { label: "Heroes", value: "Placeholder" },
+  { label: "Heroes", value: "My Wife, Eiichiro Oda, Sandwich Artists, Paul Rudd, Whoever decided to give Gordon subtitles in Black Clover" },
 ];
 
 // ── Music Player (static, no audio) ──

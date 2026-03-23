@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { interests } from "@/lib/data/personal";
 import SectionHeader from "./SectionHeader";
 import type { SpotifyWrappedData } from "@/app/api/spotify/wrapped/route";
-import type { OverwatchHeroData } from "@/app/api/overwatch/route";
 
 const badgeColors: Record<string, string> = {
   General: "#E67E22",
@@ -18,8 +17,6 @@ const badgeColors: Record<string, string> = {
 export default function InterestsTable() {
   const [genres, setGenres] = useState<string[]>([]);
   const [genresError, setGenresError] = useState(false);
-  const [heroes, setHeroes] = useState<string[]>([]);
-  const [heroesError, setHeroesError] = useState(false);
 
   useEffect(() => {
     fetch("/api/spotify/wrapped")
@@ -38,21 +35,6 @@ export default function InterestsTable() {
         setGenresError(true);
       });
 
-    fetch("/api/overwatch")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch");
-        return res.json();
-      })
-      .then((data: OverwatchHeroData | null) => {
-        if (data?.heroes?.length) {
-          setHeroes(data.heroes.map((h) => h.name));
-        } else {
-          setHeroesError(true);
-        }
-      })
-      .catch(() => {
-        setHeroesError(true);
-      });
   }, []);
 
   function renderBadges(items: string[], bg: string) {
@@ -91,22 +73,6 @@ export default function InterestsTable() {
       );
     }
 
-    if (label === "Heroes") {
-      if (heroes.length > 0) return renderBadges(heroes, bg);
-      if (heroesError) {
-        return (
-          <span className="text-sunny-cream-muted italic text-xs">
-            Unable to load Overwatch data
-          </span>
-        );
-      }
-      return (
-        <span className="text-sunny-cream-muted italic text-xs">
-          Loading...
-        </span>
-      );
-    }
-
     const items = value.split(", ").filter(Boolean);
     if (items.length > 0 && items[0] !== "Placeholder") {
       return renderBadges(items, bg);
@@ -122,7 +88,7 @@ export default function InterestsTable() {
         {interests.map((row, i) => (
           <div
             key={row.label}
-            className={`grid grid-cols-[120px_1fr] sm:grid-cols-[140px_1fr] text-sm ${
+            className={`grid grid-cols-[120px_1fr] sm:grid-cols-[140px_1fr] items-center text-sm ${
               i < interests.length - 1
                 ? "border-b border-sunny-surface-light"
                 : ""

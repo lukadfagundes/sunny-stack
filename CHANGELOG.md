@@ -198,6 +198,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Exclude specific non-game app IDs (e.g., `431960` for Wallpaper Engine) from the list of fetched Steam games in `src/app/api/steam/route.ts` (resolves #84).
+- Remove dynamic fetching and rendering of Overwatch hero data in `src/components/about/InterestsTable.tsx`.
+- Update `className` for grid layout in `src/components/about/InterestsTable.tsx`.
+- Replace dynamic "Heroes" placeholder with a static list of values in `src/lib/data/personal.ts`.
+- Add a test case to `tests/api/steam.test.ts` to verify exclusion of specific non-game app IDs from Steam game data (resolves #84).
+- Remove tests for dynamic Overwatch hero badge rendering from `tests/components/about.test.tsx`.
+- Add tests for rendering static "Heroes" values in `tests/components/about.test.tsx`.
 - Change `AboutView` type in `src/app/about/page.tsx` to include "game" view (resolves #84).
 - Update `TopEight` component rendering in `src/app/about/page.tsx` to pass `onViewGame` prop (resolves #84).
 - Change `src/components/about/TopEight.tsx` to fetch and display Steam games instead of static "Friend Space" data (resolves #84).
@@ -282,6 +289,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `OVERWATCH_BATTLETAG` from `.env.example`.
+- Remove `src/app/api/overwatch/route.ts` API endpoint and its related functionality.
+- Remove `tests/api/overwatch.test.ts` and all associated Overwatch API route tests.
 - Remove direct rendering of `TopEight` component in `src/app/about/page.tsx`, replaced by conditional rendering.
 - Remove MySpace-themed "Friend Space" header and footer elements from `src/components/about/TopEight.tsx`.
 - Remove static `topEight` data dependency from `src/components/about/TopEight.tsx`.

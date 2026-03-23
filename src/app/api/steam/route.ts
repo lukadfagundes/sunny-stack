@@ -40,7 +40,11 @@ export async function GET() {
     const data = await response.json();
     const games: SteamApiGame[] = data?.response?.games ?? [];
 
+    // Filter out non-game apps (tools, utilities, etc.)
+    const EXCLUDED_APPIDS = new Set([431960]); // Wallpaper Engine
+
     const top8 = games
+      .filter((g) => !EXCLUDED_APPIDS.has(g.appid))
       .sort((a, b) => (b.playtime_forever ?? 0) - (a.playtime_forever ?? 0))
       .slice(0, 8);
 

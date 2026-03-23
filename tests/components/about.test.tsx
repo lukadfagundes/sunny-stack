@@ -457,49 +457,13 @@ describe("InterestsTable", () => {
     });
   });
 
-  it("renders Overwatch hero badges for Heroes row", async () => {
-    global.fetch = jest.fn((url: string) => {
-      if (url.includes("/api/overwatch")) {
-        return Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              heroes: [
-                { name: "Ana", timePlayed: 50000 },
-                { name: "Mercy", timePlayed: 40000 },
-                { name: "Kiriko", timePlayed: 30000 },
-              ],
-            }),
-        });
-      }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
-    }) as jest.Mock;
-
+  it("renders Heroes badges as static values", () => {
     render(<InterestsTable />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Ana")).toBeInTheDocument();
-      expect(screen.getByText("Mercy")).toBeInTheDocument();
-      expect(screen.getByText("Kiriko")).toBeInTheDocument();
-    });
-
-    const badge = screen.getByText("Ana");
+    const badge = screen.getByText("My Wife");
+    expect(badge).toBeInTheDocument();
     expect(badge).toHaveStyle({ backgroundColor: "#F97316" });
-  });
-
-  it("shows error message when Overwatch fetch fails", async () => {
-    global.fetch = jest.fn((url: string) => {
-      if (url.includes("/api/overwatch")) {
-        return Promise.reject(new Error("fail"));
-      }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
-    }) as jest.Mock;
-
-    render(<InterestsTable />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Unable to load Overwatch data")).toBeInTheDocument();
-    });
+    expect(screen.getByText("Eiichiro Oda")).toBeInTheDocument();
+    expect(screen.getByText("Paul Rudd")).toBeInTheDocument();
   });
 
   it("renders General interests as orange badges", () => {
