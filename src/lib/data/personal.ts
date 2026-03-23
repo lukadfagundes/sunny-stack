@@ -87,10 +87,10 @@ export const myspaceUrl = "http://www.myspace.com/placeholder";
 // ── Details ──
 
 export const details: DetailRow[] = [
-  { label: "Status", value: "Placeholder" },
-  { label: "Body type", value: "Placeholder" },
-  { label: "Here for", value: "Placeholder" },
-  { label: "Zodiac Sign", value: "Placeholder" },
+  { label: "Status", value: "Married" },
+  { label: "Pets", value: "Aly & AJ" },
+  { label: "Comfort Movie", value: "Mean Girls" },
+  { label: "Zodiac Sign", value: "Gemini" },
 ];
 
 // ── Blog Entry ──
@@ -111,11 +111,11 @@ export const whoIdLikeToMeet = "Placeholder who I'd like to meet text.";
 // ── Interests Table ──
 
 export const interests: InterestRow[] = [
-  { label: "General", value: "Placeholder" },
+  { label: "General", value: "Cooking, Video Games, TV, Gym, Concerts, Coding" },
   { label: "Music", value: "Placeholder" },
-  { label: "Movies", value: "Placeholder" },
-  { label: "Television", value: "Placeholder" },
-  { label: "Books", value: "Placeholder" },
+  { label: "Movies", value: "Mean Girls, Secondhand Lions, Spirited Away, Troll 2, Life Aquatic" },
+  { label: "Television", value: "One Piece, HIMYM, Frieren, New Girl, Death Parade, Fullmetal Alchemist Brotherhood" },
+  { label: "Books", value: "One Piece, The Hitchhiker's Guide to the Galaxy, House of Leaves, The Salmon of Doubt" },
   { label: "Heroes", value: "Placeholder" },
 ];
 

@@ -267,8 +267,8 @@ describe("DetailsBox", () => {
   it("renders all detail rows", () => {
     render(<DetailsBox />);
     expect(screen.getByText(/^Status/)).toBeInTheDocument();
-    expect(screen.getByText(/^Body type/)).toBeInTheDocument();
-    expect(screen.getByText(/^Here for/)).toBeInTheDocument();
+    expect(screen.getByText(/^Pets/)).toBeInTheDocument();
+    expect(screen.getByText(/^Comfort Movie/)).toBeInTheDocument();
     expect(screen.getByText(/^Zodiac Sign/)).toBeInTheDocument();
   });
 
@@ -394,6 +394,15 @@ describe("BioSections", () => {
 });
 
 describe("InterestsTable", () => {
+  beforeEach(() => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(null),
+      })
+    ) as jest.Mock;
+  });
+
   it("renders interest labels", () => {
     render(<InterestsTable />);
     expect(screen.getByText("General")).toBeInTheDocument();
@@ -407,6 +416,126 @@ describe("InterestsTable", () => {
   it("renders the section header", () => {
     render(<InterestsTable />);
     expect(screen.getByText("Interests")).toBeInTheDocument();
+  });
+
+  it("renders Spotify genre badges for Music row", async () => {
+    global.fetch = jest.fn((url: string) => {
+      if (url.includes("/api/spotify/wrapped")) {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              tracks: [],
+              artists: [],
+              topGenres: ["indie pop", "alt rock", "electronic"],
+              year: 2026,
+            }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
+    }) as jest.Mock;
+
+    render(<InterestsTable />);
+
+    await waitFor(() => {
+      expect(screen.getByText("indie pop")).toBeInTheDocument();
+      expect(screen.getByText("alt rock")).toBeInTheDocument();
+      expect(screen.getByText("electronic")).toBeInTheDocument();
+    });
+  });
+
+  it("shows error message when Spotify fetch fails", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.reject(new Error("fail"))
+    ) as jest.Mock;
+
+    render(<InterestsTable />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Unable to load Spotify data")).toBeInTheDocument();
+    });
+  });
+
+  it("renders Overwatch hero badges for Heroes row", async () => {
+    global.fetch = jest.fn((url: string) => {
+      if (url.includes("/api/overwatch")) {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              heroes: [
+                { name: "Ana", timePlayed: 50000 },
+                { name: "Mercy", timePlayed: 40000 },
+                { name: "Kiriko", timePlayed: 30000 },
+              ],
+            }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
+    }) as jest.Mock;
+
+    render(<InterestsTable />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Ana")).toBeInTheDocument();
+      expect(screen.getByText("Mercy")).toBeInTheDocument();
+      expect(screen.getByText("Kiriko")).toBeInTheDocument();
+    });
+
+    const badge = screen.getByText("Ana");
+    expect(badge).toHaveStyle({ backgroundColor: "#F97316" });
+  });
+
+  it("shows error message when Overwatch fetch fails", async () => {
+    global.fetch = jest.fn((url: string) => {
+      if (url.includes("/api/overwatch")) {
+        return Promise.reject(new Error("fail"));
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
+    }) as jest.Mock;
+
+    render(<InterestsTable />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Unable to load Overwatch data")).toBeInTheDocument();
+    });
+  });
+
+  it("renders General interests as orange badges", () => {
+    render(<InterestsTable />);
+    const badge = screen.getByText("Cooking");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveStyle({ backgroundColor: "#E67E22" });
+    expect(screen.getByText("Video Games")).toBeInTheDocument();
+    expect(screen.getByText("Coding")).toBeInTheDocument();
+  });
+
+  it("renders Movies as red badges", () => {
+    render(<InterestsTable />);
+    const badge = screen.getByText("Mean Girls");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveStyle({ backgroundColor: "#E74C3C" });
+    expect(screen.getByText("Spirited Away")).toBeInTheDocument();
+    expect(screen.getByText("Troll 2")).toBeInTheDocument();
+  });
+
+  it("renders Television as purple badges", () => {
+    render(<InterestsTable />);
+    const badges = screen.getAllByText("One Piece");
+    const tvBadge = badges.find((el) =>
+      el.style.backgroundColor === "rgb(155, 89, 182)"
+    );
+    expect(tvBadge).toBeDefined();
+    expect(screen.getByText("HIMYM")).toBeInTheDocument();
+    expect(screen.getByText("Frieren")).toBeInTheDocument();
+  });
+
+  it("renders Books as blue badges", () => {
+    render(<InterestsTable />);
+    const badge = screen.getByText("House of Leaves");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveStyle({ backgroundColor: "#3498DB" });
+    expect(screen.getByText("The Salmon of Doubt")).toBeInTheDocument();
   });
 });
 

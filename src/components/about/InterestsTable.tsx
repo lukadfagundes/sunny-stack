@@ -1,9 +1,120 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { interests } from "@/lib/data/personal";
 import SectionHeader from "./SectionHeader";
+import type { SpotifyWrappedData } from "@/app/api/spotify/wrapped/route";
+import type { OverwatchHeroData } from "@/app/api/overwatch/route";
+
+const badgeColors: Record<string, string> = {
+  General: "#E67E22",
+  Music: "#1DB954",
+  Movies: "#E74C3C",
+  Television: "#9B59B6",
+  Books: "#3498DB",
+  Heroes: "#F97316",
+};
 
 export default function InterestsTable() {
+  const [genres, setGenres] = useState<string[]>([]);
+  const [genresError, setGenresError] = useState(false);
+  const [heroes, setHeroes] = useState<string[]>([]);
+  const [heroesError, setHeroesError] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/spotify/wrapped")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data: SpotifyWrappedData | null) => {
+        if (data?.topGenres?.length) {
+          setGenres(data.topGenres);
+        } else {
+          setGenresError(true);
+        }
+      })
+      .catch(() => {
+        setGenresError(true);
+      });
+
+    fetch("/api/overwatch")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data: OverwatchHeroData | null) => {
+        if (data?.heroes?.length) {
+          setHeroes(data.heroes.map((h) => h.name));
+        } else {
+          setHeroesError(true);
+        }
+      })
+      .catch(() => {
+        setHeroesError(true);
+      });
+  }, []);
+
+  function renderBadges(items: string[], bg: string) {
+    return (
+      <span className="flex flex-wrap gap-1.5">
+        {items.map((item) => (
+          <span
+            key={item}
+            className="inline-block px-2 py-0.5 rounded-full text-xs font-medium"
+            style={{ backgroundColor: bg, color: "#FFF" }}
+          >
+            {item}
+          </span>
+        ))}
+      </span>
+    );
+  }
+
+  function renderValue(label: string, value: string) {
+    const bg = badgeColors[label];
+    if (!bg) return value;
+
+    if (label === "Music") {
+      if (genres.length > 0) return renderBadges(genres, bg);
+      if (genresError) {
+        return (
+          <span className="text-sunny-cream-muted italic text-xs">
+            Unable to load Spotify data
+          </span>
+        );
+      }
+      return (
+        <span className="text-sunny-cream-muted italic text-xs">
+          Loading...
+        </span>
+      );
+    }
+
+    if (label === "Heroes") {
+      if (heroes.length > 0) return renderBadges(heroes, bg);
+      if (heroesError) {
+        return (
+          <span className="text-sunny-cream-muted italic text-xs">
+            Unable to load Overwatch data
+          </span>
+        );
+      }
+      return (
+        <span className="text-sunny-cream-muted italic text-xs">
+          Loading...
+        </span>
+      );
+    }
+
+    const items = value.split(", ").filter(Boolean);
+    if (items.length > 0 && items[0] !== "Placeholder") {
+      return renderBadges(items, bg);
+    }
+
+    return value;
+  }
+
   return (
     <div>
       <SectionHeader title="Interests" />
@@ -30,7 +141,7 @@ export default function InterestsTable() {
               className="text-sunny-cream px-4 py-3"
               style={{ fontFamily: "Verdana, sans-serif" }}
             >
-              {row.value}
+              {renderValue(row.label, row.value)}
             </span>
           </div>
         ))}

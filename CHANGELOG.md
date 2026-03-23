@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `OVERWATCH_BATTLETAG` to `.env.example` for Overwatch 2 stats (resolves #84).
+- Add new API route `src/app/api/overwatch/route.ts` to fetch and return Overwatch hero data (resolves #84).
+- Add new test file `tests/api/overwatch.test.ts` for the Overwatch API route (resolves #84).
+- Add `useState` and `useEffect` hooks to `src/components/about/InterestsTable.tsx` for client-side data fetching (resolves #84).
+- Add `badgeColors` constant to `src/components/about/InterestsTable.tsx` for styling dynamic badges (resolves #84).
+- Add test case to `tests/components/about.test.tsx` to verify rendering of Spotify genre badges (resolves #84).
 - Add `avatars.githubusercontent.com` to `next.config.ts` image domains for displaying GitHub profile pictures (resolves #84).
 - Add `BIRTHDATE` constant and `calculateAge` utility function to `src/lib/data/personal.ts` for dynamic age calculation (resolves #84).
 - Add `avatarUrl` property to `GitHubProfile` type in `src/lib/github.ts` (resolves #84).
@@ -177,6 +183,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change `InterestsTable.tsx` to dynamically fetch and display data for "Music" and "Heroes" rows instead of static values (resolves #84).
+- Import `SpotifyWrappedData` and `OverwatchHeroData` types in `src/components/about/InterestsTable.tsx` (resolves #84).
+- Update personal data in `src/lib/data/personal.ts` with real values for "Status", "Pets", "Comfort Movie", "Zodiac Sign", "General", "Movies", "Television", and "Books" categories.
+- Update `tests/components/about.test.tsx` to assert for "Pets" and "Comfort Movie" instead of "Body type" and "Here for".
+- Add `global.fetch` mock to `tests/components/about.test.tsx` `beforeEach` block to handle API calls in tests (resolves #84).
 - Remove in-memory caching logic from `src/app/api/bluesky/route.ts` and replace with `cache: "no-store"` for real-time data fetching (resolves #84).
 - Remove in-memory caching logic from `src/app/api/instagram/route.ts` and replace with `cache: "no-store"` for real-time data fetching (resolves #84).
 - Remove in-memory caching logic and `revalidate` option from `src/app/api/spotify/top-track/route.ts`, replacing with `cache: "no-store"` for real-time data fetching (resolves #84).
