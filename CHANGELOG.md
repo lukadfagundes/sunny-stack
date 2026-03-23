@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `react-markdown`, `react-syntax-highlighter`, `remark-gfm` and their corresponding types to `package.json` and `package-lock.json` for markdown rendering.
+- Add new API route `src/app/api/docs/route.ts` to serve documentation content.
+- Add new page `src/app/docs/page.tsx` to display documentation.
+- Add new test file `tests/api/docs.test.ts` for the documentation API route.
+- Add new test file `tests/components/docs.test.tsx` for the documentation page component.
 - Add `STEAM_API_KEY` and `STEAM_ID` to `.env.example` for Steam Web API integration (resolves #84).
 - Add import for `GameStats` component to `src/app/about/page.tsx` (resolves #84).
 - Add import for `SteamGame` type to `src/app/about/page.tsx` (resolves #84).
@@ -198,6 +203,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `src/components/ShipWheel.tsx` to replace the "The One Piece" navigation link with a "Docs" link.
+- Simplify display logic in `src/components/ShipWheel.tsx` by removing special rendering for "The One Piece" link.
+- Update `KNOWN_ROUTES` in `src/components/ShipWheel.tsx` to include `/docs` and remove `/the-one-piece`.
+- Update `tests/components/ShipWheel.test.tsx` to verify the "Docs" navigation link instead of "The One Piece" link.
 - Update MySpace order comment in `src/app/about/page.tsx` to reflect the removal of "Comments" and introduction of "Game Space" (resolves #84).
 - Exclude specific non-game app IDs (e.g., `431960` for Wallpaper Engine) from the list of fetched Steam games in `src/app/api/steam/route.ts` (resolves #84).
 - Remove dynamic fetching and rendering of Overwatch hero data in `src/components/about/InterestsTable.tsx`.
@@ -290,6 +299,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `social-media-api-guide.md` file.
 - Remove `CommentsWall.tsx` component file (resolves #84).
 - Remove `MySpaceUrl.tsx` component file (resolves #84).
 - Remove `WallComment` interface from `src/lib/data/personal.ts` (resolves #84).

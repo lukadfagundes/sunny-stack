@@ -15,7 +15,7 @@ describe("ShipWheel", () => {
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Portfolio" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "The One Piece" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Docs" })).toBeInTheDocument();
   });
 
   it("renders the mobile toggle button", () => {

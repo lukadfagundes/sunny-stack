@@ -16,7 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/", angle: 0 },
   { label: "Portfolio", href: "/portfolio", angle: 90 },
   { label: "About", href: "/about", angle: 180 },
-  { label: "The One Piece", href: "/the-one-piece", angle: 270 },
+  { label: "Docs", href: "/docs", angle: 270 },
 ];
 
 const WHEEL_SIZE = 80;
@@ -158,7 +158,7 @@ const LABEL_POSITIONS: {
   },
 ];
 
-const KNOWN_ROUTES = new Set(["/", "/portfolio", "/about"]);
+const KNOWN_ROUTES = new Set(["/", "/portfolio", "/about", "/docs"]);
 
 export default function ShipWheel() {
   const pathname = usePathname();
@@ -309,7 +309,7 @@ export default function ShipWheel() {
                           : "bg-sunny-surface text-sunny-cream border border-sunny-surface-light hover:border-sunny-gold"
                       }`}
                     >
-                      {item.href === "/the-one-piece" ? "???" : item.label.slice(0, 3)}
+                      {item.label.slice(0, 3)}
                     </Link>
                   </motion.div>
                 );
