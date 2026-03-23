@@ -41,6 +41,19 @@ describe("ProfileCard", () => {
     render(<ProfileCard />);
     expect(screen.getByText(/Last Login/)).toBeInTheDocument();
   });
+
+  it("calls onViewPics when Pics button is clicked", () => {
+    const onViewPics = jest.fn();
+    render(<ProfileCard onViewPics={onViewPics} />);
+    fireEvent.click(screen.getByText("Pics"));
+    expect(onViewPics).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders Pics as a button element", () => {
+    render(<ProfileCard />);
+    const picsButton = screen.getByText("Pics");
+    expect(picsButton.tagName).toBe("BUTTON");
+  });
 });
 
 describe("ContactTable", () => {

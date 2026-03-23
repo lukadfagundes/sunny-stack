@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import ProfileCard from "@/components/about/ProfileCard";
 import ContactTable from "@/components/about/ContactTable";
 import MySpaceUrl from "@/components/about/MySpaceUrl";
@@ -11,8 +12,13 @@ import BioSections from "@/components/about/BioSections";
 import InterestsTable from "@/components/about/InterestsTable";
 import TopEight from "@/components/about/TopEight";
 import CommentsWall from "@/components/about/CommentsWall";
+import PhotoGallery from "@/components/about/PhotoGallery";
+
+type AboutView = "profile" | "pics";
 
 export default function AboutPage() {
+  const [view, setView] = useState<AboutView>("profile");
+
   return (
     <main
       className="flex-1 min-h-screen relative z-10"
@@ -25,7 +31,7 @@ export default function AboutPage() {
             {/* ── Left Column (Profile Identity) ── */}
             {/* Exact MySpace order: Profile → Contacting → URL → Music → Details */}
             <div className="space-y-4">
-              <ProfileCard />
+              <ProfileCard onViewPics={() => setView("pics")} />
               <ContactTable />
               <MySpaceUrl />
               <MusicPlayer />
@@ -33,14 +39,20 @@ export default function AboutPage() {
             </div>
 
             {/* ── Right Column (Content Sections) ── */}
-            {/* Exact MySpace order: Network → Blog → Blurbs → Interests → Friend Space → Comments */}
             <div className="space-y-5">
-              <NetworkBanner />
-              <BlogEntry />
-              <BioSections />
-              <InterestsTable />
-              <TopEight />
-              <CommentsWall />
+              {view === "profile" ? (
+                <>
+                  {/* Exact MySpace order: Network → Blog → Blurbs → Interests → Friend Space → Comments */}
+                  <NetworkBanner />
+                  <BlogEntry />
+                  <BioSections />
+                  <InterestsTable />
+                  <TopEight />
+                  <CommentsWall />
+                </>
+              ) : (
+                <PhotoGallery onBack={() => setView("profile")} />
+              )}
             </div>
           </div>
         </div>

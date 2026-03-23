@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `INSTAGRAM_ACCESS_TOKEN` to `.env.example` for Instagram API authentication (resolves #84).
+- Add new API route `src/app/api/instagram/comments/route.ts` to fetch Instagram post comments (resolves #84).
+- Add new API route `src/app/api/instagram/route.ts` to fetch Instagram user media (resolves #84).
+- Add `CommentThread` component to `src/components/about/CommentThread.tsx` for displaying Instagram comment threads (resolves #84).
+- Add `PhotoGallery` component to `src/components/about/PhotoGallery.tsx` for displaying Instagram media posts (resolves #84).
+- Add `PostCard` component to `src/components/about/PostCard.tsx` for rendering individual Instagram posts within the gallery (resolves #84).
+- Add `tests/api/instagram-comments.test.ts` for testing the Instagram comments API route (resolves #84).
+- Add `tests/api/instagram.test.ts` for testing the Instagram media API route (resolves #84).
+- Add `tests/components/CommentThread.test.tsx` for testing the `CommentThread` component (resolves #84).
+- Add `tests/components/PhotoGallery.test.tsx` for testing the `PhotoGallery` component (resolves #84).
+- Add `tests/components/PostCard.test.tsx` for testing the `PostCard` component (resolves #84).
+- Add test case to `tests/components/about.test.tsx` to verify `onViewPics` callback is invoked when the "Pics" button in `ProfileCard` is clicked (resolves #84).
+- Add test case to `tests/components/about.test.tsx` to verify "Pics" is rendered as a `<button>` element in `ProfileCard` (resolves #84).
+- Add test case to `tests/pages/about.test.tsx` to verify view switches to `PhotoGallery` when "Pics" is clicked (resolves #84).
+- Add test case to `tests/pages/about.test.tsx` to verify view switches back to profile when "Back" is clicked in `PhotoGallery` (resolves #84).
 - Add `social-media-api-guide.md` for social media API guidance.
 - Add `Instagram`, `CloudSun` (for Bluesky), `Twitch`, `Youtube`, `Linkedin`, `Github`, and `XIcon` components to `src/components/about/ContactTable.tsx` for new social media links.
 - Add `COLOR_MAP` to `src/components/about/ContactTable.tsx` for social link styling.
@@ -122,6 +137,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Configure `next.config.ts` to allow image loading from Instagram CDN domains `*.cdninstagram.com` and `*.fbcdn.net` (resolves #84).
+- Refactor `src/app/about/page.tsx` to introduce a view state (`profile` or `pics`) for dynamic content display (resolves #84).
+- Conditionally render `PhotoGallery` or existing profile sections in `src/app/about/page.tsx` based on the current view state (resolves #84).
+- Pass `onViewPics` and `onBack` props to child components in `src/app/about/page.tsx` to manage view transitions (resolves #84).
+- Convert "Pics" text into a clickable `<button>` element in `src/components/about/ProfileCard.tsx` (resolves #84).
+- Add `onViewPics` prop to `ProfileCard` component in `src/components/about/ProfileCard.tsx` to handle "Pics" button click events (resolves #84).
+- Import `fireEvent` and `waitFor` into `tests/pages/about.test.tsx` for simulating user interactions and asynchronous testing (resolves #84).
+- Mock `global.fetch` in `tests/pages/about.test.tsx` to prevent actual API calls during `PhotoGallery` tests (resolves #84).
 - Refactor `src/components/about/ContactTable.tsx` to display social media links instead of MySpace-era contact actions, replacing `contactActions` with `contactLinks` from `src/lib/data/personal.ts`.
 - Update `src/lib/data/personal.ts` to remove the `ContactAction` interface and `contactActions` array, and to modify the `ContactLink` interface and `contactLinks` array to include Instagram, X, Bluesky, Twitch, YouTube, LinkedIn, GitHub, and Email.
 - Update `tests/components/about-edges.test.tsx` to remove the `contactActions` mock, aligning with the removal of `contactActions` from `src/lib/data/personal.ts`.

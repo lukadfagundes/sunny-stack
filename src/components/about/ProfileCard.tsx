@@ -3,7 +3,11 @@
 import { User } from "lucide-react";
 import { profile } from "@/lib/data/personal";
 
-export default function ProfileCard() {
+interface ProfileCardProps {
+  onViewPics?: () => void;
+}
+
+export default function ProfileCard({ onViewPics }: ProfileCardProps) {
   return (
     <div>
       {/* Name + tagline */}
@@ -48,9 +52,12 @@ export default function ProfileCard() {
       {/* View My links */}
       <p className="text-xs text-sunny-cream-muted">
         View My:{" "}
-        <span className="text-sunny-gold hover:underline cursor-pointer">
+        <button
+          onClick={onViewPics}
+          className="text-sunny-gold hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-xs"
+        >
           Pics
-        </span>
+        </button>
         {" | "}
         <span className="text-sunny-gold hover:underline cursor-pointer">
           Videos
