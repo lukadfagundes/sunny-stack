@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `avatars.githubusercontent.com` to `next.config.ts` image domains for displaying GitHub profile pictures (resolves #84).
+- Add `BIRTHDATE` constant and `calculateAge` utility function to `src/lib/data/personal.ts` for dynamic age calculation (resolves #84).
+- Add `avatarUrl` property to `GitHubProfile` type in `src/lib/github.ts` (resolves #84).
+- Add tests to `tests/lib/github.test.ts` to verify the `avatarUrl` property of the fetched GitHub profile (resolves #84).
+- Add new API route `src/app/api/activity/route.ts` to provide real-time user activity status (resolves #84).
+- Add new API route `src/app/api/github/route.ts` to fetch and expose GitHub profile data (resolves #84).
+- Add new tests `tests/api/activity.test.ts` for the activity status API route (resolves #84).
+- Add new tests `tests/api/github.test.ts` for the GitHub profile API route (resolves #84).
 - Add `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, and `SPOTIFY_REFRESH_TOKEN` to `.env.example` for Spotify API authentication (resolves #84).
 - Add `i.scdn.co` to `next.config.ts` image domains for displaying Spotify album art (resolves #84).
 - Add `MusicGallery` component import and conditional rendering to `src/app/about/page.tsx` (resolves #84).
@@ -169,6 +177,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Remove in-memory caching logic from `src/app/api/bluesky/route.ts` and replace with `cache: "no-store"` for real-time data fetching (resolves #84).
+- Remove in-memory caching logic from `src/app/api/instagram/route.ts` and replace with `cache: "no-store"` for real-time data fetching (resolves #84).
+- Remove in-memory caching logic and `revalidate` option from `src/app/api/spotify/top-track/route.ts`, replacing with `cache: "no-store"` for real-time data fetching (resolves #84).
+- Remove in-memory caching logic and `revalidate` option from `src/app/api/spotify/wrapped/route.ts`, replacing with `cache: "no-store"` for real-time data fetching (resolves #84).
+- Remove in-memory caching logic and `revalidate` options from `src/app/api/youtube/route.ts`, replacing with `cache: "no-store"` for real-time data fetching (resolves #84).
+- Update `src/components/about/ProfileCard.tsx` to dynamically fetch GitHub profile data and user activity status (resolves #84).
+- Replace static profile photo placeholder in `src/components/about/ProfileCard.tsx` with dynamic `Image` component for GitHub avatar (resolves #84).
+- Update `src/components/about/ProfileCard.tsx` to display dynamically calculated age and fetched activity status (resolves #84).
+- Update `gender` and `location` in `src/lib/data/personal.ts` (resolves #84).
+- Remove `revalidate` option from GitHub API fetch in `src/lib/github.ts` and add `cache: "no-store"` for real-time data (resolves #84).
+- Include `avatarUrl` in the returned GitHub profile data from `src/lib/github.ts` (resolves #84).
+- Update `tests/components/about.test.tsx` to mock `global.fetch` for API calls made by `ProfileCard` (resolves #84).
+- Update `tests/components/about.test.tsx` to verify dynamic age, gender, location, and activity status rendering in `ProfileCard` (resolves #84).
 - Update `AboutView` type in `src/app/about/page.tsx` to include "music" view (resolves #84).
 - Adjust `src/app/about/page.tsx` grid layout for new music section (resolves #84).
 - Pass `onViewMusic` prop to `MusicPlayer` in `src/app/about/page.tsx` to enable view switching (resolves #84).

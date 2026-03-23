@@ -52,14 +52,29 @@ export interface BlogEntry {
   preview: string;
 }
 
+// ── Birthdate (for dynamic age calculation) ──
+
+export const BIRTHDATE = "1993-06-14";
+
+export function calculateAge(birthdate: string): number {
+  const birth = new Date(birthdate);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
+}
+
 // ── Profile ──
 
 export const profile: ProfileData = {
   name: "Luka",
   tagline: '"Placeholder tagline"',
-  gender: "Male",
+  gender: "He/Him",
   age: 0,
-  location: "PLACEHOLDER CITY, STATE",
+  location: "CA",
   country: "United States",
   status: "Online Now!",
   lastLogin: "1/1/2025",

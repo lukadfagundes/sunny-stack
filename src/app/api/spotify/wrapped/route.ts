@@ -44,16 +44,9 @@ interface SpotifyAPIArtist {
   external_urls: { spotify: string };
 }
 
-let cache: { data: SpotifyWrappedData | null; timestamp: number } | null = null;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
 export async function GET() {
   if (!hasSpotifyCredentials()) {
     return NextResponse.json(null, { status: 200 });
-  }
-
-  if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
-    return NextResponse.json(cache.data);
   }
 
   try {
@@ -63,7 +56,7 @@ export async function GET() {
     }
 
     const headers = { Authorization: `Bearer ${accessToken}` };
-    const fetchOptions = { headers, next: { revalidate: 300 } as const };
+    const fetchOptions = { headers, cache: "no-store" as const };
 
     const [tracksRes, artistsRes] = await Promise.all([
       fetch(
@@ -129,7 +122,6 @@ export async function GET() {
       year: new Date().getFullYear(),
     };
 
-    cache = { data: result, timestamp: Date.now() };
     return NextResponse.json(result);
   } catch (error) {
     console.error("Spotify wrapped fetch error:", error);

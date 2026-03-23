@@ -29,9 +29,6 @@ interface InstagramAPIResponse {
   };
 }
 
-let cache: { data: InstagramPost[]; timestamp: number } | null = null;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
 export async function GET() {
   const token = process.env.INSTAGRAM_ACCESS_TOKEN;
 
@@ -39,15 +36,11 @@ export async function GET() {
     return NextResponse.json([], { status: 200 });
   }
 
-  if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
-    return NextResponse.json(cache.data);
-  }
-
   try {
     const fields = "id,media_type,media_url,caption,timestamp,permalink,like_count,comments_count";
     const url = `https://graph.instagram.com/me/media?fields=${fields}&access_token=${token}&limit=50`;
 
-    const response = await fetch(url, { next: { revalidate: 300 } });
+    const response = await fetch(url, { cache: "no-store" });
 
     if (!response.ok) {
       const error = await response.text();
@@ -69,8 +62,6 @@ export async function GET() {
         likeCount: item.like_count ?? 0,
         commentsCount: item.comments_count ?? 0,
       }));
-
-    cache = { data: posts, timestamp: Date.now() };
 
     return NextResponse.json(posts);
   } catch (error) {

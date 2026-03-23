@@ -22,24 +22,145 @@ describe("SectionHeader", () => {
 });
 
 describe("ProfileCard", () => {
+  beforeEach(() => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(null),
+      })
+    ) as jest.Mock;
+  });
+
   it("renders the profile name", () => {
     render(<ProfileCard />);
     expect(screen.getByText("Luka")).toBeInTheDocument();
   });
 
-  it("renders gender, age, location info", () => {
+  it("renders gender as He/Him", () => {
     render(<ProfileCard />);
-    expect(screen.getByText(/Male/)).toBeInTheDocument();
+    expect(screen.getByText("He/Him")).toBeInTheDocument();
   });
 
-  it("renders online status", () => {
+  it("renders dynamically calculated age", () => {
     render(<ProfileCard />);
-    expect(screen.getByText("Online Now!")).toBeInTheDocument();
+    expect(screen.getByText(/\d+ years old/)).toBeInTheDocument();
+  });
+
+  it("renders CA as location", () => {
+    render(<ProfileCard />);
+    expect(screen.getByText("CA")).toBeInTheDocument();
+  });
+
+  it("renders offline status by default", () => {
+    render(<ProfileCard />);
+    expect(screen.getByText("Offline")).toBeInTheDocument();
+  });
+
+  it("renders online status when activity API returns isOnline=true", async () => {
+    global.fetch = jest.fn((url: string) => {
+      if (url === "/api/activity") {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ lastActivityAt: new Date().toISOString(), isOnline: true }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
+    }) as jest.Mock;
+
+    render(<ProfileCard />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Online Now!")).toBeInTheDocument();
+    });
+  });
+
+  it("renders last login from activity API", async () => {
+    global.fetch = jest.fn((url: string) => {
+      if (url === "/api/activity") {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ lastActivityAt: "2026-03-20T10:00:00Z", isOnline: false }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
+    }) as jest.Mock;
+
+    render(<ProfileCard />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Last Login: 3\/20\/2026/)).toBeInTheDocument();
+    });
   });
 
   it("renders last login", () => {
     render(<ProfileCard />);
     expect(screen.getByText(/Last Login/)).toBeInTheDocument();
+  });
+
+  it("shows placeholder icon when no avatar available", () => {
+    render(<ProfileCard />);
+    expect(screen.getByText("NO PHOTO")).toBeInTheDocument();
+  });
+
+  it("renders avatar image after fetching from GitHub API", async () => {
+    global.fetch = jest.fn((url: string) => {
+      if (url === "/api/github") {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              avatarUrl: "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
+              name: "Luka Fagundes",
+              bio: null,
+              location: null,
+              lastPushedAt: null,
+            }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
+    }) as jest.Mock;
+
+    render(<ProfileCard />);
+
+    await waitFor(() => {
+      const img = document.querySelector("img");
+      expect(img).toBeInTheDocument();
+    });
+
+    const img = document.querySelector("img");
+    expect(img?.alt).toBe("Luka's profile photo");
+  });
+
+  it("shows placeholder icon when API returns null", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(null),
+      })
+    ) as jest.Mock;
+
+    render(<ProfileCard />);
+
+    // Wait for fetch to settle
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
+
+    expect(screen.getByText("NO PHOTO")).toBeInTheDocument();
+  });
+
+  it("shows placeholder icon when fetch fails", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.reject(new Error("fail"))
+    ) as jest.Mock;
+
+    render(<ProfileCard />);
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
+
+    expect(screen.getByText("NO PHOTO")).toBeInTheDocument();
   });
 
   it("calls onViewPics when Pics button is clicked", () => {

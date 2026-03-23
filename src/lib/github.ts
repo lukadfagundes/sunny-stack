@@ -55,6 +55,7 @@ export interface GitHubPullRequest {
 }
 
 export interface GitHubData {
+  avatarUrl: string;
   pinnedRepos: GitHubPinnedRepo[];
   publicRepos: GitHubRepo[];
   totalPublicRepos: number;
@@ -76,6 +77,7 @@ export interface GitHubData {
 const QUERY = `
 query GitHubProfile($username: String!, $from: DateTime!, $to: DateTime!) {
   user(login: $username) {
+    avatarUrl(size: 200)
     pinnedItems(first: 6, types: [REPOSITORY]) {
       nodes {
         ... on Repository {
@@ -147,6 +149,7 @@ query GitHubProfile($username: String!, $from: DateTime!, $to: DateTime!) {
 // ── Fallback data when token is missing or API fails ──
 
 const FALLBACK_DATA: GitHubData = {
+  avatarUrl: "",
   pinnedRepos: [],
   publicRepos: [],
   totalPublicRepos: 0,
@@ -190,7 +193,7 @@ export async function fetchGitHubData(): Promise<GitHubData> {
           to: now.toISOString(),
         },
       }),
-      next: { revalidate: 3600 },
+      cache: "no-store",
     });
 
     if (!res.ok) {
@@ -217,6 +220,7 @@ export async function fetchGitHubData(): Promise<GitHubData> {
     const totalStars = repos.reduce((sum: number, r: GitHubRepo) => sum + r.stargazerCount, 0);
 
     return {
+      avatarUrl: user.avatarUrl ?? "",
       pinnedRepos: user.pinnedItems.nodes as GitHubPinnedRepo[],
       publicRepos: repos,
       totalPublicRepos: user.repositories.totalCount,

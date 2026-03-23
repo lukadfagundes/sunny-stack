@@ -38,9 +38,6 @@ interface VideoItem {
   statistics: VideoStatistics;
 }
 
-let cache: { data: YouTubeVideo[]; timestamp: number } | null = null;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
 export async function GET() {
   const apiKey = process.env.YOUTUBE_API_KEY;
   const channelId = process.env.YOUTUBE_CHANNEL_ID;
@@ -49,14 +46,10 @@ export async function GET() {
     return NextResponse.json([], { status: 200 });
   }
 
-  if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
-    return NextResponse.json(cache.data);
-  }
-
   try {
     // Step 1: Get the channel's uploads playlist ID
     const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`;
-    const channelRes = await fetch(channelUrl, { next: { revalidate: 300 } });
+    const channelRes = await fetch(channelUrl, { cache: "no-store" });
 
     if (!channelRes.ok) {
       console.error("YouTube channels API error:", await channelRes.text());
@@ -73,7 +66,7 @@ export async function GET() {
 
     // Step 2: Get the 5 most recent videos from the uploads playlist
     const playlistUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=5&key=${apiKey}`;
-    const playlistRes = await fetch(playlistUrl, { next: { revalidate: 300 } });
+    const playlistRes = await fetch(playlistUrl, { cache: "no-store" });
 
     if (!playlistRes.ok) {
       console.error("YouTube playlistItems API error:", await playlistRes.text());
@@ -90,7 +83,7 @@ export async function GET() {
     // Step 3: Get statistics for each video
     const videoIds = items.map((item) => item.snippet.resourceId.videoId).join(",");
     const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}&key=${apiKey}`;
-    const statsRes = await fetch(statsUrl, { next: { revalidate: 300 } });
+    const statsRes = await fetch(statsUrl, { cache: "no-store" });
 
     const statsMap: Record<string, VideoStatistics> = {};
     if (statsRes.ok) {
@@ -120,7 +113,6 @@ export async function GET() {
       };
     });
 
-    cache = { data: videos, timestamp: Date.now() };
     return NextResponse.json(videos);
   } catch (error) {
     console.error("YouTube fetch error:", error);

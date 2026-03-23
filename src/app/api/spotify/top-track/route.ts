@@ -33,16 +33,9 @@ interface SpotifyTrackItem {
   };
 }
 
-let cache: { data: SpotifyTopTrack | null; timestamp: number } | null = null;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
 export async function GET() {
   if (!hasSpotifyCredentials()) {
     return NextResponse.json(null, { status: 200 });
-  }
-
-  if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
-    return NextResponse.json(cache.data);
   }
 
   try {
@@ -55,7 +48,7 @@ export async function GET() {
       "https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=1",
       {
         headers: { Authorization: `Bearer ${accessToken}` },
-        next: { revalidate: 300 },
+        cache: "no-store",
       }
     );
 
@@ -68,8 +61,7 @@ export async function GET() {
     const items: SpotifyTrackItem[] = data.items ?? [];
 
     if (items.length === 0) {
-      cache = { data: null, timestamp: Date.now() };
-      return NextResponse.json(null, { status: 200 });
+        return NextResponse.json(null, { status: 200 });
     }
 
     const track = items[0];
@@ -82,7 +74,6 @@ export async function GET() {
       spotifyUrl: track.external_urls.spotify,
     };
 
-    cache = { data: result, timestamp: Date.now() };
     return NextResponse.json(result);
   } catch (error) {
     console.error("Spotify top track fetch error:", error);

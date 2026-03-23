@@ -18,6 +18,7 @@ afterEach(() => {
 const MOCK_API_RESPONSE = {
   data: {
     user: {
+      avatarUrl: "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
       pinnedItems: {
         nodes: [
           {
@@ -104,6 +105,7 @@ describe("fetchGitHubData", () => {
   it("returns fallback data when GITHUB_TOKEN is not set", async () => {
     delete process.env.GITHUB_TOKEN;
     const data = await fetchGitHubData();
+    expect(data.avatarUrl).toBe("");
     expect(data.totalCommits).toBe(0);
     expect(data.pinnedRepos).toEqual([]);
     expect(data.publicRepos).toEqual([]);
@@ -118,6 +120,7 @@ describe("fetchGitHubData", () => {
 
     const data = await fetchGitHubData();
 
+    expect(data.avatarUrl).toBe("https://avatars.githubusercontent.com/u/12345?s=200&v=4");
     expect(data.pinnedRepos).toHaveLength(1);
     expect(data.pinnedRepos[0].name).toBe("test-repo");
     expect(data.publicRepos).toHaveLength(2);

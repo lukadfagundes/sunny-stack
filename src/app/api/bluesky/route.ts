@@ -71,9 +71,6 @@ interface FeedViewPost {
   };
 }
 
-let cache: { data: BlueskyPost | null; timestamp: number } | null = null;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
 function transformEmbed(embed?: APIEmbed): BlueskyEmbed | null {
   if (!embed) return null;
 
@@ -110,14 +107,10 @@ export async function GET() {
     return NextResponse.json(null, { status: 200 });
   }
 
-  if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
-    return NextResponse.json(cache.data);
-  }
-
   try {
     const url = `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=1&filter=posts_no_replies`;
 
-    const response = await fetch(url, { next: { revalidate: 300 } });
+    const response = await fetch(url, { cache: "no-store" });
 
     if (!response.ok) {
       console.error("Bluesky API error:", await response.text());
@@ -146,7 +139,6 @@ export async function GET() {
       createdAt: post.record.createdAt,
     };
 
-    cache = { data: result, timestamp: Date.now() };
     return NextResponse.json(result);
   } catch (error) {
     console.error("Bluesky fetch error:", error);
