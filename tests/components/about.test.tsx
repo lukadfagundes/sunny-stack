@@ -11,6 +11,7 @@ import BlogEntry from "@/components/about/BlogEntry";
 import BioSections from "@/components/about/BioSections";
 import InterestsTable from "@/components/about/InterestsTable";
 import TopEight from "@/components/about/TopEight";
+import GameStats from "@/components/about/GameStats";
 import CommentsWall from "@/components/about/CommentsWall";
 import SectionHeader from "@/components/about/SectionHeader";
 
@@ -521,11 +522,9 @@ describe("InterestsTable", () => {
 
   it("renders Television as purple badges", () => {
     render(<InterestsTable />);
-    const badges = screen.getAllByText("One Piece");
-    const tvBadge = badges.find((el) =>
-      el.style.backgroundColor === "rgb(155, 89, 182)"
-    );
-    expect(tvBadge).toBeDefined();
+    const badge = screen.getByText("One Piece");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveStyle({ backgroundColor: "#9B59B6" });
     expect(screen.getByText("HIMYM")).toBeInTheDocument();
     expect(screen.getByText("Frieren")).toBeInTheDocument();
   });
@@ -539,46 +538,174 @@ describe("InterestsTable", () => {
   });
 });
 
-describe("TopEight", () => {
-  it("renders Friend Space heading", () => {
-    render(<TopEight />);
-    expect(screen.getByText(/Friend Space/)).toBeInTheDocument();
+describe("TopEight (Game Grid)", () => {
+  const mockGames = {
+    games: [
+      { appid: 730, name: "Counter-Strike 2", playtimeMinutes: 14040, headerImage: "https://example.com/730.jpg", recentlyPlayed: true },
+      { appid: 570, name: "Dota 2", playtimeMinutes: 8520, headerImage: "https://example.com/570.jpg", recentlyPlayed: false },
+      { appid: 440, name: "Team Fortress 2", playtimeMinutes: 6000, headerImage: "https://example.com/440.jpg", recentlyPlayed: true },
+    ],
+  };
+
+  beforeEach(() => {
+    global.fetch = jest.fn((url: string) => {
+      if (url.includes("/api/steam")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockGames),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(null),
+      });
+    }) as jest.Mock;
   });
 
-  it("renders all 8 friend names", () => {
+  it("renders heading", () => {
     render(<TopEight />);
-    for (let i = 1; i <= 8; i++) {
-      expect(screen.getByText(`Friend ${i}`)).toBeInTheDocument();
-    }
+    expect(screen.getByText(/Top 8 Games/)).toBeInTheDocument();
   });
 
-  it("renders friend count", () => {
+  it("shows loading state initially", () => {
+    global.fetch = jest.fn(() => new Promise(() => {})) as jest.Mock;
     render(<TopEight />);
-    // "8" is in a nested <span>, so we check for the bold number
-    expect(screen.getByText("8")).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
-  it("shows tooltip on hover", () => {
+  it("renders game names after successful fetch", async () => {
     render(<TopEight />);
-    // Find first friend and hover
-    const friend1 = screen.getByText("Friend 1");
-    const friendContainer = friend1.closest("[style]") || friend1.parentElement;
-    if (friendContainer) {
-      fireEvent.mouseEnter(friendContainer);
-    }
+    await waitFor(() => {
+      expect(screen.getByText("Counter-Strike 2")).toBeInTheDocument();
+    });
+    expect(screen.getByText("Dota 2")).toBeInTheDocument();
+    expect(screen.getByText("Team Fortress 2")).toBeInTheDocument();
   });
 
-  it("clears hover state on mouse leave", () => {
+  it("calls onViewGame when a game is clicked", async () => {
+    const onViewGame = jest.fn();
+    render(<TopEight onViewGame={onViewGame} />);
+    await waitFor(() => {
+      expect(screen.getByText("Dota 2")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText("Dota 2").closest("button")!);
+    expect(onViewGame).toHaveBeenCalledWith(mockGames.games[1]);
+  });
+
+  it("shows error message when Steam fetch fails", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.reject(new Error("Network error"))
+    ) as jest.Mock;
     render(<TopEight />);
-    const friend1 = screen.getByText("Friend 1");
-    const friendContainer = friend1.closest(".relative") || friend1.parentElement;
-    if (friendContainer) {
-      fireEvent.mouseEnter(friendContainer);
-      fireEvent.mouseLeave(friendContainer);
-    }
-    // After mouse leave, all borders should reset to default color
-    const avatars = screen.getAllByText("Friend 1");
-    expect(avatars.length).toBeGreaterThan(0);
+    await waitFor(() => {
+      expect(screen.getByText("Unable to load Steam data")).toBeInTheDocument();
+    });
+  });
+});
+
+describe("GameStats", () => {
+  const mockGame = {
+    appid: 730,
+    name: "Counter-Strike 2",
+    playtimeMinutes: 14040,
+    headerImage: "https://example.com/730.jpg",
+    recentlyPlayed: true,
+  };
+
+  const mockAchievements = {
+    achieved: 2,
+    total: 5,
+    achievements: [
+      { apiname: "ach1", displayName: "First Blood", description: "Get your first kill", icon: "https://steam.com/ach1.jpg", unlocktime: 1700000000 },
+      { apiname: "ach3", displayName: "Hat Trick", description: "Get three kills", icon: "https://steam.com/ach3.jpg", unlocktime: 1690000000 },
+    ],
+  };
+
+  beforeEach(() => {
+    global.fetch = jest.fn((url: string) => {
+      if (url.includes("/api/steam/achievements")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockAchievements),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(null),
+      });
+    }) as jest.Mock;
+  });
+
+  it("renders game name and back button", () => {
+    const onBack = jest.fn();
+    render(<GameStats game={mockGame} onBack={onBack} />);
+    expect(screen.getByText("Counter-Strike 2")).toBeInTheDocument();
+    expect(screen.getByText("Back to Profile")).toBeInTheDocument();
+  });
+
+  it("calls onBack when back button is clicked", () => {
+    const onBack = jest.fn();
+    render(<GameStats game={mockGame} onBack={onBack} />);
+    fireEvent.click(screen.getByText("Back to Profile"));
+    expect(onBack).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows playtime stats", async () => {
+    render(<GameStats game={mockGame} onBack={jest.fn()} />);
+    expect(screen.getByText("Total Playtime")).toBeInTheDocument();
+    expect(screen.getByText("234.0 hrs")).toBeInTheDocument();
+  });
+
+  it("fetches and shows achievement progress bar", async () => {
+    render(<GameStats game={mockGame} onBack={jest.fn()} />);
+    await waitFor(() => {
+      expect(screen.getByText("2 / 5")).toBeInTheDocument();
+    });
+    expect(screen.getByText("40%")).toBeInTheDocument();
+  });
+
+  it("displays earned achievement names and descriptions", async () => {
+    render(<GameStats game={mockGame} onBack={jest.fn()} />);
+    await waitFor(() => {
+      expect(screen.getByText("First Blood")).toBeInTheDocument();
+    });
+    expect(screen.getByText("Get your first kill")).toBeInTheDocument();
+    expect(screen.getByText("Hat Trick")).toBeInTheDocument();
+    expect(screen.getByText("Get three kills")).toBeInTheDocument();
+  });
+
+  it("displays achievement icons", async () => {
+    render(<GameStats game={mockGame} onBack={jest.fn()} />);
+    await waitFor(() => {
+      expect(screen.getByText("First Blood")).toBeInTheDocument();
+    });
+    const icons = screen.getAllByRole("img");
+    const achIcons = icons.filter((img) => img.getAttribute("alt") === "First Blood" || img.getAttribute("alt") === "Hat Trick");
+    expect(achIcons).toHaveLength(2);
+  });
+
+  it("shows recently played indicator", () => {
+    render(<GameStats game={mockGame} onBack={jest.fn()} />);
+    expect(screen.getByText("Played recently")).toBeInTheDocument();
+  });
+
+  it("shows not played recently for inactive game", () => {
+    const inactiveGame = { ...mockGame, recentlyPlayed: false };
+    render(<GameStats game={inactiveGame} onBack={jest.fn()} />);
+    expect(screen.getByText("Not played recently")).toBeInTheDocument();
+  });
+
+  it("shows no achievements message when API returns null", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(null),
+      })
+    ) as jest.Mock;
+    render(<GameStats game={mockGame} onBack={jest.fn()} />);
+    await waitFor(() => {
+      expect(screen.getByText("No achievements")).toBeInTheDocument();
+    });
   });
 });
 

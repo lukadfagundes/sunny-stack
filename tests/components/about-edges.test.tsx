@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "../../tests/helpers/mocks";
 
 jest.mock("../../src/lib/data/personal", () => ({
@@ -7,10 +7,6 @@ jest.mock("../../src/lib/data/personal", () => ({
   aboutMe: "First paragraph.\n\nSecond paragraph.\n\nThird paragraph.",
   whoIdLikeToMeet: "Meet one.\n\nMeet two.",
   comments: [],
-  topEight: [
-    { name: "Real Friend", reason: "Best coding buddy" },
-    { name: "Other Friend", reason: "Placeholder" },
-  ],
   myspaceUrl: "",
   details: [],
   latestBlog: { title: "", preview: "" },
@@ -21,7 +17,6 @@ jest.mock("../../src/lib/data/personal", () => ({
 
 import CommentsWall from "@/components/about/CommentsWall";
 import BioSections from "@/components/about/BioSections";
-import TopEight from "@/components/about/TopEight";
 
 describe("CommentsWall (empty comments)", () => {
   it("shows empty state when comments array is empty", () => {
@@ -52,26 +47,3 @@ describe("BioSections (multi-paragraph)", () => {
   });
 });
 
-describe("TopEight (tooltip visible)", () => {
-  it("shows tooltip when reason is not Placeholder", () => {
-    render(<TopEight />);
-    const realFriend = screen.getByText("Real Friend");
-    const friendContainer = realFriend.closest(".relative") || realFriend.parentElement;
-    if (friendContainer) {
-      fireEvent.mouseEnter(friendContainer);
-    }
-    expect(screen.getByText("Best coding buddy")).toBeInTheDocument();
-  });
-
-  it("does not show tooltip when reason is Placeholder", () => {
-    render(<TopEight />);
-    const otherFriend = screen.getByText("Other Friend");
-    const friendContainer = otherFriend.closest(".relative") || otherFriend.parentElement;
-    if (friendContainer) {
-      fireEvent.mouseEnter(friendContainer);
-    }
-    // "Placeholder" should not appear as tooltip text
-    // (the reason text should not render for Placeholder reasons)
-    expect(screen.queryByText("Placeholder")).not.toBeInTheDocument();
-  });
-});

@@ -15,11 +15,14 @@ import CommentsWall from "@/components/about/CommentsWall";
 import PhotoGallery from "@/components/about/PhotoGallery";
 import VideoGallery from "@/components/about/VideoGallery";
 import MusicGallery from "@/components/about/MusicGallery";
+import GameStats from "@/components/about/GameStats";
+import type { SteamGame } from "@/app/api/steam/route";
 
-type AboutView = "profile" | "pics" | "videos" | "music";
+type AboutView = "profile" | "pics" | "videos" | "music" | "game";
 
 export default function AboutPage() {
   const [view, setView] = useState<AboutView>("profile");
+  const [selectedGame, setSelectedGame] = useState<SteamGame | null>(null);
 
   return (
     <main
@@ -52,16 +55,18 @@ export default function AboutPage() {
                   <BlogEntry />
                   <BioSections />
                   <InterestsTable />
-                  <TopEight />
+                  <TopEight onViewGame={(game) => { setSelectedGame(game); setView("game"); }} />
                   <CommentsWall />
                 </>
               ) : view === "pics" ? (
                 <PhotoGallery onBack={() => setView("profile")} />
               ) : view === "videos" ? (
                 <VideoGallery onBack={() => setView("profile")} />
-              ) : (
+              ) : view === "music" ? (
                 <MusicGallery onBack={() => setView("profile")} />
-              )}
+              ) : selectedGame ? (
+                <GameStats game={selectedGame} onBack={() => setView("profile")} />
+              ) : null}
             </div>
           </div>
         </div>

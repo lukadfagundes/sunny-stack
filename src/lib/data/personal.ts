@@ -23,11 +23,6 @@ export interface InterestRow {
   value: string;
 }
 
-export interface TopEightItem {
-  name: string;
-  reason: string;
-}
-
 export interface MusicPlayerData {
   trackName: string;
   artist: string;
@@ -111,25 +106,12 @@ export const whoIdLikeToMeet = "Placeholder who I'd like to meet text.";
 // ── Interests Table ──
 
 export const interests: InterestRow[] = [
-  { label: "General", value: "Cooking, Video Games, TV, Gym, Concerts, Coding" },
+  { label: "General", value: "Cooking, Video Games, TV, Gym, Concerts, Coding, D&D" },
   { label: "Music", value: "Placeholder" },
   { label: "Movies", value: "Mean Girls, Secondhand Lions, Spirited Away, Troll 2, Life Aquatic" },
-  { label: "Television", value: "One Piece, HIMYM, Frieren, New Girl, Death Parade, Fullmetal Alchemist Brotherhood" },
-  { label: "Books", value: "One Piece, The Hitchhiker's Guide to the Galaxy, House of Leaves, The Salmon of Doubt" },
+  { label: "Television", value: "One Piece, HIMYM, Frieren, New Girl, Fullmetal Alchemist Brotherhood" },
+  { label: "Books", value: "The Hitchhiker's Guide to the Galaxy, House of Leaves, The Salmon of Doubt" },
   { label: "Heroes", value: "Placeholder" },
-];
-
-// ── Top 8 (Friend Space) ──
-
-export const topEight: TopEightItem[] = [
-  { name: "Friend 1", reason: "Placeholder" },
-  { name: "Friend 2", reason: "Placeholder" },
-  { name: "Friend 3", reason: "Placeholder" },
-  { name: "Friend 4", reason: "Placeholder" },
-  { name: "Friend 5", reason: "Placeholder" },
-  { name: "Friend 6", reason: "Placeholder" },
-  { name: "Friend 7", reason: "Placeholder" },
-  { name: "Friend 8", reason: "Placeholder" },
 ];
 
 // ── Music Player (static, no audio) ──

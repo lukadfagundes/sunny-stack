@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `STEAM_API_KEY` and `STEAM_ID` to `.env.example` for Steam Web API integration (resolves #84).
+- Add import for `GameStats` component to `src/app/about/page.tsx` (resolves #84).
+- Add import for `SteamGame` type to `src/app/about/page.tsx` (resolves #84).
+- Add `useState` for `selectedGame` to `src/app/about/page.tsx` to manage selected Steam game (resolves #84).
+- Add conditional rendering for `GameStats` component in `src/app/about/page.tsx` when a game is selected (resolves #84).
+- Add `.steam-scrollbar` styles to `src/app/globals.css` for a Steam-themed scrollbar (resolves #84).
+- Add `useEffect` hook to `src/components/about/TopEight.tsx` to fetch Steam game data from `/api/steam` (resolves #84).
+- Add `useState` hooks for `games`, `error`, and `loading` states to `src/components/about/TopEight.tsx` (resolves #84).
+- Add `onViewGame` prop to `TopEightProps` interface in `src/components/about/TopEight.tsx` to handle game selection (resolves #84).
+- Add import for `GameStats` component to `tests/components/about.test.tsx` (resolves #84).
+- Add mock data and tests for `TopEight` (Game Grid) component in `tests/components/about.test.tsx`, including fetch mocking (resolves #84).
+- Add new API route `src/app/api/steam/achievements/route.ts` to fetch Steam game achievements (resolves #84).
+- Add new API route `src/app/api/steam/route.ts` to fetch a user's Steam game list (resolves #84).
+- Add new component `src/components/about/GameStats.tsx` to display detailed statistics for a selected Steam game (resolves #84).
+- Add new test file `tests/api/steam.test.ts` for the Steam API routes (resolves #84).
 - Add `OVERWATCH_BATTLETAG` to `.env.example` for Overwatch 2 stats (resolves #84).
 - Add new API route `src/app/api/overwatch/route.ts` to fetch and return Overwatch hero data (resolves #84).
 - Add new test file `tests/api/overwatch.test.ts` for the Overwatch API route (resolves #84).
@@ -183,6 +198,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change `AboutView` type in `src/app/about/page.tsx` to include "game" view (resolves #84).
+- Update `TopEight` component rendering in `src/app/about/page.tsx` to pass `onViewGame` prop (resolves #84).
+- Change `src/components/about/TopEight.tsx` to fetch and display Steam games instead of static "Friend Space" data (resolves #84).
+- Change "General" interest value in `src/lib/data/personal.ts` to include "D&D".
+- Change "Television" interest value in `src/lib/data/personal.ts` to remove "Death Parade".
+- Change "Books" interest value in `src/lib/data/personal.ts` to remove "One Piece".
+- Change badge style assertion in `tests/components/about.test.tsx` for "One Piece" to use `toHaveStyle`.
 - Change `InterestsTable.tsx` to dynamically fetch and display data for "Music" and "Heroes" rows instead of static values (resolves #84).
 - Import `SpotifyWrappedData` and `OverwatchHeroData` types in `src/components/about/InterestsTable.tsx` (resolves #84).
 - Update personal data in `src/lib/data/personal.ts` with real values for "Status", "Pets", "Comfort Movie", "Zodiac Sign", "General", "Movies", "Television", and "Books" categories.
@@ -260,6 +282,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove direct rendering of `TopEight` component in `src/app/about/page.tsx`, replaced by conditional rendering.
+- Remove MySpace-themed "Friend Space" header and footer elements from `src/components/about/TopEight.tsx`.
+- Remove static `topEight` data dependency from `src/components/about/TopEight.tsx`.
+- Remove `TopEightItem` interface from `src/lib/data/personal.ts`.
+- Remove `topEight` array from `src/lib/data/personal.ts`.
+- Remove `TopEight` tooltip visibility tests from `tests/components/about-edges.test.tsx` due to component refactor.
+- Remove mock `topEight` data from `tests/components/about-edges.test.tsx`.
+- Remove `fireEvent` import from `tests/components/about-edges.test.tsx`.
+- Remove MySpace-themed `TopEight` component tests from `tests/components/about.test.tsx`.
 - Remove static music player UI and data from `src/components/about/MusicPlayer.tsx` (resolves #84).
 - Remove tests for static track name and artist from `tests/components/about.test.tsx` (resolves #84).
 - Remove static blog entry data and display logic from `src/components/about/BlogEntry.tsx` (resolves #84).

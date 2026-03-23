@@ -1,76 +1,117 @@
 "use client";
 
-import { useState } from "react";
-import { User } from "lucide-react";
-import { profile, topEight } from "@/lib/data/personal";
+import { useState, useEffect } from "react";
+import { profile } from "@/lib/data/personal";
+import type { SteamGamesData, SteamGame } from "@/app/api/steam/route";
 
-export default function TopEight() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+interface TopEightProps {
+  onViewGame?: (game: SteamGame) => void;
+}
+
+export default function TopEight({ onViewGame }: TopEightProps) {
+  const [games, setGames] = useState<SteamGame[]>([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/steam")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data: SteamGamesData | null) => {
+        if (data?.games?.length) {
+          setGames(data.games);
+        } else {
+          setError(true);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div>
-      {/* MySpace Friend Space header */}
+      {/* Steam-styled header */}
       <div
-        className="bg-sunny-surface px-3 py-2 flex items-center justify-between"
-        style={{ border: "1px solid #B8860B", borderRadius: "4px 4px 0 0" }}
+        className="px-3 py-2 flex items-center gap-2 rounded-t-md"
+        style={{
+          background: "linear-gradient(to right, #2a475e, #1b2838)",
+          borderBottom: "1px solid #66c0f4",
+        }}
       >
-        <span className="text-sunny-gold font-bold text-sm">
-          {profile.name}&apos;s Friend Space
+        <span
+          className="font-bold text-sm"
+          style={{ color: "#c7d5e0", fontFamily: "Verdana, sans-serif" }}
+        >
+          {profile.name}&apos;s Top 8 Games
         </span>
       </div>
 
-      <div className="bg-sunny-surface rounded-b-md px-4 py-3 border-x border-b border-sunny-surface-light">
-        <p className="text-xs text-sunny-cream-muted mb-3">
-          {profile.name} has{" "}
-          <span className="text-sunny-gold font-bold">{topEight.length}</span>{" "}
-          friends.
-        </p>
+      {/* Main content */}
+      <div
+        className="rounded-b-md px-4 py-3"
+        style={{ backgroundColor: "#1b2838" }}
+      >
+        {loading && (
+          <p
+            className="text-sm italic"
+            style={{ color: "#8f98a0" }}
+          >
+            Loading...
+          </p>
+        )}
 
-        {/* 4x2 grid of friends */}
-        <div className="grid grid-cols-4 gap-3">
-          {topEight.map((item, i) => (
-            <div
-              key={item.name}
-              className="relative text-center"
-              onMouseEnter={() => setHoveredIndex(i)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {/* Avatar placeholder */}
-              <div
-                className="w-full aspect-square flex items-center justify-center bg-sunny-bg mb-1 transition-colors"
+        {error && (
+          <p
+            className="text-sm italic"
+            style={{ color: "#8f98a0" }}
+          >
+            Unable to load Steam data
+          </p>
+        )}
+
+        {!loading && !error && games.length > 0 && (
+          <div className="grid grid-cols-2 gap-3">
+            {games.map((game) => (
+              <button
+                key={game.appid}
+                onClick={() => onViewGame?.(game)}
+                className="text-left rounded transition-colors"
                 style={{
-                  border: `1px solid ${
-                    hoveredIndex === i ? "#F0B429" : "#3D2E1F"
-                  }`,
+                  backgroundColor: "transparent",
+                  border: "1px solid transparent",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#2a475e";
+                  e.currentTarget.style.borderColor = "#66c0f4";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.borderColor = "transparent";
                 }}
               >
-                <User className="w-6 h-6 text-sunny-cream-muted" />
-              </div>
-              <span className="text-xs text-sunny-gold hover:underline cursor-pointer block truncate">
-                {item.name}
-              </span>
-
-              {/* Tooltip */}
-              {hoveredIndex === i && item.reason !== "Placeholder" && (
-                <div className="absolute z-10 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-sunny-surface-light rounded-md shadow-lg whitespace-nowrap pointer-events-none">
-                  <p className="text-xs text-sunny-cream">{item.reason}</p>
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-sunny-surface-light" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={game.headerImage}
+                  alt={game.name}
+                  className="w-full h-auto rounded-t"
+                />
+                <div className="px-2 py-1.5">
+                  <span
+                    className="text-xs font-medium block truncate"
+                    style={{ color: "#c7d5e0" }}
+                  >
+                    {game.name}
+                  </span>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <p className="text-xs text-sunny-cream-muted mt-3">
-          View {profile.name}&apos;s Friends:{" "}
-          <span className="text-sunny-gold hover:underline cursor-pointer">
-            All
-          </span>
-          {" | "}
-          <span className="text-sunny-gold hover:underline cursor-pointer">
-            Online
-          </span>
-        </p>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
