@@ -108,4 +108,38 @@ describe("AboutPage", () => {
     expect(screen.getByText("About me:")).toBeInTheDocument();
     expect(screen.queryByText("Luka's Videos")).not.toBeInTheDocument();
   });
+
+  it("switches to music gallery when Check out more music is clicked", async () => {
+    render(<AboutPage />);
+
+    // Profile view should be visible
+    expect(screen.getByText("About me:")).toBeInTheDocument();
+
+    // Click "Check out more music" in MusicPlayer
+    fireEvent.click(screen.getByText("Check out more music"));
+
+    // Music gallery should appear, profile content should be gone
+    await waitFor(() => {
+      expect(screen.getByText("Luka's Music")).toBeInTheDocument();
+    });
+    expect(screen.queryByText("About me:")).not.toBeInTheDocument();
+  });
+
+  it("switches back to profile from music gallery", async () => {
+    render(<AboutPage />);
+
+    // Switch to music gallery
+    fireEvent.click(screen.getByText("Check out more music"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Luka's Music")).toBeInTheDocument();
+    });
+
+    // Click back
+    fireEvent.click(screen.getByText("Back to Profile"));
+
+    // Profile content should be back
+    expect(screen.getByText("About me:")).toBeInTheDocument();
+    expect(screen.queryByText("Luka's Music")).not.toBeInTheDocument();
+  });
 });

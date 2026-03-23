@@ -109,10 +109,36 @@ describe("MySpaceUrl", () => {
 });
 
 describe("MusicPlayer", () => {
-  it("renders the track name and artist", () => {
+  it("shows loading state initially", () => {
+    global.fetch = jest.fn(() => new Promise(() => {})) as jest.Mock;
     render(<MusicPlayer />);
-    expect(screen.getByText(/Placeholder Track/)).toBeInTheDocument();
-    expect(screen.getByText(/Placeholder Artist/)).toBeInTheDocument();
+    const skeletons = document.querySelectorAll(".animate-pulse");
+    expect(skeletons.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("renders Spotify embed after fetch", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            id: "abc",
+            name: "My Song",
+            artist: "My Artist",
+            albumName: "My Album",
+            albumImageUrl: "https://i.scdn.co/image/test.jpg",
+            spotifyUrl: "https://open.spotify.com/track/abc",
+          }),
+      })
+    ) as jest.Mock;
+
+    render(<MusicPlayer />);
+
+    await waitFor(() => {
+      expect(document.querySelector("iframe")).toBeInTheDocument();
+    });
+    const iframe = document.querySelector("iframe");
+    expect(iframe?.src).toContain("open.spotify.com/embed/track/abc");
   });
 });
 

@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, and `SPOTIFY_REFRESH_TOKEN` to `.env.example` for Spotify API authentication (resolves #84).
+- Add `i.scdn.co` to `next.config.ts` image domains for displaying Spotify album art (resolves #84).
+- Add `MusicGallery` component import and conditional rendering to `src/app/about/page.tsx` (resolves #84).
+- Add tests to `tests/pages/about.test.tsx` for switching between profile and music gallery views (resolves #84).
+- Add tests to `tests/pages/about.test.tsx` for switching back to profile from the music gallery (resolves #84).
+- Add new API utility `src/app/api/spotify/token.ts` for Spotify OAuth token management (resolves #84).
+- Add new API route `src/app/api/spotify/top-track/route.ts` to fetch the current top Spotify track (resolves #84).
+- Add new API route `src/app/api/spotify/wrapped/route.ts` for fetching Spotify Wrapped data (resolves #84).
+- Add new component `src/components/about/MusicGallery.tsx` to display a collection of music (resolves #84).
+- Add new API route tests `tests/api/spotify-top-track.test.ts` for the Spotify top track endpoint (resolves #84).
+- Add new API route tests `tests/api/spotify-wrapped.test.ts` for the Spotify Wrapped endpoint (resolves #84).
+- Add new component tests `tests/components/MusicGallery.test.ts` for the `MusicGallery` component (resolves #84).
+- Add new dedicated component tests `tests/components/MusicPlayer.test.tsx` for the refactored `MusicPlayer` component (resolves #84).
 - Add `BLUESKY_HANDLE` to `.env.example` for Bluesky API authentication (resolves #84).
 - Add `cdn.bsky.app` to `next.config.ts` image domains for displaying Bluesky post images (resolves #84).
 - Add new API route `src/app/api/bluesky/route.ts` to fetch Bluesky user posts (resolves #84).
@@ -156,6 +169,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `AboutView` type in `src/app/about/page.tsx` to include "music" view (resolves #84).
+- Adjust `src/app/about/page.tsx` grid layout for new music section (resolves #84).
+- Pass `onViewMusic` prop to `MusicPlayer` in `src/app/about/page.tsx` to enable view switching (resolves #84).
+- Refactor `src/components/about/MusicPlayer.tsx` to fetch and display the user's top Spotify track dynamically (resolves #84).
+- Add `onViewMusic` prop to `src/components/about/MusicPlayer.tsx` to trigger a view change in the parent component (resolves #84).
+- Update tests for `MusicPlayer` within `tests/components/about.test.tsx` to reflect dynamic content loading and Spotify embed rendering (resolves #84).
 - Change `BlogEntry` component in `src/components/about/BlogEntry.tsx` to display dynamic Bluesky posts instead of a static blog entry (resolves #84).
 - Add `useState`, `useEffect`, `Heart`, `MessageCircle`, `Repeat2`, `CloudSun` icons, `Image` component, `profile` data, and `BlueskyPost`, `BlueskyFacet` types to `src/components/about/BlogEntry.tsx` for Bluesky integration (resolves #84).
 - Add `buildSegments` utility function to `src/components/about/BlogEntry.tsx` for rich text parsing of Bluesky posts (resolves #84).
@@ -209,6 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove static music player UI and data from `src/components/about/MusicPlayer.tsx` (resolves #84).
+- Remove tests for static track name and artist from `tests/components/about.test.tsx` (resolves #84).
 - Remove static blog entry data and display logic from `src/components/about/BlogEntry.tsx` (resolves #84).
 - Remove `UserPlus`, `Forward`, `Star`, `MessageSquare`, `Ban`, `Users`, `Award` icon imports from `src/components/about/ContactTable.tsx`.
 - Remove `contactActions` array and its associated `ContactAction` interface from `src/lib/data/personal.ts`.

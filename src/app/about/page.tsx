@@ -14,8 +14,9 @@ import TopEight from "@/components/about/TopEight";
 import CommentsWall from "@/components/about/CommentsWall";
 import PhotoGallery from "@/components/about/PhotoGallery";
 import VideoGallery from "@/components/about/VideoGallery";
+import MusicGallery from "@/components/about/MusicGallery";
 
-type AboutView = "profile" | "pics" | "videos";
+type AboutView = "profile" | "pics" | "videos" | "music";
 
 export default function AboutPage() {
   const [view, setView] = useState<AboutView>("profile");
@@ -28,7 +29,7 @@ export default function AboutPage() {
       <div className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           {/* Two-column MySpace layout */}
-          <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
             {/* ── Left Column (Profile Identity) ── */}
             {/* Exact MySpace order: Profile → Contacting → URL → Music → Details */}
             <div className="space-y-4">
@@ -38,7 +39,7 @@ export default function AboutPage() {
               />
               <ContactTable />
               <MySpaceUrl />
-              <MusicPlayer />
+              <MusicPlayer onViewMusic={() => setView("music")} />
               <DetailsBox />
             </div>
 
@@ -56,8 +57,10 @@ export default function AboutPage() {
                 </>
               ) : view === "pics" ? (
                 <PhotoGallery onBack={() => setView("profile")} />
-              ) : (
+              ) : view === "videos" ? (
                 <VideoGallery onBack={() => setView("profile")} />
+              ) : (
+                <MusicGallery onBack={() => setView("profile")} />
               )}
             </div>
           </div>
