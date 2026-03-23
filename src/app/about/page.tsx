@@ -3,7 +3,6 @@
 import { useState } from "react";
 import ProfileCard from "@/components/about/ProfileCard";
 import ContactTable from "@/components/about/ContactTable";
-import MySpaceUrl from "@/components/about/MySpaceUrl";
 import MusicPlayer from "@/components/about/MusicPlayer";
 import DetailsBox from "@/components/about/DetailsBox";
 import NetworkBanner from "@/components/about/NetworkBanner";
@@ -11,7 +10,6 @@ import BlogEntry from "@/components/about/BlogEntry";
 import BioSections from "@/components/about/BioSections";
 import InterestsTable from "@/components/about/InterestsTable";
 import TopEight from "@/components/about/TopEight";
-import CommentsWall from "@/components/about/CommentsWall";
 import PhotoGallery from "@/components/about/PhotoGallery";
 import VideoGallery from "@/components/about/VideoGallery";
 import MusicGallery from "@/components/about/MusicGallery";
@@ -41,7 +39,6 @@ export default function AboutPage() {
                 onViewVideos={() => setView("videos")}
               />
               <ContactTable />
-              <MySpaceUrl />
               <MusicPlayer onViewMusic={() => setView("music")} />
               <DetailsBox />
             </div>
@@ -50,13 +47,12 @@ export default function AboutPage() {
             <div className="space-y-5">
               {view === "profile" ? (
                 <>
-                  {/* Exact MySpace order: Network → Blog → Blurbs → Interests → Friend Space → Comments */}
+                  {/* Exact MySpace order: Network → Blog → Blurbs → Interests → Game Space */}
                   <NetworkBanner />
                   <BlogEntry />
                   <BioSections />
                   <InterestsTable />
                   <TopEight onViewGame={(game) => { setSelectedGame(game); setView("game"); }} />
-                  <CommentsWall />
                 </>
               ) : view === "pics" ? (
                 <PhotoGallery onBack={() => setView("profile")} />

@@ -6,8 +6,6 @@ jest.mock("../../src/lib/data/personal", () => ({
   profile: { name: "Luka", tagline: "", gender: "Male", age: 0, location: "", country: "", status: "Online Now!", lastLogin: "" },
   aboutMe: "First paragraph.\n\nSecond paragraph.\n\nThird paragraph.",
   whoIdLikeToMeet: "Meet one.\n\nMeet two.",
-  comments: [],
-  myspaceUrl: "",
   details: [],
   latestBlog: { title: "", preview: "" },
   interests: [],
@@ -15,15 +13,7 @@ jest.mock("../../src/lib/data/personal", () => ({
   contactLinks: [],
 }));
 
-import CommentsWall from "@/components/about/CommentsWall";
 import BioSections from "@/components/about/BioSections";
-
-describe("CommentsWall (empty comments)", () => {
-  it("shows empty state when comments array is empty", () => {
-    render(<CommentsWall />);
-    expect(screen.getByText("No comments yet")).toBeInTheDocument();
-  });
-});
 
 describe("BioSections (multi-paragraph)", () => {
   it("renders multiple paragraphs with margin between them", () => {
@@ -46,4 +36,3 @@ describe("BioSections (multi-paragraph)", () => {
     expect(thirdP).toHaveStyle({ marginBottom: "0" });
   });
 });
-

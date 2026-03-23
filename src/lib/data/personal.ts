@@ -28,14 +28,6 @@ export interface MusicPlayerData {
   artist: string;
 }
 
-export interface WallComment {
-  name: string;
-  timestamp: string;
-  message: string;
-  initials: string;
-  accentColor: string;
-}
-
 export interface ContactLink {
   label: string;
   url: string;
@@ -74,10 +66,6 @@ export const profile: ProfileData = {
   status: "Online Now!",
   lastLogin: "1/1/2025",
 };
-
-// ── MySpace URL ──
-
-export const myspaceUrl = "http://www.myspace.com/placeholder";
 
 // ── Details ──
 
@@ -120,25 +108,6 @@ export const musicPlayer: MusicPlayerData = {
   trackName: "Placeholder Track",
   artist: "Placeholder Artist",
 };
-
-// ── Comments Wall ──
-
-export const comments: WallComment[] = [
-  {
-    name: "Friend 1",
-    initials: "F1",
-    accentColor: "#F0B429",
-    timestamp: "1/1/2025",
-    message: "Placeholder comment text.",
-  },
-  {
-    name: "Friend 2",
-    initials: "F2",
-    accentColor: "#3B82F6",
-    timestamp: "1/1/2025",
-    message: "Placeholder comment text.",
-  },
-];
 
 // ── Contact Links (modern) ──
 

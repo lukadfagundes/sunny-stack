@@ -198,6 +198,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update MySpace order comment in `src/app/about/page.tsx` to reflect the removal of "Comments" and introduction of "Game Space" (resolves #84).
 - Exclude specific non-game app IDs (e.g., `431960` for Wallpaper Engine) from the list of fetched Steam games in `src/app/api/steam/route.ts` (resolves #84).
 - Remove dynamic fetching and rendering of Overwatch hero data in `src/components/about/InterestsTable.tsx`.
 - Update `className` for grid layout in `src/components/about/InterestsTable.tsx`.
@@ -289,6 +290,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `CommentsWall.tsx` component file (resolves #84).
+- Remove `MySpaceUrl.tsx` component file (resolves #84).
+- Remove `WallComment` interface from `src/lib/data/personal.ts` (resolves #84).
+- Remove `myspaceUrl` export from `src/lib/data/personal.ts` (resolves #84).
+- Remove `comments` array export from `src/lib/data/personal.ts` (resolves #84).
+- Remove `MySpaceUrl` component rendering from `src/app/about/page.tsx` (resolves #84).
+- Remove `CommentsWall` component rendering from `src/app/about/page.tsx` (resolves #84).
+- Remove import for `MySpaceUrl` component from `src/app/about/page.tsx` (resolves #84).
+- Remove import for `CommentsWall` component from `src/app/about/page.tsx` (resolves #84).
+- Remove import for `MySpaceUrl` component from `tests/components/about.test.tsx` (resolves #84).
+- Remove import for `CommentsWall` component from `tests/components/about.test.tsx` (resolves #84).
+- Remove import for `CommentsWall` component from `tests/components/about-edges.test.tsx` (resolves #84).
+- Remove `MySpaceUrl` test suite from `tests/components/about.test.tsx` (resolves #84).
+- Remove `CommentsWall` test suite from `tests/components/about.test.tsx` (resolves #84).
+- Remove "CommentsWall (empty comments)" test suite from `tests/components/about-edges.test.tsx` (resolves #84).
+- Remove `comments` property from mock data in `tests/components/about-edges.test.tsx` (resolves #84).
+- Remove `myspaceUrl` property from mock data in `tests/components/about-edges.test.tsx` (resolves #84).
 - Remove `OVERWATCH_BATTLETAG` from `.env.example`.
 - Remove `src/app/api/overwatch/route.ts` API endpoint and its related functionality.
 - Remove `tests/api/overwatch.test.ts` and all associated Overwatch API route tests.

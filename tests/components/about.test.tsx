@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "../../tests/helpers/mocks";
 import ProfileCard from "@/components/about/ProfileCard";
 import ContactTable from "@/components/about/ContactTable";
-import MySpaceUrl from "@/components/about/MySpaceUrl";
 import MusicPlayer from "@/components/about/MusicPlayer";
 import DetailsBox from "@/components/about/DetailsBox";
 import NetworkBanner from "@/components/about/NetworkBanner";
@@ -12,7 +11,6 @@ import BioSections from "@/components/about/BioSections";
 import InterestsTable from "@/components/about/InterestsTable";
 import TopEight from "@/components/about/TopEight";
 import GameStats from "@/components/about/GameStats";
-import CommentsWall from "@/components/about/CommentsWall";
 import SectionHeader from "@/components/about/SectionHeader";
 
 describe("SectionHeader", () => {
@@ -217,16 +215,6 @@ describe("ContactTable", () => {
     const emailLink = screen.getByText("Email").closest("a");
     expect(emailLink).toHaveAttribute("href", "mailto:luka@sunny-stack.com");
     expect(emailLink).not.toHaveAttribute("target");
-  });
-});
-
-describe("MySpaceUrl", () => {
-  it("renders the MySpace URL", () => {
-    render(<MySpaceUrl />);
-    expect(screen.getByText("MySpace URL:")).toBeInTheDocument();
-    expect(
-      screen.getByText("http://www.myspace.com/placeholder")
-    ).toBeInTheDocument();
   });
 });
 
@@ -670,25 +658,6 @@ describe("GameStats", () => {
     await waitFor(() => {
       expect(screen.getByText("No achievements")).toBeInTheDocument();
     });
-  });
-});
-
-describe("CommentsWall", () => {
-  it("renders the comments section header", () => {
-    render(<CommentsWall />);
-    expect(screen.getByText(/Comments/)).toBeInTheDocument();
-  });
-
-  it("renders comment entries", () => {
-    render(<CommentsWall />);
-    expect(screen.getByText("Friend 1")).toBeInTheDocument();
-    expect(screen.getByText("Friend 2")).toBeInTheDocument();
-  });
-
-  it("renders comment messages", () => {
-    render(<CommentsWall />);
-    const messages = screen.getAllByText("Placeholder comment text.");
-    expect(messages.length).toBe(2);
   });
 });
 
