@@ -5,9 +5,10 @@ import { profile } from "@/lib/data/personal";
 
 interface ProfileCardProps {
   onViewPics?: () => void;
+  onViewVideos?: () => void;
 }
 
-export default function ProfileCard({ onViewPics }: ProfileCardProps) {
+export default function ProfileCard({ onViewPics, onViewVideos }: ProfileCardProps) {
   return (
     <div>
       {/* Name + tagline */}
@@ -59,9 +60,12 @@ export default function ProfileCard({ onViewPics }: ProfileCardProps) {
           Pics
         </button>
         {" | "}
-        <span className="text-sunny-gold hover:underline cursor-pointer">
+        <button
+          onClick={onViewVideos}
+          className="text-sunny-gold hover:underline cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-xs"
+        >
           Videos
-        </span>
+        </button>
       </p>
     </div>
   );

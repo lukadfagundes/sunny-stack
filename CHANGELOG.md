@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID` to `.env.example` for YouTube Data API authentication (resolves #84).
+- Add `i.ytimg.com` to `next.config.ts` image domains for displaying YouTube thumbnails (resolves #84).
+- Add new API route `src/app/api/youtube/route.ts` to fetch YouTube channel videos (resolves #84).
+- Add `VideoCard` component to `src/components/about/VideoCard.tsx` for displaying individual YouTube video thumbnails and titles (resolves #84).
+- Add `VideoGallery` component to `src/components/about/VideoGallery.tsx` for displaying a collection of YouTube videos (resolves #84).
+- Add conditional rendering for `VideoGallery` in `src/app/about/page.tsx` (resolves #84).
+- Add "Videos" button to `ProfileCard` in `src/components/about/ProfileCard.tsx` to navigate to video gallery (resolves #84).
+- Add new API test file `tests/api/youtube.test.ts` for YouTube API route (resolves #84).
+- Add new component test file `tests/components/VideoCard.test.tsx` for `VideoCard` component (resolves #84).
+- Add new component test file `tests/components/VideoGallery.test.tsx` for `VideoGallery` component (resolves #84).
+- Add test to `tests/components/about.test.tsx` to verify `onViewVideos` is called when the "Videos" button is clicked (resolves #84).
+- Add test to `tests/components/about.test.tsx` to verify the "Videos" element in `ProfileCard` is a button (resolves #84).
+- Add test to `tests/pages/about.test.tsx` to verify switching to the video gallery from the profile view (resolves #84).
+- Add test to `tests/pages/about.test.tsx` to verify switching back to the profile view from the video gallery (resolves #84).
 - Add `INSTAGRAM_ACCESS_TOKEN` to `.env.example` for Instagram API authentication (resolves #84).
 - Add new API route `src/app/api/instagram/comments/route.ts` to fetch Instagram post comments (resolves #84).
 - Add new API route `src/app/api/instagram/route.ts` to fetch Instagram user media (resolves #84).
@@ -137,6 +151,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `AboutView` type in `src/app/about/page.tsx` to include `"videos"` option (resolves #84).
+- Modify `src/app/about/page.tsx` to pass `onViewVideos` prop to `ProfileCard` (resolves #84).
+- Update `ProfileCardProps` in `src/components/about/ProfileCard.tsx` to include `onViewVideos` (resolves #84).
 - Configure `next.config.ts` to allow image loading from Instagram CDN domains `*.cdninstagram.com` and `*.fbcdn.net` (resolves #84).
 - Refactor `src/app/about/page.tsx` to introduce a view state (`profile` or `pics`) for dynamic content display (resolves #84).
 - Conditionally render `PhotoGallery` or existing profile sections in `src/app/about/page.tsx` based on the current view state (resolves #84).

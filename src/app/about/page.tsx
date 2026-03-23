@@ -13,8 +13,9 @@ import InterestsTable from "@/components/about/InterestsTable";
 import TopEight from "@/components/about/TopEight";
 import CommentsWall from "@/components/about/CommentsWall";
 import PhotoGallery from "@/components/about/PhotoGallery";
+import VideoGallery from "@/components/about/VideoGallery";
 
-type AboutView = "profile" | "pics";
+type AboutView = "profile" | "pics" | "videos";
 
 export default function AboutPage() {
   const [view, setView] = useState<AboutView>("profile");
@@ -31,7 +32,10 @@ export default function AboutPage() {
             {/* ── Left Column (Profile Identity) ── */}
             {/* Exact MySpace order: Profile → Contacting → URL → Music → Details */}
             <div className="space-y-4">
-              <ProfileCard onViewPics={() => setView("pics")} />
+              <ProfileCard
+                onViewPics={() => setView("pics")}
+                onViewVideos={() => setView("videos")}
+              />
               <ContactTable />
               <MySpaceUrl />
               <MusicPlayer />
@@ -50,8 +54,10 @@ export default function AboutPage() {
                   <TopEight />
                   <CommentsWall />
                 </>
-              ) : (
+              ) : view === "pics" ? (
                 <PhotoGallery onBack={() => setView("profile")} />
+              ) : (
+                <VideoGallery onBack={() => setView("profile")} />
               )}
             </div>
           </div>

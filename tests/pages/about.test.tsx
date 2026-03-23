@@ -74,4 +74,38 @@ describe("AboutPage", () => {
     expect(screen.getByText("About me:")).toBeInTheDocument();
     expect(screen.queryByText("Luka's Pics")).not.toBeInTheDocument();
   });
+
+  it("switches to video gallery when Videos is clicked", async () => {
+    render(<AboutPage />);
+
+    // Profile view should be visible
+    expect(screen.getByText("About me:")).toBeInTheDocument();
+
+    // Click Videos
+    fireEvent.click(screen.getByText("Videos"));
+
+    // Video gallery should appear, profile content should be gone
+    await waitFor(() => {
+      expect(screen.getByText("Luka's Videos")).toBeInTheDocument();
+    });
+    expect(screen.queryByText("About me:")).not.toBeInTheDocument();
+  });
+
+  it("switches back to profile from video gallery", async () => {
+    render(<AboutPage />);
+
+    // Switch to video gallery
+    fireEvent.click(screen.getByText("Videos"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Luka's Videos")).toBeInTheDocument();
+    });
+
+    // Click back
+    fireEvent.click(screen.getByText("Back to Profile"));
+
+    // Profile content should be back
+    expect(screen.getByText("About me:")).toBeInTheDocument();
+    expect(screen.queryByText("Luka's Videos")).not.toBeInTheDocument();
+  });
 });

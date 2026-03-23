@@ -54,6 +54,19 @@ describe("ProfileCard", () => {
     const picsButton = screen.getByText("Pics");
     expect(picsButton.tagName).toBe("BUTTON");
   });
+
+  it("calls onViewVideos when Videos button is clicked", () => {
+    const onViewVideos = jest.fn();
+    render(<ProfileCard onViewVideos={onViewVideos} />);
+    fireEvent.click(screen.getByText("Videos"));
+    expect(onViewVideos).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders Videos as a button element", () => {
+    render(<ProfileCard />);
+    const videosButton = screen.getByText("Videos");
+    expect(videosButton.tagName).toBe("BUTTON");
+  });
 });
 
 describe("ContactTable", () => {
