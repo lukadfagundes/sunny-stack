@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `BLUESKY_HANDLE` to `.env.example` for Bluesky API authentication (resolves #84).
+- Add `cdn.bsky.app` to `next.config.ts` image domains for displaying Bluesky post images (resolves #84).
+- Add new API route `src/app/api/bluesky/route.ts` to fetch Bluesky user posts (resolves #84).
+- Add new API route tests `tests/api/bluesky.test.ts` for the Bluesky API endpoint (resolves #84).
+- Add `TextEncoder` and `TextDecoder` polyfills to `tests/setup.ts` for jsdom environment compatibility (resolves #84).
 - Add `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID` to `.env.example` for YouTube Data API authentication (resolves #84).
 - Add `i.ytimg.com` to `next.config.ts` image domains for displaying YouTube thumbnails (resolves #84).
 - Add new API route `src/app/api/youtube/route.ts` to fetch YouTube channel videos (resolves #84).
@@ -151,6 +156,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change `BlogEntry` component in `src/components/about/BlogEntry.tsx` to display dynamic Bluesky posts instead of a static blog entry (resolves #84).
+- Add `useState`, `useEffect`, `Heart`, `MessageCircle`, `Repeat2`, `CloudSun` icons, `Image` component, `profile` data, and `BlueskyPost`, `BlueskyFacet` types to `src/components/about/BlogEntry.tsx` for Bluesky integration (resolves #84).
+- Add `buildSegments` utility function to `src/components/about/BlogEntry.tsx` for rich text parsing of Bluesky posts (resolves #84).
+- Update `tests/components/about.test.tsx` to remove tests for the old static blog entry content (resolves #84).
+- Add mock for `global.fetch` in `tests/components/about.test.tsx` to simulate API calls (resolves #84).
+- Add tests to `tests/components/about.test.tsx` for initial loading skeletons of Bluesky posts (resolves #84).
+- Add tests to `tests/components/about.test.tsx` for rendering Bluesky post text with rich text links and hashtags (resolves #84).
+- Update comment in `tests/pages/about.test.tsx` to reflect that `BlogEntry` now fetches data on mount (resolves #84).
 - Update `AboutView` type in `src/app/about/page.tsx` to include `"videos"` option (resolves #84).
 - Modify `src/app/about/page.tsx` to pass `onViewVideos` prop to `ProfileCard` (resolves #84).
 - Update `ProfileCardProps` in `src/components/about/ProfileCard.tsx` to include `onViewVideos` (resolves #84).
@@ -196,6 +209,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove static blog entry data and display logic from `src/components/about/BlogEntry.tsx` (resolves #84).
 - Remove `UserPlus`, `Forward`, `Star`, `MessageSquare`, `Ban`, `Users`, `Award` icon imports from `src/components/about/ContactTable.tsx`.
 - Remove `contactActions` array and its associated `ContactAction` interface from `src/lib/data/personal.ts`.
 - Remove MySpace-era contact action buttons and their rendering logic from `src/components/about/ContactTable.tsx`.

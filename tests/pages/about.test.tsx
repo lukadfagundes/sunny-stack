@@ -4,7 +4,7 @@ import "../../tests/helpers/mocks";
 import AboutPage from "@/app/about/page";
 
 beforeEach(() => {
-  // PhotoGallery fetches on mount — provide a default mock
+  // PhotoGallery and BlogEntry fetch on mount — provide a default mock
   global.fetch = jest.fn(() =>
     Promise.resolve({
       ok: true,

@@ -1,4 +1,10 @@
 import "@testing-library/jest-dom";
+import { TextEncoder, TextDecoder } from "util";
+
+// Polyfill TextEncoder/TextDecoder for jsdom
+if (typeof globalThis.TextEncoder === "undefined") {
+  Object.assign(globalThis, { TextEncoder, TextDecoder });
+}
 
 // Mock matchMedia for useReducedMotion and similar hooks
 Object.defineProperty(window, "matchMedia", {

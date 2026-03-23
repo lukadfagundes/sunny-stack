@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "../../tests/helpers/mocks";
 import ProfileCard from "@/components/about/ProfileCard";
 import ContactTable from "@/components/about/ContactTable";
@@ -142,19 +142,90 @@ describe("NetworkBanner", () => {
 
 describe("BlogEntry", () => {
   it("renders the blog section header", () => {
+    global.fetch = jest.fn(() => new Promise(() => {})) as jest.Mock;
     render(<BlogEntry />);
     expect(screen.getByText(/Latest Blog Entry/)).toBeInTheDocument();
   });
 
-  it("renders the blog title", () => {
+  it("shows loading skeletons initially", () => {
+    global.fetch = jest.fn(() => new Promise(() => {})) as jest.Mock;
     render(<BlogEntry />);
-    expect(screen.getByText("Placeholder Blog Entry Title")).toBeInTheDocument();
+    const skeletons = document.querySelectorAll(".animate-pulse");
+    expect(skeletons.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("renders subscribe and view links", () => {
+  it("renders post text with rich text links after loading", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            text: "Check out https://example.com #dev",
+            facets: [
+              {
+                index: { byteStart: 10, byteEnd: 29 },
+                features: [
+                  { $type: "app.bsky.richtext.facet#link", uri: "https://example.com" },
+                ],
+              },
+              {
+                index: { byteStart: 30, byteEnd: 34 },
+                features: [
+                  { $type: "app.bsky.richtext.facet#tag", tag: "dev" },
+                ],
+              },
+            ],
+            embed: null,
+            likeCount: 15,
+            replyCount: 3,
+            repostCount: 7,
+            permalink: "https://bsky.app/profile/test/post/abc",
+            createdAt: "2026-03-20T12:00:00.000Z",
+          }),
+      })
+    ) as jest.Mock;
+
     render(<BlogEntry />);
-    expect(screen.getByText("[Subscribe to this Blog]")).toBeInTheDocument();
-    expect(screen.getByText("[View All Blog Entries]")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText("https://example.com")).toBeInTheDocument();
+    });
+    // Link should be rendered as an anchor
+    const link = screen.getByText("https://example.com");
+    expect(link.tagName).toBe("A");
+    expect(link).toHaveAttribute("href", "https://example.com");
+    // Hashtag should be rendered as an anchor
+    const tag = screen.getByText("#dev");
+    expect(tag.tagName).toBe("A");
+    // Engagement counts
+    expect(screen.getByText("15")).toBeInTheDocument();
+    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.getByText("7")).toBeInTheDocument();
+  });
+
+  it("shows error message when fetch fails", async () => {
+    global.fetch = jest.fn(() => Promise.reject(new Error("fail"))) as jest.Mock;
+
+    render(<BlogEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Could not load latest post.")).toBeInTheDocument();
+    });
+  });
+
+  it("shows empty state when no post returned", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(null),
+      })
+    ) as jest.Mock;
+
+    render(<BlogEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByText("No posts to display.")).toBeInTheDocument();
+    });
   });
 });
 
