@@ -102,7 +102,7 @@ flowchart TD
 
 ## Rate Limiting
 
-All endpoints are protected by the rate limiter in `src/middleware.ts`:
+All endpoints are protected by the rate limiter in `src/proxy.ts`:
 
 - **Limit**: 30 requests per minute per IP address
 - **Scope**: All routes matching `/api/*`

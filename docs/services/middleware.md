@@ -1,10 +1,10 @@
-# Middleware (Rate Limiter)
+# Proxy (Rate Limiter)
 
 ## Overview
 
 IP-based rate limiter for all `/api/*` routes. Implements a sliding window algorithm with an in-memory `Map` store, 60-second windows, 30-request maximum per IP, and automatic stale entry cleanup when the map exceeds 10,000 entries.
 
-**Source:** `src/middleware.ts` (50 lines)
+**Source:** `src/proxy.ts` (49 lines)
 
 ## Scope
 
@@ -28,9 +28,9 @@ Non-API requests (pages, static assets, etc.) pass through immediately via `Next
 
 ## Exports
 
-### `middleware(request: NextRequest): NextResponse`
+### `proxy(request: NextRequest): NextResponse`
 
-The Next.js middleware function. Returns either `NextResponse.next()` (pass through) or a 429 JSON response.
+The rate limiting proxy function. Returns either `NextResponse.next()` (pass through) or a 429 JSON response.
 
 ### `config`
 
@@ -96,4 +96,4 @@ Headers:
 
 ## Usage
 
-Automatically applied by Next.js to all matching routes. No explicit import required. The middleware file must be located at `src/middleware.ts` for Next.js to detect it.
+The proxy function is exported from `src/proxy.ts` and applied to matching API routes.

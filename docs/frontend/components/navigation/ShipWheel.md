@@ -37,14 +37,14 @@ This component takes no props.
 | About | `/about` | 180 |
 | Docs | `/docs` | 270 |
 
-### SVG Dimensions
+### Layout Constants
 
 | Constant | Value | Description |
 |----------|-------|-------------|
-| `WHEEL_SIZE` | 80 | SVG viewport width/height in pixels. |
-| `HUB_RADIUS` | 10 | Radius of the center hub. |
-| `RIM_RADIUS` | 36 | Radius of the outer rim. |
-| `LABEL_OFFSET` | 18 | Distance from wheel edge to navigation labels. |
+| `WHEEL_SIZE` | 110 | Width/height of the wheel image in pixels. |
+| `HUB_RADIUS` | 12 | Radius of the center hub clickable area. |
+| `LABEL_OFFSET` | 5 | Distance from wheel edge to navigation labels. |
+| `LABEL_SHIFT_UP` | 5 | Vertical offset to shift right/left/bottom labels upward. |
 
 ### `KNOWN_ROUTES`
 
@@ -62,26 +62,20 @@ A `Set` containing `"/"`, `"/portfolio"`, `"/about"`, `"/docs"`. The wheel retur
 
 ## Internal Components
 
-### `ShipWheelSVG`
+### `ShipWheelImage`
 
-A pure SVG component that renders the ship's wheel graphic.
+Renders the ship's wheel as a PNG image (`/wheel.png`) wrapped in a Framer Motion `div` for spring-based rotation animation.
 
 **Props:**
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `hovered` | `boolean` | Controls color intensity of wheel elements. |
-| `currentAngle` | `number` | Rotation angle applied via Framer Motion spring animation. |
+| `currentAngle` | `number` | Rotation angle applied via Framer Motion spring animation (`stiffness: 60, damping: 15`). |
 
-**SVG Elements:**
-- Outer rim circle (3px stroke).
-- Inner rim circle (1px stroke).
-- 8 spokes: 4 main (thicker, lighter) + 4 secondary (thinner, darker), distributed at 45-degree intervals.
-- 4 spoke tip handles (gold circles at main spoke ends, outside the rim).
-- Center hub (filled circle with border).
-- Center dot (small accent circle).
-
-All colors transition between muted and bright states based on `hovered`.
+**Rendering:**
+- Displays `/wheel.png` at `WHEEL_SIZE` x `WHEEL_SIZE` (110x110) with `object-contain`.
+- Image is `aria-hidden="true"` and non-draggable.
+- Opacity transitions between 60% (idle) and 100% (hovered) via the parent wrapper div.
 
 ## Render Modes
 
@@ -89,7 +83,7 @@ All colors transition between muted and bright states based on `hovered`.
 
 - Fixed position: bottom-right corner (`bottom-6 right-16`).
 - Hidden at `< lg` breakpoint via `hidden lg:block`.
-- The SVG wheel rotates via spring animation when navigating between pages.
+- The wheel image rotates via spring animation when navigating between pages.
 - Navigation labels appear on hover with `AnimatePresence` fade/scale animation.
 - Labels are positioned absolutely at top/right/bottom/left of the wheel.
 - Active page label is highlighted in `sunny-gold`.
@@ -99,9 +93,9 @@ All colors transition between muted and bright states based on `hovered`.
 
 - Fixed position: bottom-right corner (`bottom-6 right-6`).
 - Hidden at `lg+` breakpoint via `lg:hidden`.
-- Toggle button with `Anchor` icon from lucide-react (14x14, rotates 180 degrees when open).
+- Toggle button with `Anchor` icon from lucide-react (24x24, rotates 180 degrees when open).
 - Nav items fan out in a compass-rose arc pattern on toggle.
-- Each item is a 12x12 circle showing the first 3 characters of the label.
+- Each item is a 48x48 (`w-12 h-12`) circle showing the first 3 characters of the label.
 - Active page has `sunny-gold` background; others have `sunny-surface` background.
 - Spring animations with staggered delays for each item.
 
@@ -109,7 +103,7 @@ All colors transition between muted and bright states based on `hovered`.
 
 | Component | Source | Description |
 |-----------|--------|-------------|
-| `ShipWheelSVG` | Internal | SVG rendering of the ship's wheel. |
+| `ShipWheelImage` | Internal | PNG image rendering of the ship's wheel (`/wheel.png`). |
 | `Link` | `next/link` | Next.js navigation links. |
 | `motion.*` | `framer-motion` | Animation wrappers for labels and mobile menu items. |
 | `AnimatePresence` | `framer-motion` | Manages enter/exit animations. |

@@ -48,9 +48,9 @@ The component uses a manual scroll tracking system via `useEffect`:
 
 ## Internal Components
 
-### `ShipSilhouette`
+### `ShipImage`
 
-A small SVG (48x32) rendering a simple ship with a hull, deck, mast, sail, and flag. Uses nautical gold/brown colors. Responsive sizing via Tailwind classes.
+Renders the ship as a PNG image (`/ship.png`) with responsive sizing via Tailwind classes (`w-[60px] h-[42px] sm:w-[72px] sm:h-[48px]`). The image is `aria-hidden="true"` and non-draggable.
 
 ### `StarField`
 
@@ -83,7 +83,7 @@ Background gradient: #0D0A06 -> #1A1209 -> #2A1F14 -> #3D2E1F -> #6B4226 -> #B88
   |-- OceanWaves (70-100%)
   |-- Ship (at 70%, moves horizontally with scroll)
        |-- Wake trail (behind ship)
-       |-- ShipSilhouette (with bobbing animation)
+       |-- ShipImage (with bobbing animation)
 ```
 
 When `reducedMotion` is `true`, the ship is rendered as a static centered element without scroll-based movement, bobbing, or wake trail.

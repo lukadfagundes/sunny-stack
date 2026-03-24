@@ -87,7 +87,7 @@ The development server uses Turbopack for fast hot module replacement. Changes t
 
 ### Running Tests
 
-Run the full test suite with Jest. All 2,194 tests should pass. Coverage thresholds are enforced at 80% for statements, branches, functions, and lines.
+Run the full test suite with Jest. All 433 tests should pass. Coverage thresholds are enforced at 80% for statements, branches, functions, and lines.
 
 ```bash
 # Run all tests
@@ -134,11 +134,11 @@ sunny-stack/
 │   │   ├── not-found.tsx     # Custom 404 page (ZoroGame)
 │   │   ├── layout.tsx        # Root layout (RootLayout)
 │   │   └── page.tsx          # Home page
-│   ├── components/           # React components (~31 .tsx components + 5 utility modules)
+│   ├── components/           # React components (35 .tsx components + 5 utility modules)
 │   ├── lib/                  # Utility libraries and static data
 │   │   ├── data/             # Static TypeScript data files (projects, personal info)
 │   │   └── github.ts         # GitHub GraphQL data fetching
-│   └── middleware.ts         # Rate limiting middleware
+│   └── proxy.ts              # Rate limiting proxy
 ├── tests/                    # Test files (mirroring src/ structure)
 ├── docs/                     # Project documentation
 ├── public/                   # Static assets

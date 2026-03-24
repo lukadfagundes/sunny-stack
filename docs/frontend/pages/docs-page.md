@@ -4,7 +4,7 @@
 
 An interactive documentation viewer with a sidebar file tree navigation, breadcrumb navigation, and markdown rendering. Client component that fetches the documentation file tree and individual file contents from the `/api/docs` endpoint.
 
-**Source:** `src/app/docs/page.tsx` (152 lines)
+**Source:** `src/app/docs/page.tsx` (151 lines)
 
 ## Route
 

@@ -91,7 +91,7 @@ null
 
 ## Rate Limiting
 
-30 requests per minute per IP address. Enforced by `src/middleware.ts`. Returns 429 Too Many Requests with `Retry-After` header when exceeded.
+30 requests per minute per IP address. Enforced by `src/proxy.ts`. Returns 429 Too Many Requests with `Retry-After` header when exceeded.
 
 Rate limit response:
 
