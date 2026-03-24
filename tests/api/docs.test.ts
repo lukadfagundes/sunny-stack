@@ -1,5 +1,71 @@
 export {};
 
+import path from "path";
+
+// Virtual filesystem for mocking
+const PROJECT_ROOT = process.cwd();
+
+const VIRTUAL_FILES: Record<string, string> = {
+  [path.join(PROJECT_ROOT, "README.md")]: "# Sunny Stack\n\nProject README content.",
+  [path.join(PROJECT_ROOT, "docs", "README.md")]:
+    "# Documentation\n\nWelcome to the docs.",
+  [path.join(PROJECT_ROOT, "docs", "guides", "getting-started.md")]:
+    "# Getting Started\n\nA guide to getting started.",
+  [path.join(PROJECT_ROOT, "docs", "architecture", "diagrams.md")]:
+    "# Diagrams\n\n```mermaid\ngraph TD\n  A-->B\n```\n\nSome text after.",
+};
+
+// Build directory entries from virtual files
+function virtualReaddirSync(dirPath: string): { name: string; isDirectory: () => boolean; isFile: () => boolean }[] {
+  const names = new Set<string>();
+  const dirs = new Set<string>();
+  const normalDir = dirPath.replace(/\\/g, "/");
+
+  for (const fullPath of Object.keys(VIRTUAL_FILES)) {
+    const normalFull = fullPath.replace(/\\/g, "/");
+    if (!normalFull.startsWith(normalDir + "/")) continue;
+    const rest = normalFull.slice(normalDir.length + 1);
+    const firstSegment = rest.split("/")[0];
+    if (rest.includes("/")) {
+      dirs.add(firstSegment);
+    } else {
+      names.add(firstSegment);
+    }
+  }
+
+  const entries: { name: string; isDirectory: () => boolean; isFile: () => boolean }[] = [];
+  for (const d of dirs) {
+    entries.push({ name: d, isDirectory: () => true, isFile: () => false });
+  }
+  for (const n of names) {
+    entries.push({ name: n, isDirectory: () => false, isFile: () => true });
+  }
+  return entries;
+}
+
+jest.mock("fs", () => ({
+  readdirSync: (dirPath: string) => virtualReaddirSync(dirPath),
+  existsSync: (filePath: string) => {
+    const normalized = filePath.replace(/\\/g, "/");
+    // Check if it's a file
+    for (const key of Object.keys(VIRTUAL_FILES)) {
+      if (key.replace(/\\/g, "/") === normalized) return true;
+    }
+    // Check if it's a directory (any file starts with this path)
+    for (const key of Object.keys(VIRTUAL_FILES)) {
+      if (key.replace(/\\/g, "/").startsWith(normalized + "/")) return true;
+    }
+    return false;
+  },
+  readFileSync: (filePath: string) => {
+    const normalized = filePath.replace(/\\/g, "/");
+    for (const [key, value] of Object.entries(VIRTUAL_FILES)) {
+      if (key.replace(/\\/g, "/") === normalized) return value;
+    }
+    throw new Error(`ENOENT: no such file or directory, open '${filePath}'`);
+  },
+}));
+
 jest.mock("next/server", () => ({
   NextRequest: class {
     nextUrl: URL;
@@ -49,7 +115,11 @@ describe("GET /api/docs", () => {
     // Should include README.md at root
     expect(data.files.some((f: { name: string }) => f.name === "README.md")).toBe(true);
     // Should include docs directory
-    expect(data.files.some((f: { name: string; type: string }) => f.name === "docs" && f.type === "directory")).toBe(true);
+    expect(
+      data.files.some(
+        (f: { name: string; type: string }) => f.name === "docs" && f.type === "directory",
+      ),
+    ).toBe(true);
   });
 
   it("returns content for root README.md", async () => {
@@ -120,14 +190,13 @@ describe("GET /api/docs", () => {
 
   it("converts mermaid code blocks to mermaid.ink img tags", async () => {
     const { GET } = await import("@/app/api/docs/route");
-    // diagrams.md contains mermaid code blocks
-    const response = await GET(createRequest("path=docs/architecture/diagrams.md") as never);
+    const response = await GET(
+      createRequest("path=docs/architecture/diagrams.md") as never,
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    // Should not contain raw mermaid code blocks
     expect(data.content).not.toContain("```mermaid");
-    // Should contain mermaid.ink image references
     expect(data.content).toContain("https://mermaid.ink/svg/");
   });
 

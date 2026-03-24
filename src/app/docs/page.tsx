@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -130,6 +130,26 @@ function buildSections(files: DocFile[]): NavSection[] {
   return sections;
 }
 
+/** Compute which sections/subsections should be expanded for a given path */
+function getAutoExpanded(sections: NavSection[], path: string): Set<string> {
+  const result = new Set<string>();
+  for (const s of sections) {
+    if (s.items.some((i) => i.path === path)) {
+      result.add(s.id);
+    }
+    if (s.subsections) {
+      for (const sub of s.subsections) {
+        if (sub.items.some((i) => i.path === path)) {
+          result.add(s.id);
+          result.add(sub.id);
+        }
+      }
+    }
+  }
+  if (result.size === 0 && sections.length > 0) result.add(sections[0].id);
+  return result;
+}
+
 function DocNav({
   sections,
   currentPath,
@@ -139,35 +159,34 @@ function DocNav({
   currentPath: string;
   onSelect: (path: string) => void;
 }) {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  // Manual toggle overrides, keyed by path so they reset on navigation
+  const [overrides, setOverrides] = useState<{ path: string; toggled: Set<string> }>({
+    path: currentPath,
+    toggled: new Set(),
+  });
 
-  // Update expanded sections whenever currentPath changes
-  useEffect(() => {
-    const next = new Set<string>();
-    for (const s of sections) {
-      if (s.items.some((i) => i.path === currentPath)) {
-        next.add(s.id);
-      }
-      if (s.subsections) {
-        for (const sub of s.subsections) {
-          if (sub.items.some((i) => i.path === currentPath)) {
-            next.add(s.id);
-            next.add(sub.id);
-          }
-        }
-      }
+  const autoExpanded = useMemo(
+    () => getAutoExpanded(sections, currentPath),
+    [sections, currentPath],
+  );
+
+  // Derive effective expanded set: start from auto, apply manual toggles
+  const expanded = useMemo(() => {
+    if (overrides.path !== currentPath) return autoExpanded;
+    const result = new Set(autoExpanded);
+    for (const id of overrides.toggled) {
+      if (result.has(id)) result.delete(id);
+      else result.add(id);
     }
-    // Default: expand overview if nothing matched
-    if (next.size === 0 && sections.length > 0) next.add(sections[0].id);
-    setExpanded(next);
-  }, [currentPath, sections]);
+    return result;
+  }, [autoExpanded, overrides, currentPath]);
 
   function toggle(id: string) {
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
+    setOverrides((prev) => {
+      const toggled = new Set(prev.path === currentPath ? prev.toggled : []);
+      if (toggled.has(id)) toggled.delete(id);
+      else toggled.add(id);
+      return { path: currentPath, toggled };
     });
   }
 
@@ -515,7 +534,7 @@ export default function DocsPage() {
                         </td>
                       ),
                       img: ({ src, alt }) => {
-                        const isMermaid = src?.includes("mermaid.ink/");
+                        const isMermaid = typeof src === "string" && src.includes("mermaid.ink/");
                         if (isMermaid) {
                           return (
                             <div className="bg-sunny-bg border border-sunny-surface-light rounded-md p-4 my-3 overflow-x-auto">

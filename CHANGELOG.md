@@ -203,6 +203,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refactor documentation navigation section expansion logic in `src/app/docs/page.tsx` to use `getAutoExpanded` for automatic expansion and `overrides` state for manual toggles, improving navigation state management (resolves #84).
+- Update imports in `src/app/docs/page.tsx` to include `useMemo` for enhanced performance of documentation page components (resolves #84).
+- Refactor `tests/api/docs.test.ts` to use a virtual filesystem (`VIRTUAL_FILES` and `virtualReaddirSync`) for more robust and isolated testing of the documentation API.
+- Remove outdated assertions related to mermaid code block rendering from `tests/api/docs.test.ts` following changes in markdown processing.
 - Update `src/components/ShipWheel.tsx` to replace the "The One Piece" navigation link with a "Docs" link.
 - Simplify display logic in `src/components/ShipWheel.tsx` by removing special rendering for "The One Piece" link.
 - Update `KNOWN_ROUTES` in `src/components/ShipWheel.tsx` to include `/docs` and remove `/the-one-piece`.
