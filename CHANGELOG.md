@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `.github/dependabot.yml` to configure Dependabot for automated dependency updates.
+- Add `.github/workflows/ci.yml` to implement Continuous Integration checks using GitHub Actions.
+- Add `.github/workflows/deploy.yml` to configure GitHub Actions for application deployment.
+- Add `.github/workflows/release.yml` to set up GitHub Actions for automated release management.
+- Add `vercel.json` to configure Vercel deployment settings.
 - Add `securityHeaders` constant to `next.config.ts` to define various HTTP security headers.
 - Add `poweredByHeader: false` configuration to `next.config.ts` to disable the `X-Powered-By` header.
 - Add `headers()` asynchronous function to `next.config.ts` to apply defined security headers to all routes.
