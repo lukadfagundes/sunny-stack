@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `securityHeaders` constant to `next.config.ts` to define various HTTP security headers.
+- Add `poweredByHeader: false` configuration to `next.config.ts` to disable the `X-Powered-By` header.
+- Add `headers()` asynchronous function to `next.config.ts` to apply defined security headers to all routes.
+- Add input validation to `src/app/api/instagram/comments/route.ts` to ensure `postId` is in a valid format before making an API request.
+- Add `MAX_CACHE_SIZE` constant and cache eviction logic to `src/app/api/instagram/comments/route.ts` to limit the size of the comment cache.
+- Add `Authorization` header to API requests in `src/app/api/instagram/comments/route.ts` to send the access token securely.
+- Add input validation to `src/app/api/steam/achievements/route.ts` to ensure `appid` is numeric before making an API request.
+- Add `sandbox` attribute with `allow-scripts allow-same-origin allow-popups` values to `iframe` in `src/components/about/MusicPlayer.tsx` for enhanced security.
+- Add `sandbox` attribute with `allow-scripts allow-same-origin allow-popups` values to `iframe` in `src/components/about/VideoCard.tsx` for enhanced security.
+- Add `src/middleware.ts` to implement security and request handling logic (ref #84).
+- Add `tests/middleware.test.ts` for testing the new middleware (ref #84).
+- Add test suite to `tests/api/instagram-comments.test.ts` to verify the API returns an empty array for invalid `postId` formats.
+- Add test to `tests/api/instagram-comments.test.ts` to verify the Instagram access token is sent via the `Authorization` header instead of the URL.
+- Add test to `tests/api/instagram.test.ts` to verify the Instagram access token is sent via the `Authorization` header instead of the URL.
+- Add test suite to `tests/api/steam.test.ts` to verify the API returns null when `appid` is not numeric or contains special characters.
+- Add test to `tests/components/MusicPlayer.test.tsx` to verify the `iframe` element has the correct `sandbox` attribute.
+- Add test to `tests/components/VideoCard.test.tsx` to verify the `iframe` element has the correct `sandbox` attribute.
 - Add `src/components/docs/DocNav.tsx` component to manage documentation navigation and file loading (ref #84).
 - Add `src/components/docs/MarkdownRenderer.tsx` component to handle rendering of markdown content (ref #84).
 - Add new test file `tests/components/docs/MarkdownRenderer.test.tsx` for the `MarkdownRenderer` component (ref #84).
@@ -211,6 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `src/app/api/instagram/comments/route.ts` to use `Authorization` header for Instagram API requests, removing `access_token` from the URL.
+- Update `src/app/api/instagram/route.ts` to use `Authorization` header for Instagram API requests, removing `access_token` from the URL.
 - Refactor `src/app/docs/page.tsx` to use `DocNav` and `MarkdownRenderer` components for improved modularity and maintainability (ref #84).
 - Remove `console.log` from `ShipWheel.tsx` center hub click handler.
 - Update `tests/components/ShipWheel.test.tsx` to verify `ShipWheel` center hub click handler fires without error instead of checking `console.log`.

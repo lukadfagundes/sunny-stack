@@ -38,9 +38,9 @@ export async function GET() {
 
   try {
     const fields = "id,media_type,media_url,caption,timestamp,permalink,like_count,comments_count";
-    const url = `https://graph.instagram.com/me/media?fields=${fields}&access_token=${token}&limit=50`;
+    const url = `https://graph.instagram.com/me/media?fields=${fields}&limit=50`;
 
-    const response = await fetch(url, { cache: "no-store" });
+    const response = await fetch(url, { cache: "no-store", headers: { Authorization: `Bearer ${token}` } });
 
     if (!response.ok) {
       const error = await response.text();

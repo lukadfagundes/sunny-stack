@@ -42,6 +42,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(null, { status: 200 });
   }
 
+  if (!/^\d+$/.test(appid)) {
+    return NextResponse.json(null, { status: 200 });
+  }
+
   try {
     const playerUrl = `https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?key=${apiKey}&steamid=${steamId}&appid=${appid}`;
     const schemaUrl = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=${apiKey}&appid=${appid}`;

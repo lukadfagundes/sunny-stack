@@ -101,6 +101,14 @@ describe("GET /api/instagram", () => {
     expect(data[1].caption).toBe("");
     expect(data[1].likeCount).toBe(0);
     expect(data[1].commentsCount).toBe(0);
+
+    // Verify token is sent via Authorization header, not in URL
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.not.stringContaining("access_token="),
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: "Bearer test-token" }),
+      })
+    );
   });
 
   it("returns empty array on API error", async () => {

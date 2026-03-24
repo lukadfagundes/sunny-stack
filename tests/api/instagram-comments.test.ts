@@ -72,6 +72,21 @@ describe("GET /api/instagram/comments", () => {
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
+  it("returns empty array when postId has invalid format", async () => {
+    process.env.INSTAGRAM_ACCESS_TOKEN = "test-token";
+
+    const { NextRequest } = await import("next/server");
+    const { GET } = await import("@/app/api/instagram/comments/route");
+    const request = new NextRequest(
+      "http://localhost/api/instagram/comments?postId=abc-invalid"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(data).toEqual([]);
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
   it("fetches and transforms comments with replies", async () => {
     process.env.INSTAGRAM_ACCESS_TOKEN = "test-token";
 
@@ -126,6 +141,14 @@ describe("GET /api/instagram/comments", () => {
     expect(data[0].replies[0].username).toBe("strawhatluka");
     expect(data[1].id).toBe("c2");
     expect(data[1].replies).toHaveLength(0);
+
+    // Verify token is sent via Authorization header, not in URL
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.not.stringContaining("access_token="),
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: "Bearer test-token" }),
+      })
+    );
   });
 
   it("returns empty array on API error", async () => {
@@ -163,5 +186,35 @@ describe("GET /api/instagram/comments", () => {
 
     expect(data).toEqual([]);
     expect(response.status).toBe(200);
+  });
+
+  it("still works correctly with cache eviction logic", async () => {
+    process.env.INSTAGRAM_ACCESS_TOKEN = "test-token";
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: [
+          {
+            id: "c1",
+            text: "Test comment",
+            username: "testuser",
+            like_count: 0,
+            timestamp: "2026-03-20T12:00:00+0000",
+          },
+        ],
+      }),
+    });
+
+    const { NextRequest } = await import("next/server");
+    const { GET } = await import("@/app/api/instagram/comments/route");
+    const request = new NextRequest(
+      "http://localhost/api/instagram/comments?postId=99999"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(data).toHaveLength(1);
+    expect(data[0].text).toBe("Test comment");
   });
 });

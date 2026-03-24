@@ -39,11 +39,16 @@ const commentCache = new Map<
   { data: InstagramComment[]; timestamp: number }
 >();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const MAX_CACHE_SIZE = 100;
 
 export async function GET(request: NextRequest) {
   const postId = request.nextUrl.searchParams.get("postId");
 
   if (!postId) {
+    return NextResponse.json([], { status: 200 });
+  }
+
+  if (!/^\d+(_\d+)?$/.test(postId)) {
     return NextResponse.json([], { status: 200 });
   }
 
@@ -60,9 +65,9 @@ export async function GET(request: NextRequest) {
   try {
     const fields =
       "text,username,like_count,timestamp,replies{text,username,like_count,timestamp}";
-    const url = `https://graph.instagram.com/${postId}/comments?fields=${fields}&access_token=${token}`;
+    const url = `https://graph.instagram.com/${postId}/comments?fields=${fields}`;
 
-    const response = await fetch(url, { next: { revalidate: 300 } });
+    const response = await fetch(url, { next: { revalidate: 300 }, headers: { Authorization: `Bearer ${token}` } });
 
     if (!response.ok) {
       console.error(
@@ -90,6 +95,10 @@ export async function GET(request: NextRequest) {
       })
     );
 
+    if (commentCache.size >= MAX_CACHE_SIZE) {
+      const oldest = commentCache.keys().next().value;
+      if (oldest) commentCache.delete(oldest);
+    }
     commentCache.set(postId, { data: comments, timestamp: Date.now() });
     return NextResponse.json(comments);
   } catch (error) {

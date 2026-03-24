@@ -44,6 +44,10 @@ describe("MusicPlayer", () => {
     const iframe = document.querySelector("iframe");
     expect(iframe?.src).toContain("https://open.spotify.com/embed/track/track123");
     expect(iframe?.src).toContain("theme=0");
+    expect(iframe).toHaveAttribute(
+      "sandbox",
+      "allow-scripts allow-same-origin allow-popups"
+    );
   });
 
   it("renders 'Check out more music' button that calls onViewMusic", async () => {

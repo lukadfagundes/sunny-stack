@@ -29,6 +29,10 @@ describe("VideoCard", () => {
       "https://www.youtube.com/embed/vid1"
     );
     expect(iframe).toHaveAttribute("allowfullscreen");
+    expect(iframe).toHaveAttribute(
+      "sandbox",
+      "allow-scripts allow-same-origin allow-popups"
+    );
   });
 
   it("displays video title", () => {

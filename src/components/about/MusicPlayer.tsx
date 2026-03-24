@@ -78,6 +78,7 @@ export default function MusicPlayer({ onViewMusic }: MusicPlayerProps) {
             height="80"
             allow="encrypted-media"
             loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-popups"
             title={`Play ${track.name} by ${track.artist}`}
             style={{ border: "none", display: "block" }}
           />

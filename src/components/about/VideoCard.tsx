@@ -26,6 +26,7 @@ export default function VideoCard({ video }: VideoCardProps) {
           title={video.title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
+          sandbox="allow-scripts allow-same-origin allow-popups"
           className="absolute inset-0 w-full h-full"
           style={{ border: "none" }}
         />

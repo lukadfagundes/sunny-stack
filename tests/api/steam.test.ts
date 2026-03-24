@@ -246,6 +246,30 @@ describe("GET /api/steam/achievements", () => {
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
+  it("returns null when appid is not numeric", async () => {
+    process.env.STEAM_API_KEY = "TESTAPIKEY";
+    process.env.STEAM_ID = "76561198012345678";
+
+    const { GET } = await import("@/app/api/steam/achievements/route");
+    const response = await GET(createRequest("abc") as never);
+    const data = await response.json();
+
+    expect(data).toBeNull();
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it("returns null when appid contains special characters", async () => {
+    process.env.STEAM_API_KEY = "TESTAPIKEY";
+    process.env.STEAM_ID = "76561198012345678";
+
+    const { GET } = await import("@/app/api/steam/achievements/route");
+    const response = await GET(createRequest("730;drop") as never);
+    const data = await response.json();
+
+    expect(data).toBeNull();
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
   it("returns earned achievements with metadata from both APIs", async () => {
     process.env.STEAM_API_KEY = "TESTAPIKEY";
     process.env.STEAM_ID = "76561198012345678";
