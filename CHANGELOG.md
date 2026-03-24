@@ -9,6 +9,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `README.md` for project overview and setup for #84.
+- Add `docs/api/README.md` to document API structure for #84.
+- Add `docs/api/endpoint-map.md` to provide a map of API endpoints for #84.
+- Add `docs/architecture/component-hierarchy.md` to describe the application's component hierarchy for #84.
+- Add `docs/architecture/mvc-flow.md` to explain the Model-View-Controller flow for #84.
+- Add `docs/frontend/components/404/ZoroGame.md` to document the 404 page Zoro game component for #84.
+- Add `docs/frontend/components/404/game-logic.md` to document the 404 page game logic for #84.
+- Add `docs/frontend/components/about/BioSections.md` to document the About page bio sections component for #84.
+- Add `docs/frontend/components/about/BlogEntry.md` to document the About page blog entry component for #84.
+- Add `docs/frontend/components/about/ContactTable.md` to document the About page contact table component for #84.
+- Add `docs/frontend/components/about/DetailsBox.md` to document the About page details box component for #84.
+- Add `docs/frontend/components/about/GameStats.md` to document the About page game statistics component for #84.
+- Add `docs/frontend/components/about/InterestsTable.md` to document the About page interests table component for #84.
+- Add `docs/frontend/components/about/MusicGallery.md` to document the About page music gallery component for #84.
+- Add `docs/frontend/components/about/MusicPlayer.md` to document the About page music player component for #84.
+- Add `docs/frontend/components/about/NetworkBanner.md` to document the About page network banner component for #84.
+- Add `docs/frontend/components/about/PhotoGallery.md` to document the About page photo gallery component for #84.
+- Add `docs/frontend/components/about/PostCard.md` to document the About page post card component for #84.
+- Add `docs/frontend/components/about/ProfileCard.md` to document the About page profile card component for #84.
+- Add `docs/frontend/components/about/SectionHeader.md` to document the About page section header component for #84.
+- Add `docs/frontend/components/about/TopEight.md` to document the About page Top Eight component for #84.
+- Add `docs/frontend/components/about/VideoCard.md` to document the About page video card component for #84.
+- Add `docs/frontend/components/about/VideoGallery.md` to document the About page video gallery component for #84.
+- Add `docs/frontend/components/docs/DocNav.md` to document the documentation navigation component for #84.
+- Add `docs/frontend/components/docs/MarkdownRenderer.md` to document the markdown renderer component for #84.
+- Add `docs/frontend/components/landing/overview.md` to document the landing page overview for #84.
+- Add `docs/frontend/components/navigation/ShipWheel.md` to document the navigation ship wheel component for #84.
+- Add `docs/frontend/components/navigation/VoyageSail.md` to document the navigation voyage sail component for #84.
+- Add `docs/frontend/pages/about.md` to document the About page for #84.
+- Add `docs/frontend/pages/docs-page.md` to document the documentation page for #84.
+- Add `docs/frontend/pages/home.md` to document the Home page for #84.
+- Add `docs/frontend/pages/not-found.md` to document the Not Found page for #84.
+- Add `docs/frontend/pages/portfolio.md` to document the Portfolio page for #84.
+- Add `docs/guides/api-development.md` to provide a guide for API development for #84.
+- Add `docs/guides/deployment.md` to provide a guide for deployment for #84.
+- Add `docs/guides/getting-started.md` to provide a getting started guide for #84.
+- Add `docs/services/activity-route.md` to document the activity route service for #84.
+- Add `docs/services/bluesky-route.md` to document the Bluesky route service for #84.
+- Add `docs/services/data-personal.md` to document personal data handling for #84.
+- Add `docs/services/data-projects.md` to document project data handling for #84.
+- Add `docs/services/data-types.md` to document data types for #84.
+- Add `docs/services/docs-route.md` to document the documentation route service for #84.
+- Add `docs/services/github-lib.md` to document the GitHub library service for #84.
+- Add `docs/services/github-route.md` to document the GitHub route service for #84.
+- Add `docs/services/instagram-route.md` to document the Instagram route service for #84.
+- Add `docs/services/middleware.md` to document the middleware service for #84.
+- Add `docs/services/spotify-token.md` to document the Spotify token service for #84.
+- Add `docs/services/spotify-top-track-route.md` to document the Spotify top track route service for #84.
+- Add `docs/services/spotify-wrapped-route.md` to document the Spotify Wrapped route service for #84.
+- Add `docs/services/steam-achievements-route.md` to document the Steam achievements route service for #84.
+- Add `docs/services/steam-route.md` to document the Steam route service for #84.
+- Add `docs/services/youtube-route.md` to document the YouTube route service for #84.
 - Add `.github/workflows/quality.yml` to implement code quality checks for #84.
 - Add `LICENSE` file to specify the `CC-BY-NC-4.0` license.
 - Add `license` property to `package.json` to specify the `CC-BY-NC-4.0` license.
@@ -343,6 +395,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `src/app/api/instagram/comments/route.ts` API endpoint for #84.
+- Remove `src/components/about/CommentThread.tsx` component for #84.
+- Remove `tests/api/instagram-comments.test.ts` API test for #84.
+- Remove `tests/components/CommentThread.test.tsx` component test for #84.
 - Remove `social-media-api-guide.md` file.
 - Remove `CommentsWall.tsx` component file (resolves #84).
 - Remove `MySpaceUrl.tsx` component file (resolves #84).
