@@ -379,7 +379,7 @@ Returns achievement data for a specific Steam game, including earned achievement
 
 #### `GET /api/docs?list=true`
 
-Returns the documentation file tree, including the root `README.md` and all markdown files in the `docs/` directory.
+Returns the documentation file tree, including root-level files (`README.md`, `CHANGELOG.md`) and all markdown files in the `docs/` directory.
 
 **Parameters:**
 
@@ -393,6 +393,7 @@ Returns the documentation file tree, including the root `README.md` and all mark
 {
   "files": [
     { "name": "README.md", "path": "README.md", "type": "file" },
+    { "name": "CHANGELOG.md", "path": "CHANGELOG.md", "type": "file" },
     {
       "name": "docs",
       "path": "docs",
@@ -416,7 +417,7 @@ Returns the documentation file tree, including the root `README.md` and all mark
 
 #### `GET /api/docs?path={filepath}`
 
-Returns the content of a specific markdown file. Mermaid code blocks are preprocessed into SVG image URLs via mermaid.ink.
+Returns the content of a specific markdown file. Mermaid code blocks are preprocessed into `<mermaid-diagram>` HTML markers for client-side rendering.
 
 **Parameters:**
 
@@ -426,7 +427,7 @@ Returns the content of a specific markdown file. Mermaid code blocks are preproc
 
 **Validation:**
 - Path must not contain `..` (path traversal blocked)
-- Path must be `README.md` or start with `docs/`
+- Path must be a root-level file (`README.md`, `CHANGELOG.md`) or start with `docs/`
 - Path must end with `.md`
 
 **Response:** `{ content: string }`

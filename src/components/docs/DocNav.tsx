@@ -15,12 +15,25 @@ import {
 } from "lucide-react";
 import type { DocFile } from "@/app/api/docs/route";
 
+export interface NavSubgroup {
+  id: string;
+  label: string;
+  items: { path: string; label: string }[];
+}
+
+export interface NavSubsection {
+  id: string;
+  label: string;
+  items: { path: string; label: string }[];
+  subgroups?: NavSubgroup[];
+}
+
 export interface NavSection {
   id: string;
   label: string;
   icon: React.ReactNode;
   items: { path: string; label: string }[];
-  subsections?: { id: string; label: string; items: { path: string; label: string }[] }[];
+  subsections?: NavSubsection[];
 }
 
 /** Convert a filename like "getting-started.md" to "Getting Started" */
@@ -36,14 +49,14 @@ export function formatName(filename: string): string {
 export function buildSections(files: DocFile[]): NavSection[] {
   const sections: NavSection[] = [];
 
-  // Root README -> "Overview" section
-  const rootReadme = files.find((f) => f.type === "file" && f.name === "README.md");
-  if (rootReadme) {
+  // Root files -> "Overview" section
+  const rootFiles = files.filter((f) => f.type === "file");
+  if (rootFiles.length > 0) {
     sections.push({
       id: "overview",
       label: "Overview",
       icon: <Home size={16} />,
-      items: [{ path: rootReadme.path, label: "README" }],
+      items: rootFiles.map((f) => ({ path: f.path, label: formatName(f.name) })),
     });
   }
 
@@ -54,7 +67,7 @@ export function buildSections(files: DocFile[]): NavSection[] {
   // Docs hub README
   const docsReadme = docsDir.children.find((f) => f.type === "file" && f.name === "README.md");
   if (docsReadme) {
-    sections[0]?.items.push({ path: docsReadme.path, label: "README" });
+    sections[0]?.items.push({ path: docsReadme.path, label: "Docs Hub" });
   }
 
   const sectionMeta: Record<string, { label: string; icon: React.ReactNode }> = {
@@ -83,17 +96,40 @@ export function buildSections(files: DocFile[]): NavSection[] {
           label: formatName(entry.name),
         });
       } else if (entry.type === "directory" && entry.children) {
+        // Collect direct .md files in this subdirectory
         const subItems = entry.children
           .filter((e) => e.type === "file")
           .map((e) => ({
             path: e.path,
             label: formatName(e.name),
           }));
-        if (subItems.length > 0) {
+
+        // Collect nested subdirectories as subgroups (3rd level)
+        const subgroups: NavSubgroup[] = [];
+        for (const nested of entry.children) {
+          if (nested.type === "directory" && nested.children) {
+            const nestedFiles = nested.children
+              .filter((e) => e.type === "file")
+              .map((e) => ({
+                path: e.path,
+                label: formatName(e.name),
+              }));
+            if (nestedFiles.length > 0) {
+              subgroups.push({
+                id: nested.path,
+                label: formatName(nested.name),
+                items: nestedFiles,
+              });
+            }
+          }
+        }
+
+        if (subItems.length > 0 || subgroups.length > 0) {
           subsections.push({
             id: entry.path,
             label: formatName(entry.name),
             items: subItems,
+            subgroups: subgroups.length > 0 ? subgroups : undefined,
           });
         }
       }
@@ -111,7 +147,7 @@ export function buildSections(files: DocFile[]): NavSection[] {
   return sections;
 }
 
-/** Compute which sections/subsections should be expanded for a given path */
+/** Compute which sections/subsections/subgroups should be expanded for a given path */
 export function getAutoExpanded(sections: NavSection[], path: string): Set<string> {
   const result = new Set<string>();
   for (const s of sections) {
@@ -123,6 +159,15 @@ export function getAutoExpanded(sections: NavSection[], path: string): Set<strin
         if (sub.items.some((i) => i.path === path)) {
           result.add(s.id);
           result.add(sub.id);
+        }
+        if (sub.subgroups) {
+          for (const sg of sub.subgroups) {
+            if (sg.items.some((i) => i.path === path)) {
+              result.add(s.id);
+              result.add(sub.id);
+              result.add(sg.id);
+            }
+          }
         }
       }
     }
@@ -178,7 +223,8 @@ export default function DocNav({
         const sectionActive =
           section.items.some((i) => i.path === currentPath) ||
           section.subsections?.some((sub) =>
-            sub.items.some((i) => i.path === currentPath)
+            sub.items.some((i) => i.path === currentPath) ||
+            sub.subgroups?.some((sg) => sg.items.some((i) => i.path === currentPath))
           );
 
         return (
@@ -221,7 +267,9 @@ export default function DocNav({
 
                 {section.subsections?.map((sub) => {
                   const subOpen = expanded.has(sub.id);
-                  const subActive = sub.items.some((i) => i.path === currentPath);
+                  const subActive =
+                    sub.items.some((i) => i.path === currentPath) ||
+                    sub.subgroups?.some((sg) => sg.items.some((i) => i.path === currentPath));
 
                   return (
                     <div key={sub.id} className="mt-0.5">
@@ -257,6 +305,50 @@ export default function DocNav({
                               <span className="truncate">{item.label}</span>
                             </button>
                           ))}
+
+                          {sub.subgroups?.map((sg) => {
+                            const sgOpen = expanded.has(sg.id);
+                            const sgActive = sg.items.some((i) => i.path === currentPath);
+
+                            return (
+                              <div key={sg.id} className="mt-0.5">
+                                <button
+                                  onClick={() => toggle(sg.id)}
+                                  className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-xs transition-colors ${
+                                    sgActive
+                                      ? "text-sunny-gold font-medium"
+                                      : "text-sunny-cream-muted hover:text-sunny-cream hover:bg-sunny-surface-light/50"
+                                  }`}
+                                >
+                                  {sgOpen ? (
+                                    <ChevronDown size={11} className="flex-shrink-0 opacity-60" />
+                                  ) : (
+                                    <ChevronRight size={11} className="flex-shrink-0 opacity-60" />
+                                  )}
+                                  <span className="truncate">{sg.label}</span>
+                                </button>
+
+                                {sgOpen && (
+                                  <div className="ml-3 border-l border-sunny-surface-light/30 pl-2">
+                                    {sg.items.map((item) => (
+                                      <button
+                                        key={item.path}
+                                        onClick={() => onSelect(item.path)}
+                                        className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-xs transition-colors ${
+                                          currentPath === item.path
+                                            ? "bg-sunny-surface-light text-sunny-gold font-medium"
+                                            : "text-sunny-cream-muted hover:text-sunny-cream hover:bg-sunny-surface-light/50"
+                                        }`}
+                                      >
+                                        <FileText size={11} className="flex-shrink-0 opacity-60" />
+                                        <span className="truncate">{item.label}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>

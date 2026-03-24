@@ -94,16 +94,33 @@ export default function DocsPage() {
               {/* Breadcrumb */}
               <nav className="mb-6 flex items-center gap-1.5 text-xs" aria-label="Breadcrumb">
                 {(() => {
-                  // Build breadcrumb from section/subsection labels
+                  // Build breadcrumb from section/subsection/subgroup labels
                   const crumbs: { label: string; path?: string }[] = [];
                   for (const s of sections) {
                     const inItems = s.items.some((i) => i.path === currentPath);
                     const inSub = s.subsections?.find((sub) =>
                       sub.items.some((i) => i.path === currentPath)
                     );
-                    if (inItems || inSub) {
+                    // Check subgroups (3rd level)
+                    let inSubgroup: { sub: typeof inSub; sg: typeof inSub } | undefined;
+                    if (!inItems && !inSub) {
+                      for (const sub of s.subsections ?? []) {
+                        const sg = sub.subgroups?.find((g) =>
+                          g.items.some((i) => i.path === currentPath)
+                        );
+                        if (sg) {
+                          inSubgroup = { sub, sg };
+                          break;
+                        }
+                      }
+                    }
+                    if (inItems || inSub || inSubgroup) {
                       crumbs.push({ label: s.label });
                       if (inSub) crumbs.push({ label: inSub.label });
+                      if (inSubgroup) {
+                        crumbs.push({ label: inSubgroup.sub!.label });
+                        crumbs.push({ label: inSubgroup.sg!.label });
+                      }
                       // File name
                       const fileName = currentPath.split("/").pop() ?? currentPath;
                       crumbs.push({ label: fileName });

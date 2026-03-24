@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `mermaid` and `rehype-raw` as project dependencies for #84.
+- Add `src/components/docs/MermaidDiagram.tsx` component to render Mermaid diagrams client-side for #84.
+- Add `tests/helpers/__mocks__/mermaid.ts` to mock the `mermaid` library for testing purposes for #84.
+- Add `tests/helpers/__mocks__/rehype-raw.ts` to mock the `rehype-raw` plugin for testing purposes for #84.
+- Add `moduleNameMapper` configurations to `jest.config.ts` for mocking `mermaid` and `rehype-raw` in tests for #84.
+- Document `rehypeRaw` plugin usage in `docs/frontend/components/docs/MarkdownRenderer.md` for #84.
+- Introduce `NavSubgroup` and `NavSubsection` interfaces in `docs/frontend/components/docs/DocNav.md` for clearer documentation of navigation structure for #84.
+- Include `CHANGELOG.md` in the file tree returned by the `GET /api/docs?list=true` endpoint in `docs/services/docs-route.md` for #84.
 - Add `public/Wheel.png` for the new ship wheel image asset for #84.
 - Add `public/favicon.png` for the new application favicon for #84.
 - Add `public/ship.png` for the new ship image asset for #84.
@@ -291,6 +299,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `README.md` to simplify the API credentials note.
+- Update `docs/api/README.md` to reflect `CHANGELOG.md` inclusion in file tree and client-side Mermaid rendering for #84.
+- Update `docs/api/README.md` to reflect path validation now including `CHANGELOG.md` for #84.
+- Update `docs/api/endpoint-map.md` to simplify endpoint labels and change flowchart direction to left-to-right for #84.
+- Update `docs/architecture/component-hierarchy.md` to change flowchart direction to left-to-right for #84.
+- Update `docs/frontend/components/docs/DocNav.md` to describe handling of root-level files and deeply nested directories as subgroups for #84.
+- Update `docs/frontend/components/docs/MarkdownRenderer.md` to describe image `src` sanitization for #84.
+- Update `docs/frontend/components/docs/MarkdownRenderer.md` to describe client-side Mermaid diagram rendering via custom HTML elements for #84.
+- Update `docs/frontend/pages/docs-page.md` to include iteration over subgroups when finding the current document path for #84.
+- Update `docs/services/docs-route.md` to reflect client-side Mermaid rendering via custom HTML markers instead of `mermaid.ink` SVG URLs for #84.
+- Update `docs/services/docs-route.md` to reflect path validation now explicitly allowing `CHANGELOG.md` for #84.
+- Update `package-lock.json` to reflect updated dependencies for #84.
+- Modify `src/app/api/docs/route.ts` to generate `<mermaid-diagram>` custom HTML elements with base64-encoded diagram code instead of `mermaid.ink` SVG URLs for #84.
+- Modify `src/app/api/docs/route.ts` to include `CHANGELOG.md` in the root-level files returned by the file tree endpoint for #84.
+- Modify `src/app/api/docs/route.ts` to explicitly allow `CHANGELOG.md` during path validation for #84.
+- Update `src/app/docs/page.tsx` to account for 3rd-level subgroups when building breadcrumbs for #84.
+- Refactor `src/components/docs/DocNav.tsx` to handle `CHANGELOG.md` as a root-level file and format its name for display for #84.
+- Refactor `src/components/docs/DocNav.tsx` to collect direct markdown files and nested subdirectories as 3rd-level subgroups for #84.
+- Update `src/components/docs/DocNav.tsx` logic for computing expanded sections/subsections to account for 3rd-level subgroups for #84.
+- Update `src/components/docs/MarkdownRenderer.tsx` to import `rehypeRaw` and `MermaidDiagram` components for #84.
+- Implement custom rendering for the `mermaid-diagram` HTML element in `src/components/docs/MarkdownRenderer.tsx`, passing decoded chart data to `MermaidDiagram` for #84.
+- Update `tests/api/docs.test.ts` to assert that Mermaid code blocks are converted to `<mermaid-diagram>` custom HTML elements with `data-chart` attributes for #84.
+- Add test cases in `tests/components/docs/MarkdownRenderer.test.tsx` for rendering the `MermaidDiagram` component from `mermaid-diagram` elements and handling missing `data-chart` attributes for #84.
 - Update `src/app/layout.tsx` to use `/favicon.png` for the application icon for #84.
 - Refactor `src/components/ShipWheel.tsx` to use an `<img>` element with `public/Wheel.png` instead of an SVG for the ship wheel for #84.
 - Adjust `ShipWheel.tsx` `WHEEL_SIZE`, `HUB_RADIUS`, and `LABEL_OFFSET` constants for the new image-based wheel for #84.
@@ -414,6 +445,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove reference to `mermaid.ink` as an external service from `docs/services/docs-route.md` for #84.
+- Remove direct `img` rendering logic for `mermaid.ink` URLs from `src/components/docs/MarkdownRenderer.tsx` for #84.
+- Remove test case for rendering `mermaid.ink` images from `tests/components/docs/MarkdownRenderer.test.tsx` for #84.
 - Remove `src/app/favicon.ico` for #84.
 - Remove `src/app/api/instagram/comments/route.ts` API endpoint for #84.
 - Remove `src/components/about/CommentThread.tsx` component for #84.

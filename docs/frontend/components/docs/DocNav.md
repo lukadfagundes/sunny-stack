@@ -16,6 +16,27 @@
 
 ## Exported Types
 
+### `NavSubgroup`
+
+```typescript
+interface NavSubgroup {
+  id: string;
+  label: string;
+  items: { path: string; label: string }[];
+}
+```
+
+### `NavSubsection`
+
+```typescript
+interface NavSubsection {
+  id: string;
+  label: string;
+  items: { path: string; label: string }[];
+  subgroups?: NavSubgroup[];     // 3rd-level groups (e.g., component categories)
+}
+```
+
 ### `NavSection`
 
 ```typescript
@@ -27,11 +48,7 @@ interface NavSection {
     path: string;
     label: string;
   }[];
-  subsections?: {                // Nested subsection groups
-    id: string;
-    label: string;
-    items: { path: string; label: string }[];
-  }[];
+  subsections?: NavSubsection[]; // Nested subsection groups
 }
 ```
 
@@ -53,9 +70,9 @@ Converts a filename to a human-readable title:
 
 Converts the flat file tree from the docs API into structured `NavSection[]`:
 
-1. **Root README:** If a root `README.md` exists, creates an "Overview" section with a `Home` icon.
+1. **Root files:** All root-level files (`README.md`, `CHANGELOG.md`) are collected into an "Overview" section with a `Home` icon.
 2. **Docs directory:** Processes the `docs/` directory's children.
-3. **Docs README:** Appends the docs hub README to the Overview section.
+3. **Docs README:** Appends the docs hub README to the Overview section as "Docs Hub".
 4. **Subdirectories:** Each subdirectory becomes a section. Known directories get custom labels and icons:
 
 | Directory | Label | Icon |
@@ -69,12 +86,13 @@ Converts the flat file tree from the docs API into structured `NavSection[]`:
 
 5. **Files in subdirectories** become section items.
 6. **Nested directories** become subsections with their own items.
+7. **Deeply nested directories** (3rd level, e.g., `docs/frontend/components/about/`) become subgroups within their parent subsection, each with its own collapsible group of items.
 
 ### `getAutoExpanded(sections: NavSection[], path: string): Set<string>`
 
-Computes which section/subsection IDs should be expanded to reveal the current document path:
-1. Iterates all sections and their subsections.
-2. Adds section IDs (and subsection IDs) that contain an item matching the given path.
+Computes which section/subsection/subgroup IDs should be expanded to reveal the current document path:
+1. Iterates all sections, their subsections, and their subgroups.
+2. Adds section IDs, subsection IDs, and subgroup IDs that contain an item matching the given path.
 3. If no matches found, defaults to expanding the first section.
 
 ## State Management
@@ -94,7 +112,7 @@ Computes which section/subsection IDs should be expanded to reveal the current d
 
 | Handler | Element | Description |
 |---------|---------|-------------|
-| `toggle(id)` | Section header buttons, subsection header buttons | XOR-toggles the given section ID in the overrides set. Resets overrides if navigation has changed since last toggle. |
+| `toggle(id)` | Section, subsection, and subgroup header buttons | XOR-toggles the given ID in the overrides set. Resets overrides if navigation has changed since last toggle. |
 | `onSelect(path)` | Document item buttons | Calls the `onSelect` prop with the file path. |
 
 ## Render Structure
@@ -115,6 +133,12 @@ Computes which section/subsection IDs should be expanded to reveal the current d
             |-- If expanded:
                 |-- Deeper border-left indented container
                 |-- File items (smaller text, FileText icon + label)
+                |
+                |-- For each subgroup (3rd level):
+                    |-- Subgroup header button (chevron + label, text-xs)
+                    |-- If expanded:
+                        |-- Deepest border-left indented container
+                        |-- File items (text-xs, smallest FileText icon)
 ```
 
 ## Child Components

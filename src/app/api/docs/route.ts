@@ -38,17 +38,13 @@ function buildTree(dirPath: string, relativeTo: string): DocFile[] {
   return result;
 }
 
-/** Replace ```mermaid code blocks with img tags pointing to mermaid.ink */
+/** Replace ```mermaid code blocks with custom HTML elements for client-side rendering */
 function preprocessMermaid(markdown: string): string {
   return markdown.replace(
     /```mermaid\n([\s\S]*?)```/g,
     (_, diagram: string) => {
-      const payload = JSON.stringify({
-        code: diagram.trim(),
-        mermaid: { theme: "dark" },
-      });
-      const encoded = Buffer.from(payload).toString("base64url");
-      return `![Diagram](https://mermaid.ink/svg/${encoded})`;
+      const encoded = Buffer.from(diagram.trim()).toString("base64");
+      return `<mermaid-diagram data-chart="${encoded}"></mermaid-diagram>`;
     }
   );
 }
@@ -64,10 +60,12 @@ export async function GET(request: NextRequest) {
     const docsDir = path.join(projectRoot, "docs");
     const tree: DocFile[] = [];
 
-    // Add root README.md
-    const readmePath = path.join(projectRoot, "README.md");
-    if (fs.existsSync(readmePath)) {
-      tree.push({ name: "README.md", path: "README.md", type: "file" });
+    // Add root-level files
+    for (const rootFile of ["README.md", "CHANGELOG.md"]) {
+      const filePath = path.join(projectRoot, rootFile);
+      if (fs.existsSync(filePath)) {
+        tree.push({ name: rootFile, path: rootFile, type: "file" });
+      }
     }
 
     // Add docs directory
@@ -96,11 +94,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Invalid path" }, { status: 400 });
   }
 
-  // Only allow README.md or files within docs/
-  const isRootReadme = filePath === "README.md";
+  // Only allow root-level files or files within docs/
+  const isRootFile = filePath === "README.md" || filePath === "CHANGELOG.md";
   const isDocsFile = filePath.startsWith("docs/");
 
-  if (!isRootReadme && !isDocsFile) {
+  if (!isRootFile && !isDocsFile) {
     return NextResponse.json({ error: "Invalid path" }, { status: 400 });
   }
 

@@ -8,6 +8,10 @@ const config: Config = {
   testMatch: ["<rootDir>/tests/**/*.test.{ts,tsx}"],
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
   reporters: [["default", { summaryThreshold: 0 }]],
+  moduleNameMapper: {
+    "^mermaid$": "<rootDir>/tests/helpers/__mocks__/mermaid.ts",
+    "^rehype-raw$": "<rootDir>/tests/helpers/__mocks__/rehype-raw.ts",
+  },
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
     "!src/**/types.ts",

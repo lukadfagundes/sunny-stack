@@ -42,7 +42,7 @@ npm ci
 # Copy environment file
 cp .env.example .env.local
 
-# Fill in your API credentials in .env.local (all optional - app works without them)
+# Fill in your API credentials in .env.local
 
 # Start development server
 npm run dev

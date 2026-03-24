@@ -14,13 +14,13 @@ Serves project documentation with two modes: a file tree listing for sidebar nav
 
 `GET /api/docs?list=true`
 
-Returns a recursive tree of all `.md` files in the `docs/` directory plus the root `README.md`.
+Returns a recursive tree of all `.md` files in the `docs/` directory plus root-level files (`README.md`, `CHANGELOG.md`).
 
 ### Mode 2: File Content
 
 `GET /api/docs?path={filePath}`
 
-Returns the content of a specific markdown file with Mermaid diagrams converted to SVG image URLs.
+Returns the content of a specific markdown file with Mermaid code blocks converted to custom HTML markers for client-side rendering.
 
 ## Authentication
 
@@ -52,6 +52,7 @@ interface DocFile {
 {
   "files": [
     { "name": "README.md", "path": "README.md", "type": "file" },
+    { "name": "CHANGELOG.md", "path": "CHANGELOG.md", "type": "file" },
     {
       "name": "docs",
       "path": "docs",
@@ -80,19 +81,20 @@ Recursive directory scanner that:
 
 ### `preprocessMermaid(markdown: string): string`
 
-Converts fenced Mermaid code blocks into mermaid.ink SVG image tags:
+Converts fenced Mermaid code blocks into custom HTML elements for client-side rendering:
 
-1. Matches fenced mermaid code blocks via regex
-2. Creates a JSON payload with the diagram code and dark theme configuration
-3. Base64url-encodes the payload
-4. Replaces the code block with `![Diagram](https://mermaid.ink/svg/{encoded})`
+1. Matches fenced mermaid code blocks via regex (`` ```mermaid ... ``` ``)
+2. Base64-encodes the trimmed diagram code
+3. Replaces the code block with `<mermaid-diagram data-chart="{base64}"></mermaid-diagram>`
+
+The `MarkdownRenderer` component detects these custom elements (via `rehype-raw`) and renders them client-side using the `MermaidDiagram` component, which calls `mermaid.render()` in the browser. This avoids font mismatch issues that occurred with server-side rendering via external services.
 
 ### Security Protections
 
 Four layers of path validation:
 
 1. **Path traversal block:** Rejects any path containing `".."`
-2. **Directory restriction:** Only allows `README.md` (exact match) or paths starting with `docs/`
+2. **Directory restriction:** Only allows root-level files (`README.md`, `CHANGELOG.md`) or paths starting with `docs/`
 3. **File type restriction:** Only allows `.md` file extensions
 4. **Resolution check:** Verifies the resolved absolute path starts with the project root via `path.resolve()`
 
@@ -111,7 +113,7 @@ Four layers of path validation:
 
 - **Node.js:** `fs` (readFileSync, readdirSync, existsSync), `path` (join, relative, resolve)
 - **Next.js:** `NextRequest`, `NextResponse` from `next/server`
-- **External Service:** `mermaid.ink` (for Mermaid diagram rendering via URL)
+- **Client-side:** Mermaid diagrams are rendered in the browser by the `MermaidDiagram` component (no external service dependency)
 
 ## Usage
 

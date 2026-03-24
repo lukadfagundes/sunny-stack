@@ -5,7 +5,7 @@ Visual map of all 10 API endpoints across 8 resource groups in the sunny-stack p
 ## Endpoint Hierarchy
 
 ```mermaid
-flowchart TD
+flowchart LR
     API["/api"]
 
     API --> Bluesky["Bluesky"]
@@ -17,24 +17,17 @@ flowchart TD
     API --> Docs["Docs"]
     API --> Instagram["Instagram"]
 
-    Bluesky --> BS1["GET /api/bluesky<br/>Latest Bluesky post"]
-
-    YouTube --> YT1["GET /api/youtube<br/>5 most recent videos"]
-
-    GitHub --> GH1["GET /api/github<br/>Profile card data"]
-
-    Activity --> AC1["GET /api/activity<br/>Cross-platform activity status"]
-
-    Spotify --> SP1["GET /api/spotify/top-track<br/>Current top track"]
-    Spotify --> SP2["GET /api/spotify/wrapped<br/>Top 5 tracks, artists, genres"]
-
-    Steam --> ST1["GET /api/steam<br/>Top 8 most-played games"]
-    Steam --> ST2["GET /api/steam/achievements<br/>?appid={id}"]
-
-    Docs --> DC1["GET /api/docs?list=true<br/>File tree"]
-    Docs --> DC2["GET /api/docs?path={filepath}<br/>Markdown content"]
-
-    Instagram --> IG1["GET /api/instagram<br/>5 most recent image posts"]
+    Bluesky --> BS1["/api/bluesky"]
+    YouTube --> YT1["/api/youtube"]
+    GitHub --> GH1["/api/github"]
+    Activity --> AC1["/api/activity"]
+    Spotify --> SP1["/api/spotify/top-track"]
+    Spotify --> SP2["/api/spotify/wrapped"]
+    Steam --> ST1["/api/steam"]
+    Steam --> ST2["/api/steam/achievements"]
+    Docs --> DC1["/api/docs?list=true"]
+    Docs --> DC2["/api/docs?path=..."]
+    Instagram --> IG1["/api/instagram"]
 
     style API fill:#1e293b,color:#f8fafc,stroke:#3b82f6,stroke-width:2px
     style Bluesky fill:#0285c7,color:#fff,stroke:#0285c7

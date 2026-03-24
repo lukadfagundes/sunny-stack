@@ -5,7 +5,7 @@ Visual map of all React 19.2.4 components in the sunny-stack portfolio applicati
 ## Full Component Tree
 
 ```mermaid
-flowchart TD
+flowchart LR
     Root["RootLayout"]
 
     Root --> VoyageSail["VoyageSail<br/>(navigation sail)"]

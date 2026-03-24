@@ -188,7 +188,7 @@ describe("GET /api/docs", () => {
     expect(data.error).toBe("File not found");
   });
 
-  it("converts mermaid code blocks to mermaid.ink img tags", async () => {
+  it("converts mermaid code blocks to custom HTML elements for client-side rendering", async () => {
     const { GET } = await import("@/app/api/docs/route");
     const response = await GET(
       createRequest("path=docs/architecture/diagrams.md") as never,
@@ -197,7 +197,8 @@ describe("GET /api/docs", () => {
 
     expect(response.status).toBe(200);
     expect(data.content).not.toContain("```mermaid");
-    expect(data.content).toContain("https://mermaid.ink/svg/");
+    expect(data.content).toContain("<mermaid-diagram");
+    expect(data.content).toContain("data-chart=");
   });
 
   it("file tree contains only .md files", async () => {

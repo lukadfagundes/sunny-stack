@@ -84,19 +84,6 @@ describe("createMarkdownComponents", () => {
 
   // --- Image branches ---
 
-  it("renders mermaid image in container div", () => {
-    const C = getComponents();
-    const { container } = render(
-      React.createElement(C.img, {
-        src: "https://mermaid.ink/img/abc",
-        alt: "diagram",
-      })
-    );
-    const img = container.querySelector("img")!;
-    expect(img).toHaveAttribute("src", "https://mermaid.ink/img/abc");
-    expect(img.parentElement!.className).toContain("overflow-x-auto");
-  });
-
   it("renders normal image inline", () => {
     const C = getComponents();
     const { container } = render(
@@ -165,5 +152,27 @@ describe("createMarkdownComponents", () => {
     );
     const pre = container.querySelector("pre")!;
     expect(pre.style.width).toBe("");
+  });
+
+  // --- Mermaid diagram ---
+
+  it("renders MermaidDiagram for mermaid-diagram element with base64 code", () => {
+    const C = getComponents();
+    const component = C["mermaid-diagram"];
+    const chart = btoa("graph TD\n  A-->B");
+    const { container } = render(
+      React.createElement(component, { "data-chart": chart })
+    );
+    // MermaidDiagram initially shows loading state
+    expect(container.textContent).toContain("Rendering diagram...");
+  });
+
+  it("returns null for mermaid-diagram without data-chart", () => {
+    const C = getComponents();
+    const component = C["mermaid-diagram"];
+    const { container } = render(
+      React.createElement(component, {})
+    );
+    expect(container.innerHTML).toBe("");
   });
 });

@@ -79,8 +79,8 @@ Wrapped in `useCallback` with empty dependency array for stable reference. Close
 ### Breadcrumb Generation
 
 Dynamically generated inline from the navigation sections:
-1. Iterates over all sections and their subsections
-2. Finds the section/subsection containing the current path
+1. Iterates over all sections, their subsections, and subgroups
+2. Finds the section/subsection/subgroup containing the current path
 3. Builds breadcrumb array: `[section label] > [subsection label] > [filename]`
 4. Falls back to just the filename if not found in any section
 5. Last crumb is highlighted in gold; earlier crumbs are muted

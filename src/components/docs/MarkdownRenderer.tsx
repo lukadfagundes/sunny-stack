@@ -2,10 +2,12 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { visit } from "unist-util-visit";
 import type { Root, Code } from "mdast";
+import MermaidDiagram from "./MermaidDiagram";
 
 /** Remark plugin: assign a default lang to fenced code blocks without one.
  *  This ensures the code component always receives a className for block code,
@@ -135,19 +137,6 @@ export function createMarkdownComponents(
     ),
     img: ({ src, alt }: { src?: string | Blob; alt?: string }) => {
       const strSrc = typeof src === "string" ? src : undefined;
-      const isMermaid = typeof strSrc === "string" && strSrc.includes("mermaid.ink/");
-      if (isMermaid) {
-        return (
-          <div className="bg-sunny-bg border border-sunny-surface-light rounded-md p-4 my-3 overflow-x-auto">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={strSrc}
-              alt={alt ?? ""}
-              className="block w-full"
-            />
-          </div>
-        );
-      }
       return (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -237,6 +226,10 @@ export function createMarkdownComponents(
         </pre>
       );
     },
+    "mermaid-diagram": ({ "data-chart": chart }: { "data-chart"?: string }) => {
+      if (!chart) return null;
+      return <MermaidDiagram code={atob(chart)} />;
+    },
   };
 }
 
@@ -255,6 +248,7 @@ export default function MarkdownRenderer({
     <div className="docs-markdown">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkDefaultCodeLang]}
+        rehypePlugins={[rehypeRaw]}
         components={components}
       >
         {content}

@@ -21,6 +21,12 @@
 | `remarkGfm` | `remark-gfm` | Enables GitHub-Flavored Markdown: tables, strikethrough, task lists, autolinks. |
 | `remarkDefaultCodeLang` | Internal | Custom plugin that assigns `"plaintext"` as the default language to fenced code blocks without a language specifier. This ensures block code always receives a `className`, distinguishing it from inline code. |
 
+## Rehype Plugins
+
+| Plugin | Source | Description |
+|--------|--------|-------------|
+| `rehypeRaw` | `rehype-raw` | Parses raw HTML elements in markdown (e.g., `<mermaid-diagram>`) so they can be handled by custom component overrides. |
+
 ## Exported Functions
 
 ### `createMarkdownComponents(currentPath, loadFile)`
@@ -89,14 +95,17 @@ Implements smart link routing with three modes:
 
 ### Images (`img`)
 
-Two rendering modes:
+- Inline-block display, max-width 100%, rounded corners.
+- Blob `src` values are sanitized (converted to undefined).
 
-1. **Mermaid diagrams** (URL contains `mermaid.ink/`):
-   - Wrapped in a bordered container with sunny-bg background.
-   - Full-width image display with overflow scroll.
+### Mermaid Diagrams (`mermaid-diagram`)
 
-2. **Standard images**:
-   - Inline-block display, max-width 100%, rounded corners.
+Custom HTML element handled via `rehype-raw`:
+
+- Reads base64-encoded diagram code from the `data-chart` attribute.
+- Decodes and passes the code to the `MermaidDiagram` client component.
+- `MermaidDiagram` renders diagrams client-side using `mermaid.render()`, which ensures the browser's own fonts are used for both text measurement and display (avoiding truncation issues from server-side rendering).
+- Shows a loading spinner with "Rendering diagram..." text while the diagram is being processed.
 
 ### Code
 
@@ -127,9 +136,11 @@ Three rendering modes based on context:
 |-----------|--------|-------------|
 | `ReactMarkdown` | `react-markdown` | Core markdown rendering engine. |
 | `remarkGfm` | `remark-gfm` | GFM plugin for tables, strikethrough, etc. |
+| `rehypeRaw` | `rehype-raw` | Parses raw HTML in markdown for custom element handling. |
 | `SyntaxHighlighter` (Prism) | `react-syntax-highlighter` | Code syntax highlighting. |
 | `oneDark` | `react-syntax-highlighter/dist/esm/styles/prism` | Dark syntax highlighting theme. |
 | `visit` | `unist-util-visit` | AST traversal utility for the custom remark plugin. |
+| `MermaidDiagram` | `@/components/docs/MermaidDiagram` | Client-side mermaid diagram renderer with loading state. |
 
 ## Styling
 
