@@ -37,10 +37,11 @@ describe("VoyageSail", () => {
     expect(bg.style.background).toContain("linear-gradient");
   });
 
-  it("renders the ship SVG", () => {
+  it("renders the ship image", () => {
     const { container } = render(<VoyageSail />);
-    const shipSvg = container.querySelector("svg[aria-hidden='true']");
-    expect(shipSvg).toBeInTheDocument();
+    const shipImg = container.querySelector("img[aria-hidden='true']");
+    expect(shipImg).toBeInTheDocument();
+    expect(shipImg).toHaveAttribute("src", "/ship.png");
   });
 
   it("renders the horizon glow line", () => {
@@ -63,8 +64,8 @@ describe("VoyageSail", () => {
   it("renders ocean wave SVGs", () => {
     const { container } = render(<VoyageSail />);
     const waveSvgs = container.querySelectorAll("svg[aria-hidden='true']");
-    // Ship SVG + 3 wave SVGs = at least 4
-    expect(waveSvgs.length).toBeGreaterThanOrEqual(4);
+    // 3 wave SVGs (ship is now an img)
+    expect(waveSvgs.length).toBe(3);
   });
 
   it("applies wave-drift animation to wave SVGs", () => {

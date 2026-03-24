@@ -31,7 +31,7 @@ export interface MusicPlayerData {
 export interface ContactLink {
   label: string;
   url: string;
-  type: "instagram" | "twitter" | "bluesky" | "twitch" | "youtube" | "linkedin" | "github" | "email";
+  type: "instagram" | "twitter" | "bluesky" | "youtube" | "github" | "email";
 }
 
 export interface BlogEntry {
@@ -115,9 +115,7 @@ export const contactLinks: ContactLink[] = [
   { label: "Instagram", url: "https://www.instagram.com/strawhatluka/", type: "instagram" },
   { label: "X", url: "https://x.com/strawhatluka", type: "twitter" },
   { label: "Bluesky", url: "https://bsky.app/profile/strawhatluka.bsky.social", type: "bluesky" },
-  { label: "Twitch", url: "https://www.twitch.tv/xxwishkeeperxx", type: "twitch" },
   { label: "YouTube", url: "https://www.youtube.com/@strawhatluka", type: "youtube" },
-  { label: "LinkedIn", url: "https://www.linkedin.com/in/luka-fagundes-54785a102/", type: "linkedin" },
   { label: "GitHub", url: "https://github.com/strawhatluka", type: "github" },
   { label: "Email", url: "mailto:luka@sunny-stack.com", type: "email" },
 ];

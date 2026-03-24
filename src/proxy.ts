@@ -5,7 +5,7 @@ const WINDOW_MS = 60_000;
 const MAX_REQUESTS = 30;
 const MAX_MAP_SIZE = 10_000;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   if (!request.nextUrl.pathname.startsWith("/api/")) {
     return NextResponse.next();
   }

@@ -30,10 +30,11 @@ describe("ShipWheel", () => {
     expect(screen.getByLabelText("Close navigation")).toBeInTheDocument();
   });
 
-  it("renders wheel SVG with aria-hidden", () => {
+  it("renders wheel image with aria-hidden", () => {
     const { container } = render(<ShipWheel />);
-    const svg = container.querySelector("svg[aria-hidden='true']");
-    expect(svg).toBeInTheDocument();
+    const img = container.querySelector("img[aria-hidden='true']");
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute("src", "/wheel.png");
   });
 
   it("renders center hub button", () => {

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `public/Wheel.png` for the new ship wheel image asset for #84.
+- Add `public/favicon.png` for the new application favicon for #84.
+- Add `public/ship.png` for the new ship image asset for #84.
 - Add `README.md` for project overview and setup for #84.
 - Add `docs/api/README.md` to document API structure for #84.
 - Add `docs/api/endpoint-map.md` to provide a map of API endpoints for #84.
@@ -288,6 +291,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `src/app/layout.tsx` to use `/favicon.png` for the application icon for #84.
+- Refactor `src/components/ShipWheel.tsx` to use an `<img>` element with `public/Wheel.png` instead of an SVG for the ship wheel for #84.
+- Adjust `ShipWheel.tsx` `WHEEL_SIZE`, `HUB_RADIUS`, and `LABEL_OFFSET` constants for the new image-based wheel for #84.
+- Modify label positioning in `ShipWheel.tsx` by introducing `LABEL_SHIFT_UP` for better alignment with the new wheel image for #84.
+- Update `src/components/about/ContactTable.tsx` to remove Twitch and LinkedIn social links and their associated styling for #84.
+- Refactor `src/components/landing/VoyageSail.tsx` to use an `<img>` element with `public/ship.png` instead of an SVG for the ship silhouette for #84.
+- Adjust ship `transform` property in `VoyageSail.tsx` for correct horizontal flipping with the new image asset for #84.
+- Encapsulate the ship image within a `div` in `VoyageSail.tsx` to apply `drop-shadow` and `voyage-ship-bob` animation for #84.
+- Remove Twitch and LinkedIn entries from the `SocialLink` array in `src/lib/data/personal.ts` for #84.
+- Update `SocialLinkType` in `src/lib/data/personal.ts` to exclude "twitch" and "linkedin" types for #84.
+- Rename `middleware` function to `proxy` in `src/proxy.ts`.
+- Update `tests/components/ShipWheel.test.tsx` to test for the presence of an `<img>` element with `src="/wheel.png"` instead of an SVG for #84.
+- Update `tests/components/VoyageSail.test.tsx` to test for the presence of an `<img>` element with `src="/ship.png"` instead of an SVG for #84.
+- Adjust wave SVG count assertion in `tests/components/VoyageSail.test.tsx` from 4 to 3 due to the ship now being an image for #84.
+- Update social link count assertion in `tests/components/about.test.tsx` from 8 to 6, reflecting the removal of Twitch and LinkedIn for #84.
+- Update `tests/proxy.test.ts` to import and call the `proxy` function instead of `middleware`, reflecting the rename in `src/proxy.ts`.
 - Update `src/app/api/instagram/comments/route.ts` to use `Authorization` header for Instagram API requests, removing `access_token` from the URL.
 - Update `src/app/api/instagram/route.ts` to use `Authorization` header for Instagram API requests, removing `access_token` from the URL.
 - Refactor `src/app/docs/page.tsx` to use `DocNav` and `MarkdownRenderer` components for improved modularity and maintainability (ref #84).
@@ -395,6 +414,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `src/app/favicon.ico` for #84.
 - Remove `src/app/api/instagram/comments/route.ts` API endpoint for #84.
 - Remove `src/components/about/CommentThread.tsx` component for #84.
 - Remove `tests/api/instagram-comments.test.ts` API test for #84.

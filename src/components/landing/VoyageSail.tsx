@@ -31,24 +31,18 @@ function useReducedMotion() {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
-// ── Ship SVG ──
+// ── Ship Image ──
 
-function ShipSilhouette() {
+function ShipImage() {
   return (
-    <svg
-      width={48}
-      height={32}
-      viewBox="0 0 48 32"
-      fill="none"
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/ship.png"
+      alt=""
       aria-hidden="true"
-      className="w-10 h-7 sm:w-12 sm:h-8"
-    >
-      <path d="M4 24 Q8 28 24 28 Q40 28 44 24 L40 20 H8 Z" fill="#B8860B" />
-      <path d="M8 20 H40 L38 18 H10 Z" fill="#F0B429" />
-      <rect x="22" y="4" width="2" height="16" fill="#6B4226" />
-      <path d="M24 6 L36 16 L24 16 Z" fill="#F5E6D3" opacity="0.85" />
-      <path d="M22 4 L22 1 L16 2.5 Z" fill="#F0B429" />
-    </svg>
+      className="w-[60px] h-[42px] sm:w-[72px] sm:h-[48px] object-contain"
+      draggable={false}
+    />
   );
 }
 
@@ -361,7 +355,7 @@ export default function VoyageSail() {
             filter: "drop-shadow(0 0 8px rgba(240, 180, 41, 0.4))",
           }}
         >
-          <ShipSilhouette />
+          <ShipImage />
         </div>
       ) : (
         <motion.div
@@ -382,19 +376,24 @@ export default function VoyageSail() {
               background:
                 "linear-gradient(90deg, transparent, rgba(240, 180, 41, 0.2))",
               filter: "blur(1px)",
-              transform: facingRight ? "scaleX(1)" : "scaleX(-1)",
+              transform: facingRight ? "scaleX(-1)" : "scaleX(1)",
             }}
           />
-          {/* Ship with bobbing + rocking */}
+          {/* Ship with direction flip + bobbing */}
           <div
             style={{
-              filter: "drop-shadow(0 0 8px rgba(240, 180, 41, 0.4))",
-              transform: facingRight ? "scaleX(1)" : "scaleX(-1)",
+              transform: facingRight ? "scaleX(-1)" : "scaleX(1)",
               transition: "transform 0.3s ease",
-              animation: "voyage-ship-bob 4s ease-in-out infinite",
             }}
           >
-            <ShipSilhouette />
+            <div
+              style={{
+                filter: "drop-shadow(0 0 8px rgba(240, 180, 41, 0.4))",
+                animation: "voyage-ship-bob 4s ease-in-out infinite",
+              }}
+            >
+              <ShipImage />
+            </div>
           </div>
         </motion.div>
       )}

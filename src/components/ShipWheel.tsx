@@ -19,119 +19,36 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Docs", href: "/docs", angle: 270 },
 ];
 
-const WHEEL_SIZE = 80;
-const HUB_RADIUS = 10;
-const RIM_RADIUS = 36;
-const LABEL_OFFSET = 18;
+const WHEEL_SIZE = 110;
+const HUB_RADIUS = 12;
+const LABEL_OFFSET = 5;
 
-function ShipWheelSVG({
-  hovered,
-  currentAngle,
-}: {
-  hovered: boolean;
-  currentAngle: number;
-}) {
-  const center = WHEEL_SIZE / 2;
-
+function ShipWheelImage({ currentAngle }: { currentAngle: number }) {
   return (
-    <motion.svg
-      width={WHEEL_SIZE}
-      height={WHEEL_SIZE}
-      viewBox={`0 0 ${WHEEL_SIZE} ${WHEEL_SIZE}`}
+    <motion.div
       animate={{ rotate: currentAngle }}
       transition={{ type: "spring", stiffness: 60, damping: 15 }}
-      aria-hidden="true"
+      style={{
+        width: WHEEL_SIZE,
+        height: WHEEL_SIZE,
+      }}
     >
-      {/* Outer rim */}
-      <circle
-        cx={center}
-        cy={center}
-        r={RIM_RADIUS}
-        fill="none"
-        stroke={hovered ? "#8B5E3C" : "#6B4226"}
-        strokeWidth={3}
-        className="transition-colors duration-300"
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/wheel.png"
+        alt=""
+        aria-hidden="true"
+        width={WHEEL_SIZE}
+        height={WHEEL_SIZE}
+        className="w-full h-full object-contain"
+        draggable={false}
       />
-
-      {/* Inner rim */}
-      <circle
-        cx={center}
-        cy={center}
-        r={RIM_RADIUS - 6}
-        fill="none"
-        stroke={hovered ? "#6B4226" : "#3D2E1F"}
-        strokeWidth={1}
-        className="transition-colors duration-300"
-      />
-
-      {/* 8 spokes (4 main + 4 secondary) */}
-      {Array.from({ length: 8 }).map((_, i) => {
-        const angle = (i * 45 * Math.PI) / 180;
-        const isMain = i % 2 === 0;
-        const innerR = HUB_RADIUS + 2;
-        const outerR = RIM_RADIUS - 2;
-        const x1 = center + innerR * Math.sin(angle);
-        const y1 = center - innerR * Math.cos(angle);
-        const x2 = center + outerR * Math.sin(angle);
-        const y2 = center - outerR * Math.cos(angle);
-
-        return (
-          <line
-            key={i}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke={isMain ? "#8B5E3C" : "#6B4226"}
-            strokeWidth={isMain ? 2.5 : 1.5}
-            className="transition-colors duration-300"
-          />
-        );
-      })}
-
-      {/* Spoke tip handles (main spokes only) */}
-      {Array.from({ length: 4 }).map((_, i) => {
-        const angle = (i * 90 * Math.PI) / 180;
-        const handleR = RIM_RADIUS + 3;
-        const cx = center + handleR * Math.sin(angle);
-        const cy = center - handleR * Math.cos(angle);
-
-        return (
-          <circle
-            key={i}
-            cx={cx}
-            cy={cy}
-            r={3}
-            fill={hovered ? "#F0B429" : "#B8860B"}
-            className="transition-colors duration-300"
-          />
-        );
-      })}
-
-      {/* Center hub */}
-      <circle
-        cx={center}
-        cy={center}
-        r={HUB_RADIUS}
-        fill={hovered ? "#3D2E1F" : "#2A1F14"}
-        stroke={hovered ? "#8B5E3C" : "#6B4226"}
-        strokeWidth={2}
-        className="transition-colors duration-300"
-      />
-
-      {/* Center dot */}
-      <circle
-        cx={center}
-        cy={center}
-        r={3}
-        fill={hovered ? "#B8860B" : "#6B4226"}
-        className="transition-colors duration-300"
-      />
-    </motion.svg>
+    </motion.div>
   );
 }
 
 // Fixed label positions: top, right, bottom, left of the wheel
+const LABEL_SHIFT_UP = 5;
 const LABEL_POSITIONS: {
   style: React.CSSProperties;
   align: string;
@@ -143,17 +60,17 @@ const LABEL_POSITIONS: {
   },
   {
     // Right
-    style: { left: `${WHEEL_SIZE + LABEL_OFFSET}px`, top: "50%" },
+    style: { left: `${WHEEL_SIZE + LABEL_OFFSET}px`, top: `calc(50% - ${LABEL_SHIFT_UP}px)` },
     align: "-translate-y-1/2",
   },
   {
     // Bottom
-    style: { top: `${WHEEL_SIZE + LABEL_OFFSET}px`, left: "50%" },
+    style: { top: `${WHEEL_SIZE + LABEL_OFFSET - LABEL_SHIFT_UP}px`, left: "50%" },
     align: "-translate-x-1/2",
   },
   {
     // Left
-    style: { right: `${WHEEL_SIZE + LABEL_OFFSET}px`, top: "50%" },
+    style: { right: `${WHEEL_SIZE + LABEL_OFFSET}px`, top: `calc(50% - ${LABEL_SHIFT_UP}px)` },
     align: "-translate-y-1/2",
   },
 ];
@@ -206,7 +123,7 @@ export default function ShipWheel() {
               hovered ? "opacity-100" : "opacity-60"
             }`}
           >
-            <ShipWheelSVG hovered={hovered} currentAngle={currentAngle} />
+            <ShipWheelImage currentAngle={currentAngle} />
           </div>
 
           {/* Center hub clickable area (Zoro easter egg) */}

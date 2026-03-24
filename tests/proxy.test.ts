@@ -30,7 +30,7 @@ function createMockRequest(pathname: string, ip?: string) {
   };
 }
 
-describe("rate limiting middleware", () => {
+describe("rate limiting proxy", () => {
   beforeEach(() => {
     jest.resetModules();
     mockNext.mockClear();
@@ -45,33 +45,33 @@ describe("rate limiting middleware", () => {
   });
 
   it("passes through non-API routes without rate limiting", async () => {
-    const { middleware } = await import("@/middleware");
+    const { proxy } = await import("@/proxy");
     const request = createMockRequest("/about");
 
-    middleware(request as never);
+    proxy(request as never);
 
     expect(mockNext).toHaveBeenCalled();
     expect(mockJson).not.toHaveBeenCalled();
   });
 
   it("allows API requests under the limit", async () => {
-    const { middleware } = await import("@/middleware");
+    const { proxy } = await import("@/proxy");
     const request = createMockRequest("/api/github", "1.2.3.4");
 
-    middleware(request as never);
+    proxy(request as never);
 
     expect(mockNext).toHaveBeenCalled();
     expect(mockJson).not.toHaveBeenCalled();
   });
 
   it("blocks API requests over 30/minute with 429", async () => {
-    const { middleware } = await import("@/middleware");
+    const { proxy } = await import("@/proxy");
 
     for (let i = 0; i < 31; i++) {
       mockNext.mockClear();
       mockJson.mockClear();
       const request = createMockRequest("/api/github", "10.0.0.1");
-      middleware(request as never);
+      proxy(request as never);
     }
 
     expect(mockJson).toHaveBeenCalledWith(
@@ -81,22 +81,22 @@ describe("rate limiting middleware", () => {
   });
 
   it("tracks different IPs independently", async () => {
-    const { middleware } = await import("@/middleware");
+    const { proxy } = await import("@/proxy");
 
     for (let i = 0; i < 31; i++) {
-      middleware(createMockRequest("/api/github", "10.0.0.1") as never);
+      proxy(createMockRequest("/api/github", "10.0.0.1") as never);
     }
 
     mockNext.mockClear();
     mockJson.mockClear();
-    middleware(createMockRequest("/api/github", "10.0.0.2") as never);
+    proxy(createMockRequest("/api/github", "10.0.0.2") as never);
 
     expect(mockNext).toHaveBeenCalled();
     expect(mockJson).not.toHaveBeenCalled();
   });
 
   it("falls back to x-real-ip when x-forwarded-for is missing", async () => {
-    const { middleware } = await import("@/middleware");
+    const { proxy } = await import("@/proxy");
 
     const headers = new Map<string, string>();
     headers.set("x-real-ip", "192.168.1.1");
@@ -106,19 +106,19 @@ describe("rate limiting middleware", () => {
       headers: { get: (key: string) => headers.get(key) ?? null },
     };
 
-    middleware(request as never);
+    proxy(request as never);
     expect(mockNext).toHaveBeenCalled();
   });
 
   it("falls back to unknown when no IP headers present", async () => {
-    const { middleware } = await import("@/middleware");
+    const { proxy } = await import("@/proxy");
 
     const request = {
       nextUrl: { pathname: "/api/test" },
       headers: { get: () => null },
     };
 
-    middleware(request as never);
+    proxy(request as never);
     expect(mockNext).toHaveBeenCalled();
   });
 });

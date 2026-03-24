@@ -3,9 +3,7 @@
 import {
   Instagram,
   CloudSun,
-  Twitch,
   Youtube,
-  Linkedin,
   Github,
   Mail,
 } from "lucide-react";
@@ -27,9 +25,7 @@ const ICON_MAP: Record<
   instagram: Instagram,
   twitter: XIcon,
   bluesky: CloudSun,
-  twitch: Twitch,
   youtube: Youtube,
-  linkedin: Linkedin,
   github: Github,
   email: Mail,
 };
@@ -38,9 +34,7 @@ const COLOR_MAP: Record<string, string> = {
   instagram: "#E1306C",
   twitter: "#FFFFFF",
   bluesky: "#0085FF",
-  twitch: "#9146FF",
   youtube: "#FF0000",
-  linkedin: "#0A66C2",
   github: "#F5E6D3",
   email: "#F0B429",
 };

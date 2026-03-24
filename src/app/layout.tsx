@@ -32,6 +32,7 @@ export const metadata: Metadata = {
   title: "Luka Fagundes — Portfolio",
   description:
     "Full-stack developer portfolio — interactive experience showcasing projects, skills, and personality.",
+  icons: { icon: "/favicon.png" },
 };
 
 export default function RootLayout({

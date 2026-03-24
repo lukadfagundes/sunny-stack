@@ -190,9 +190,9 @@ describe("ProfileCard", () => {
 });
 
 describe("ContactTable", () => {
-  it("renders all 8 social links", () => {
+  it("renders all 6 social links", () => {
     render(<ContactTable />);
-    const labels = ["Instagram", "X", "Bluesky", "Twitch", "YouTube", "LinkedIn", "GitHub", "Email"];
+    const labels = ["Instagram", "X", "Bluesky", "YouTube", "GitHub", "Email"];
     for (const label of labels) {
       expect(screen.getByText(label)).toBeInTheDocument();
     }
