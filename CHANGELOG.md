@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `.github/workflows/quality.yml` to implement code quality checks for #84.
 - Add `LICENSE` file to specify the `CC-BY-NC-4.0` license.
 - Add `license` property to `package.json` to specify the `CC-BY-NC-4.0` license.
 - Add `.github/dependabot.yml` to configure Dependabot for automated dependency updates.
