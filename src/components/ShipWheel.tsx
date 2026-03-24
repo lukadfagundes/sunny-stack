@@ -183,7 +183,7 @@ export default function ShipWheel() {
   });
 
   const handleZoroClick = useCallback(() => {
-    console.log("Zoro!");
+    // Easter egg — center hub click
   }, []);
 
   // Hide the wheel on 404 / unknown routes

@@ -139,6 +139,65 @@ describe("DocsPage", () => {
     });
   });
 
+  it("shows error when initial fetch fails", async () => {
+    mockFetch.mockReset();
+    mockFetch.mockRejectedValue(new Error("Network error"));
+    render(<DocsPage />);
+    await waitFor(() => {
+      expect(screen.getByText("Failed to load file.")).toBeInTheDocument();
+    });
+  });
+
+  it("shows error when file navigation fetch fails", async () => {
+    render(<DocsPage />);
+    const nav = await waitFor(() =>
+      screen.getByRole("navigation", { name: /documentation/i })
+    );
+    // Expand Guides section to reveal setup.md
+    const guidesBtn = Array.from(nav.querySelectorAll("button")).find(
+      (b) => b.textContent?.includes("Guides")
+    );
+    expect(guidesBtn).toBeDefined();
+    fireEvent.click(guidesBtn!);
+    // Find and click the Setup file
+    const setupBtn = await waitFor(() => {
+      const btn = Array.from(nav.querySelectorAll("button")).find(
+        (b) => b.textContent?.includes("Setup")
+      );
+      expect(btn).toBeDefined();
+      return btn!;
+    });
+    mockFetch.mockRejectedValue(new Error("Network error"));
+    fireEvent.click(setupBtn);
+    await waitFor(() => {
+      expect(screen.getByText("Failed to load file.")).toBeInTheDocument();
+    });
+  });
+
+  it("shows fallback breadcrumb when file not in any section", async () => {
+    mockFetch.mockReset();
+    mockFetch.mockImplementation(async (url: string) => {
+      if (url.includes("list=true")) {
+        return { json: async () => ({ files: [] }) };
+      }
+      return { json: async () => ({ content: "# Orphan" }) };
+    });
+    render(<DocsPage />);
+    const breadcrumb = await waitFor(() =>
+      screen.getByRole("navigation", { name: /breadcrumb/i })
+    );
+    // Fallback: just shows filename from currentPath
+    expect(breadcrumb).toHaveTextContent("README.md");
+  });
+
+  it("shows loading state before fetch resolves", () => {
+    mockFetch.mockReset();
+    mockFetch.mockImplementation(() => new Promise(() => {}));
+    render(<DocsPage />);
+    const loadingElements = screen.getAllByText("Loading...");
+    expect(loadingElements.length).toBeGreaterThanOrEqual(1);
+  });
+
   it("expands and collapses a section", async () => {
     render(<DocsPage />);
 

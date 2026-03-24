@@ -363,6 +363,187 @@ describe("BlogEntry", () => {
       expect(screen.getByText("No posts to display.")).toBeInTheDocument();
     });
   });
+
+  it("renders mention facet as profile link", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            text: "Hello @someone there",
+            facets: [
+              {
+                index: { byteStart: 6, byteEnd: 14 },
+                features: [
+                  { $type: "app.bsky.richtext.facet#mention", did: "did:plc:abc123" },
+                ],
+              },
+            ],
+            embed: null,
+            likeCount: 5,
+            replyCount: 1,
+            repostCount: 2,
+            permalink: "https://bsky.app/profile/test/post/def",
+            createdAt: "2026-03-20T12:00:00.000Z",
+          }),
+      })
+    ) as jest.Mock;
+
+    render(<BlogEntry />);
+
+    await waitFor(() => {
+      const mention = screen.getByText("@someone");
+      expect(mention.tagName).toBe("A");
+      expect(mention).toHaveAttribute("href", "https://bsky.app/profile/did:plc:abc123");
+    });
+  });
+
+  it("renders external embed with thumbnail", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            text: "Check this out",
+            facets: [],
+            embed: {
+              type: "external",
+              external: {
+                uri: "https://example.com/article",
+                title: "Cool Article",
+                description: "A description",
+                thumb: "https://example.com/thumb.jpg",
+              },
+            },
+            likeCount: 10,
+            replyCount: 2,
+            repostCount: 3,
+            permalink: "https://bsky.app/profile/test/post/ext1",
+            createdAt: "2026-03-20T12:00:00.000Z",
+          }),
+      })
+    ) as jest.Mock;
+
+    render(<BlogEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Cool Article")).toBeInTheDocument();
+    });
+    expect(screen.getByText("A description")).toBeInTheDocument();
+    const img = screen.getByAltText("Cool Article");
+    expect(img).toBeInTheDocument();
+  });
+
+  it("renders external embed without thumbnail", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            text: "Check this",
+            facets: [],
+            embed: {
+              type: "external",
+              external: {
+                uri: "https://example.com/article",
+                title: "No Thumb Article",
+                description: "A description",
+              },
+            },
+            likeCount: 10,
+            replyCount: 2,
+            repostCount: 3,
+            permalink: "https://bsky.app/profile/test/post/ext2",
+            createdAt: "2026-03-20T12:00:00.000Z",
+          }),
+      })
+    ) as jest.Mock;
+
+    render(<BlogEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByText("No Thumb Article")).toBeInTheDocument();
+    });
+    const embedLink = screen.getByText("No Thumb Article").closest("a");
+    expect(embedLink!.querySelectorAll("img")).toHaveLength(0);
+  });
+
+  it("renders single image embed without grid class", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            text: "A photo",
+            facets: [],
+            embed: {
+              type: "images",
+              images: [
+                { thumb: "https://example.com/img1.jpg", fullsize: "https://example.com/img1-full.jpg", alt: "Image 1" },
+              ],
+            },
+            likeCount: 8,
+            replyCount: 0,
+            repostCount: 1,
+            permalink: "https://bsky.app/profile/test/post/img1",
+            createdAt: "2026-03-20T12:00:00.000Z",
+          }),
+      })
+    ) as jest.Mock;
+
+    render(<BlogEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByAltText("Image 1")).toBeInTheDocument();
+    });
+    const container = screen.getByAltText("Image 1").closest("a")!.parentElement!;
+    expect(container.className).not.toContain("grid");
+  });
+
+  it("renders multiple image embed with grid class", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            text: "Photos",
+            facets: [],
+            embed: {
+              type: "images",
+              images: [
+                { thumb: "https://example.com/img1.jpg", fullsize: "https://example.com/img1-full.jpg", alt: "Image 1" },
+                { thumb: "https://example.com/img2.jpg", fullsize: "https://example.com/img2-full.jpg", alt: "Image 2" },
+              ],
+            },
+            likeCount: 12,
+            replyCount: 1,
+            repostCount: 4,
+            permalink: "https://bsky.app/profile/test/post/img2",
+            createdAt: "2026-03-20T12:00:00.000Z",
+          }),
+      })
+    ) as jest.Mock;
+
+    render(<BlogEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByAltText("Image 1")).toBeInTheDocument();
+    });
+    const container = screen.getByAltText("Image 1").closest("a")!.parentElement!;
+    expect(container.className).toContain("grid-cols-2");
+  });
+
+  it("shows error when response is not ok", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({ ok: false })
+    ) as jest.Mock;
+
+    render(<BlogEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Could not load latest post.")).toBeInTheDocument();
+    });
+  });
 });
 
 describe("BioSections", () => {

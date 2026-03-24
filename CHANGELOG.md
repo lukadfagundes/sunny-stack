@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `src/components/docs/DocNav.tsx` component to manage documentation navigation and file loading (ref #84).
+- Add `src/components/docs/MarkdownRenderer.tsx` component to handle rendering of markdown content (ref #84).
+- Add new test file `tests/components/docs/MarkdownRenderer.test.tsx` for the `MarkdownRenderer` component (ref #84).
+- Add test suite to `tests/components/VoyageSail.test.tsx` to verify `VoyageSail` behavior when `prefers-reduced-motion` is active.
+- Add test to `tests/components/about.test.tsx` to verify rendering of mention facets as profile links in blog entries.
+- Add test to `tests/components/about.test.tsx` to verify rendering of external embeds with thumbnails in blog entries.
+- Add test to `tests/components/docs.test.tsx` to verify error display when initial documentation content fetch fails (ref #84).
+- Add test to `tests/components/docs.test.tsx` to verify error display when documentation file navigation fetch fails (ref #84).
 - Add `react-markdown`, `react-syntax-highlighter`, `remark-gfm` and their corresponding types to `package.json` and `package-lock.json` for markdown rendering.
 - Add new API route `src/app/api/docs/route.ts` to serve documentation content.
 - Add new page `src/app/docs/page.tsx` to display documentation.
@@ -203,6 +211,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refactor `src/app/docs/page.tsx` to use `DocNav` and `MarkdownRenderer` components for improved modularity and maintainability (ref #84).
+- Remove `console.log` from `ShipWheel.tsx` center hub click handler.
+- Update `tests/components/ShipWheel.test.tsx` to verify `ShipWheel` center hub click handler fires without error instead of checking `console.log`.
+- Enhance `tests/components/ZoroGame.test.tsx` to support overriding `ZoroGame` state for more robust testing of game logic.
+- Import `createInitialState` in `tests/components/ZoroGame.test.tsx`.
 - Refactor documentation navigation section expansion logic in `src/app/docs/page.tsx` to use `getAutoExpanded` for automatic expansion and `overrides` state for manual toggles, improving navigation state management (resolves #84).
 - Update imports in `src/app/docs/page.tsx` to include `useMemo` for enhanced performance of documentation page components (resolves #84).
 - Refactor `tests/api/docs.test.ts` to use a virtual filesystem (`VIRTUAL_FILES` and `virtualReaddirSync`) for more robust and isolated testing of the documentation API.

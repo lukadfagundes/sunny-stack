@@ -55,13 +55,10 @@ describe("ShipWheel", () => {
     fireEvent.mouseLeave(desktopNav);
   });
 
-  it("fires center hub click handler", () => {
-    const spy = jest.spyOn(console, "log").mockImplementation();
+  it("fires center hub click handler without error", () => {
     render(<ShipWheel />);
     const hub = screen.getByLabelText("Center of the wheel");
-    fireEvent.click(hub);
-    expect(spy).toHaveBeenCalledWith("Zoro!");
-    spy.mockRestore();
+    expect(() => fireEvent.click(hub)).not.toThrow();
   });
 
   it("renders mobile menu items when open", () => {

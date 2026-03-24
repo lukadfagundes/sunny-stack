@@ -77,3 +77,76 @@ describe("VoyageSail", () => {
     expect(animatedSvgs.length).toBe(3);
   });
 });
+
+describe("VoyageSail (reduced motion)", () => {
+  beforeEach(() => {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: jest.fn().mockImplementation((query: string) => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: jest.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
+  });
+
+  it("waves have animation none when reduced motion is preferred", () => {
+    const { container } = render(<VoyageSail />);
+    const waveSvgs = Array.from(
+      container.querySelectorAll("svg[aria-hidden='true']")
+    ).filter((svg) => (svg as HTMLElement).style.animation === "none");
+    expect(waveSvgs.length).toBe(3);
+  });
+
+  it("stars have static opacity when reduced motion is preferred", () => {
+    const { container } = render(<VoyageSail />);
+    const starDivs = Array.from(container.querySelectorAll("div")).filter(
+      (div) =>
+        div.style.borderRadius === "50%" && div.style.opacity === "0.4"
+    );
+    expect(starDivs.length).toBe(60);
+  });
+
+  it("ship renders as static div when reduced motion is preferred", () => {
+    const { container } = render(<VoyageSail />);
+    const staticShip = Array.from(container.querySelectorAll("div")).find(
+      (div) =>
+        div.style.left === "50%" &&
+        div.style.transform === "translate(-50%, -100%)"
+    );
+    expect(staticShip).toBeTruthy();
+  });
+
+  it("shooting stars are not rendered when reduced motion is preferred", () => {
+    const { container } = render(<VoyageSail />);
+    const overflowContainers = Array.from(
+      container.querySelectorAll("div[aria-hidden='true']")
+    ).filter(
+      (div) =>
+        (div as HTMLElement).style.height === "70%" &&
+        div.className.includes("overflow")
+    );
+    expect(overflowContainers.length).toBe(1);
+  });
+});
