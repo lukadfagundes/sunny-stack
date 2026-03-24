@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `LICENSE` file to specify the `CC-BY-NC-4.0` license.
+- Add `license` property to `package.json` to specify the `CC-BY-NC-4.0` license.
 - Add `.github/dependabot.yml` to configure Dependabot for automated dependency updates.
 - Add `.github/workflows/ci.yml` to implement Continuous Integration checks using GitHub Actions.
 - Add `.github/workflows/deploy.yml` to configure GitHub Actions for application deployment.
