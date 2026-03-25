@@ -29,7 +29,7 @@ export default function HeroSection() {
       <div className="relative z-10 text-center px-6">
         <LetterReveal
           text="Luka Fagundes"
-          className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-sunny-cream mb-4"
+          className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-sunny-cream mb-4"
           delay={0.3}
           reducedMotion={reducedMotion}
         />

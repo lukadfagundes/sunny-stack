@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add file tracing configuration to `next.config.ts` for `/api/docs` route to optimize build output size.
+- Add a test case to `tests/api/docs.test.ts` to confirm correct handling of Mermaid diagrams with CRLF line endings.
+
+### Changed
+
+- Adjust padding of the documentation article in `src/app/docs/page.tsx` for improved responsiveness on smaller screens.
+- Reduce base font size of the hero section heading in `src/components/HeroSection.tsx` for better visual balance.
+- Replace generic `Anchor` icon with specific `Home`, `Briefcase`, `User`, and `BookOpen` icons for navigation items in `src/components/ShipWheel.tsx`.
+- Update `NAV_ITEMS` data structure in `src/components/ShipWheel.tsx` to include `LucideIcon` for each navigation item.
+- Refactor positioning logic for navigation items in `src/components/ShipWheel.tsx` to use a quarter-arc fanning pattern with an increased radius.
+- Remove abbreviated label display for navigation items in `src/components/ShipWheel.tsx`, favoring icon-based representation.
+- Update React hook imports in `src/components/landing/ContributionHeatmap.tsx` to include `useCallback` and `useEffect`.
+- Implement responsive week display for `ContributionHeatmap.tsx` to show only visible weeks based on container width, using `useCallback` and `useEffect`.
+- Update `CurrentlyBuilding.tsx` spyglass frame to use responsive Tailwind classes for width and height, adapting to different screen sizes.
+- Adjust horizontal padding for inner content of the `CurrentlyBuilding.tsx` spyglass frame for better mobile layout.
+- Decrease base font size of the title within the `CurrentlyBuilding.tsx` spyglass for improved mobile readability.
+- Convert brass screw positioning in `CurrentlyBuilding.tsx` from fixed pixel values to percentage-based, ensuring responsiveness and correct scaling.
+- Apply responsive sizing to `StatsDashboard.tsx` components using Tailwind classes for better adaptation to screen sizes.
+- Update layout for `StatsDashboard.tsx` content to use flexbox for wrapping on small screens and a grid for larger screens.
+- Update element selection logic in `tests/components/CurrentlyBuilding.test.tsx` to correctly target the spyglass component for mouse events after styling changes.
+- Refactor `tests/components/ShipWheel.test.ts` to verify mobile menu items by checking for `sr-only` links and icon-based links with `aria-labels` instead of abbreviated text labels.
+
+### Fixed
+
+- Update regex in `src/app/api/docs/route.ts` to correctly parse Mermaid code blocks with CRLF line endings.
+
 ## [3.0.0] - 2026-03-24
 
 ### Added

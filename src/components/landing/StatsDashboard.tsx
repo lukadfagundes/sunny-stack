@@ -125,7 +125,7 @@ function Gauge({ label, value, maxValue, delay, color, isInView }: GaugeProps) {
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
         fill="none"
-        style={{ width: 140, height: 140 }}
+        className="w-[100px] h-[100px] sm:w-[140px] sm:h-[140px]"
       >
         {ticks}
 
@@ -207,7 +207,7 @@ export default function StatsDashboard({
           Instruments offline
         </p>
       ) : (
-        <div className="grid grid-cols-5 gap-2">
+        <div className="flex flex-wrap justify-center gap-2 sm:grid sm:grid-cols-5">
           <Gauge label="Commits" value={totalCommits} maxValue={commitMax} delay={0} color="rgba(240, 180, 41, 0.9)" isInView={isInView} />
           <Gauge label="PRs" value={totalPRs} maxValue={prMax} delay={0.1} color="rgba(220, 160, 30, 0.85)" isInView={isInView} />
           <Gauge label="Issues" value={totalIssues} maxValue={issueMax} delay={0.2} color="rgba(200, 140, 20, 0.8)" isInView={isInView} />

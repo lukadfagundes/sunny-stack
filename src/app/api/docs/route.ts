@@ -41,7 +41,7 @@ function buildTree(dirPath: string, relativeTo: string): DocFile[] {
 /** Replace ```mermaid code blocks with custom HTML elements for client-side rendering */
 function preprocessMermaid(markdown: string): string {
   return markdown.replace(
-    /```mermaid\n([\s\S]*?)```/g,
+    /```mermaid\r?\n([\s\S]*?)```/g,
     (_, diagram: string) => {
       const encoded = Buffer.from(diagram.trim()).toString("base64");
       return `<mermaid-diagram data-chart="${encoded}"></mermaid-diagram>`;

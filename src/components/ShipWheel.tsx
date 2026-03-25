@@ -4,19 +4,21 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Anchor } from "lucide-react";
+import { Anchor, Home, Briefcase, User, BookOpen } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface NavItem {
   label: string;
   href: string;
   angle: number; // degrees on the wheel (0 = top)
+  icon: LucideIcon;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "/", angle: 0 },
-  { label: "Portfolio", href: "/portfolio", angle: 90 },
-  { label: "About", href: "/about", angle: 180 },
-  { label: "Docs", href: "/docs", angle: 270 },
+  { label: "Home", href: "/", angle: 0, icon: Home },
+  { label: "Portfolio", href: "/portfolio", angle: 90, icon: Briefcase },
+  { label: "About", href: "/about", angle: 180, icon: User },
+  { label: "Docs", href: "/docs", angle: 270, icon: BookOpen },
 ];
 
 const WHEEL_SIZE = 110;
@@ -193,14 +195,16 @@ export default function ShipWheel() {
           <AnimatePresence>
             {mobileOpen &&
               NAV_ITEMS.map((item, i) => {
-                // Fan out in a compass-rose pattern (upward arc)
-                const spreadAngle = 60;
-                const startAngle = -90 - spreadAngle * 1.5;
-                const angle =
-                  ((startAngle + i * spreadAngle) * Math.PI) / 180;
-                const radius = 70;
-                const x = radius * Math.cos(angle);
-                const y = radius * Math.sin(angle);
+                // Quarter-arc fanning upper-left from toggle
+                // 90° arc from 180° (left) to 270° (up), r=120 for no overlap
+                const arcStart = 180;
+                const arcEnd = 270;
+                const step = (arcEnd - arcStart) / (NAV_ITEMS.length - 1);
+                const deg = arcStart + i * step;
+                const rad = (deg * Math.PI) / 180;
+                const radius = 120;
+                const x = radius * Math.cos(rad);
+                const y = radius * Math.sin(rad);
                 const isActive = pathname === item.href;
 
                 return (
@@ -220,13 +224,14 @@ export default function ShipWheel() {
                     <Link
                       href={item.href}
                       onClick={() => setMobileOpen(false)}
-                      className={`flex items-center justify-center w-12 h-12 rounded-full text-xs font-medium shadow-lg transition-colors ${
+                      aria-label={item.label}
+                      className={`flex items-center justify-center w-12 h-12 rounded-full shadow-lg transition-colors ${
                         isActive
                           ? "bg-sunny-gold text-sunny-bg"
                           : "bg-sunny-surface text-sunny-cream border border-sunny-surface-light hover:border-sunny-gold"
                       }`}
                     >
-                      {item.label.slice(0, 3)}
+                      <item.icon size={20} />
                     </Link>
                   </motion.div>
                 );

@@ -90,7 +90,7 @@ export default function DocsPage() {
             </aside>
 
             {/* Content area */}
-            <article className="min-w-0 rounded-md bg-sunny-surface border border-sunny-surface-light p-6 md:p-8">
+            <article className="min-w-0 rounded-md bg-sunny-surface border border-sunny-surface-light p-4 sm:p-6 md:p-8">
               {/* Breadcrumb */}
               <nav className="mb-6 flex items-center gap-1.5 text-xs" aria-label="Breadcrumb">
                 {(() => {
