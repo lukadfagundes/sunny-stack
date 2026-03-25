@@ -559,7 +559,7 @@ describe("BioSections", () => {
 
   it("renders the bio text", () => {
     render(<BioSections />);
-    expect(screen.getByText(/Placeholder about me text/)).toBeInTheDocument();
+    expect(screen.getByText(/I'm Luka\. I'm a little scatterbrained/)).toBeInTheDocument();
   });
 });
 

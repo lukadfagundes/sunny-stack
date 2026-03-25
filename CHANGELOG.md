@@ -299,6 +299,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update `tagline` content in `src/lib/data/personal.ts`
+- Update `aboutMe` content in `src/lib/data/personal.ts`
+- Update `aboutMe` text assertion in `tests/components/about.test.tsx`
 - Update `README.md` to simplify the API credentials note.
 - Update `docs/api/README.md` to reflect `CHANGELOG.md` inclusion in file tree and client-side Mermaid rendering for #84.
 - Update `docs/api/README.md` to reflect path validation now including `CHANGELOG.md` for #84.
@@ -445,6 +448,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `whoIdLikeToMeet` from `src/lib/data/personal.ts`
 - Remove reference to `mermaid.ink` as an external service from `docs/services/docs-route.md` for #84.
 - Remove direct `img` rendering logic for `mermaid.ink` URLs from `src/components/docs/MarkdownRenderer.tsx` for #84.
 - Remove test case for rendering `mermaid.ink` images from `tests/components/docs/MarkdownRenderer.test.tsx` for #84.
