@@ -62,11 +62,20 @@ describe("ShipWheel", () => {
     expect(() => fireEvent.click(hub)).not.toThrow();
   });
 
-  it("renders mobile menu items when open", () => {
+  it("renders mobile menu items with icons when open", () => {
     render(<ShipWheel />);
     const toggle = screen.getByLabelText("Open navigation");
     fireEvent.click(toggle);
-    // Mobile menu should show abbreviated labels or ???
-    // The mobile menu renders Link elements with text like "Hom", "Por", "Abo", "???"
+    // Mobile menu renders icon-based links with aria-labels
+    // Each nav item has both an sr-only link (text) and a mobile link (aria-label + icon)
+    const homeLinks = screen.getAllByRole("link", { name: "Home" });
+    const portfolioLinks = screen.getAllByRole("link", { name: "Portfolio" });
+    const aboutLinks = screen.getAllByRole("link", { name: "About" });
+    const docsLinks = screen.getAllByRole("link", { name: "Docs" });
+    // sr-only link + mobile icon link = 2 each
+    expect(homeLinks).toHaveLength(2);
+    expect(portfolioLinks).toHaveLength(2);
+    expect(aboutLinks).toHaveLength(2);
+    expect(docsLinks).toHaveLength(2);
   });
 });

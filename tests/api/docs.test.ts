@@ -13,6 +13,8 @@ const VIRTUAL_FILES: Record<string, string> = {
     "# Getting Started\n\nA guide to getting started.",
   [path.join(PROJECT_ROOT, "docs", "architecture", "diagrams.md")]:
     "# Diagrams\n\n```mermaid\ngraph TD\n  A-->B\n```\n\nSome text after.",
+  [path.join(PROJECT_ROOT, "docs", "architecture", "diagrams-crlf.md")]:
+    "# CRLF Diagrams\r\n\r\n```mermaid\r\ngraph LR\r\n  X-->Y\r\n```\r\n\r\nAfter.",
 };
 
 // Build directory entries from virtual files
@@ -192,6 +194,19 @@ describe("GET /api/docs", () => {
     const { GET } = await import("@/app/api/docs/route");
     const response = await GET(
       createRequest("path=docs/architecture/diagrams.md") as never,
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.content).not.toContain("```mermaid");
+    expect(data.content).toContain("<mermaid-diagram");
+    expect(data.content).toContain("data-chart=");
+  });
+
+  it("converts mermaid code blocks with CRLF line endings", async () => {
+    const { GET } = await import("@/app/api/docs/route");
+    const response = await GET(
+      createRequest("path=docs/architecture/diagrams-crlf.md") as never,
     );
     const data = await response.json();
 

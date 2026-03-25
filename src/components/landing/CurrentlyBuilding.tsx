@@ -56,12 +56,11 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="mx-auto flex items-center justify-center"
       >
-        {/* Spyglass frame */}
+        {/* Spyglass frame — sized for mobile, scales up on sm+ */}
         <div
-          className="relative"
+          className="relative w-[260px] h-[260px] sm:w-[340px] sm:h-[340px]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          style={{ width: 340, height: 340 }}
         >
           {/* Outer brass ring */}
           <div
@@ -121,7 +120,7 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
             />
 
             {/* Content inside the lens — 3 repos stacked */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center px-10">
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-6 sm:px-10">
               <div className="w-full space-y-3">
                 {topRepos.map((repo, i) => (
                   <a
@@ -133,7 +132,7 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
                   >
                     <div className="flex items-center justify-center gap-2">
                       <span
-                        className="text-lg sm:text-xl font-serif font-bold group-hover:text-sunny-gold transition-colors duration-200 truncate"
+                        className="text-sm sm:text-xl font-serif font-bold group-hover:text-sunny-gold transition-colors duration-200 truncate"
                         style={{ color: i === 0 ? "rgba(245, 230, 211, 0.9)" : "rgba(245, 230, 211, 0.6)" }}
                       >
                         {repo.name}
@@ -183,19 +182,18 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
             />
           </div>
 
-          {/* Brass screws on the ring */}
+          {/* Brass screws on the ring — positioned as % of container */}
           {[0, 90, 180, 270].map((deg) => {
             const rad = (deg * Math.PI) / 180;
-            const screwR = 164;
+            // screwR / containerSize ≈ 164/340 ≈ 0.4824
+            const pct = 0.4824;
             return (
               <div
                 key={deg}
-                className="absolute"
+                className="absolute w-[6px] h-[6px] sm:w-2 sm:h-2"
                 style={{
-                  left: 170 + screwR * Math.cos(rad) - 4,
-                  top: 170 - screwR * Math.sin(rad) - 4,
-                  width: 8,
-                  height: 8,
+                  left: `calc(50% + ${(pct * 100 * Math.cos(rad)).toFixed(2)}% - 4px)`,
+                  top: `calc(50% - ${(pct * 100 * Math.sin(rad)).toFixed(2)}% - 4px)`,
                   borderRadius: "50%",
                   background: "radial-gradient(circle at 35% 35%, rgba(240, 180, 41, 0.5), rgba(107, 66, 38, 0.7))",
                   boxShadow: "inset 0 1px 1px rgba(0,0,0,0.3)",

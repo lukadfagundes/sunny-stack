@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ContributionWeek } from "@/lib/github";
 
 interface ContributionHeatmapProps {
@@ -64,15 +64,36 @@ interface TooltipData {
 const CELL = 16;
 const GAP = 3;
 const STEP = CELL + GAP; // 19px per column
+const DAY_LABEL_WIDTH = 32;
 
 export default function ContributionHeatmap({
   calendar,
 }: ContributionHeatmapProps) {
-  const { weeks, totalContributions } = calendar;
+  const { weeks: allWeeks, totalContributions } = calendar;
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [visibleWeeks, setVisibleWeeks] = useState(allWeeks.length);
 
-  if (weeks.length === 0) {
+  // Measure container width and show only as many weeks as fit
+  const updateVisibleWeeks = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const available = el.clientWidth - DAY_LABEL_WIDTH;
+    const maxWeeks = Math.floor(available / STEP);
+    setVisibleWeeks(Math.min(Math.max(maxWeeks, 4), allWeeks.length));
+  }, [allWeeks.length]);
+
+  useEffect(() => {
+    updateVisibleWeeks();
+    window.addEventListener("resize", updateVisibleWeeks);
+    return () => window.removeEventListener("resize", updateVisibleWeeks);
+  }, [updateVisibleWeeks]);
+
+  // Show the most recent N weeks
+  const weeks = allWeeks.slice(-visibleWeeks);
+
+  if (allWeeks.length === 0) {
     return (
       <div className="text-center py-8">
         <h3 className="text-lg sm:text-xl font-serif font-bold text-sunny-cream italic mb-2">
@@ -113,10 +134,10 @@ export default function ContributionHeatmap({
     });
   }
 
-  const dayLabelWidth = 32;
+  const dayLabelWidth = DAY_LABEL_WIDTH;
 
   return (
-    <div>
+    <div ref={containerRef}>
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-lg sm:text-xl font-serif font-bold text-sunny-cream italic">
@@ -131,8 +152,8 @@ export default function ContributionHeatmap({
         </div>
       </div>
 
-      <div className="overflow-x-auto pb-2" ref={gridRef}>
-        <div style={{ minWidth: weeks.length * STEP + dayLabelWidth, position: "relative", width: "100%" }}>
+      <div className="pb-2" ref={gridRef}>
+        <div style={{ position: "relative", width: "100%" }}>
           {/* Month labels */}
           <div className="flex mb-1.5" style={{ gap: 0, marginLeft: dayLabelWidth }}>
             {monthPositions.map(({ label, col }, i) => {

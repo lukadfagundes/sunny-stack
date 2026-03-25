@@ -111,10 +111,11 @@ describe("CurrentlyBuilding", () => {
     const { container } = render(
       <CurrentlyBuilding repos={[makeRepo()]} />
     );
-    const spyglass = container.querySelector("[style*='width: 340px']");
+    // Spyglass frame uses responsive Tailwind classes (w-[260px] sm:w-[340px])
+    const spyglass = container.querySelector(".rounded-full");
     if (spyglass) {
-      fireEvent.mouseEnter(spyglass);
-      fireEvent.mouseLeave(spyglass);
+      fireEvent.mouseEnter(spyglass.parentElement!);
+      fireEvent.mouseLeave(spyglass.parentElement!);
     }
   });
 });
