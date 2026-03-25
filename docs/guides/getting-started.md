@@ -1,328 +1,218 @@
-# Getting Started with Sunny Stack Portfolio
+# Getting Started with sunny-stack
 
-Welcome to the Sunny Stack Portfolio documentation! This guide will help you set up and run the project locally.
+Welcome to sunny-stack! This guide will help you get the project running on your local machine for development.
+
+---
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js 22.x** (as specified in package.json engines)
-- **npm 10.0+** (comes with Node.js)
-- **Git** (for cloning the repository)
-- **PostgreSQL 15+** (for local database, or use Raspberry Pi connection)
+- **Node.js** (version 20 or later)
+- **npm** (version 10+, included with Node.js)
+- **Git** for version control
 
-## Quick Start
+No database is required. This project fetches all data from external APIs at runtime.
+
+---
+
+## Installation
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/lukadfagundes/sunny-stack.git
+git clone https://github.com/strawhatluka/sunny-stack.git
 cd sunny-stack
 ```
 
 ### 2. Install Dependencies
 
 ```bash
-npm install
+npm ci
 ```
 
-This will install all required dependencies including:
-
-- Next.js 15.5.9
-- React 19.0
-- TypeScript 5.5
-- Prisma 6.18.0
-- Discord.js 14.14.1
-- And all other dependencies listed in package.json
+This installs exact dependency versions from `package-lock.json` for reproducible builds.
 
 ### 3. Environment Configuration
 
-Create your local environment file:
+Copy `.env.example` to `.env.local` and populate with your API credentials:
 
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 ```
 
-Edit `.env.local` with your configuration:
+All environment variables are optional -- the app gracefully falls back to empty states when credentials are missing. See `.env.example` for the full list of 10 variables across 6 services (GitHub, Instagram, YouTube, Bluesky, Spotify, Steam).
 
-```bash
-# Database Connection
-DATABASE_URL=postgresql://user:password@localhost:5432/sunnystack
+**Environment variables:**
 
-# Email Service (Resend)
-RESEND_API_KEY=your_resend_api_key
+| Variable | Service | Description |
+|----------|---------|-------------|
+| `GITHUB_TOKEN` | GitHub | Personal access token for GitHub GraphQL API |
+| `INSTAGRAM_ACCESS_TOKEN` | Instagram | Long-lived access token for Instagram Graph API |
+| `YOUTUBE_API_KEY` | YouTube | YouTube Data API v3 key |
+| `YOUTUBE_CHANNEL_ID` | YouTube | YouTube channel ID |
+| `BLUESKY_HANDLE` | Bluesky | Bluesky handle/username |
+| `SPOTIFY_CLIENT_ID` | Spotify | Spotify OAuth client ID |
+| `SPOTIFY_CLIENT_SECRET` | Spotify | Spotify OAuth client secret |
+| `SPOTIFY_REFRESH_TOKEN` | Spotify | Spotify OAuth refresh token |
+| `STEAM_API_KEY` | Steam | Steam Web API key |
+| `STEAM_ID` | Steam | Steam 64-bit user ID |
 
-# Site Configuration
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+You can start with zero credentials configured. The site will render normally with placeholder/empty content for any missing service.
 
-# Google OAuth (for admin authentication)
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-NEXTAUTH_SECRET=your_nextauth_secret
-NEXTAUTH_URL=http://localhost:3000
+---
 
-# Admin Configuration
-ADMIN_EMAIL=your_email@gmail.com
+## Running the Application
 
-# Discord Bot (optional for local dev)
-DISCORD_BOT_TOKEN=your_discord_bot_token
-DISCORD_APPLICATION_ID=your_application_id
-DISCORD_PUBLIC_KEY=your_public_key
-BOT_API_URL=http://localhost:3000
-```
+### Development Mode
 
-See `.env.local.example` for a complete list of environment variables.
-
-### 4. Database Setup
-
-#### Option A: Local PostgreSQL
-
-```bash
-# Create database
-createdb sunnystack
-
-# Run Prisma migrations
-npx prisma migrate dev
-
-# (Optional) Seed database
-npx prisma db seed
-```
-
-#### Option B: Connect to Raspberry Pi Database
-
-If you're part of the development team with access to the Pi:
-
-```bash
-# Use the Pi DATABASE_URL in .env.local
-DATABASE_URL=postgresql://user:password@pi.local:5432/sunnystack
-```
-
-### 5. Validate Environment
-
-Verify your environment configuration:
-
-```bash
-npm run validate:env
-```
-
-This runs the validation script at `scripts/validate-env.ts` to ensure all required variables are set.
-
-### 6. Run Development Server
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+The application will be available at: **http://localhost:3000**
 
-You should see the Sunny Stack Portfolio homepage!
+The development server uses Turbopack for fast hot module replacement. Changes to source files are reflected immediately in the browser.
 
-## Development Workflow
+### Available Pages
 
-### Available Scripts
+| Route | Description |
+|-------|-------------|
+| `/` | Home page with hero section, contribution heatmap, stats dashboard |
+| `/about` | About page with profile card, social feeds, music, gaming stats |
+| `/portfolio` | Portfolio page with project categories |
+| `/docs` | Documentation viewer with navigation sidebar |
 
-```bash
-# Development
-npm run dev                  # Start dev server (http://localhost:3000)
-npm run build               # Build for production
-npm start                   # Start production server
+### Running Tests
 
-# Type Checking
-npm run type-check          # Run TypeScript compiler check (no emit)
-
-# Linting
-npm run lint                # Run ESLint
-npm run lint:fix            # Auto-fix ESLint issues
-
-# Testing
-npm test                    # Run unit tests (Jest)
-npm run test:watch          # Run tests in watch mode
-npm run test:coverage       # Generate coverage report
-npm run test:e2e            # Run E2E tests (Playwright)
-npm run test:e2e:ui         # Run E2E tests with UI
-npm run test:e2e:debug      # Debug E2E tests
-
-# Discord Bot (separate build)
-npm run build:bot           # Build Discord bot (tsconfig.bot.json)
-npm run build:bot:watch     # Watch mode for bot development
-npm run bot:dev             # Run bot in development mode
-npm run bot:deploy          # Deploy Discord slash commands
-
-# Bundle Analysis
-npm run analyze             # Analyze bundle size
-npm run analyze:server      # Analyze server bundle
-npm run analyze:browser     # Analyze browser bundle
-
-# Environment Validation
-npm run validate:env        # Validate all environment variables
-npm run validate:env:pi     # Validate Pi-specific variables
-npm run validate:env:vercel # Validate Vercel-specific variables
-```
-
-### Project Structure
-
-```
-sunny-stack/
-├── app/                 # Next.js 15 App Router
-│   ├── api/            # API routes (serverless functions)
-│   ├── admin/          # Admin dashboard pages
-│   ├── about/          # Public pages
-│   ├── contact/
-│   ├── portfolio/
-│   ├── quote/
-│   ├── resume/
-│   └── layout.tsx      # Root layout
-├── bot/                 # Discord bot application
-│   ├── commands/       # Slash commands
-│   ├── core/           # Bot client and utilities
-│   └── events/         # Discord event handlers
-├── components/          # React components
-│   ├── admin/          # Admin components
-│   ├── forms/          # Form components
-│   └── ui/             # UI components
-├── lib/                 # Core utilities
-│   ├── admin/          # Admin utilities
-│   ├── auth/           # Google OAuth
-│   ├── db/             # Database (Prisma)
-│   ├── errors/         # Error handling
-│   └── monitoring/     # Service monitoring
-├── hooks/              # Custom React hooks
-├── prisma/             # Prisma schema and migrations
-├── __tests__/          # Unit tests (Jest)
-├── e2e/                # E2E tests (Playwright)
-├── docs/               # Documentation (you are here!)
-└── trinity/            # Trinity Method implementation
-```
-
-## Common Tasks
-
-### Adding a New Page
-
-1. Create a new directory in `app/`:
-
-   ```bash
-   mkdir app/my-page
-   ```
-
-2. Add a `page.tsx` file:
-
-   ```tsx
-   export default function MyPage() {
-     return <div>My Page</div>;
-   }
-   ```
-
-3. The route is automatically available at `/my-page`
-
-### Adding an API Endpoint
-
-1. Create a new route file in `app/api/`:
-
-   ```bash
-   mkdir app/api/my-endpoint
-   ```
-
-2. Add a `route.ts` file:
-
-   ```typescript
-   import { NextRequest, NextResponse } from "next/server";
-
-   export async function GET(request: NextRequest) {
-     return NextResponse.json({ message: "Hello World" });
-   }
-   ```
-
-3. The endpoint is available at `/api/my-endpoint`
-
-### Working with the Database
+Run the full test suite with Jest. All 434 tests should pass. Coverage thresholds are enforced at 80% for statements, branches, functions, and lines.
 
 ```bash
-# Create a new migration
-npx prisma migrate dev --name add_new_field
+# Run all tests
+npm test
 
-# Open Prisma Studio (database GUI)
-npx prisma studio
+# Run tests in watch mode (re-runs on file changes)
+npm run test:watch
 
-# Generate Prisma Client (after schema changes)
-npx prisma generate
+# Run tests with coverage report
+npm run test:coverage
 
-# Reset database (WARNING: deletes all data)
-npx prisma migrate reset
+# Run a specific test file
+npx jest tests/api/github.test.ts
 ```
 
-### Running the Discord Bot Locally
+### Other Commands
 
 ```bash
-# Build the bot
-npm run build:bot
+# Run ESLint checks
+npm run lint
 
-# Run in development mode
-npm run bot:dev
+# Type-check without emitting files
+npm run typecheck
 
-# Deploy slash commands to Discord
-npm run bot:deploy
+# Production build
+npm run build
+
+# Start production server (after build)
+npm start
 ```
-
-## Troubleshooting
-
-### Port 3000 Already in Use
-
-```bash
-# Kill the process using port 3000
-# Windows:
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-
-# macOS/Linux:
-lsof -ti:3000 | xargs kill -9
-```
-
-### Database Connection Errors
-
-1. Verify PostgreSQL is running:
-
-   ```bash
-   # Check PostgreSQL status
-   pg_isready
-   ```
-
-2. Check your `DATABASE_URL` in `.env.local`
-
-3. Ensure database exists:
-   ```bash
-   psql -l | grep sunnystack
-   ```
-
-### TypeScript Errors
-
-The project currently has `typescript.ignoreBuildErrors: true` in `next.config.js` due to NextAuth v5 compatibility issues. This is a known technical debt item.
-
-To check TypeScript errors:
-
-```bash
-npm run type-check
-```
-
-### Discord Bot Not Connecting
-
-1. Verify `DISCORD_BOT_TOKEN` is set in `.env.local`
-2. Check bot has correct permissions in Discord Developer Portal
-3. Ensure bot is added to your test Discord server
-
-## Next Steps
-
-- **API Documentation**: See [docs/api/README.md](../api/README.md)
-- **Architecture Overview**: See [docs/architecture/overview.md](../architecture/overview.md)
-- **Deployment Guide**: See [docs/deployment/DEPLOYMENT-OVERVIEW.md](../deployment/DEPLOYMENT-OVERVIEW.md)
-- **Testing Guide**: See [trinity/knowledge-base/TESTING-PRINCIPLES.md](../../trinity/knowledge-base/TESTING-PRINCIPLES.md)
-
-## Need Help?
-
-- Check the [Trinity Knowledge Base](../../trinity/knowledge-base/)
-- Review [Known Issues](../../trinity/knowledge-base/ISSUES.md)
-- See [Architecture Documentation](../../trinity/knowledge-base/ARCHITECTURE.md)
 
 ---
 
-**Updated:** 2026-01-07
-**Maintained by:** Sunny Stack Development Team
+## Project Structure
+
+```
+sunny-stack/
+├── src/                      # Application source code
+│   ├── app/                  # Next.js App Router pages and API routes
+│   │   ├── api/              # API route handlers (10 endpoints)
+│   │   ├── about/            # About page
+│   │   ├── portfolio/        # Portfolio page
+│   │   ├── docs/             # Documentation viewer page
+│   │   ├── not-found.tsx     # Custom 404 page (ZoroGame)
+│   │   ├── layout.tsx        # Root layout (RootLayout)
+│   │   └── page.tsx          # Home page
+│   ├── components/           # React components (36 .tsx components + 5 utility modules)
+│   ├── lib/                  # Utility libraries and static data
+│   │   ├── data/             # Static TypeScript data files (projects, personal info)
+│   │   └── github.ts         # GitHub GraphQL data fetching
+│   └── proxy.ts              # Rate limiting proxy
+├── tests/                    # Test files (mirroring src/ structure)
+├── docs/                     # Project documentation
+├── public/                   # Static assets
+├── next.config.ts            # Next.js configuration
+├── jest.config.ts            # Jest test configuration
+├── tsconfig.json             # TypeScript configuration
+├── eslint.config.mjs         # ESLint configuration
+├── postcss.config.mjs        # PostCSS configuration (Tailwind CSS v4)
+├── vercel.json               # Vercel deployment configuration
+└── package.json              # Dependencies and scripts
+```
+
+---
+
+## How It Works
+
+sunny-stack is a **server-rendered portfolio website** with no database. Each page is a React Server Component that fetches data from external APIs through internal API routes:
+
+1. **Pages** (e.g., `/about`) render as React Server Components
+2. **API routes** (e.g., `/api/github`) proxy requests to external services
+3. **External APIs** (GitHub, Bluesky, Instagram, YouTube, Spotify, Steam) provide real-time data
+4. **Middleware** rate-limits API requests at 30 per minute per IP address
+
+When an external API credential is missing, the corresponding API route returns `null` or `[]`, and the page renders gracefully without that data section.
+
+---
+
+## Verification
+
+After completing the setup, verify everything works:
+
+1. **Application starts:** `npm run dev` runs without errors and http://localhost:3000 loads
+2. **Tests pass:** `npm test` shows all tests passing
+3. **Lint passes:** `npm run lint` reports no errors
+4. **Build succeeds:** `npm run build` completes without errors
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue:** Dependencies fail to install
+- **Solution:** Delete `node_modules` and `package-lock.json`, then run `npm install` to regenerate
+
+**Issue:** Port 3000 already in use
+- **Solution:** Stop the process using port 3000 (`lsof -ti:3000 | xargs kill`) or start on another port: `npm run dev -- -p 3001`
+
+**Issue:** API routes return `null` or empty arrays
+- **Solution:** This is expected behavior when environment variables are not set. Check `.env.local` contains valid credentials for the service you are testing
+
+**Issue:** TypeScript errors in IDE but build passes
+- **Solution:** Restart your TypeScript language server. In VS Code: `Cmd+Shift+P` > "TypeScript: Restart TS Server"
+
+**Issue:** Tests fail with timeout errors in CI
+- **Solution:** Integration tests require `maxWorkers=1` to avoid cross-suite data pollution. Run with: `npx jest --maxWorkers=1`
+
+---
+
+## Next Steps
+
+- Read the [API Documentation](../api/README.md) to understand available endpoints
+- Review the [API Development Guide](./api-development.md) to learn how to add new features
+
+- See the [Deployment Guide](./deployment.md) for production deployment
+
+---
+
+## Need Help?
+
+- **Documentation:** [Full documentation](../README.md)
+- **Issues:** Report bugs via [GitHub Issues](https://github.com/strawhatluka/sunny-stack/issues)
+- **Questions:** [GitHub Discussions](https://github.com/strawhatluka/sunny-stack/discussions)
+
+---
+
+*Last updated: 2026-03-24*

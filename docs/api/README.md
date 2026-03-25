@@ -1,980 +1,594 @@
-# API Documentation
+# sunny-stack API Documentation
 
-Sunny Stack Portfolio provides a comprehensive REST API built with Next.js 15 API Routes. All endpoints follow REST principles and return JSON responses.
+Complete REST API reference for sunny-stack.
 
-## Base URL
+---
 
-- **Development:** `http://localhost:3000/api`
-- **Production:** `https://sunny-stack.com/api`
+## Overview
+
+sunny-stack provides **10 REST API endpoints** across **8 resources**.
+
+**Base URL:** `/api`
+
+**API Version:** Unversioned (single version)
+
+All endpoints are **GET-only** and return JSON. No mutations, no POST/PUT/DELETE operations.
+
+---
 
 ## Authentication
 
-Most API endpoints are public, but administrative endpoints require authentication via Google OAuth.
-
-### Authentication Flow
-
-1. Client initiates OAuth flow via `/api/auth/signin`
-2. Google redirects to `/api/auth/callback/google`
-3. Session cookie is set (HTTP-only)
-4. Subsequent requests include session cookie automatically
-
-### Protected Endpoints
-
-Protected endpoints require:
-
-- Valid session cookie
-- Email must match `ADMIN_EMAIL` environment variable
-
-If authentication fails, endpoints return:
-
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
-## API Endpoint Reference
-
-### Public Endpoints
-
-#### Health Check
-
-```http
-GET /api/health
-```
-
-Returns the API health status.
-
-**Response:**
-
-```json
-{
-  "status": "ok",
-  "timestamp": "2026-01-07T12:00:00.000Z",
-  "uptime": 12345
-}
-```
-
-#### Submit Quote Request
-
-```http
-POST /api/send-quote
-```
-
-Submit a new quote request from the public website.
-
-**Request Body:**
-
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": "+1234567890",
-  "company": "Acme Corp",
-  "projectType": "Web Development",
-  "budgetRange": "$5,000 - $10,000",
-  "timeline": "2-3 months",
-  "description": "I need a portfolio website",
-  "requirements": "Mobile responsive, SEO optimized"
-}
-```
-
-**Response (Success):**
-
-```json
-{
-  "success": true,
-  "quoteId": "cm1abc123xyz456"
-}
-```
-
-**Response (Validation Error):**
-
-```json
-{
-  "error": "Invalid email format"
-}
-```
-
-**Validation Rules:**
-
-- `name`: Required, 1-100 characters
-- `email`: Required, valid email format
-- `phone`: Optional, valid phone format
-- `company`: Optional, 1-100 characters
-- `projectType`: Required
-- `budgetRange`: Optional
-- `timeline`: Optional
-- `description`: Required, 1-2000 characters
-- `requirements`: Optional, max 2000 characters
+No client authentication required. API routes authenticate with external services using server-side environment variables (OAuth tokens, API keys). Clients call `/api/*` endpoints without any auth headers.
 
 ---
 
-### Authentication Endpoints
+## Request Format
 
-#### Sign In
+All endpoints accept standard HTTP GET requests. No request body or authentication headers are needed from clients.
 
-```http
-GET /api/auth/signin
+```
+GET /api/{resource}
 ```
 
-Initiates Google OAuth sign-in flow.
+Some endpoints accept query parameters for filtering:
 
-**Response:**
-Redirects to Google OAuth consent screen.
-
-#### OAuth Callback
-
-```http
-GET /api/auth/callback/google
+```
+GET /api/steam/achievements?appid=730
+GET /api/docs?list=true
+GET /api/docs?path=README.md
 ```
 
-Handles Google OAuth callback and creates session.
+---
 
-**Query Parameters:**
+## Response Format
 
-- `code`: OAuth authorization code (provided by Google)
-- `state`: CSRF protection token
+All responses are returned as JSON. The response structure varies per endpoint -- each returns the data directly (not wrapped in a standard envelope).
 
-**Response:**
-Redirects to admin dashboard or home page.
-
-#### Get Session
-
-```http
-GET /api/auth/session
-```
-
-Returns current session information.
-
-**Response (Authenticated):**
+### Success Response (with data)
 
 ```json
 {
-  "user": {
-    "email": "admin@example.com",
-    "name": "Admin User",
-    "avatar": "https://lh3.googleusercontent.com/..."
-  }
+  "avatarUrl": "https://avatars.githubusercontent.com/u/...",
+  "name": "Luka",
+  "bio": "Developer",
+  "location": "USA",
+  "lastPushedAt": "2026-03-20T15:30:00Z"
 }
 ```
 
-**Response (Not Authenticated):**
+### Success Response (graceful fallback)
+
+When credentials are missing or the external API fails, endpoints return `null` or `[]` with a 200 status code instead of throwing errors:
+
+```json
+null
+```
+
+```json
+[]
+```
+
+### Error Response
 
 ```json
 {
-  "user": null
-}
-```
-
-#### Sign Out
-
-```http
-POST /api/auth/signout
-```
-
-Destroys the current session.
-
-**Response:**
-
-```json
-{
-  "success": true
+  "error": "Missing 'path' parameter"
 }
 ```
 
 ---
 
-### Admin Endpoints
+## Status Codes
 
-All endpoints in this section require authentication.
-
-#### Dashboard Analytics
-
-```http
-GET /api/admin/analytics
-```
-
-Returns dashboard analytics data.
-
-**Response:**
-
-```json
-{
-  "quotes": {
-    "total": 45,
-    "pending": 12,
-    "approved": 20,
-    "declined": 8,
-    "converted": 5
-  },
-  "projects": {
-    "total": 15,
-    "planning": 3,
-    "inProgress": 7,
-    "review": 2,
-    "complete": 3,
-    "archived": 0
-  },
-  "recentQuotes": [
-    {
-      "id": "cm1abc123",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "projectType": "Web Development",
-      "status": "PENDING",
-      "createdAt": "2026-01-07T10:30:00.000Z"
-    }
-  ]
-}
-```
-
-#### System Health
-
-```http
-GET /api/admin/health
-```
-
-Returns system health status including database and external services.
-
-**Response:**
-
-```json
-{
-  "status": "healthy",
-  "database": {
-    "connected": true,
-    "responseTime": 45
-  },
-  "services": {
-    "vercel": "operational",
-    "discord": "operational",
-    "github": "operational"
-  }
-}
-```
+| Code | Meaning | Description |
+|------|---------|-------------|
+| 200 | OK | Request succeeded. Returns data, `null`, or `[]` as graceful fallback when credentials are missing or external APIs fail. |
+| 400 | Bad Request | Missing or invalid parameters. Only returned by `/api/docs` for invalid path inputs. |
+| 404 | Not Found | File not found. Only returned by `/api/docs` when a requested markdown file does not exist. |
+| 429 | Too Many Requests | Rate limit exceeded. Includes `Retry-After` header with seconds until the limit resets. |
 
 ---
-
-### Projects API
-
-#### List Projects
-
-```http
-GET /api/admin/projects
-```
-
-Returns all projects (excluding soft-deleted).
-
-**Query Parameters:**
-
-- `status`: Filter by status (optional)
-  - Values: `PLANNING`, `IN_PROGRESS`, `REVIEW`, `COMPLETE`, `ARCHIVED`
-
-**Response:**
-
-```json
-{
-  "projects": [
-    {
-      "id": "cm1abc123",
-      "title": "Portfolio Website",
-      "description": "Modern portfolio for freelance developer",
-      "clientName": "John Doe",
-      "clientEmail": "john@example.com",
-      "status": "IN_PROGRESS",
-      "budget": "5000.00",
-      "deadline": "2026-02-15T00:00:00.000Z",
-      "createdAt": "2026-01-01T10:00:00.000Z",
-      "updatedAt": "2026-01-07T12:00:00.000Z"
-    }
-  ]
-}
-```
-
-#### Create Project
-
-```http
-POST /api/admin/projects
-```
-
-Creates a new project.
-
-**Request Body:**
-
-```json
-{
-  "title": "E-commerce Website",
-  "description": "Full-featured online store",
-  "clientName": "Jane Smith",
-  "clientEmail": "jane@example.com",
-  "status": "PLANNING",
-  "budget": 15000.0,
-  "deadline": "2026-06-01"
-}
-```
-
-**Response:**
-
-```json
-{
-  "project": {
-    "id": "cm1xyz789",
-    "title": "E-commerce Website",
-    "status": "PLANNING",
-    "createdAt": "2026-01-07T12:30:00.000Z"
-  }
-}
-```
-
-#### Get Project
-
-```http
-GET /api/admin/projects/[id]
-```
-
-Returns a single project with related data.
-
-**Response:**
-
-```json
-{
-  "project": {
-    "id": "cm1abc123",
-    "title": "Portfolio Website",
-    "description": "Modern portfolio for freelance developer",
-    "clientName": "John Doe",
-    "clientEmail": "john@example.com",
-    "status": "IN_PROGRESS",
-    "budget": "5000.00",
-    "deadline": "2026-02-15T00:00:00.000Z",
-    "quotes": [],
-    "timeEntries": [
-      {
-        "id": "cm1time001",
-        "description": "Initial setup",
-        "startedAt": "2026-01-05T09:00:00.000Z",
-        "endedAt": "2026-01-05T11:00:00.000Z",
-        "durationMinutes": 120
-      }
-    ],
-    "createdAt": "2026-01-01T10:00:00.000Z",
-    "updatedAt": "2026-01-07T12:00:00.000Z"
-  }
-}
-```
-
-#### Update Project
-
-```http
-PATCH /api/admin/projects/[id]
-```
-
-Updates an existing project.
-
-**Request Body:**
-
-```json
-{
-  "status": "REVIEW",
-  "description": "Updated description"
-}
-```
-
-**Response:**
-
-```json
-{
-  "project": {
-    "id": "cm1abc123",
-    "status": "REVIEW",
-    "updatedAt": "2026-01-07T12:45:00.000Z"
-  }
-}
-```
-
-#### Delete Project
-
-```http
-DELETE /api/admin/projects/[id]
-```
-
-Soft-deletes a project (sets `deletedAt` timestamp).
-
-**Response:**
-
-```json
-{
-  "success": true
-}
-```
-
----
-
-### Quotes API
-
-#### List Quotes
-
-```http
-GET /api/admin/quotes
-```
-
-Returns all quotes (excluding soft-deleted).
-
-**Query Parameters:**
-
-- `status`: Filter by status (optional)
-  - Values: `PENDING`, `APPROVED`, `DECLINED`, `CONVERTED`
-
-**Response:**
-
-```json
-{
-  "quotes": [
-    {
-      "id": "cm1quote001",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "phone": "+1234567890",
-      "company": "Acme Corp",
-      "projectType": "Web Development",
-      "budgetRange": "$5,000 - $10,000",
-      "timeline": "2-3 months",
-      "description": "Portfolio website project",
-      "status": "PENDING",
-      "createdAt": "2026-01-07T10:00:00.000Z"
-    }
-  ]
-}
-```
-
-#### Get Quote
-
-```http
-GET /api/admin/quotes/[id]
-```
-
-Returns a single quote with related data.
-
-**Response:**
-
-```json
-{
-  "quote": {
-    "id": "cm1quote001",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "phone": "+1234567890",
-    "company": "Acme Corp",
-    "projectType": "Web Development",
-    "budgetRange": "$5,000 - $10,000",
-    "timeline": "2-3 months",
-    "description": "Portfolio website project",
-    "requirements": "Mobile responsive, SEO optimized",
-    "status": "PENDING",
-    "projectId": null,
-    "proposals": [],
-    "createdAt": "2026-01-07T10:00:00.000Z",
-    "updatedAt": "2026-01-07T10:00:00.000Z"
-  }
-}
-```
-
-#### Update Quote
-
-```http
-PATCH /api/admin/quotes/[id]
-```
-
-Updates a quote (typically to change status).
-
-**Request Body:**
-
-```json
-{
-  "status": "APPROVED",
-  "reviewedAt": "2026-01-07T12:00:00.000Z"
-}
-```
-
-**Response:**
-
-```json
-{
-  "quote": {
-    "id": "cm1quote001",
-    "status": "APPROVED",
-    "reviewedAt": "2026-01-07T12:00:00.000Z",
-    "updatedAt": "2026-01-07T12:00:00.000Z"
-  }
-}
-```
-
-#### Convert Quote to Project
-
-```http
-POST /api/admin/quotes/[id]/convert
-```
-
-Converts a quote to a project.
-
-**Request Body:**
-
-```json
-{
-  "title": "John Doe Portfolio",
-  "budget": 7500.0,
-  "deadline": "2026-03-15"
-}
-```
-
-**Response:**
-
-```json
-{
-  "project": {
-    "id": "cm1project123",
-    "title": "John Doe Portfolio",
-    "clientName": "John Doe",
-    "clientEmail": "john@example.com",
-    "status": "PLANNING",
-    "budget": "7500.00",
-    "deadline": "2026-03-15T00:00:00.000Z",
-    "createdAt": "2026-01-07T12:30:00.000Z"
-  },
-  "quote": {
-    "id": "cm1quote001",
-    "status": "CONVERTED",
-    "projectId": "cm1project123"
-  }
-}
-```
-
----
-
-### Time Tracking API
-
-#### List Time Entries
-
-```http
-GET /api/admin/time-entries
-```
-
-Returns all time entries.
-
-**Query Parameters:**
-
-- `projectId`: Filter by project (optional)
-
-**Response:**
-
-```json
-{
-  "timeEntries": [
-    {
-      "id": "cm1time001",
-      "projectId": "cm1project123",
-      "description": "Initial setup and configuration",
-      "startedAt": "2026-01-07T09:00:00.000Z",
-      "endedAt": "2026-01-07T11:30:00.000Z",
-      "durationMinutes": 150,
-      "loggedVia": "discord",
-      "createdAt": "2026-01-07T09:00:00.000Z"
-    }
-  ]
-}
-```
-
-#### Create Manual Time Entry
-
-```http
-POST /api/admin/time-entries/manual
-```
-
-Manually log time for a project.
-
-**Request Body:**
-
-```json
-{
-  "projectId": "cm1project123",
-  "description": "Client meeting and requirements gathering",
-  "startedAt": "2026-01-07T14:00:00.000Z",
-  "endedAt": "2026-01-07T15:30:00.000Z"
-}
-```
-
-**Response:**
-
-```json
-{
-  "timeEntry": {
-    "id": "cm1time002",
-    "projectId": "cm1project123",
-    "description": "Client meeting and requirements gathering",
-    "startedAt": "2026-01-07T14:00:00.000Z",
-    "endedAt": "2026-01-07T15:30:00.000Z",
-    "durationMinutes": 90,
-    "loggedVia": "manual",
-    "createdAt": "2026-01-07T15:30:00.000Z"
-  }
-}
-```
-
-#### Stop Time Entry
-
-```http
-POST /api/admin/time-entries/[id]/stop
-```
-
-Stops an active time entry (sets `endedAt` timestamp).
-
-**Response:**
-
-```json
-{
-  "timeEntry": {
-    "id": "cm1time003",
-    "endedAt": "2026-01-07T16:00:00.000Z",
-    "durationMinutes": 120
-  }
-}
-```
-
-#### Time Report
-
-```http
-GET /api/admin/time-entries/report
-```
-
-Returns aggregated time tracking data.
-
-**Query Parameters:**
-
-- `projectId`: Filter by project (optional)
-- `startDate`: Start date for report (optional, ISO 8601)
-- `endDate`: End date for report (optional, ISO 8601)
-
-**Response:**
-
-```json
-{
-  "totalMinutes": 450,
-  "totalHours": 7.5,
-  "byProject": [
-    {
-      "projectId": "cm1project123",
-      "projectTitle": "Portfolio Website",
-      "totalMinutes": 300,
-      "totalHours": 5.0,
-      "entries": 3
-    }
-  ],
-  "byDate": [
-    {
-      "date": "2026-01-07",
-      "totalMinutes": 450,
-      "totalHours": 7.5,
-      "entries": 3
-    }
-  ]
-}
-```
-
----
-
-### Monitoring API
-
-#### Service Status
-
-```http
-GET /api/admin/monitor/status
-```
-
-Returns overall service status.
-
-**Response:**
-
-```json
-{
-  "status": "operational",
-  "services": {
-    "vercel": "operational",
-    "cloudflare": "operational",
-    "github": "operational",
-    "discord": "operational"
-  },
-  "lastChecked": "2026-01-07T12:00:00.000Z"
-}
-```
-
-#### Service Health Checks
-
-```http
-GET /api/admin/monitor/services
-```
-
-Returns detailed health check data for all monitored services.
-
-**Response:**
-
-```json
-{
-  "services": [
-    {
-      "serviceName": "Vercel",
-      "endpoint": "https://api.vercel.com/v1/status",
-      "status": "operational",
-      "responseTime": 145,
-      "statusCode": 200,
-      "lastChecked": "2026-01-07T12:00:00.000Z"
-    },
-    {
-      "serviceName": "Cloudflare",
-      "endpoint": "https://api.cloudflare.com/client/v4/user",
-      "status": "operational",
-      "responseTime": 89,
-      "statusCode": 200,
-      "lastChecked": "2026-01-07T12:00:00.000Z"
-    }
-  ]
-}
-```
-
-#### Monitoring Alerts
-
-```http
-GET /api/admin/monitor/alerts
-```
-
-Returns recent monitoring alerts.
-
-**Query Parameters:**
-
-- `acknowledged`: Filter by acknowledged status (optional, boolean)
-
-**Response:**
-
-```json
-{
-  "alerts": [
-    {
-      "id": "cm1alert001",
-      "type": "SERVICE_DOWN",
-      "severity": "CRITICAL",
-      "source": "Cloudflare",
-      "message": "Cloudflare API returning 503 errors",
-      "timestamp": "2026-01-07T11:45:00.000Z",
-      "acknowledged": false,
-      "metadata": {
-        "statusCode": 503,
-        "endpoint": "https://api.cloudflare.com/client/v4/user"
-      },
-      "createdAt": "2026-01-07T11:45:00.000Z"
-    }
-  ]
-}
-```
-
-#### GitHub Status
-
-```http
-GET /api/admin/monitor/github
-```
-
-Returns GitHub API status and recent events.
-
-**Response:**
-
-```json
-{
-  "status": "operational",
-  "rateLimitRemaining": 4850,
-  "rateLimitTotal": 5000,
-  "recentEvents": [
-    {
-      "type": "push",
-      "repository": "sunny-stack",
-      "branch": "main",
-      "timestamp": "2026-01-07T11:30:00.000Z"
-    }
-  ]
-}
-```
-
----
-
-### Proposals API
-
-#### List Proposals
-
-```http
-GET /api/admin/proposals
-```
-
-Returns all generated proposals.
-
-**Response:**
-
-```json
-{
-  "proposals": [
-    {
-      "id": "cm1proposal001",
-      "quoteId": "cm1quote001",
-      "projectId": "cm1project123",
-      "pdfUrl": "data:application/pdf;base64,...",
-      "sentAt": "2026-01-07T12:00:00.000Z",
-      "createdAt": "2026-01-07T11:55:00.000Z"
-    }
-  ]
-}
-```
-
----
-
-### Discord Integration API
-
-#### Discord Interactions
-
-```http
-POST /api/discord/interactions
-```
-
-Handles Discord slash command interactions (webhook endpoint).
-
-**Headers:**
-
-- `X-Signature-Ed25519`: Discord signature
-- `X-Signature-Timestamp`: Request timestamp
-
-**Request Body:**
-
-```json
-{
-  "type": 2,
-  "data": {
-    "name": "project",
-    "options": [
-      {
-        "name": "status",
-        "type": 1
-      }
-    ]
-  }
-}
-```
-
-**Response:**
-Discord interaction response (varies by command).
-
-#### Discord Webhooks
-
-```http
-POST /api/discord/webhooks
-```
-
-Handles Discord webhooks for notifications.
-
----
-
-### Test Endpoints (Development Only)
-
-#### Test Notification
-
-```http
-POST /api/admin/test-notification
-```
-
-Sends a test Discord notification.
-
-**Request Body:**
-
-```json
-{
-  "type": "quote",
-  "message": "Test notification"
-}
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "messageId": "1234567890123456789"
-}
-```
-
----
-
-## Error Responses
-
-All endpoints follow a consistent error response format:
-
-### Validation Error (400)
-
-```json
-{
-  "error": "Validation failed",
-  "details": [
-    {
-      "field": "email",
-      "message": "Invalid email format"
-    }
-  ]
-}
-```
-
-### Unauthorized (401)
-
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
-### Forbidden (403)
-
-```json
-{
-  "error": "Forbidden: Admin access required"
-}
-```
-
-### Not Found (404)
-
-```json
-{
-  "error": "Resource not found"
-}
-```
-
-### Internal Server Error (500)
-
-```json
-{
-  "error": "Internal server error"
-}
-```
 
 ## Rate Limiting
 
-Currently, no rate limiting is implemented. This is planned for future releases.
+30 requests per minute per IP address. Enforced by `src/proxy.ts`. Returns 429 Too Many Requests with `Retry-After` header when exceeded.
 
-## Versioning
+Rate limit response:
 
-The API is currently unversioned. Breaking changes will be announced and documented.
+```json
+{
+  "error": "Too many requests"
+}
+```
 
-## Support
+Response headers on 429:
 
-For API support and questions:
-
-- Check the [Architecture Documentation](../architecture/overview.md)
-- Review [Known Issues](../../trinity/knowledge-base/ISSUES.md)
-- Contact: luka@sunny-stack.com
+```
+Retry-After: 45
+```
 
 ---
 
-**Last Updated:** 2026-01-07
-**API Version:** 2.0.2
+## Query Parameters
+
+The following endpoints accept query parameters:
+
+| Endpoint | Parameter | Type | Description |
+|----------|-----------|------|-------------|
+| `GET /api/steam/achievements` | `appid` | number | Steam application ID (validated with `/^\d+$/` regex) |
+| `GET /api/docs` | `list` | string | Set to `"true"` to return the documentation file tree |
+| `GET /api/docs` | `path` | string | File path to a markdown document (e.g., `README.md` or `docs/guides/getting-started.md`) |
+
+---
+
+## API Resources
+
+| Resource | Endpoints | Description |
+|----------|-----------|-------------|
+| bluesky | 1 | Latest Bluesky social post |
+| youtube | 1 | Recent YouTube videos with statistics |
+| github | 1 | GitHub profile card data |
+| activity | 1 | Cross-platform activity status |
+| spotify | 2 | Top track and wrapped/yearly summary |
+| steam | 2 | Most-played games and achievements |
+| docs | 1 | Documentation file tree and content (2 modes) |
+| instagram | 1 | Recent image posts |
+
+---
+
+## Endpoints
+
+### Bluesky
+
+#### `GET /api/bluesky`
+
+Returns the latest Bluesky post (excluding replies) for the configured handle.
+
+**Parameters:** None
+
+**Response:** `BlueskyPost | null`
+
+```json
+{
+  "text": "Just shipped a new feature!",
+  "facets": [
+    {
+      "index": { "byteStart": 0, "byteEnd": 10 },
+      "features": [{ "$type": "app.bsky.richtext.facet#link", "uri": "https://example.com" }]
+    }
+  ],
+  "embed": {
+    "type": "external",
+    "external": {
+      "uri": "https://example.com",
+      "title": "Example Site",
+      "description": "An example website",
+      "thumb": "https://cdn.bsky.app/thumb.jpg"
+    }
+  },
+  "likeCount": 12,
+  "replyCount": 3,
+  "repostCount": 5,
+  "permalink": "https://bsky.app/profile/handle.bsky.social/post/abc123",
+  "createdAt": "2026-03-20T15:30:00.000Z"
+}
+```
+
+**Fallback:** Returns `null` when `BLUESKY_HANDLE` is not set or the Bluesky API fails.
+
+---
+
+### YouTube
+
+#### `GET /api/youtube`
+
+Returns the 5 most recent YouTube videos with view, like, and comment statistics.
+
+**Parameters:** None
+
+**Response:** `YouTubeVideo[]`
+
+```json
+[
+  {
+    "id": "dQw4w9WgXcQ",
+    "title": "Building a Portfolio Site with Next.js",
+    "description": "In this video we build...",
+    "thumbnailUrl": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+    "publishedAt": "2026-03-15T12:00:00Z",
+    "viewCount": 1500,
+    "likeCount": 120,
+    "commentCount": 25
+  }
+]
+```
+
+**Fallback:** Returns `[]` when `YOUTUBE_API_KEY` or `YOUTUBE_CHANNEL_ID` is not set.
+
+---
+
+### GitHub
+
+#### `GET /api/github`
+
+Returns GitHub profile card data including avatar, name, bio, location, and last push timestamp.
+
+**Parameters:** None
+
+**Response:** `GitHubProfile | null`
+
+```json
+{
+  "avatarUrl": "https://avatars.githubusercontent.com/u/12345678?s=200",
+  "name": "Luka",
+  "bio": "Full-stack developer building cool things",
+  "location": "USA",
+  "lastPushedAt": "2026-03-20T15:30:00Z"
+}
+```
+
+**Fallback:** Returns `null` when `GITHUB_TOKEN` is not set or the GitHub GraphQL API fails.
+
+---
+
+### Activity
+
+#### `GET /api/activity`
+
+Returns cross-platform activity status by aggregating the most recent activity across GitHub, Bluesky, Instagram, and YouTube. Considers the user "online" if any activity occurred within the last hour.
+
+**Parameters:** None
+
+**Response:** `ActivityStatus`
+
+```json
+{
+  "lastActivityAt": "2026-03-20T15:30:00.000Z",
+  "isOnline": true
+}
+```
+
+**Fallback:** Returns `{ "lastActivityAt": null, "isOnline": false }` when no platform credentials are configured.
+
+---
+
+### Spotify
+
+#### `GET /api/spotify/top-track`
+
+Returns the current top track from Spotify (medium-term time range).
+
+**Parameters:** None
+
+**Response:** `SpotifyTopTrack | null`
+
+```json
+{
+  "id": "4uLU6hMCjMI75M1A2tKUQC",
+  "name": "Blinding Lights",
+  "artist": "The Weeknd",
+  "albumName": "After Hours",
+  "albumImageUrl": "https://i.scdn.co/image/ab67616d0000b273...",
+  "spotifyUrl": "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC"
+}
+```
+
+**Fallback:** Returns `null` when Spotify credentials (`SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN`) are not set.
+
+---
+
+#### `GET /api/spotify/wrapped`
+
+Returns a Spotify Wrapped-style summary: top 5 tracks, top 5 artists, top genres, and the current year.
+
+**Parameters:** None
+
+**Response:** `SpotifyWrappedData | null`
+
+```json
+{
+  "tracks": [
+    {
+      "id": "4uLU6hMCjMI75M1A2tKUQC",
+      "name": "Blinding Lights",
+      "artist": "The Weeknd",
+      "albumName": "After Hours",
+      "albumImageUrl": "https://i.scdn.co/image/...",
+      "spotifyUrl": "https://open.spotify.com/track/..."
+    }
+  ],
+  "artists": [
+    {
+      "id": "1Xyo4u8uXC1ZmMpatF05PJ",
+      "name": "The Weeknd",
+      "imageUrl": "https://i.scdn.co/image/...",
+      "genres": ["canadian pop", "pop"],
+      "spotifyUrl": "https://open.spotify.com/artist/..."
+    }
+  ],
+  "topGenres": ["canadian pop", "pop", "r&b", "dance pop"],
+  "year": 2026
+}
+```
+
+**Fallback:** Returns `null` when Spotify credentials are not set.
+
+---
+
+### Steam
+
+#### `GET /api/steam`
+
+Returns the top 8 most-played Steam games with header images and recently-played status.
+
+**Parameters:** None
+
+**Response:** `SteamGamesData | null`
+
+```json
+{
+  "games": [
+    {
+      "appid": 730,
+      "name": "Counter-Strike 2",
+      "playtimeMinutes": 15000,
+      "headerImage": "https://cdn.akamai.steamstatic.com/steam/apps/730/header.jpg",
+      "recentlyPlayed": true
+    }
+  ]
+}
+```
+
+**Fallback:** Returns `null` when `STEAM_API_KEY` or `STEAM_ID` is not set.
+
+---
+
+#### `GET /api/steam/achievements?appid={id}`
+
+Returns achievement data for a specific Steam game, including earned achievements sorted by unlock time (newest first).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `appid` | number | Yes | Steam application ID (must be numeric) |
+
+**Response:** `SteamAchievementData | null`
+
+```json
+{
+  "achieved": 45,
+  "total": 100,
+  "achievements": [
+    {
+      "apiname": "ACH_WIN_PISTOL_ROUND",
+      "displayName": "Pistol Round Winner",
+      "description": "Win a pistol round",
+      "icon": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/...",
+      "unlocktime": 1711036200
+    }
+  ]
+}
+```
+
+**Fallback:** Returns `null` when credentials are missing, `appid` is not provided, or the game has no achievements.
+
+---
+
+### Docs
+
+#### `GET /api/docs?list=true`
+
+Returns the documentation file tree, including root-level files (`README.md`, `CHANGELOG.md`) and all markdown files in the `docs/` directory.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `list` | string | Yes | Must be `"true"` to return file tree |
+
+**Response:** `{ files: DocFile[] }`
+
+```json
+{
+  "files": [
+    { "name": "README.md", "path": "README.md", "type": "file" },
+    { "name": "CHANGELOG.md", "path": "CHANGELOG.md", "type": "file" },
+    {
+      "name": "docs",
+      "path": "docs",
+      "type": "directory",
+      "children": [
+        {
+          "name": "guides",
+          "path": "docs/guides",
+          "type": "directory",
+          "children": [
+            { "name": "getting-started.md", "path": "docs/guides/getting-started.md", "type": "file" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+#### `GET /api/docs?path={filepath}`
+
+Returns the content of a specific markdown file. Mermaid code blocks are preprocessed into `<mermaid-diagram>` HTML markers for client-side rendering.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | File path (e.g., `README.md` or `docs/guides/getting-started.md`) |
+
+**Validation:**
+- Path must not contain `..` (path traversal blocked)
+- Path must be a root-level file (`README.md`, `CHANGELOG.md`) or start with `docs/`
+- Path must end with `.md`
+
+**Response:** `{ content: string }`
+
+```json
+{
+  "content": "# sunny-stack\n\nA portfolio website built with Next.js..."
+}
+```
+
+**Error Responses:**
+
+```json
+// 400 - Missing path parameter
+{ "error": "Missing 'path' parameter" }
+
+// 400 - Invalid path
+{ "error": "Invalid path" }
+
+// 404 - File not found
+{ "error": "File not found" }
+```
+
+---
+
+### Instagram
+
+#### `GET /api/instagram`
+
+Returns the 5 most recent Instagram image posts (filters out videos and carousel albums).
+
+**Parameters:** None
+
+**Response:** `InstagramPost[]`
+
+```json
+[
+  {
+    "id": "17895695668004550",
+    "imageUrl": "https://scontent.cdninstagram.com/...",
+    "caption": "Beautiful sunset at the beach",
+    "timestamp": "2026-03-18T19:30:00+0000",
+    "permalink": "https://www.instagram.com/p/ABC123/",
+    "likeCount": 42,
+    "commentsCount": 5
+  }
+]
+```
+
+**Fallback:** Returns `[]` when `INSTAGRAM_ACCESS_TOKEN` is not set.
+
+---
+
+## Error Codes
+
+### Common Errors
+
+| Code | Condition | Response |
+|------|-----------|----------|
+| 200 | Success (data returned) | Endpoint-specific JSON data |
+| 200 | Success (graceful fallback) | `null` or `[]` when credentials missing or external API fails |
+| 400 | Missing or invalid parameters | `{ "error": "..." }` (only from `/api/docs` and `/api/steam/achievements`) |
+| 404 | File not found | `{ "error": "File not found" }` (only from `/api/docs`) |
+| 429 | Rate limit exceeded | `{ "error": "Too many requests" }` with `Retry-After` header |
+
+---
+
+## Code Examples
+
+### JavaScript (Fetch)
+
+```javascript
+// Fetch GitHub profile data
+const response = await fetch('/api/github');
+const profile = await response.json();
+
+if (profile) {
+  console.log(profile.name, profile.bio);
+} else {
+  console.log('GitHub data unavailable');
+}
+```
+
+### JavaScript (Multiple endpoints)
+
+```javascript
+// Fetch data from multiple endpoints in parallel
+const [github, bluesky, youtube] = await Promise.all([
+  fetch('/api/github').then(r => r.json()),
+  fetch('/api/bluesky').then(r => r.json()),
+  fetch('/api/youtube').then(r => r.json()),
+]);
+
+console.log('GitHub:', github?.name);
+console.log('Bluesky:', bluesky?.text);
+console.log('Videos:', youtube?.length ?? 0);
+```
+
+### cURL
+
+```bash
+# Fetch GitHub profile
+curl http://localhost:3000/api/github
+
+# Fetch Steam achievements for Counter-Strike 2
+curl "http://localhost:3000/api/steam/achievements?appid=730"
+
+# Fetch documentation file tree
+curl "http://localhost:3000/api/docs?list=true"
+
+# Fetch a specific markdown file
+curl "http://localhost:3000/api/docs?path=README.md"
+```
+
+### Python (Requests)
+
+```python
+import requests
+
+# Fetch GitHub profile
+response = requests.get('http://localhost:3000/api/github')
+profile = response.json()
+
+if profile:
+    print(f"{profile['name']} - {profile['bio']}")
+
+# Fetch Instagram posts
+posts = requests.get('http://localhost:3000/api/instagram').json()
+for post in posts:
+    print(f"{post['caption'][:50]}... ({post['likeCount']} likes)")
+```
+
+---
+
+## Versioning
+
+Single unversioned API. All endpoints at `/api/*`. There are no versioned prefixes (e.g., no `/api/v1/`).
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](../../CHANGELOG.md) in the project root.
+
+---
+
+## Related Documentation
+
+- [Getting Started](../guides/getting-started.md) - Setup and installation
+- [API Development Guide](../guides/api-development.md) - Creating new endpoints
+- [Deployment Guide](../guides/deployment.md) - Production deployment
+
+---
+
+## Support
+
+For API support:
+- **Documentation:** [Full documentation](../README.md)
+- **Issues:** Report bugs via [GitHub Issues](https://github.com/strawhatluka/sunny-stack/issues)
+- **Questions:** [GitHub Discussions](https://github.com/strawhatluka/sunny-stack/discussions)
+
+---
+
+*Last updated: 2026-03-24*

@@ -1,118 +1,23 @@
 name: CI
 
-# Quality gates for sunny-stack (Next.js 15 + TypeScript)
-# Runs on push/PR to main/dev, reusable by release.yml
-
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main, dev]
   pull_request:
-    branches:
-      - main
-      - dev
+    branches: [main, dev]
   workflow_call:
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  actions: read
-  checks: write
-
-env:
-  NODE_VERSION: "22.x"
 
 jobs:
-  quality-gates:
-    name: Quality Gates
+  ci:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      # ---- Lint ----
-      - name: Lint
-        id: lint
-        run: npm run lint
-
-      # ---- Structure ----
-      - name: Structure check
-        id: structure
-        run: |
-          for dir in app components lib __tests__; do
-            if [ ! -d "$dir" ]; then
-              echo "Required directory missing: $dir"
-              exit 1
-            fi
-          done
-
-          for script in test build lint type-check; do
-            if ! grep -q "\"$script\"" package.json; then
-              echo "package.json missing '$script' script"
-              exit 1
-            fi
-          done
-
-      # ---- Build ----
-      - name: Build
-        id: build
-        run: npm run build
-
-      # ---- Type check ----
-      - name: Type check
-        id: typecheck
-        run: npm run type-check
-
-      # ---- Unit tests + coverage collection ----
-      - name: Unit tests
-        id: tests
-        run: npm run test:ci -- --coverage --coverageThreshold='{}' --testPathIgnorePatterns='integration|e2e/|__tests__/helpers/'
-
-      # ---- Coverage report ----
-      - name: Coverage report
-        id: coverage
-        continue-on-error: true  # Unit-only coverage won't meet 80% (integration tests excluded)
-        run: |
-          if [ -f "coverage/coverage-summary.json" ]; then
-            node -e "
-              const c = require('./coverage/coverage-summary.json').total;
-              console.log('Coverage: Lines ' + c.lines.pct + '% | Branches ' + c.branches.pct + '% | Functions ' + c.functions.pct + '% | Statements ' + c.statements.pct + '%');
-            "
-          else
-            echo "coverage-summary.json not found"
-          fi
-
-      # ---- Artifacts ----
-      - name: Upload coverage
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-          retention-days: 30
-
-      # ---- Summary ----
-      - name: CI Summary
-        if: always()
-        run: |
-          echo "### CI Quality Gates" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Lint | ${{ steps.lint.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Structure | ${{ steps.structure.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Build | ${{ steps.build.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Type Check | ${{ steps.typecheck.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Unit Tests | ${{ steps.tests.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Coverage | ${{ steps.coverage.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
