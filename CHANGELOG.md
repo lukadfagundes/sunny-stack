@@ -9,491 +9,231 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `mermaid` and `rehype-raw` as project dependencies for #84.
-- Add `src/components/docs/MermaidDiagram.tsx` component to render Mermaid diagrams client-side for #84.
-- Add `tests/helpers/__mocks__/mermaid.ts` to mock the `mermaid` library for testing purposes for #84.
-- Add `tests/helpers/__mocks__/rehype-raw.ts` to mock the `rehype-raw` plugin for testing purposes for #84.
-- Add `moduleNameMapper` configurations to `jest.config.ts` for mocking `mermaid` and `rehype-raw` in tests for #84.
-- Document `rehypeRaw` plugin usage in `docs/frontend/components/docs/MarkdownRenderer.md` for #84.
-- Introduce `NavSubgroup` and `NavSubsection` interfaces in `docs/frontend/components/docs/DocNav.md` for clearer documentation of navigation structure for #84.
-- Include `CHANGELOG.md` in the file tree returned by the `GET /api/docs?list=true` endpoint in `docs/services/docs-route.md` for #84.
-- Add `public/Wheel.png` for the new ship wheel image asset for #84.
-- Add `public/favicon.png` for the new application favicon for #84.
-- Add `public/ship.png` for the new ship image asset for #84.
-- Add `README.md` for project overview and setup for #84.
-- Add `docs/api/README.md` to document API structure for #84.
-- Add `docs/api/endpoint-map.md` to provide a map of API endpoints for #84.
-- Add `docs/architecture/component-hierarchy.md` to describe the application's component hierarchy for #84.
-- Add `docs/architecture/mvc-flow.md` to explain the Model-View-Controller flow for #84.
-- Add `docs/frontend/components/404/ZoroGame.md` to document the 404 page Zoro game component for #84.
-- Add `docs/frontend/components/404/game-logic.md` to document the 404 page game logic for #84.
-- Add `docs/frontend/components/about/BioSections.md` to document the About page bio sections component for #84.
-- Add `docs/frontend/components/about/BlogEntry.md` to document the About page blog entry component for #84.
-- Add `docs/frontend/components/about/ContactTable.md` to document the About page contact table component for #84.
-- Add `docs/frontend/components/about/DetailsBox.md` to document the About page details box component for #84.
-- Add `docs/frontend/components/about/GameStats.md` to document the About page game statistics component for #84.
-- Add `docs/frontend/components/about/InterestsTable.md` to document the About page interests table component for #84.
-- Add `docs/frontend/components/about/MusicGallery.md` to document the About page music gallery component for #84.
-- Add `docs/frontend/components/about/MusicPlayer.md` to document the About page music player component for #84.
-- Add `docs/frontend/components/about/NetworkBanner.md` to document the About page network banner component for #84.
-- Add `docs/frontend/components/about/PhotoGallery.md` to document the About page photo gallery component for #84.
-- Add `docs/frontend/components/about/PostCard.md` to document the About page post card component for #84.
-- Add `docs/frontend/components/about/ProfileCard.md` to document the About page profile card component for #84.
-- Add `docs/frontend/components/about/SectionHeader.md` to document the About page section header component for #84.
-- Add `docs/frontend/components/about/TopEight.md` to document the About page Top Eight component for #84.
-- Add `docs/frontend/components/about/VideoCard.md` to document the About page video card component for #84.
-- Add `docs/frontend/components/about/VideoGallery.md` to document the About page video gallery component for #84.
-- Add `docs/frontend/components/docs/DocNav.md` to document the documentation navigation component for #84.
-- Add `docs/frontend/components/docs/MarkdownRenderer.md` to document the markdown renderer component for #84.
-- Add `docs/frontend/components/landing/overview.md` to document the landing page overview for #84.
-- Add `docs/frontend/components/navigation/ShipWheel.md` to document the navigation ship wheel component for #84.
-- Add `docs/frontend/components/navigation/VoyageSail.md` to document the navigation voyage sail component for #84.
-- Add `docs/frontend/pages/about.md` to document the About page for #84.
-- Add `docs/frontend/pages/docs-page.md` to document the documentation page for #84.
-- Add `docs/frontend/pages/home.md` to document the Home page for #84.
-- Add `docs/frontend/pages/not-found.md` to document the Not Found page for #84.
-- Add `docs/frontend/pages/portfolio.md` to document the Portfolio page for #84.
-- Add `docs/guides/api-development.md` to provide a guide for API development for #84.
-- Add `docs/guides/deployment.md` to provide a guide for deployment for #84.
-- Add `docs/guides/getting-started.md` to provide a getting started guide for #84.
-- Add `docs/services/activity-route.md` to document the activity route service for #84.
-- Add `docs/services/bluesky-route.md` to document the Bluesky route service for #84.
-- Add `docs/services/data-personal.md` to document personal data handling for #84.
-- Add `docs/services/data-projects.md` to document project data handling for #84.
-- Add `docs/services/data-types.md` to document data types for #84.
-- Add `docs/services/docs-route.md` to document the documentation route service for #84.
-- Add `docs/services/github-lib.md` to document the GitHub library service for #84.
-- Add `docs/services/github-route.md` to document the GitHub route service for #84.
-- Add `docs/services/instagram-route.md` to document the Instagram route service for #84.
-- Add `docs/services/middleware.md` to document the middleware service for #84.
-- Add `docs/services/spotify-token.md` to document the Spotify token service for #84.
-- Add `docs/services/spotify-top-track-route.md` to document the Spotify top track route service for #84.
-- Add `docs/services/spotify-wrapped-route.md` to document the Spotify Wrapped route service for #84.
-- Add `docs/services/steam-achievements-route.md` to document the Steam achievements route service for #84.
-- Add `docs/services/steam-route.md` to document the Steam route service for #84.
-- Add `docs/services/youtube-route.md` to document the YouTube route service for #84.
-- Add `.github/workflows/quality.yml` to implement code quality checks for #84.
-- Add `LICENSE` file to specify the `CC-BY-NC-4.0` license.
-- Add `license` property to `package.json` to specify the `CC-BY-NC-4.0` license.
+#### Project Documentation
+- Add `README.md` for project overview and setup.
+- Add `docs/api/README.md` to document API structure, reflecting `CHANGELOG.md` inclusion in file tree and client-side Mermaid rendering.
+- Add `docs/api/endpoint-map.md` to provide a map of API endpoints with simplified labels and left-to-right flowchart direction.
+- Add `docs/architecture/component-hierarchy.md` to describe the application's component hierarchy with left-to-right flowchart direction.
+- Add `docs/architecture/mvc-flow.md` to explain the Model-View-Controller flow.
+- Add `docs/guides/api-development.md` to provide a guide for API development.
+- Add `docs/guides/deployment.md` to provide a guide for deployment.
+- Add `docs/guides/getting-started.md` to provide a getting started guide.
+
+#### Frontend Component Documentation
+- Add `docs/frontend/components/404/ZoroGame.md` to document the 404 page Zoro game component.
+- Add `docs/frontend/components/404/game-logic.md` to document the 404 page game logic.
+- Add `docs/frontend/components/about/BioSections.md` to document the About page bio sections component.
+- Add `docs/frontend/components/about/BlogEntry.md` to document the About page blog entry component.
+- Add `docs/frontend/components/about/ContactTable.md` to document the About page contact table component.
+- Add `docs/frontend/components/about/DetailsBox.md` to document the About page details box component.
+- Add `docs/frontend/components/about/GameStats.md` to document the About page game statistics component.
+- Add `docs/frontend/components/about/InterestsTable.md` to document the About page interests table component.
+- Add `docs/frontend/components/about/MusicGallery.md` to document the About page music gallery component.
+- Add `docs/frontend/components/about/MusicPlayer.md` to document the About page music player component.
+- Add `docs/frontend/components/about/NetworkBanner.md` to document the About page network banner component.
+- Add `docs/frontend/components/about/PhotoGallery.md` to document the About page photo gallery component.
+- Add `docs/frontend/components/about/PostCard.md` to document the About page post card component.
+- Add `docs/frontend/components/about/ProfileCard.md` to document the About page profile card component.
+- Add `docs/frontend/components/about/SectionHeader.md` to document the About page section header component.
+- Add `docs/frontend/components/about/TopEight.md` to document the About page Top Eight component.
+- Add `docs/frontend/components/about/VideoCard.md` to document the About page video card component.
+- Add `docs/frontend/components/about/VideoGallery.md` to document the About page video gallery component.
+- Add `docs/frontend/components/docs/DocNav.md` to document the documentation navigation component with handling of root-level files, deeply nested directories as subgroups, `NavSubgroup` and `NavSubsection` interfaces.
+- Add `docs/frontend/components/docs/MarkdownRenderer.md` to document the markdown renderer component with image `src` sanitization, client-side Mermaid diagram rendering via custom HTML elements, and `rehypeRaw` plugin usage.
+- Add `docs/frontend/components/docs/MermaidDiagram.md` to document the Mermaid diagram client-side rendering component.
+- Add `docs/frontend/components/landing/overview.md` to document the landing page overview.
+- Add `docs/frontend/components/navigation/ShipWheel.md` to document the navigation ship wheel component.
+- Add `docs/frontend/components/navigation/VoyageSail.md` to document the navigation voyage sail component.
+
+#### Frontend Page Documentation
+- Add `docs/frontend/pages/about.md` to document the About page.
+- Add `docs/frontend/pages/docs-page.md` to document the documentation page with iteration over subgroups when finding the current document path.
+- Add `docs/frontend/pages/home.md` to document the Home page.
+- Add `docs/frontend/pages/not-found.md` to document the Not Found page.
+- Add `docs/frontend/pages/portfolio.md` to document the Portfolio page.
+
+#### Service Documentation
+- Add `docs/services/activity-route.md` to document the activity route service.
+- Add `docs/services/bluesky-route.md` to document the Bluesky route service.
+- Add `docs/services/data-personal.md` to document personal data handling.
+- Add `docs/services/data-projects.md` to document project data handling.
+- Add `docs/services/data-types.md` to document data types.
+- Add `docs/services/docs-route.md` to document the documentation route service with client-side Mermaid rendering via custom HTML markers and explicit `CHANGELOG.md` path validation.
+- Add `docs/services/github-lib.md` to document the GitHub library service.
+- Add `docs/services/github-route.md` to document the GitHub route service.
+- Add `docs/services/instagram-route.md` to document the Instagram route service.
+- Add `docs/services/middleware.md` to document the middleware service.
+- Add `docs/services/spotify-token.md` to document the Spotify token service.
+- Add `docs/services/spotify-top-track-route.md` to document the Spotify top track route service.
+- Add `docs/services/spotify-wrapped-route.md` to document the Spotify Wrapped route service.
+- Add `docs/services/steam-achievements-route.md` to document the Steam achievements route service.
+- Add `docs/services/steam-route.md` to document the Steam route service.
+- Add `docs/services/youtube-route.md` to document the YouTube route service.
+
+#### CI/CD and Configuration
+- Add `.github/workflows/quality.yml` to implement code quality checks.
 - Add `.github/dependabot.yml` to configure Dependabot for automated dependency updates.
 - Add `.github/workflows/ci.yml` to implement Continuous Integration checks using GitHub Actions.
 - Add `.github/workflows/deploy.yml` to configure GitHub Actions for application deployment.
 - Add `.github/workflows/release.yml` to set up GitHub Actions for automated release management.
 - Add `vercel.json` to configure Vercel deployment settings.
-- Add `securityHeaders` constant to `next.config.ts` to define various HTTP security headers.
-- Add `poweredByHeader: false` configuration to `next.config.ts` to disable the `X-Powered-By` header.
-- Add `headers()` asynchronous function to `next.config.ts` to apply defined security headers to all routes.
-- Add input validation to `src/app/api/instagram/comments/route.ts` to ensure `postId` is in a valid format before making an API request.
-- Add `MAX_CACHE_SIZE` constant and cache eviction logic to `src/app/api/instagram/comments/route.ts` to limit the size of the comment cache.
-- Add `Authorization` header to API requests in `src/app/api/instagram/comments/route.ts` to send the access token securely.
-- Add input validation to `src/app/api/steam/achievements/route.ts` to ensure `appid` is numeric before making an API request.
-- Add `sandbox` attribute with `allow-scripts allow-same-origin allow-popups` values to `iframe` in `src/components/about/MusicPlayer.tsx` for enhanced security.
-- Add `sandbox` attribute with `allow-scripts allow-same-origin allow-popups` values to `iframe` in `src/components/about/VideoCard.tsx` for enhanced security.
-- Add `src/middleware.ts` to implement security and request handling logic (ref #84).
-- Add `tests/middleware.test.ts` for testing the new middleware (ref #84).
-- Add test suite to `tests/api/instagram-comments.test.ts` to verify the API returns an empty array for invalid `postId` formats.
-- Add test to `tests/api/instagram-comments.test.ts` to verify the Instagram access token is sent via the `Authorization` header instead of the URL.
-- Add test to `tests/api/instagram.test.ts` to verify the Instagram access token is sent via the `Authorization` header instead of the URL.
-- Add test suite to `tests/api/steam.test.ts` to verify the API returns null when `appid` is not numeric or contains special characters.
-- Add test to `tests/components/MusicPlayer.test.tsx` to verify the `iframe` element has the correct `sandbox` attribute.
-- Add test to `tests/components/VideoCard.test.tsx` to verify the `iframe` element has the correct `sandbox` attribute.
-- Add `src/components/docs/DocNav.tsx` component to manage documentation navigation and file loading (ref #84).
-- Add `src/components/docs/MarkdownRenderer.tsx` component to handle rendering of markdown content (ref #84).
-- Add new test file `tests/components/docs/MarkdownRenderer.test.tsx` for the `MarkdownRenderer` component (ref #84).
-- Add test suite to `tests/components/VoyageSail.test.tsx` to verify `VoyageSail` behavior when `prefers-reduced-motion` is active.
-- Add test to `tests/components/about.test.tsx` to verify rendering of mention facets as profile links in blog entries.
-- Add test to `tests/components/about.test.tsx` to verify rendering of external embeds with thumbnails in blog entries.
-- Add test to `tests/components/docs.test.tsx` to verify error display when initial documentation content fetch fails (ref #84).
-- Add test to `tests/components/docs.test.tsx` to verify error display when documentation file navigation fetch fails (ref #84).
-- Add `react-markdown`, `react-syntax-highlighter`, `remark-gfm` and their corresponding types to `package.json` and `package-lock.json` for markdown rendering.
-- Add new API route `src/app/api/docs/route.ts` to serve documentation content.
-- Add new page `src/app/docs/page.tsx` to display documentation.
-- Add new test file `tests/api/docs.test.ts` for the documentation API route.
-- Add new test file `tests/components/docs.test.tsx` for the documentation page component.
-- Add `STEAM_API_KEY` and `STEAM_ID` to `.env.example` for Steam Web API integration (resolves #84).
-- Add import for `GameStats` component to `src/app/about/page.tsx` (resolves #84).
-- Add import for `SteamGame` type to `src/app/about/page.tsx` (resolves #84).
-- Add `useState` for `selectedGame` to `src/app/about/page.tsx` to manage selected Steam game (resolves #84).
-- Add conditional rendering for `GameStats` component in `src/app/about/page.tsx` when a game is selected (resolves #84).
-- Add `.steam-scrollbar` styles to `src/app/globals.css` for a Steam-themed scrollbar (resolves #84).
-- Add `useEffect` hook to `src/components/about/TopEight.tsx` to fetch Steam game data from `/api/steam` (resolves #84).
-- Add `useState` hooks for `games`, `error`, and `loading` states to `src/components/about/TopEight.tsx` (resolves #84).
-- Add `onViewGame` prop to `TopEightProps` interface in `src/components/about/TopEight.tsx` to handle game selection (resolves #84).
-- Add import for `GameStats` component to `tests/components/about.test.tsx` (resolves #84).
-- Add mock data and tests for `TopEight` (Game Grid) component in `tests/components/about.test.tsx`, including fetch mocking (resolves #84).
-- Add new API route `src/app/api/steam/achievements/route.ts` to fetch Steam game achievements (resolves #84).
-- Add new API route `src/app/api/steam/route.ts` to fetch a user's Steam game list (resolves #84).
-- Add new component `src/components/about/GameStats.tsx` to display detailed statistics for a selected Steam game (resolves #84).
-- Add new test file `tests/api/steam.test.ts` for the Steam API routes (resolves #84).
-- Add `OVERWATCH_BATTLETAG` to `.env.example` for Overwatch 2 stats (resolves #84).
-- Add new API route `src/app/api/overwatch/route.ts` to fetch and return Overwatch hero data (resolves #84).
-- Add new test file `tests/api/overwatch.test.ts` for the Overwatch API route (resolves #84).
-- Add `useState` and `useEffect` hooks to `src/components/about/InterestsTable.tsx` for client-side data fetching (resolves #84).
-- Add `badgeColors` constant to `src/components/about/InterestsTable.tsx` for styling dynamic badges (resolves #84).
-- Add test case to `tests/components/about.test.tsx` to verify rendering of Spotify genre badges (resolves #84).
-- Add `avatars.githubusercontent.com` to `next.config.ts` image domains for displaying GitHub profile pictures (resolves #84).
-- Add `BIRTHDATE` constant and `calculateAge` utility function to `src/lib/data/personal.ts` for dynamic age calculation (resolves #84).
-- Add `avatarUrl` property to `GitHubProfile` type in `src/lib/github.ts` (resolves #84).
-- Add tests to `tests/lib/github.test.ts` to verify the `avatarUrl` property of the fetched GitHub profile (resolves #84).
-- Add new API route `src/app/api/activity/route.ts` to provide real-time user activity status (resolves #84).
-- Add new API route `src/app/api/github/route.ts` to fetch and expose GitHub profile data (resolves #84).
-- Add new tests `tests/api/activity.test.ts` for the activity status API route (resolves #84).
-- Add new tests `tests/api/github.test.ts` for the GitHub profile API route (resolves #84).
-- Add `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, and `SPOTIFY_REFRESH_TOKEN` to `.env.example` for Spotify API authentication (resolves #84).
-- Add `i.scdn.co` to `next.config.ts` image domains for displaying Spotify album art (resolves #84).
-- Add `MusicGallery` component import and conditional rendering to `src/app/about/page.tsx` (resolves #84).
-- Add tests to `tests/pages/about.test.tsx` for switching between profile and music gallery views (resolves #84).
-- Add tests to `tests/pages/about.test.tsx` for switching back to profile from the music gallery (resolves #84).
-- Add new API utility `src/app/api/spotify/token.ts` for Spotify OAuth token management (resolves #84).
-- Add new API route `src/app/api/spotify/top-track/route.ts` to fetch the current top Spotify track (resolves #84).
-- Add new API route `src/app/api/spotify/wrapped/route.ts` for fetching Spotify Wrapped data (resolves #84).
-- Add new component `src/components/about/MusicGallery.tsx` to display a collection of music (resolves #84).
-- Add new API route tests `tests/api/spotify-top-track.test.ts` for the Spotify top track endpoint (resolves #84).
-- Add new API route tests `tests/api/spotify-wrapped.test.ts` for the Spotify Wrapped endpoint (resolves #84).
-- Add new component tests `tests/components/MusicGallery.test.ts` for the `MusicGallery` component (resolves #84).
-- Add new dedicated component tests `tests/components/MusicPlayer.test.tsx` for the refactored `MusicPlayer` component (resolves #84).
-- Add `BLUESKY_HANDLE` to `.env.example` for Bluesky API authentication (resolves #84).
-- Add `cdn.bsky.app` to `next.config.ts` image domains for displaying Bluesky post images (resolves #84).
-- Add new API route `src/app/api/bluesky/route.ts` to fetch Bluesky user posts (resolves #84).
-- Add new API route tests `tests/api/bluesky.test.ts` for the Bluesky API endpoint (resolves #84).
-- Add `TextEncoder` and `TextDecoder` polyfills to `tests/setup.ts` for jsdom environment compatibility (resolves #84).
-- Add `YOUTUBE_API_KEY` and `YOUTUBE_CHANNEL_ID` to `.env.example` for YouTube Data API authentication (resolves #84).
-- Add `i.ytimg.com` to `next.config.ts` image domains for displaying YouTube thumbnails (resolves #84).
-- Add new API route `src/app/api/youtube/route.ts` to fetch YouTube channel videos (resolves #84).
-- Add `VideoCard` component to `src/components/about/VideoCard.tsx` for displaying individual YouTube video thumbnails and titles (resolves #84).
-- Add `VideoGallery` component to `src/components/about/VideoGallery.tsx` for displaying a collection of YouTube videos (resolves #84).
-- Add conditional rendering for `VideoGallery` in `src/app/about/page.tsx` (resolves #84).
-- Add "Videos" button to `ProfileCard` in `src/components/about/ProfileCard.tsx` to navigate to video gallery (resolves #84).
-- Add new API test file `tests/api/youtube.test.ts` for YouTube API route (resolves #84).
-- Add new component test file `tests/components/VideoCard.test.tsx` for `VideoCard` component (resolves #84).
-- Add new component test file `tests/components/VideoGallery.test.tsx` for `VideoGallery` component (resolves #84).
-- Add test to `tests/components/about.test.tsx` to verify `onViewVideos` is called when the "Videos" button is clicked (resolves #84).
-- Add test to `tests/components/about.test.tsx` to verify the "Videos" element in `ProfileCard` is a button (resolves #84).
-- Add test to `tests/pages/about.test.tsx` to verify switching to the video gallery from the profile view (resolves #84).
-- Add test to `tests/pages/about.test.tsx` to verify switching back to the profile view from the video gallery (resolves #84).
-- Add `INSTAGRAM_ACCESS_TOKEN` to `.env.example` for Instagram API authentication (resolves #84).
-- Add new API route `src/app/api/instagram/comments/route.ts` to fetch Instagram post comments (resolves #84).
-- Add new API route `src/app/api/instagram/route.ts` to fetch Instagram user media (resolves #84).
-- Add `CommentThread` component to `src/components/about/CommentThread.tsx` for displaying Instagram comment threads (resolves #84).
-- Add `PhotoGallery` component to `src/components/about/PhotoGallery.tsx` for displaying Instagram media posts (resolves #84).
-- Add `PostCard` component to `src/components/about/PostCard.tsx` for rendering individual Instagram posts within the gallery (resolves #84).
-- Add `tests/api/instagram-comments.test.ts` for testing the Instagram comments API route (resolves #84).
-- Add `tests/api/instagram.test.ts` for testing the Instagram media API route (resolves #84).
-- Add `tests/components/CommentThread.test.tsx` for testing the `CommentThread` component (resolves #84).
-- Add `tests/components/PhotoGallery.test.tsx` for testing the `PhotoGallery` component (resolves #84).
-- Add `tests/components/PostCard.test.tsx` for testing the `PostCard` component (resolves #84).
-- Add test case to `tests/components/about.test.tsx` to verify `onViewPics` callback is invoked when the "Pics" button in `ProfileCard` is clicked (resolves #84).
-- Add test case to `tests/components/about.test.tsx` to verify "Pics" is rendered as a `<button>` element in `ProfileCard` (resolves #84).
-- Add test case to `tests/pages/about.test.tsx` to verify view switches to `PhotoGallery` when "Pics" is clicked (resolves #84).
-- Add test case to `tests/pages/about.test.tsx` to verify view switches back to profile when "Back" is clicked in `PhotoGallery` (resolves #84).
-- Add `social-media-api-guide.md` for social media API guidance.
-- Add `Instagram`, `CloudSun` (for Bluesky), `Twitch`, `Youtube`, `Linkedin`, `Github`, and `XIcon` components to `src/components/about/ContactTable.tsx` for new social media links.
-- Add `COLOR_MAP` to `src/components/about/ContactTable.tsx` for social link styling.
-- Add test cases to `tests/components/about.test.tsx` to verify rendering of social links, `target="_blank"` attribute for external links, and absence of `target="_blank"` for email links.
-- Add `jest.config.ts` for Jest test runner configuration.
-- Add `tests/404/grid.test.ts` for testing 404 game grid logic, addressing issue #84.
-- Add `tests/404/quotes.test.ts` for testing 404 game quotes, addressing issue #84.
-- Add `tests/404/reducer.test.ts` for testing 404 game reducer logic, addressing issue #84.
-- Add `tests/404/useGameInput.test.ts` for testing the `useGameInput` hook, addressing issue #84.
-- Add `tests/components/CategorySection.test.tsx` for testing the `CategorySection` component.
-- Add `tests/components/ContributionHeatmap.test.tsx` for testing the `ContributionHeatmap` component.
-- Add `tests/components/CurrentlyBuilding.test.tsx` for testing the `CurrentlyBuilding` component.
-- Add `tests/components/DPad.test.tsx` for testing the `DPad` component, addressing issue #84.
-- Add `tests/components/GameBoard.test.tsx` for testing the `GameBoard` component, addressing issue #84.
-- Add `tests/components/GameHUD.test.tsx` for testing the `GameHUD` component, addressing issue #84.
-- Add `tests/components/GameTile.test.tsx` for testing the `GameTile` component, addressing issue #84.
-- Add `tests/components/HeroSection.test.tsx` for testing the `HeroSection` component.
-- Add `tests/components/LetterReveal.test.tsx` for testing the `LetterReveal` component.
-- Add `tests/components/ProjectCard.test.tsx` for testing the `ProjectCard` component.
-- Add `tests/components/ShipWheel.test.tsx` for testing the `ShipWheel` component.
-- Add `tests/components/StaticNotFound.test.tsx` for testing the `StaticNotFound` component.
-- Add `tests/components/StatsDashboard.test.tsx` for testing the `StatsDashboard` component.
-- Add `tests/components/TechArsenal.test.tsx` for testing the `TechArsenal` component.
-- Add `tests/components/VoyageSail.test.tsx` for testing the `VoyageSail` component.
-- Add `tests/components/WinCelebration.test.tsx` for testing the `WinCelebration` component, addressing issue #84.
-- Add `tests/components/ZoroGame.test.tsx` for testing the `ZoroGame` component, addressing issue #84.
-- Add `tests/components/about-edges.test.tsx` for testing the `AboutEdges` component.
-- Add `tests/components/about.test.tsx` for testing the `About` component.
-- Add `tests/helpers/mocks.ts` to provide mock data and functions for testing.
-- Add `tests/lib/github.test.ts` for testing GitHub API utility functions.
-- Add `tests/lib/projects.test.ts` for testing project data utility functions.
-- Add `tests/pages/about.test.tsx` for testing the About page.
-- Add `tests/pages/not-found.test.tsx` for testing the 404 Not Found page, addressing issue #84.
-- Add `tests/pages/portfolio.test.tsx` for testing the Portfolio page.
-- Add `tests/setup.ts` for Jest test environment setup.
-- Add `test`, `test:coverage`, and `test:watch` scripts to `package.json` for Jest testing.
-- Add Jest, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `@types/jest`, and `ts-jest` as development dependencies in `package.json`.
-- Add `VoyageSail` component to `src/app/layout.tsx` for a global background and ship animation.
-- Add `disabled` parameter to `useGameInput` in `src/components/404/useGameInput.ts` to conditionally prevent input handling, addressing issue #84.
-- Add title, description, and a fixed-height top spacer to `src/components/404/ZoroGame.tsx` for improved game presentation, addressing issue #84.
-- Add `.env.example` to provide a template for environment variables.
-- Add `src/components/404/DPad.tsx` component for game input controls, addressing issue #84.
-- Add `src/components/404/GameBoard.tsx` component to render the game board, addressing issue #84.
-- Add `src/components/404/GameHUD.tsx` component to display game-related information, addressing issue #84.
-- Add `src/components/404/GameTile.tsx` component to represent individual game tiles, addressing issue #84.
-- Add `src/components/404/StaticNotFound.tsx` component for a simplified 404 page experience, addressing issue #84.
-- Add `src/components/404/WinCelebration.tsx` component to display win animations, addressing issue #84.
-- Add `src/components/404/ZoroGame.tsx` as the main interactive 404 game component, addressing issue #84.
-- Add `src/components/404/grid.ts` utility file for game grid logic, addressing issue #84.
-- Add `src/components/404/quotes.ts` utility file for game-related quotes, addressing issue #84.
-- Add `src/components/404/reducer.ts` for managing game state logic, addressing issue #84.
-- Add `src/components/404/types.ts` for defining game-related TypeScript types, addressing issue #84.
-- Add `src/components/404/useGameInput.ts` custom hook for handling game input, addressing issue #84.
-- Add `src/components/landing/ContributionHeatmap.tsx` component for displaying GitHub contributions.
-- Add `src/components/landing/CurrentlyBuilding.tsx` component to highlight current projects.
-- Add `src/components/landing/StatsDashboard.tsx` component for displaying developer statistics.
-- Add `src/components/landing/TechArsenal.tsx` component to showcase technologies used.
-- Add `src/components/landing/VoyageSail.tsx` component for the landing page background animation.
-- Add `src/lib/github.ts` utility file for fetching GitHub data.
+- Add `LICENSE` file to specify the `CC-BY-NC-4.0` license.
+- Add `license` property to `package.json` to specify the `CC-BY-NC-4.0` license.
+
+#### Build and Test Configuration
+- Add `jest.config.ts` for Jest test runner configuration with `moduleNameMapper` configurations for mocking `mermaid` and `rehype-raw` in tests.
+- Add `eslint.config.mjs` for ESLint configuration, ignoring the `coverage/**` directory.
+- Add `next.config.ts` for Next.js project settings with security headers (`securityHeaders` constant, `poweredByHeader: false`, `headers()` function), and image domains for `avatars.githubusercontent.com`, `i.scdn.co`, `cdn.bsky.app`, `i.ytimg.com`, `*.cdninstagram.com`, and `*.fbcdn.net`.
+- Add `postcss.config.mjs` to configure PostCSS for styling.
+- Add `tsconfig.json` to configure TypeScript for the project.
+- Add `package.json` with project metadata, scripts (`test`, `test:coverage`, `test:watch`), and dependencies including `mermaid`, `rehype-raw`, `react-markdown`, `react-syntax-highlighter`, `remark-gfm`, Jest, and testing-library packages.
+- Add `package-lock.json` to lock project dependencies.
+- Add `.env.example` to provide a template for environment variables including `STEAM_API_KEY`, `STEAM_ID`, `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN`, `BLUESKY_HANDLE`, `YOUTUBE_API_KEY`, `YOUTUBE_CHANNEL_ID`, and `INSTAGRAM_ACCESS_TOKEN`.
+- Update `.gitignore` to specifically ignore `.env` and `.env.local`.
+
+#### Assets
+- Add `public/Wheel.png` for the ship wheel image asset.
+- Add `public/favicon.png` for the application favicon.
+- Add `public/ship.png` for the ship image asset.
+
+#### API Routes
+- Add `src/app/api/activity/route.ts` to provide real-time user activity status.
+- Add `src/app/api/bluesky/route.ts` to fetch Bluesky user posts with `cache: "no-store"` for real-time data.
+- Add `src/app/api/docs/route.ts` to serve documentation content, generating `<mermaid-diagram>` custom HTML elements with base64-encoded diagram code, including `CHANGELOG.md` in the file tree, and explicitly allowing `CHANGELOG.md` during path validation.
+- Add `src/app/api/github/route.ts` to fetch and expose GitHub profile data.
+- Add `src/app/api/instagram/route.ts` to fetch Instagram user media using `Authorization` header with `cache: "no-store"` for real-time data.
+- Add `src/app/api/spotify/token.ts` utility for Spotify OAuth token management.
+- Add `src/app/api/spotify/top-track/route.ts` to fetch the current top Spotify track with `cache: "no-store"` for real-time data.
+- Add `src/app/api/spotify/wrapped/route.ts` for fetching Spotify Wrapped data with `cache: "no-store"` for real-time data.
+- Add `src/app/api/steam/achievements/route.ts` to fetch Steam game achievements with input validation to ensure `appid` is numeric.
+- Add `src/app/api/steam/route.ts` to fetch a user's Steam game list, excluding specific non-game app IDs.
+- Add `src/app/api/youtube/route.ts` to fetch YouTube channel videos with `cache: "no-store"` for real-time data.
+
+#### Pages
+- Add `src/app/layout.tsx` to define the root layout structure for the application, including VoyageSail component and `/favicon.png` for the application icon.
+- Add `src/app/page.tsx` for the main landing page with ContributionHeatmap, StatsDashboard, TechArsenal, and CurrentlyBuilding sections, `fetchGitHubData` integration, unified `<section>` container, and `relative z-10` positioning.
+- Add `src/app/not-found.tsx` to provide a custom 404 Not Found page, dynamically rendering `ZoroGame` or `StaticNotFound` based on user motion preferences with `main` element and `relative z-10` positioning.
+- Add `src/app/about/page.tsx` for a comprehensive About page with view state management ("profile"/"pics"/"videos"/"music"/"game"), conditional rendering of PhotoGallery/VideoGallery/MusicGallery/GameStats, `relative z-10` positioning, `selectedGame` state, and imports for GameStats/MusicGallery/PhotoGallery/VideoGallery/SteamGame type.
+- Add `src/app/portfolio/page.tsx` for a dynamic portfolio page displaying categorized projects with `relative z-10` positioning.
+- Add `src/app/docs/page.tsx` to display documentation using `DocNav` and `MarkdownRenderer` components, 3rd-level subgroup breadcrumbs, `getAutoExpanded` for automatic expansion, and `useMemo` for performance.
+
+#### Global Styles and Middleware
+- Add `src/app/globals.css` to implement global styles including `.steam-scrollbar` styles for Steam-themed scrollbar.
+- Add `src/middleware.ts` to implement security and request handling logic.
+
+#### Core Components - Landing
+- Add `src/components/HeroSection.tsx` for displaying hero content.
+- Add `src/components/LetterReveal.tsx` for animated text reveals.
+- Add `src/components/ShipWheel.tsx` for displaying an animated ship wheel using `<img>` element with `Wheel.png`, featuring "Docs" navigation link, hidden on unknown/404 routes, fixed cardinal positions for labels, and `LABEL_SHIFT_UP` constant.
+- Add `src/components/landing/ContributionHeatmap.tsx` component for displaying GitHub contributions with parchment-themed color palette, CompassRose SVG component, `framer-motion` animations, and defined layout constants (`CELL`, `GAP`, `STEP`).
+- Add `src/components/landing/CurrentlyBuilding.tsx` component to highlight current projects with "Through the Spyglass" theme, displaying top three repositories and spyglass-themed `motion.div` with hover interactions.
+- Add `src/components/landing/StatsDashboard.tsx` component for displaying developer statistics with animated `Gauge` component, "elastic ease-out" needle sweep, number count-up effect, and `circle` elements with `stroke-dasharray` for progress indication.
+- Add `src/components/landing/TechArsenal.tsx` component to showcase technologies used with interactive `CrateItem` component, hover effects, and Y-axis translation animations.
+- Add `src/components/landing/VoyageSail.tsx` as a standalone global component for background animation using `<img>` element with `ship.png`, manual scroll tracking with `useMotionValue`, `drop-shadow` and `voyage-ship-bob` animation.
+
+#### Core Components - About Page
+- Add `src/components/about/BioSections.tsx` to display biographical sections on the About page.
+- Add `src/components/about/BlogEntry.tsx` component for displaying dynamic Bluesky posts with `buildSegments` utility function for rich text parsing, using icons (`Heart`, `MessageCircle`, `Repeat2`, `CloudSun`), `Image` component, and `BlueskyPost`/`BlueskyFacet` types.
+- Add `src/components/about/ContactTable.tsx` component to display social media links (Instagram, X, Bluesky, YouTube, GitHub, Email) using `contactLinks` from personal.ts, `COLOR_MAP` for styling, and icons (`Instagram`, `CloudSun`, `XIcon`, `Youtube`, `Github`).
+- Add `src/components/about/DetailsBox.tsx` component for showcasing various personal details on the About page.
+- Add `src/components/about/GameStats.tsx` component to display detailed statistics for a selected Steam game.
+- Add `src/components/about/InterestsTable.tsx` component to list interests in a table format with dynamic Spotify data fetching for "Music" row, static "Heroes" values, `badgeColors` constant, and updated grid layout.
+- Add `src/components/about/MusicGallery.tsx` component to display a collection of music.
+- Add `src/components/about/MusicPlayer.tsx` component to dynamically fetch and display the user's top Spotify track with `onViewMusic` prop and `sandbox` iframe attribute for enhanced security.
+- Add `src/components/about/NetworkBanner.tsx` component to display a network banner on the About page.
+- Add `src/components/about/PhotoGallery.tsx` component for displaying Instagram media posts.
+- Add `src/components/about/PostCard.tsx` component for rendering individual Instagram posts within the gallery.
+- Add `src/components/about/ProfileCard.tsx` component to present a user profile card with dynamic GitHub profile data and activity status fetching, calculated age, `onViewPics`, `onViewVideos`, `onViewMusic` button props, and `Image` component for GitHub avatar.
+- Add `src/components/about/SectionHeader.tsx` component for consistent section titling across the About page.
+- Add `src/components/about/TopEight.tsx` component to fetch and display Steam games from `/api/steam` API with `onViewGame` prop, `games`/`error`/`loading` states.
+- Add `src/components/about/VideoCard.tsx` component for displaying individual YouTube video thumbnails and titles with `sandbox` iframe attribute for enhanced security.
+- Add `src/components/about/VideoGallery.tsx` component for displaying a collection of YouTube videos.
+
+#### Core Components - Portfolio
+- Add `src/components/portfolio/CategorySection.tsx` to group and display projects by category.
+- Add `src/components/portfolio/ProjectCard.tsx` to display individual project details within the portfolio.
+
+#### Core Components - Documentation
+- Add `src/components/docs/DocNav.tsx` component to manage documentation navigation and file loading, handling `CHANGELOG.md` as a root-level file, collecting 3rd-level subgroups, and computing expanded sections/subsections.
+- Add `src/components/docs/MarkdownRenderer.tsx` component to handle rendering of markdown content with `rehypeRaw` and `MermaidDiagram` imports, custom rendering for `mermaid-diagram` HTML elements, and image src sanitization.
+- Add `src/components/docs/MermaidDiagram.tsx` component to render Mermaid diagrams client-side.
+
+#### Core Components - 404 Game
 - Add `src/components/404/DPad.tsx` component for game input controls.
 - Add `src/components/404/GameBoard.tsx` component to render the game board.
 - Add `src/components/404/GameHUD.tsx` component to display game-related information.
 - Add `src/components/404/GameTile.tsx` component to represent individual game tiles.
 - Add `src/components/404/StaticNotFound.tsx` component for a simplified 404 page experience.
 - Add `src/components/404/WinCelebration.tsx` component to display win animations.
-- Add `src/components/404/ZoroGame.tsx` as the main interactive 404 game component.
+- Add `src/components/404/ZoroGame.tsx` as the main interactive 404 game component with title, description, and fixed-height top spacer.
 - Add `src/components/404/grid.ts` utility file for game grid logic.
 - Add `src/components/404/quotes.ts` utility file for game-related quotes.
-- Add `src/components/404/reducer.ts` utility file for game state management.
-- Add `src/components/404/types.ts` utility file for game type definitions.
-- Add `src/components/404/useGameInput.ts` custom hook for handling game input.
-- Implement new 404 Not Found page experience in `src/app/not-found.tsx` by conditionally rendering `ZoroGame` or `StaticNotFound`.
-- Add `src/app/not-found.tsx` to provide a custom 404 Not Found page.
-- Implement a comprehensive About page (`src/app/about/page.tsx`) to replace the "Coming Soon" placeholder, displaying personal details, interests, contacts, and blog entries (resolves #84).
-- Add `src/components/about/BioSections.tsx` to display biographical sections on the About page (resolves #84).
-- Add `src/components/about/BlogEntry.tsx` component for displaying individual blog entries on the About page (resolves #84).
-- Add `src/components/about/CommentsWall.tsx` component to feature a wall of comments on the About page (resolves #84).
-- Add `src/components/about/ContactTable.tsx` component to display contact information in a table format on the About page (resolves #84).
-- Add `src/components/about/DetailsBox.tsx` component for showcasing various personal details on the About page (resolves #84).
-- Add `src/components/about/InterestsTable.tsx` component to list interests in a table format on the About page (resolves #84).
-- Add `src/components/about/MusicPlayer.tsx` component to embed a music player on the About page (resolves #84).
-- Add `src/components/about/MySpaceUrl.tsx` component for displaying a MySpace-style URL on the About page (resolves #84).
-- Add `src/components/about/NetworkBanner.tsx` component to display a network banner on the About page (resolves #84).
-- Add `src/components/about/ProfileCard.tsx` component to present a user profile card on the About page (resolves #84).
-- Add `src/components/about/SectionHeader.tsx` component for consistent section titling across the About page (resolves #84).
-- Add `src/components/about/TopEight.tsx` component to display a 'Top 8' friends/contacts section on the About page (resolves #84).
-- Add `src/lib/data/personal.ts` to manage and retrieve personal data for the About page (resolves #84).
-- Implement a dynamic portfolio page (`src/app/portfolio/page.tsx`) to replace the "Coming Soon" placeholder, enabling display of categorized projects (resolves #84).
-- Create `src/components/portfolio/CategorySection.tsx` to group and display projects by category (resolves #84).
-- Create `src/components/portfolio/ProjectCard.tsx` to display individual project details within the portfolio (resolves #84).
-- Add `src/lib/data/projects.ts` to manage and retrieve project data, including `getProjectsByCategory` (resolves #84).
-- Define project-related TypeScript types in `src/lib/data/types.ts`, including `ProjectCategory` (resolves #84).
-- Configure ESLint for the project by adding `eslint.config.mjs`.
-- Configure Next.js project settings by adding `next.config.ts`
-- Generate `package-lock.json` to lock project dependencies.
-- Initialize `package.json` with project metadata and scripts for a new Next.js application
-- Configure PostCSS for styling by adding `postcss.config.mjs`.
-- Create `src/app/about/page.tsx` for the About page
-- Create `src/app/contact/page.tsx` for the Contact page
-- Add `src/app/favicon.ico` for the application's favicon.
-- Implement global styles by adding `src/app/globals.css`.
-- Create `src/app/layout.tsx` to define the root layout structure for the application,
-- Create `src/app/page.tsx` for the main landing page
-- Create `src/app/portfolio/page.tsx` for the Portfolio page
-- Create `src/components/HeroSection.tsx` for displaying hero content
-- Create `src/components/LetterReveal.tsx` for animated text reveals
-- Create `src/components/ShipWheel.tsx` for displaying an animated ship wheel
-- Create `src/components/StatCounter.tsx` for animating numerical statistics
-- Create `src/components/StatsSection.tsx` to display key statistics
-- Configure TypeScript for the project by adding `tsconfig.json`.
+- Add `src/components/404/reducer.ts` for managing game state logic.
+- Add `src/components/404/types.ts` for defining game-related TypeScript types.
+- Add `src/components/404/useGameInput.ts` custom hook for handling game input with `disabled` parameter to conditionally prevent input handling.
 
-### Changed
+#### Library and Data
+- Add `src/lib/github.ts` utility file for fetching GitHub data including `avatarUrl` property in `GitHubProfile` type and `cache: "no-store"` for real-time data.
+- Add `src/lib/data/personal.ts` to manage and retrieve personal data with real values for "Status", "Pets", "Comfort Movie", "Zodiac Sign", "General" (including "D&D"), "Movies", "Television", "Books", static "Heroes" values, `BIRTHDATE` constant, `calculateAge` utility function, `SocialLinkType` excluding "twitch" and "linkedin", and `contactLinks` array with Instagram/X/Bluesky/YouTube/GitHub/Email.
+- Add `src/lib/data/projects.ts` to manage and retrieve project data, including `getProjectsByCategory`.
+- Add `src/lib/data/types.ts` to define project-related TypeScript types, including `ProjectCategory`.
 
-- Update `tagline` content in `src/lib/data/personal.ts`
-- Update `aboutMe` content in `src/lib/data/personal.ts`
-- Update `aboutMe` text assertion in `tests/components/about.test.tsx`
-- Update `README.md` to simplify the API credentials note.
-- Update `docs/api/README.md` to reflect `CHANGELOG.md` inclusion in file tree and client-side Mermaid rendering for #84.
-- Update `docs/api/README.md` to reflect path validation now including `CHANGELOG.md` for #84.
-- Update `docs/api/endpoint-map.md` to simplify endpoint labels and change flowchart direction to left-to-right for #84.
-- Update `docs/architecture/component-hierarchy.md` to change flowchart direction to left-to-right for #84.
-- Update `docs/frontend/components/docs/DocNav.md` to describe handling of root-level files and deeply nested directories as subgroups for #84.
-- Update `docs/frontend/components/docs/MarkdownRenderer.md` to describe image `src` sanitization for #84.
-- Update `docs/frontend/components/docs/MarkdownRenderer.md` to describe client-side Mermaid diagram rendering via custom HTML elements for #84.
-- Update `docs/frontend/pages/docs-page.md` to include iteration over subgroups when finding the current document path for #84.
-- Update `docs/services/docs-route.md` to reflect client-side Mermaid rendering via custom HTML markers instead of `mermaid.ink` SVG URLs for #84.
-- Update `docs/services/docs-route.md` to reflect path validation now explicitly allowing `CHANGELOG.md` for #84.
-- Update `package-lock.json` to reflect updated dependencies for #84.
-- Modify `src/app/api/docs/route.ts` to generate `<mermaid-diagram>` custom HTML elements with base64-encoded diagram code instead of `mermaid.ink` SVG URLs for #84.
-- Modify `src/app/api/docs/route.ts` to include `CHANGELOG.md` in the root-level files returned by the file tree endpoint for #84.
-- Modify `src/app/api/docs/route.ts` to explicitly allow `CHANGELOG.md` during path validation for #84.
-- Update `src/app/docs/page.tsx` to account for 3rd-level subgroups when building breadcrumbs for #84.
-- Refactor `src/components/docs/DocNav.tsx` to handle `CHANGELOG.md` as a root-level file and format its name for display for #84.
-- Refactor `src/components/docs/DocNav.tsx` to collect direct markdown files and nested subdirectories as 3rd-level subgroups for #84.
-- Update `src/components/docs/DocNav.tsx` logic for computing expanded sections/subsections to account for 3rd-level subgroups for #84.
-- Update `src/components/docs/MarkdownRenderer.tsx` to import `rehypeRaw` and `MermaidDiagram` components for #84.
-- Implement custom rendering for the `mermaid-diagram` HTML element in `src/components/docs/MarkdownRenderer.tsx`, passing decoded chart data to `MermaidDiagram` for #84.
-- Update `tests/api/docs.test.ts` to assert that Mermaid code blocks are converted to `<mermaid-diagram>` custom HTML elements with `data-chart` attributes for #84.
-- Add test cases in `tests/components/docs/MarkdownRenderer.test.tsx` for rendering the `MermaidDiagram` component from `mermaid-diagram` elements and handling missing `data-chart` attributes for #84.
-- Update `src/app/layout.tsx` to use `/favicon.png` for the application icon for #84.
-- Refactor `src/components/ShipWheel.tsx` to use an `<img>` element with `public/Wheel.png` instead of an SVG for the ship wheel for #84.
-- Adjust `ShipWheel.tsx` `WHEEL_SIZE`, `HUB_RADIUS`, and `LABEL_OFFSET` constants for the new image-based wheel for #84.
-- Modify label positioning in `ShipWheel.tsx` by introducing `LABEL_SHIFT_UP` for better alignment with the new wheel image for #84.
-- Update `src/components/about/ContactTable.tsx` to remove Twitch and LinkedIn social links and their associated styling for #84.
-- Refactor `src/components/landing/VoyageSail.tsx` to use an `<img>` element with `public/ship.png` instead of an SVG for the ship silhouette for #84.
-- Adjust ship `transform` property in `VoyageSail.tsx` for correct horizontal flipping with the new image asset for #84.
-- Encapsulate the ship image within a `div` in `VoyageSail.tsx` to apply `drop-shadow` and `voyage-ship-bob` animation for #84.
-- Remove Twitch and LinkedIn entries from the `SocialLink` array in `src/lib/data/personal.ts` for #84.
-- Update `SocialLinkType` in `src/lib/data/personal.ts` to exclude "twitch" and "linkedin" types for #84.
-- Rename `middleware` function to `proxy` in `src/proxy.ts`.
-- Update `tests/components/ShipWheel.test.tsx` to test for the presence of an `<img>` element with `src="/wheel.png"` instead of an SVG for #84.
-- Update `tests/components/VoyageSail.test.tsx` to test for the presence of an `<img>` element with `src="/ship.png"` instead of an SVG for #84.
-- Adjust wave SVG count assertion in `tests/components/VoyageSail.test.tsx` from 4 to 3 due to the ship now being an image for #84.
-- Update social link count assertion in `tests/components/about.test.tsx` from 8 to 6, reflecting the removal of Twitch and LinkedIn for #84.
-- Update `tests/proxy.test.ts` to import and call the `proxy` function instead of `middleware`, reflecting the rename in `src/proxy.ts`.
-- Update `src/app/api/instagram/comments/route.ts` to use `Authorization` header for Instagram API requests, removing `access_token` from the URL.
-- Update `src/app/api/instagram/route.ts` to use `Authorization` header for Instagram API requests, removing `access_token` from the URL.
-- Refactor `src/app/docs/page.tsx` to use `DocNav` and `MarkdownRenderer` components for improved modularity and maintainability (ref #84).
-- Remove `console.log` from `ShipWheel.tsx` center hub click handler.
-- Update `tests/components/ShipWheel.test.tsx` to verify `ShipWheel` center hub click handler fires without error instead of checking `console.log`.
-- Enhance `tests/components/ZoroGame.test.tsx` to support overriding `ZoroGame` state for more robust testing of game logic.
-- Import `createInitialState` in `tests/components/ZoroGame.test.tsx`.
-- Refactor documentation navigation section expansion logic in `src/app/docs/page.tsx` to use `getAutoExpanded` for automatic expansion and `overrides` state for manual toggles, improving navigation state management (resolves #84).
-- Update imports in `src/app/docs/page.tsx` to include `useMemo` for enhanced performance of documentation page components (resolves #84).
-- Refactor `tests/api/docs.test.ts` to use a virtual filesystem (`VIRTUAL_FILES` and `virtualReaddirSync`) for more robust and isolated testing of the documentation API.
-- Remove outdated assertions related to mermaid code block rendering from `tests/api/docs.test.ts` following changes in markdown processing.
-- Update `src/components/ShipWheel.tsx` to replace the "The One Piece" navigation link with a "Docs" link.
-- Simplify display logic in `src/components/ShipWheel.tsx` by removing special rendering for "The One Piece" link.
-- Update `KNOWN_ROUTES` in `src/components/ShipWheel.tsx` to include `/docs` and remove `/the-one-piece`.
-- Update `tests/components/ShipWheel.test.tsx` to verify the "Docs" navigation link instead of "The One Piece" link.
-- Update MySpace order comment in `src/app/about/page.tsx` to reflect the removal of "Comments" and introduction of "Game Space" (resolves #84).
-- Exclude specific non-game app IDs (e.g., `431960` for Wallpaper Engine) from the list of fetched Steam games in `src/app/api/steam/route.ts` (resolves #84).
-- Remove dynamic fetching and rendering of Overwatch hero data in `src/components/about/InterestsTable.tsx`.
-- Update `className` for grid layout in `src/components/about/InterestsTable.tsx`.
-- Replace dynamic "Heroes" placeholder with a static list of values in `src/lib/data/personal.ts`.
-- Add a test case to `tests/api/steam.test.ts` to verify exclusion of specific non-game app IDs from Steam game data (resolves #84).
-- Remove tests for dynamic Overwatch hero badge rendering from `tests/components/about.test.tsx`.
-- Add tests for rendering static "Heroes" values in `tests/components/about.test.tsx`.
-- Change `AboutView` type in `src/app/about/page.tsx` to include "game" view (resolves #84).
-- Update `TopEight` component rendering in `src/app/about/page.tsx` to pass `onViewGame` prop (resolves #84).
-- Change `src/components/about/TopEight.tsx` to fetch and display Steam games instead of static "Friend Space" data (resolves #84).
-- Change "General" interest value in `src/lib/data/personal.ts` to include "D&D".
-- Change "Television" interest value in `src/lib/data/personal.ts` to remove "Death Parade".
-- Change "Books" interest value in `src/lib/data/personal.ts` to remove "One Piece".
-- Change badge style assertion in `tests/components/about.test.tsx` for "One Piece" to use `toHaveStyle`.
-- Change `InterestsTable.tsx` to dynamically fetch and display data for "Music" and "Heroes" rows instead of static values (resolves #84).
-- Import `SpotifyWrappedData` and `OverwatchHeroData` types in `src/components/about/InterestsTable.tsx` (resolves #84).
-- Update personal data in `src/lib/data/personal.ts` with real values for "Status", "Pets", "Comfort Movie", "Zodiac Sign", "General", "Movies", "Television", and "Books" categories.
-- Update `tests/components/about.test.tsx` to assert for "Pets" and "Comfort Movie" instead of "Body type" and "Here for".
-- Add `global.fetch` mock to `tests/components/about.test.tsx` `beforeEach` block to handle API calls in tests (resolves #84).
-- Remove in-memory caching logic from `src/app/api/bluesky/route.ts` and replace with `cache: "no-store"` for real-time data fetching (resolves #84).
-- Remove in-memory caching logic from `src/app/api/instagram/route.ts` and replace with `cache: "no-store"` for real-time data fetching (resolves #84).
-- Remove in-memory caching logic and `revalidate` option from `src/app/api/spotify/top-track/route.ts`, replacing with `cache: "no-store"` for real-time data fetching (resolves #84).
-- Remove in-memory caching logic and `revalidate` option from `src/app/api/spotify/wrapped/route.ts`, replacing with `cache: "no-store"` for real-time data fetching (resolves #84).
-- Remove in-memory caching logic and `revalidate` options from `src/app/api/youtube/route.ts`, replacing with `cache: "no-store"` for real-time data fetching (resolves #84).
-- Update `src/components/about/ProfileCard.tsx` to dynamically fetch GitHub profile data and user activity status (resolves #84).
-- Replace static profile photo placeholder in `src/components/about/ProfileCard.tsx` with dynamic `Image` component for GitHub avatar (resolves #84).
-- Update `src/components/about/ProfileCard.tsx` to display dynamically calculated age and fetched activity status (resolves #84).
-- Update `gender` and `location` in `src/lib/data/personal.ts` (resolves #84).
-- Remove `revalidate` option from GitHub API fetch in `src/lib/github.ts` and add `cache: "no-store"` for real-time data (resolves #84).
-- Include `avatarUrl` in the returned GitHub profile data from `src/lib/github.ts` (resolves #84).
-- Update `tests/components/about.test.tsx` to mock `global.fetch` for API calls made by `ProfileCard` (resolves #84).
-- Update `tests/components/about.test.tsx` to verify dynamic age, gender, location, and activity status rendering in `ProfileCard` (resolves #84).
-- Update `AboutView` type in `src/app/about/page.tsx` to include "music" view (resolves #84).
-- Adjust `src/app/about/page.tsx` grid layout for new music section (resolves #84).
-- Pass `onViewMusic` prop to `MusicPlayer` in `src/app/about/page.tsx` to enable view switching (resolves #84).
-- Refactor `src/components/about/MusicPlayer.tsx` to fetch and display the user's top Spotify track dynamically (resolves #84).
-- Add `onViewMusic` prop to `src/components/about/MusicPlayer.tsx` to trigger a view change in the parent component (resolves #84).
-- Update tests for `MusicPlayer` within `tests/components/about.test.tsx` to reflect dynamic content loading and Spotify embed rendering (resolves #84).
-- Change `BlogEntry` component in `src/components/about/BlogEntry.tsx` to display dynamic Bluesky posts instead of a static blog entry (resolves #84).
-- Add `useState`, `useEffect`, `Heart`, `MessageCircle`, `Repeat2`, `CloudSun` icons, `Image` component, `profile` data, and `BlueskyPost`, `BlueskyFacet` types to `src/components/about/BlogEntry.tsx` for Bluesky integration (resolves #84).
-- Add `buildSegments` utility function to `src/components/about/BlogEntry.tsx` for rich text parsing of Bluesky posts (resolves #84).
-- Update `tests/components/about.test.tsx` to remove tests for the old static blog entry content (resolves #84).
-- Add mock for `global.fetch` in `tests/components/about.test.tsx` to simulate API calls (resolves #84).
-- Add tests to `tests/components/about.test.tsx` for initial loading skeletons of Bluesky posts (resolves #84).
-- Add tests to `tests/components/about.test.tsx` for rendering Bluesky post text with rich text links and hashtags (resolves #84).
-- Update comment in `tests/pages/about.test.tsx` to reflect that `BlogEntry` now fetches data on mount (resolves #84).
-- Update `AboutView` type in `src/app/about/page.tsx` to include `"videos"` option (resolves #84).
-- Modify `src/app/about/page.tsx` to pass `onViewVideos` prop to `ProfileCard` (resolves #84).
-- Update `ProfileCardProps` in `src/components/about/ProfileCard.tsx` to include `onViewVideos` (resolves #84).
-- Configure `next.config.ts` to allow image loading from Instagram CDN domains `*.cdninstagram.com` and `*.fbcdn.net` (resolves #84).
-- Refactor `src/app/about/page.tsx` to introduce a view state (`profile` or `pics`) for dynamic content display (resolves #84).
-- Conditionally render `PhotoGallery` or existing profile sections in `src/app/about/page.tsx` based on the current view state (resolves #84).
-- Pass `onViewPics` and `onBack` props to child components in `src/app/about/page.tsx` to manage view transitions (resolves #84).
-- Convert "Pics" text into a clickable `<button>` element in `src/components/about/ProfileCard.tsx` (resolves #84).
-- Add `onViewPics` prop to `ProfileCard` component in `src/components/about/ProfileCard.tsx` to handle "Pics" button click events (resolves #84).
-- Import `fireEvent` and `waitFor` into `tests/pages/about.test.tsx` for simulating user interactions and asynchronous testing (resolves #84).
-- Mock `global.fetch` in `tests/pages/about.test.tsx` to prevent actual API calls during `PhotoGallery` tests (resolves #84).
-- Refactor `src/components/about/ContactTable.tsx` to display social media links instead of MySpace-era contact actions, replacing `contactActions` with `contactLinks` from `src/lib/data/personal.ts`.
-- Update `src/lib/data/personal.ts` to remove the `ContactAction` interface and `contactActions` array, and to modify the `ContactLink` interface and `contactLinks` array to include Instagram, X, Bluesky, Twitch, YouTube, LinkedIn, GitHub, and Email.
-- Update `tests/components/about-edges.test.tsx` to remove the `contactActions` mock, aligning with the removal of `contactActions` from `src/lib/data/personal.ts`.
-- Update `tests/components/about.test.tsx` to remove tests for old contact action buttons, replacing them with tests for the new social media links.
-- Update `eslint.config.mjs` to ignore the `coverage/**` directory.
-- Update `package-lock.json` to reflect changes in development dependencies, including the addition of Jest and testing-library related packages.
-- Refactor `src/app/about/page.tsx` to remove page-specific background and horizon glow styles, updating the main container to `relative z-10`.
-- Refactor `src/app/not-found.tsx` to wrap the 404 content in a `main` element with `relative z-10` positioning.
-- Refactor `src/app/page.tsx` to remove the page-specific `VoyageSail` component and its associated background and horizon glow, updating the main container to `relative z-10`.
-- Refactor `src/app/portfolio/page.tsx` to add `relative z-10` positioning to the `main` element.
-- Refactor `src/components/404/StaticNotFound.tsx` to remove page-specific background and horizon glow styles, replacing the `main` tag with a `div` wrapper.
-- Refactor `src/components/404/ZoroGame.tsx` to remove page-specific background and horizon glow styles, and update the `useGameInput` call to pass the `namiTakeover` state, addressing issue #84.
-- Refactor `src/components/landing/VoyageSail.tsx` to become a standalone global component, removing the `children` prop, `useScroll`, `useMotionValueEvent`, and implementing manual scroll tracking with `useMotionValue`.
-- Refactor `src/app/page.tsx` to introduce a unified `<section>` container with new background styling, consolidating the rendering of landing page components.
-- Update `src/components/landing/ContributionHeatmap.tsx` to adjust the size of the Compass Rose SVG, refine color palette comments, define new layout constants (`CELL`, `GAP`, `STEP`), and modify the main heading from `h2` to `h3`.
-- Modify `src/components/landing/CurrentlyBuilding.tsx` to display the top three repositories instead of only the latest, adjust the "Nothing sighted on the horizon" message container, and change main headings from `h2` to `h3`.
-- Rework the gauge rendering in `src/components/landing/StatsDashboard.tsx` to use `circle` elements with `stroke-dasharray` for progress indication, removing `framer-motion` animation logic and SVG arc path calculations.
-- Adjust `src/components/landing/TechArsenal.tsx` to simplify internal styling for "wooden plank lines" and "shelf label" elements, including changing the label heading from `h3` to `h4`, and update padding from `py-2.5` to `py-2`.
-- Update `src/components/landing/ContributionHeatmap.tsx` to use a parchment-themed color palette and replace the static "Contribution Activity" heading with a new `CompassRose` SVG component, integrating `framer-motion` for animations.
-- Refactor `src/components/landing/CurrentlyBuilding.tsx` to adopt a "Through the Spyglass" theme, changing headings and replacing the direct display of the latest GitHub repository with a spyglass-themed `motion.div` with hover interactions.
-- Refactor `src/components/landing/StatsDashboard.tsx` by replacing the `StatCard` component with a new `Gauge` component, implementing animated gauge visuals with an "elastic ease-out" needle sweep and number count-up effect, and removing several `lucide-react` icons.
-- Refactor `src/components/landing/TechArsenal.tsx` by replacing the `CategoryRow` and individual tech item display with a new `CrateItem` component, implementing interactive "crate" visuals with hover effects and updating item animations to include Y-axis translation.
-- Update `.gitignore` to specifically ignore `.env` and `.env.local` instead of a broad `.env*` pattern.
-- Refactor `src/app/not-found.tsx` to replace the previous static 404 experience with dynamic `ZoroGame` or `StaticNotFound` components based on user motion preferences, addressing issue #84.
-- Refactor `src/app/page.tsx` to introduce new landing page sections (`ContributionHeatmap`, `StatsDashboard`, `TechArsenal`, `CurrentlyBuilding`, `VoyageSail`) and integrate `fetchGitHubData` for dynamic content, removing the previous `StatsSection` and placeholder.
-- Simplify `src/components/HeroSection.tsx` by removing mouse tracking, parallax effects, and associated state/hooks.
-- Add conditional rendering to `src/components/ShipWheel.tsx` to hide the component on unknown or 404 routes.
-- Modify `src/components/ShipWheel.tsx` to hide the component on unknown or 404 routes.
-- Update `src/components/ShipWheel.tsx` to replace the "Contact" navigation link with "The One Piece".
-- Modify `src/components/ShipWheel.tsx` to display '???' for the "The One Piece" navigation link instead of the first three characters of its label.
-- Refactor `src/components/ShipWheel.tsx` to use fixed, cardinal positions for navigation labels instead of dynamic radial positioning.
+#### Test Files - API Routes
+- Add `tests/api/activity.test.ts` for testing the activity status API route.
+- Add `tests/api/bluesky.test.ts` for testing the Bluesky API endpoint.
+- Add `tests/api/docs.test.ts` for the documentation API route using virtual filesystem (`VIRTUAL_FILES` and `virtualReaddirSync`) for robust testing, asserting `<mermaid-diagram>` custom HTML elements with `data-chart` attributes.
+- Add `tests/api/github.test.ts` for testing the GitHub profile API route, verifying the `avatarUrl` property.
+- Add `tests/api/instagram.test.ts` for testing the Instagram media API route, verifying the `Authorization` header usage.
+- Add `tests/api/spotify-top-track.test.ts` for the Spotify top track endpoint.
+- Add `tests/api/spotify-wrapped.test.ts` for the Spotify Wrapped endpoint.
+- Add `tests/api/steam.test.ts` for testing the Steam API routes, verifying numeric `appid` validation and exclusion of specific non-game app IDs.
+- Add `tests/api/youtube.test.ts` for the YouTube API route.
 
-### Removed
+#### Test Files - Components
+- Add `tests/components/CategorySection.test.tsx` for testing the `CategorySection` component.
+- Add `tests/components/ContributionHeatmap.test.tsx` for testing the `ContributionHeatmap` component.
+- Add `tests/components/CurrentlyBuilding.test.tsx` for testing the `CurrentlyBuilding` component.
+- Add `tests/components/DPad.test.tsx` for testing the `DPad` component.
+- Add `tests/components/GameBoard.test.tsx` for testing the `GameBoard` component.
+- Add `tests/components/GameHUD.test.tsx` for testing the `GameHUD` component.
+- Add `tests/components/GameTile.test.tsx` for testing the `GameTile` component.
+- Add `tests/components/HeroSection.test.tsx` for testing the `HeroSection` component.
+- Add `tests/components/LetterReveal.test.tsx` for testing the `LetterReveal` component.
+- Add `tests/components/MusicGallery.test.ts` for testing the `MusicGallery` component.
+- Add `tests/components/MusicPlayer.test.tsx` for testing the `MusicPlayer` component with dynamic content loading, Spotify embed rendering, and `sandbox` attribute verification.
+- Add `tests/components/PhotoGallery.test.tsx` for testing the `PhotoGallery` component.
+- Add `tests/components/PostCard.test.tsx` for testing the `PostCard` component.
+- Add `tests/components/ProjectCard.test.tsx` for testing the `ProjectCard` component.
+- Add `tests/components/ShipWheel.test.tsx` for testing the `ShipWheel` component, verifying `<img>` element with `src="/wheel.png"`, "Docs" navigation link, and center hub click handler.
+- Add `tests/components/StaticNotFound.test.tsx` for testing the `StaticNotFound` component.
+- Add `tests/components/StatsDashboard.test.tsx` for testing the `StatsDashboard` component.
+- Add `tests/components/TechArsenal.test.tsx` for testing the `TechArsenal` component.
+- Add `tests/components/VideoCard.test.tsx` for testing the `VideoCard` component, verifying `sandbox` attribute.
+- Add `tests/components/VideoGallery.test.tsx` for testing the `VideoGallery` component.
+- Add `tests/components/VoyageSail.test.tsx` for testing the `VoyageSail` component with `<img>` element with `src="/ship.png"` and `prefers-reduced-motion` behavior.
+- Add `tests/components/WinCelebration.test.tsx` for testing the `WinCelebration` component.
+- Add `tests/components/ZoroGame.test.tsx` for testing the `ZoroGame` component with support for overriding state and `createInitialState` import.
+- Add `tests/components/about-edges.test.tsx` for testing the `AboutEdges` component.
+- Add `tests/components/about.test.tsx` for testing the About component with tests for dynamic age/gender/location/activity status in `ProfileCard`, social links, Spotify genre badges, `onViewPics`/`onViewMusic`/`onViewVideos`/`onViewGame` callbacks, static "Heroes" values, Bluesky post rendering with rich text links/hashtags/mention facets/external embeds, and `global.fetch` mocking.
+- Add `tests/components/docs.test.tsx` for testing the documentation page component with error display tests for initial content fetch and file navigation fetch failures.
+- Add `tests/components/docs/MarkdownRenderer.test.tsx` for testing the `MarkdownRenderer` component with rendering of `MermaidDiagram` from `mermaid-diagram` elements and handling missing `data-chart` attributes.
 
-- Remove `whoIdLikeToMeet` from `src/lib/data/personal.ts`
-- Remove reference to `mermaid.ink` as an external service from `docs/services/docs-route.md` for #84.
-- Remove direct `img` rendering logic for `mermaid.ink` URLs from `src/components/docs/MarkdownRenderer.tsx` for #84.
-- Remove test case for rendering `mermaid.ink` images from `tests/components/docs/MarkdownRenderer.test.tsx` for #84.
-- Remove `src/app/favicon.ico` for #84.
-- Remove `src/app/api/instagram/comments/route.ts` API endpoint for #84.
-- Remove `src/components/about/CommentThread.tsx` component for #84.
-- Remove `tests/api/instagram-comments.test.ts` API test for #84.
-- Remove `tests/components/CommentThread.test.tsx` component test for #84.
-- Remove `social-media-api-guide.md` file.
-- Remove `CommentsWall.tsx` component file (resolves #84).
-- Remove `MySpaceUrl.tsx` component file (resolves #84).
-- Remove `WallComment` interface from `src/lib/data/personal.ts` (resolves #84).
-- Remove `myspaceUrl` export from `src/lib/data/personal.ts` (resolves #84).
-- Remove `comments` array export from `src/lib/data/personal.ts` (resolves #84).
-- Remove `MySpaceUrl` component rendering from `src/app/about/page.tsx` (resolves #84).
-- Remove `CommentsWall` component rendering from `src/app/about/page.tsx` (resolves #84).
-- Remove import for `MySpaceUrl` component from `src/app/about/page.tsx` (resolves #84).
-- Remove import for `CommentsWall` component from `src/app/about/page.tsx` (resolves #84).
-- Remove import for `MySpaceUrl` component from `tests/components/about.test.tsx` (resolves #84).
-- Remove import for `CommentsWall` component from `tests/components/about.test.tsx` (resolves #84).
-- Remove import for `CommentsWall` component from `tests/components/about-edges.test.tsx` (resolves #84).
-- Remove `MySpaceUrl` test suite from `tests/components/about.test.tsx` (resolves #84).
-- Remove `CommentsWall` test suite from `tests/components/about.test.tsx` (resolves #84).
-- Remove "CommentsWall (empty comments)" test suite from `tests/components/about-edges.test.tsx` (resolves #84).
-- Remove `comments` property from mock data in `tests/components/about-edges.test.tsx` (resolves #84).
-- Remove `myspaceUrl` property from mock data in `tests/components/about-edges.test.tsx` (resolves #84).
-- Remove `OVERWATCH_BATTLETAG` from `.env.example`.
-- Remove `src/app/api/overwatch/route.ts` API endpoint and its related functionality.
-- Remove `tests/api/overwatch.test.ts` and all associated Overwatch API route tests.
-- Remove direct rendering of `TopEight` component in `src/app/about/page.tsx`, replaced by conditional rendering.
-- Remove MySpace-themed "Friend Space" header and footer elements from `src/components/about/TopEight.tsx`.
-- Remove static `topEight` data dependency from `src/components/about/TopEight.tsx`.
-- Remove `TopEightItem` interface from `src/lib/data/personal.ts`.
-- Remove `topEight` array from `src/lib/data/personal.ts`.
-- Remove `TopEight` tooltip visibility tests from `tests/components/about-edges.test.tsx` due to component refactor.
-- Remove mock `topEight` data from `tests/components/about-edges.test.tsx`.
-- Remove `fireEvent` import from `tests/components/about-edges.test.tsx`.
-- Remove MySpace-themed `TopEight` component tests from `tests/components/about.test.tsx`.
-- Remove static music player UI and data from `src/components/about/MusicPlayer.tsx` (resolves #84).
-- Remove tests for static track name and artist from `tests/components/about.test.tsx` (resolves #84).
-- Remove static blog entry data and display logic from `src/components/about/BlogEntry.tsx` (resolves #84).
-- Remove `UserPlus`, `Forward`, `Star`, `MessageSquare`, `Ban`, `Users`, `Award` icon imports from `src/components/about/ContactTable.tsx`.
-- Remove `contactActions` array and its associated `ContactAction` interface from `src/lib/data/personal.ts`.
-- Remove MySpace-era contact action buttons and their rendering logic from `src/components/about/ContactTable.tsx`.
-- Remove `src/components/StatCounter.tsx` as it is no longer used.
-- Remove `src/components/StatsSection.tsx` as it is no longer used.
-- Remove old 404 page implementation, including `WanderingCompass` component and related styling and motion logic from `src/app/not-found.tsx`.
-- Remove `src/app/contact/page.tsx`.
+#### Test Files - 404 Game Logic
+- Add `tests/404/grid.test.ts` for testing 404 game grid logic.
+- Add `tests/404/quotes.test.ts` for testing 404 game quotes.
+- Add `tests/404/reducer.test.ts` for testing 404 game reducer logic.
+- Add `tests/404/useGameInput.test.ts` for testing the `useGameInput` hook.
+
+#### Test Files - Pages and Library
+- Add `tests/pages/about.test.tsx` for testing the About page with view switching tests for profile/music gallery/video gallery/photo gallery and `global.fetch` mocking.
+- Add `tests/pages/not-found.test.tsx` for testing the 404 Not Found page.
+- Add `tests/pages/portfolio.test.tsx` for testing the Portfolio page.
+- Add `tests/lib/github.test.ts` for testing GitHub API utility functions, verifying the `avatarUrl` property.
+- Add `tests/lib/projects.test.ts` for testing project data utility functions.
+
+#### Test Files - Setup and Helpers
+- Add `tests/setup.ts` for Jest test environment setup with `TextEncoder` and `TextDecoder` polyfills for jsdom environment compatibility.
+- Add `tests/helpers/mocks.ts` to provide mock data and functions for testing.
+- Add `tests/helpers/__mocks__/mermaid.ts` to mock the `mermaid` library for testing purposes.
+- Add `tests/helpers/__mocks__/rehype-raw.ts` to mock the `rehype-raw` plugin for testing purposes.
+- Add `tests/middleware.test.ts` for testing the middleware.
