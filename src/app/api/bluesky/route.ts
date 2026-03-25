@@ -1,0 +1,147 @@
+import { NextResponse } from "next/server";
+
+export interface BlueskyFacetFeature {
+  $type: string;
+  uri?: string;
+  did?: string;
+  tag?: string;
+}
+
+export interface BlueskyFacet {
+  index: { byteStart: number; byteEnd: number };
+  features: BlueskyFacetFeature[];
+}
+
+export interface BlueskyEmbed {
+  type: "external" | "images" | "unknown";
+  external?: {
+    uri: string;
+    title: string;
+    description: string;
+    thumb?: string;
+  };
+  images?: {
+    thumb: string;
+    fullsize: string;
+    alt: string;
+  }[];
+}
+
+export interface BlueskyPost {
+  text: string;
+  facets: BlueskyFacet[];
+  embed: BlueskyEmbed | null;
+  likeCount: number;
+  replyCount: number;
+  repostCount: number;
+  permalink: string;
+  createdAt: string;
+}
+
+interface APIEmbed {
+  $type: string;
+  external?: {
+    uri: string;
+    title: string;
+    description: string;
+    thumb?: string;
+  };
+  images?: {
+    thumb: string;
+    fullsize: string;
+    alt: string;
+  }[];
+}
+
+interface FeedViewPost {
+  post: {
+    uri: string;
+    author: {
+      handle: string;
+    };
+    record: {
+      text: string;
+      createdAt: string;
+      facets?: BlueskyFacet[];
+    };
+    embed?: APIEmbed;
+    likeCount?: number;
+    replyCount?: number;
+    repostCount?: number;
+  };
+}
+
+function transformEmbed(embed?: APIEmbed): BlueskyEmbed | null {
+  if (!embed) return null;
+
+  if (embed.$type === "app.bsky.embed.external#view" && embed.external) {
+    return {
+      type: "external",
+      external: {
+        uri: embed.external.uri,
+        title: embed.external.title,
+        description: embed.external.description,
+        thumb: embed.external.thumb,
+      },
+    };
+  }
+
+  if (embed.$type === "app.bsky.embed.images#view" && embed.images) {
+    return {
+      type: "images",
+      images: embed.images.map((img) => ({
+        thumb: img.thumb,
+        fullsize: img.fullsize,
+        alt: img.alt,
+      })),
+    };
+  }
+
+  return null;
+}
+
+export async function GET() {
+  const handle = process.env.BLUESKY_HANDLE;
+
+  if (!handle) {
+    return NextResponse.json(null, { status: 200 });
+  }
+
+  try {
+    const url = `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=1&filter=posts_no_replies`;
+
+    const response = await fetch(url, { cache: "no-store" });
+
+    if (!response.ok) {
+      console.error("Bluesky API error:", await response.text());
+      return NextResponse.json(null, { status: 200 });
+    }
+
+    const json = await response.json();
+    const feedItem: FeedViewPost | undefined = json.feed?.[0];
+
+    if (!feedItem) {
+      return NextResponse.json(null, { status: 200 });
+    }
+
+    const post = feedItem.post;
+    const rkey = post.uri.split("/").pop();
+    const permalink = `https://bsky.app/profile/${post.author.handle}/post/${rkey}`;
+
+    const result: BlueskyPost = {
+      text: post.record.text,
+      facets: post.record.facets ?? [],
+      embed: transformEmbed(post.embed),
+      likeCount: post.likeCount ?? 0,
+      replyCount: post.replyCount ?? 0,
+      repostCount: post.repostCount ?? 0,
+      permalink,
+      createdAt: post.record.createdAt,
+    };
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("Bluesky fetch error:", error);
+    return NextResponse.json(null, { status: 200 });
+  }
+}
