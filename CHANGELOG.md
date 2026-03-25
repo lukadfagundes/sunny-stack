@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-03-24
+
 ### Added
 
 #### Project Documentation
@@ -237,3 +239,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `tests/helpers/__mocks__/mermaid.ts` to mock the `mermaid` library for testing purposes.
 - Add `tests/helpers/__mocks__/rehype-raw.ts` to mock the `rehype-raw` plugin for testing purposes.
 - Add `tests/middleware.test.ts` for testing the middleware.
+
+'''
