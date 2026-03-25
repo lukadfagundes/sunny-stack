@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-03-24
+
 ### Added
 
 - Add file tracing configuration to `next.config.ts` for `/api/docs` route to optimize build output size.
