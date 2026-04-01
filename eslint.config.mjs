@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Generated output:
     "coverage/**",
+    // GSD tooling (CommonJS, not project source):
+    ".claude/**",
   ]),
 ]);
 

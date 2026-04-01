@@ -435,6 +435,57 @@ const projects: ProjectData[] = [
     footer:
       "Contributed to Reactive Resume — an open-source resume builder with 30k+ GitHub stars.",
   },
+  {
+    id: "get-shit-done",
+    title: "Get Shit Done (GSD)",
+    tagline:
+      "Documentation generation and verification system for AI-assisted development",
+    description:
+      "A documentation command for GSD that writes, updates, and verifies project docs against the actual codebase. Every factual claim — file paths, CLI commands, API endpoints, function signatures — is checked against the live repo before commit. Handles both initial doc creation and incremental updates, generating up to 9 documentation types with parallel subagent orchestration.",
+    category: "contribution",
+    techStack: [
+      "JavaScript",
+      "Node.js",
+      "CommonJS",
+      "Claude Agent SDK",
+    ],
+    features: [
+      {
+        label: "Docs Verification Gate",
+        description:
+          "Filesystem-only fact-checking — extracts every claim from generated docs and validates against the live codebase. No hallucinated paths, no phantom endpoints, no stale signatures.",
+      },
+      {
+        label: "9 Documentation Types",
+        description:
+          "Conditional generation of README, ARCHITECTURE, API, DEPLOYMENT, CONFIGURATION, GETTING-STARTED, DEVELOPMENT, TESTING, and CONTRIBUTING based on project signals",
+      },
+      {
+        label: "4 Operating Modes",
+        description:
+          "Create, update, supplement, and fix modes with hand-written doc preservation — never overwrites human-authored content without explicit consent",
+      },
+      {
+        label: "Parallel Subagent Orchestration",
+        description:
+          "2-wave parallel dispatch with gsd-doc-writer and gsd-doc-verifier agents, bounded fix loop with regression detection (max 2 iterations)",
+      },
+      {
+        label: "Project Intelligence",
+        description:
+          "Automatic project type classification (CLI, SaaS, open source, monorepo), doc tooling detection (Docusaurus, VitePress, MkDocs), and recursive existing doc scanning",
+      },
+    ],
+    links: [
+      {
+        label: "View Repo",
+        url: "https://github.com/gsd-build/get-shit-done",
+      },
+    ],
+    status: "active",
+    footer:
+      "Contributed to GSD — an AI workflow CLI for plan-execute-verify development. 2,559 lines across 9 files.",
+  },
 ];
 
 export function getAllProjects(): ProjectData[] {
