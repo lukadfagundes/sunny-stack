@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `.claude/**` path to `eslint.config.mjs` for ignoring GSD tooling files.
+- Add 'Get Shit Done (GSD)' project data to `src/lib/data/projects.ts`, including its title, tagline, description, category, tech stack, and features.
+
 ## [3.0.1] - 2026-03-24
 
 ### Added
