@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+<<<<<<< HEAD
+=======
+## [3.0.2] - 2026-04-01
+
+>>>>>>> 64ce2561486ccc60907b40662c5fa33e5c34cd13
 ### Added
 
 - Add `.claude/**` path to `eslint.config.mjs` for ignoring GSD tooling files.
