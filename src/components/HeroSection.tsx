@@ -27,12 +27,14 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Name and title */}
       <div className="relative z-10 text-center px-6">
-        <LetterReveal
-          text="Luka Fagundes"
-          className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-sunny-cream mb-4"
-          delay={0.3}
-          reducedMotion={reducedMotion}
-        />
+        <h1>
+          <LetterReveal
+            text="Luka Fagundes"
+            className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-sunny-cream mb-4"
+            delay={0.3}
+            reducedMotion={reducedMotion}
+          />
+        </h1>
         <LetterReveal
           text="Full Stack Developer"
           className="text-lg sm:text-xl md:text-2xl text-sunny-cream-muted tracking-wide"
@@ -40,6 +42,9 @@ export default function HeroSection() {
           staggerDelay={0.03}
           reducedMotion={reducedMotion}
         />
+        <p className="text-sm sm:text-base text-sunny-cream-muted/60 tracking-wide mt-3">
+          Building since August 2025 · Open to opportunities
+        </p>
       </div>
     </section>
   );

@@ -27,7 +27,7 @@ describe("TechArsenal", () => {
 
   it("renders all language items", () => {
     render(<TechArsenal />);
-    const languages = ["TypeScript", "JavaScript", "Python", "Java", "HTML/CSS", "SQL"];
+    const languages = ["TypeScript", "JavaScript", "Python", "Lua", "HTML/CSS", "SQL"];
     for (const lang of languages) {
       expect(screen.getByText(lang)).toBeInTheDocument();
     }

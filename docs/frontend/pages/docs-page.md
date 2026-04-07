@@ -2,79 +2,97 @@
 
 ## Overview
 
-An interactive documentation viewer with a sidebar file tree navigation, breadcrumb navigation, and markdown rendering. Client component that fetches the documentation file tree and individual file contents from the `/api/docs` endpoint.
+An interactive documentation viewer with sidebar file tree navigation, breadcrumb navigation, and markdown rendering. Uses a **server component + client wrapper** architecture: the page reads the file tree and initial content server-side via `src/lib/docs.ts`, then passes it to `DocsClient` for interactive navigation.
 
-**Source:** `src/app/docs/page.tsx` (151 lines)
+**Source:** `src/app/docs/page.tsx` (server component) + `src/components/docs/DocsClient.tsx` (client wrapper)
 
 ## Route
 
-`/docs`
+`/docs` — accepts `?file={path}` query parameter for direct file access (e.g., `/docs?file=docs/guides/getting-started.md`)
 
 ## Rendering Strategy
 
-- **Type:** Client Component (`"use client"`)
-- **Data Fetching:** Fetch-based via `/api/docs` endpoint (file tree + content)
+- **Type:** Async Server Component (no `"use client"` directive on page.tsx)
+- **Initial Data:** File tree and content read server-side via `getDocTree()` and `getDocContent()` from `src/lib/docs.ts`
+- **Dynamic Metadata:** `generateMetadata()` produces per-file titles (e.g., "Getting Started — sunny-stack.com Docs")
+- **Subsequent Navigation:** Client-side fetch to `/api/docs?path={filePath}` + `router.push` for URL updates
 
 ## Data Flow
 
 ```
-On mount:
-  Promise.all([
-    GET /api/docs?list=true   -> file tree (sidebar)
-    GET /api/docs?path=README.md -> initial content
-  ])
-
-On navigation:
-  GET /api/docs?path={filePath} -> updated content
-
-DocsPage
+Server (page.tsx):
+  searchParams.file ?? "README.md"
   |
-  +-> DocNav (sidebar navigation)
-  |     built from: buildSections(files)
+  +-> getDocTree()    [src/lib/docs.ts]  -> file tree
+  +-> getDocContent() [src/lib/docs.ts]  -> initial markdown content
   |
-  +-> MarkdownRenderer (content display)
+  v
+  DocsClient (client component)
+    props: { files, initialPath, initialContent }
+    |
+    +-> buildSections(files)  [DocNav.tsx]  -> NavSection[]
+    +-> DocNav (sidebar navigation)
+    +-> MarkdownRenderer (content display)
+
+Client navigation:
+  User clicks file in sidebar
+    -> fetch /api/docs?path={filePath}
+    -> router.push('/docs?file={filePath}')
+    -> update content state
 ```
 
 ## Component Composition
 
 | Component | Source | Props |
 |-----------|--------|-------|
+| `DocsClient` | `@/components/docs/DocsClient` | `files: DocFile[]`, `initialPath: string`, `initialContent: string` |
 | `DocNav` | `@/components/docs/DocNav` | `sections: NavSection[]`, `currentPath: string`, `onSelect: (path: string) => void` |
 | `MarkdownRenderer` | `@/components/docs/MarkdownRenderer` | `content: string`, `currentPath: string`, `loadFile: (path: string) => void` |
 
-Also uses the `buildSections()` utility function exported from `DocNav` to transform the flat file tree into hierarchical navigation sections.
-
-## State Management
+## State Management (DocsClient)
 
 ```typescript
-const [files, setFiles] = useState<DocFile[]>([]);          // File tree data from API
-const [currentPath, setCurrentPath] = useState("README.md"); // Currently displayed file path
-const [content, setContent] = useState("");                   // Current file markdown content
-const [loading, setLoading] = useState(true);                // Loading indicator
-const [sidebarOpen, setSidebarOpen] = useState(false);       // Mobile sidebar toggle
+const sections = useMemo(() => buildSections(files), [files]); // Derived from server-provided files
+const [currentPath, setCurrentPath] = useState(initialPath);   // Currently displayed file path
+const [content, setContent] = useState(initialContent);         // Current file markdown content
+const [loading, setLoading] = useState(false);                  // Loading indicator (false initially — content pre-loaded)
+const [sidebarOpen, setSidebarOpen] = useState(false);          // Mobile sidebar toggle
 ```
+
+Note: `loading` starts as `false` because the server pre-loads the initial content. No "Loading..." flash on first visit.
 
 ## Key Logic
 
-### Initial Load (useEffect on mount)
+### Server-Side File Reading (page.tsx)
 
-Fetches both the file tree and README.md content in parallel via `Promise.all`. On success, populates `files` and `content` state. On failure, sets empty files and error message.
+```typescript
+const tree = getDocTree();
+const content = getDocContent(requestedPath) ?? getDocContent("README.md") ?? "";
+```
 
-### File Navigation (loadFile -- useCallback)
+Reads the file tree and requested file content at request time. Falls back to README.md if the requested path is invalid.
+
+### Dynamic Metadata (generateMetadata)
+
+Produces per-file titles by parsing the file path:
+- `/docs` → "Readme — sunny-stack.com Docs"
+- `/docs?file=docs/guides/getting-started.md` → "Getting Started — sunny-stack.com Docs"
+
+### File Navigation (DocsClient.loadFile)
 
 ```typescript
 const loadFile = useCallback((filePath: string) => {
   setCurrentPath(filePath);
   setLoading(true);
   setSidebarOpen(false);
+  router.push(`/docs?file=${encodeURIComponent(filePath)}`, { scroll: false });
   fetch(`/api/docs?path=${encodeURIComponent(filePath)}`)
-    .then(res => res.json())
-    .then(data => { setContent(data.content ?? "File not found."); setLoading(false); })
-    .catch(() => { setContent("Failed to load file."); setLoading(false); });
-}, []);
+    .then(...)
+    .catch(...);
+}, [router]);
 ```
 
-Wrapped in `useCallback` with empty dependency array for stable reference. Closes the mobile sidebar on each navigation.
+Updates the URL via `router.push` (enabling direct URL sharing and browser back/forward) and fetches content from the API route for client-side navigation.
 
 ### Breadcrumb Generation
 
@@ -100,10 +118,15 @@ md:grid-cols-[260px_1fr]
 - Sidebar: 260px fixed width on medium+ screens
 - Content area: fluid remaining space with padding and rounded border
 
+## Vercel Deployment
+
+`next.config.ts` includes `outputFileTracingIncludes` for the `/docs` route to ensure the `docs/` directory and root `.md` files are bundled in the serverless function. Without this, the `fs` calls in `src/lib/docs.ts` would fail in production.
+
 ## Dependencies
 
-- `@/app/api/docs/route` -- `DocFile` type
+- `@/lib/docs` -- `getDocTree()`, `getDocContent()`, `DocFile` type
+- `@/components/docs/DocsClient` -- client wrapper component
 - `@/components/docs/DocNav` -- `DocNav` component + `buildSections()` utility
 - `@/components/docs/MarkdownRenderer` -- Markdown content renderer
+- `next/navigation` -- `useRouter` (for URL updates on navigation)
 - `lucide-react` -- `ChevronRight`, `Menu`, `X` icons
-- `react` -- `useState`, `useEffect`, `useCallback`

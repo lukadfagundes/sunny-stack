@@ -155,7 +155,7 @@ Computes which section/subsection/subgroup IDs should be expanded to reveal the 
 |--------|------|-------------|
 | `sections` prop | `NavSection[]` | Pre-built navigation structure (typically from `buildSections()`). |
 | `currentPath` prop | `string` | Current document path for active state tracking. |
-| `DocFile` type | `@/app/api/docs/route` | Type import for the docs API file tree structure. |
+| `DocFile` type | `@/lib/docs` | Type import for the docs file tree structure. |
 
 ## Styling
 

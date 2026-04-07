@@ -28,15 +28,23 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  // Scope /api/docs file tracing to only docs/ and root .md files.
-  // The route uses dynamic fs operations (readdirSync, readFileSync) which
-  // causes Turbopack NFT to trace the entire project. This limits the trace
-  // to the directories that route actually reads from.
+  // Scope docs file tracing to only docs/ and root .md files.
+  // Both the API route and the server-rendered page use dynamic fs operations
+  // (readdirSync, readFileSync) which causes Turbopack NFT to trace the entire
+  // project. This limits the trace to the directories they actually read from.
   outputFileTracingIncludes: {
     "/api/docs": ["./docs/**/*", "./README.md", "./CHANGELOG.md"],
+    "/docs": ["./docs/**/*", "./README.md", "./CHANGELOG.md"],
   },
   outputFileTracingExcludes: {
     "/api/docs": [
+      "./node_modules/**/*",
+      "./src/**/*",
+      "./.next/**/*",
+      "./.git/**/*",
+      "./tests/**/*",
+    ],
+    "/docs": [
       "./node_modules/**/*",
       "./src/**/*",
       "./.next/**/*",

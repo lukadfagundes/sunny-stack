@@ -9,6 +9,65 @@ import type { ProjectData, ProjectCategory } from "./types";
 const projects: ProjectData[] = [
   // ─── Professional ─────────────────────────────────────────────
   {
+    id: "cola-records",
+    title: "Cola Records",
+    tagline:
+      "Cross-platform desktop developer workspace with 15 shipped releases",
+    description:
+      "Cross-platform desktop developer workspace. Embedded IDE (code-server in Docker), full Discord messaging client, Spotify player, multi-provider AI assistant (Gemini, Claude, GPT, Ollama), xterm.js terminal with node-pty, SQLite persistence, and auto-updates via GitHub Releases. 15 shipped releases across Windows, macOS, and Linux. 243 commits, 153 React components, 39 backend service files, 12 IPC handler domains, 11 Zustand stores.",
+    category: "professional",
+    techStack: [
+      "Electron 40",
+      "React 19",
+      "TypeScript",
+      "SQLite",
+      "Vite 7",
+      "Electron Forge",
+      "Zustand",
+      "Docker",
+    ],
+    features: [
+      {
+        label: "Embedded IDE & Terminal",
+        description:
+          "Code-server (VS Code) running in Docker with multi-project tab support, plus xterm.js terminal with node-pty for Git Bash, PowerShell, and Zsh",
+      },
+      {
+        label: "Multi-Provider AI Assistant",
+        description:
+          "Integrated AI chat supporting Gemini, Claude, GPT, and Ollama with context-aware responses",
+      },
+      {
+        label: "Discord Messaging Client",
+        description:
+          "Full Discord community client for messaging and collaboration without leaving the workspace",
+      },
+      {
+        label: "Full Git & GitHub Ecosystem",
+        description:
+          "Built-in Git operations, Actions workflow viewer, Releases management, Pull Request management, and profile dashboard",
+      },
+      {
+        label: "Spotify Player & Auto-Updates",
+        description:
+          "Integrated Spotify playback, in-app documentation viewer with Mermaid support, and auto-updates via GitHub Releases",
+      },
+    ],
+    links: [
+      {
+        label: "GitHub",
+        url: "https://github.com/lukadfagundes/cola-records",
+      },
+      {
+        label: "Download",
+        url: "https://github.com/lukadfagundes/cola-records/releases",
+      },
+    ],
+    status: "active",
+    footer:
+      "Available as NSIS installer (Windows), DMG (macOS), and AppImage/deb/rpm (Linux) with auto-updates. 15 shipped releases.",
+  },
+  {
     id: "trinity-sdk",
     title: "Trinity Method SDK",
     tagline:
@@ -58,62 +117,60 @@ const projects: ProjectData[] = [
     footer: "Get started: npx trinity-method-sdk deploy",
   },
   {
-    id: "cola-records",
-    title: "Cola Records",
-    tagline: "Electron desktop app for managing developer contributions to open-source",
+    id: "sunny-stack",
+    title: "sunny-stack",
+    tagline:
+      "This portfolio site — Next.js 16 with 6 live API integrations and a playable 404 game",
     description:
-      "Features issue discovery, contribution tracking, built-in Git operations, an embedded IDE via Docker-hosted code-server, multi-tab terminal, Spotify integration, and a dashboard with real-time GitHub activity. 108 React components, 15 main process services, and 163 IPC channels.",
+      "This portfolio site. Next.js 16 + React 19 with 6 live API integrations (GitHub, Bluesky, Instagram, YouTube, Spotify, Steam), 10 REST endpoints, ISR caching, IP-based rate limiting, 434 tests at 90% coverage, a playable Zoro-themed 404 game, and a built-in documentation viewer with Mermaid diagram rendering.",
     category: "professional",
     techStack: [
-      "Electron",
+      "Next.js 16",
       "React 19",
       "TypeScript",
-      "Vite",
-      "SQLite",
-      "Zustand",
-      "Tailwind CSS",
-      "Docker",
+      "Tailwind CSS v4",
+      "Vercel",
+      "Framer Motion",
     ],
     features: [
       {
-        label: "Issue Discovery & Tracking",
+        label: "6 Live API Integrations",
         description:
-          "Search GitHub for good first issues, fork repositories, and track contribution progress through completion",
+          "GitHub GraphQL, Bluesky, Instagram Graph API, YouTube Data API, Spotify Web API, and Steam Web API with ISR caching",
       },
       {
-        label: "Embedded IDE & Terminal",
+        label: "434 Tests at 90% Coverage",
         description:
-          "Code-server (VS Code) running in Docker with multi-project tab support, plus multi-tab terminal with Git Bash, PowerShell, and Zsh",
+          "Comprehensive test suite covering components, API routes, utilities, and data integrity",
       },
       {
-        label: "Full Git Integration",
+        label: "Playable 404 Game",
         description:
-          "Built-in Git operations with 17 IPC channels for clone, branch, commit, push, pull, and remote management",
+          "Zoro-themed sword game with grid navigation, move limits, Nami escalation, and accessibility fallback for reduced motion",
       },
       {
-        label: "GitHub Ecosystem",
+        label: "Built-in Documentation Viewer",
         description:
-          "Actions workflow viewer, Releases management, Pull Request management, and profile dashboard with 6 widgets",
+          "Renders project documentation from the repo with Mermaid diagram support, breadcrumb navigation, and syntax highlighting",
       },
       {
-        label: "Developer Experience",
+        label: "IP-Based Rate Limiting",
         description:
-          "Spotify playback, Discord community client, in-app documentation viewer with Mermaid diagram support, and auto-updates",
+          "Middleware-level rate limiting on all API routes to prevent abuse, with configurable thresholds per endpoint",
       },
     ],
     links: [
       {
         label: "GitHub",
-        url: "https://github.com/lukadfagundes/cola-records",
+        url: "https://github.com/strawhatluka/sunny-stack",
       },
       {
-        label: "Download",
-        url: "https://github.com/lukadfagundes/cola-records/releases",
+        label: "Live Site",
+        url: "https://sunny-stack.com",
       },
     ],
     status: "active",
-    footer:
-      "Available as NSIS installer (Windows), DMG (macOS), and AppImage/deb/rpm (Linux) with auto-updates.",
+    footer: "v3.0.2 — 252 commits. Deployed on Vercel.",
   },
   {
     id: "rinoa-platform",
@@ -169,7 +226,7 @@ const projects: ProjectData[] = [
   {
     id: "hytale-server-manager",
     title: "Hytale Server Manager",
-    tagline: "Desktop app for managing Hytale dedicated game servers",
+    tagline: "Free, open-source desktop app wrapping Hytale dedicated servers with a clean UI",
     description:
       "Monitor server status, view connected players with their gear and stats, manage warps, toggle mods, and browse game assets — all from a single interface. Built with Electron's multi-process architecture and strict context isolation. 17 invoke + 13 event IPC channels, 7 Zustand stores, 18 React components, and 240+ tests across 17 suites.",
     category: "personal",
@@ -423,6 +480,10 @@ const projects: ProjectData[] = [
     ],
     links: [
       {
+        label: "Merged PR #2788",
+        url: "https://github.com/AmruthPillai/Reactive-Resume/pull/2788",
+      },
+      {
         label: "View Fork",
         url: "https://github.com/lukadfagundes/reactive-resume",
       },
@@ -433,7 +494,7 @@ const projects: ProjectData[] = [
     ],
     status: "active",
     footer:
-      "Contributed to Reactive Resume — an open-source resume builder with 30k+ GitHub stars.",
+      "Contributed to Reactive Resume — an open-source resume builder with 30k+ GitHub stars. Merged PR #2788.",
   },
   {
     id: "get-shit-done",
@@ -478,13 +539,17 @@ const projects: ProjectData[] = [
     ],
     links: [
       {
+        label: "Merged PR #1532",
+        url: "https://github.com/mckaywrigley/get-shit-done/pull/1532",
+      },
+      {
         label: "View Repo",
         url: "https://github.com/gsd-build/get-shit-done",
       },
     ],
     status: "active",
     footer:
-      "Contributed to GSD — an AI workflow CLI for plan-execute-verify development. 2,559 lines across 9 files.",
+      "Contributed to GSD — an AI workflow CLI for plan-execute-verify development. 2,559 lines across 9 files. Merged PR #1532.",
   },
 ];
 

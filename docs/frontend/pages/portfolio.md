@@ -2,9 +2,9 @@
 
 ## Overview
 
-Displays portfolio projects organized by category (professional, personal, contribution) with expandable project cards. Client component with accordion-style expand/collapse behavior where only one card can be expanded at a time.
+Displays portfolio projects organized by category with expandable project cards. Client component with accordion-style expand/collapse behavior where only one card can be expanded at a time. Categories render in order: Contributions, Professional, Personal.
 
-**Source:** `src/app/portfolio/page.tsx` (50 lines)
+**Source:** `src/app/portfolio/page.tsx`
 
 ## Route
 
@@ -13,12 +13,13 @@ Displays portfolio projects organized by category (professional, personal, contr
 ## Rendering Strategy
 
 - **Type:** Client Component (`"use client"`)
+- **Metadata:** Page-specific title and description exported from `src/app/portfolio/layout.tsx`
 - **Data Source:** Static data from `getProjectsByCategory()` -- no API calls, no server-side data fetching
 
 ## Data Flow
 
 ```
-CATEGORIES array ["professional", "personal", "contribution"]
+CATEGORIES array ["contribution", "professional", "personal"]
   |
   v (for each category)
 getProjectsByCategory(category) [src/lib/data/projects.ts]
@@ -53,10 +54,10 @@ const [expandedId, setExpandedId] = useState<string | null>(null);
 ### Category Iteration
 
 ```typescript
-const CATEGORIES: ProjectCategory[] = ["professional", "personal", "contribution"];
+const CATEGORIES: ProjectCategory[] = ["contribution", "professional", "personal"];
 ```
 
-Iterates over all three categories in fixed order. Categories with no projects are skipped via `if (projects.length === 0) return null`.
+Iterates over all three categories in fixed order: Contributions first (open-source PRs), then Professional, then Personal. Categories with no projects are skipped via `if (projects.length === 0) return null`.
 
 ### Accordion Behavior
 

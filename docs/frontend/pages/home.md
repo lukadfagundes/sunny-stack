@@ -4,7 +4,7 @@
 
 The landing page of sunny-stack. An async Server Component that fetches all GitHub data at build/revalidation time and passes it as props to child components. Renders a pirate-themed dashboard with a contribution heatmap, stats, tech arsenal, and recently active repositories.
 
-**Source:** `src/app/page.tsx` (143 lines)
+**Source:** `src/app/page.tsx`
 
 ## Route
 
@@ -15,6 +15,7 @@ The landing page of sunny-stack. An async Server Component that fetches all GitH
 - **Type:** Async Server Component (no `"use client"` directive)
 - **ISR:** `export const revalidate = 3600` -- revalidates every 1 hour
 - **Data Fetching:** Calls `fetchGitHubData()` at the top level during server rendering
+- **Metadata:** Exports page-specific Open Graph metadata (title, description) that merges with root layout defaults
 
 ## Data Flow
 
@@ -66,6 +67,18 @@ Zones are separated by horizontal gradient dividers (gold at 20% opacity, fading
 ## State Management
 
 None. This is a pure server component with no client-side state.
+
+### HeroSection Heading Structure
+
+The `HeroSection` wraps "Luka Fagundes" in a semantic `<h1>` tag for SEO. Below the "Full Stack Developer" subtitle, a static line reads "Building since August 2025 · Open to opportunities" in muted text (`text-sunny-cream-muted/60`).
+
+### TechArsenal Categories
+
+The Cargo Hold displays hardcoded tech items in 4 categories:
+- **Languages:** TypeScript, JavaScript, Python, Lua, HTML/CSS, SQL
+- **Frameworks:** React, Next.js, Node.js, Express, Tailwind CSS, Electron, Discord.js
+- **Tools:** Git, Docker, Jest, PostgreSQL, SQLite, Prisma, Framer Motion
+- **Cloud & Deploy:** Vercel, AWS, GitHub Actions, Supabase
 
 ## Dependencies
 

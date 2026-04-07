@@ -29,10 +29,56 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Luka Fagundes — Portfolio",
+  title: {
+    default: "Luka Fagundes — Full Stack Developer | sunny-stack.com",
+    template: "%s | Luka Fagundes",
+  },
   description:
-    "Full-stack developer portfolio — interactive experience showcasing projects, skills, and personality.",
+    "Self-taught full stack developer building production software with TypeScript, React, Next.js, and Node.js. Based remotely. Open to full-time, contract, and freelance opportunities.",
   icons: { icon: "/favicon.png" },
+  metadataBase: new URL("https://sunny-stack.com"),
+  openGraph: {
+    type: "website",
+    siteName: "Luka Fagundes — Portfolio",
+    title: "Luka Fagundes — Full Stack Developer",
+    description:
+      "Self-taught full stack developer. TypeScript, React, Next.js, Node.js.",
+    url: "https://sunny-stack.com",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Luka Fagundes — Full Stack Developer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@strawhatluka",
+  },
+};
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Luka Fagundes",
+  url: "https://sunny-stack.com",
+  email: "luka@sunny-stack.com",
+  jobTitle: "Full Stack Developer",
+  description:
+    "Self-taught full stack developer building production software with TypeScript, React, Next.js, and Node.js.",
+  address: {
+    "@type": "PostalAddress",
+    addressRegion: "CA",
+    addressCountry: "US",
+  },
+  sameAs: [
+    "https://github.com/strawhatluka",
+    "https://x.com/strawhatluka",
+    "https://bsky.app/profile/strawhatluka.bsky.social",
+    "https://www.youtube.com/@strawhatluka",
+  ],
 };
 
 export default function RootLayout({
@@ -45,6 +91,12 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${playfair.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
           <VoyageSail />
           {children}

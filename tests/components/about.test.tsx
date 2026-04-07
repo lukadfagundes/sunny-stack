@@ -268,10 +268,10 @@ describe("DetailsBox", () => {
 });
 
 describe("NetworkBanner", () => {
-  it("renders the network message with profile name", () => {
+  it("renders the professional blurb", () => {
     render(<NetworkBanner />);
     expect(
-      screen.getByText(/Luka is in your extended network/)
+      screen.getByText(/Self-taught full stack developer/)
     ).toBeInTheDocument();
   });
 });

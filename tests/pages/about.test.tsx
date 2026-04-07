@@ -27,7 +27,7 @@ describe("AboutPage", () => {
   it("renders the network banner", () => {
     render(<AboutPage />);
     expect(
-      screen.getByText(/is in your extended network/)
+      screen.getByText(/Self-taught full stack developer/)
     ).toBeInTheDocument();
   });
 

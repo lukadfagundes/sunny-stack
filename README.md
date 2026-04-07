@@ -4,7 +4,7 @@ A personal developer portfolio website built with Next.js 16, React 19, and Tail
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2.0-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.2.4-61DAFB)](https://react.dev/)
-[![Tests](https://img.shields.io/badge/Tests-434%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/Tests-445%20passing-brightgreen)]()
 [![Coverage](https://img.shields.io/badge/Coverage-90%25-brightgreen)]()
 [![License](https://img.shields.io/badge/License-CC--BY--NC--4.0-blue)](LICENSE)
 
@@ -18,8 +18,9 @@ A personal developer portfolio website built with Next.js 16, React 19, and Tail
 - **Interactive 404 Page** - A playable Zoro-themed game when users hit a missing page
 - **Rate Limiting** - IP-based rate limiting (30 req/min) via middleware with security headers (CSP, HSTS)
 - **ISR Caching** - Incremental Static Regeneration with 1-hour revalidation for external API data
-- **Documentation Viewer** - Built-in `/docs` page with 3-level collapsible sidebar, breadcrumbs, and client-side Mermaid diagram rendering
-- **90% Test Coverage** - 434 tests across 46 suites with enforced coverage thresholds
+- **Documentation Viewer** - Server-rendered `/docs` page with 3-level collapsible sidebar, breadcrumbs, per-file URLs, and client-side Mermaid diagram rendering
+- **SEO Optimized** - Per-page metadata, Open Graph tags, Twitter Cards, Person JSON-LD schema, sitemap, and robots.txt
+- **90% Test Coverage** - 445 tests across 47 suites with enforced coverage thresholds
 
 ---
 

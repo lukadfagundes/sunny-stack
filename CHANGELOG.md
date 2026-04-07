@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add comprehensive SEO metadata to root layout: Open Graph tags, Twitter Cards, Person JSON-LD schema, and `metadataBase`.
+- Add per-page metadata via `layout.tsx` files for `/portfolio` and `/about` routes.
+- Add `generateMetadata` to `/docs` page for dynamic per-file titles (e.g., "Getting Started — sunny-stack.com Docs").
+- Add homepage-specific Open Graph metadata export in `src/app/page.tsx`.
+- Add `src/app/sitemap.ts` with all 4 pages (priority-weighted) and `src/app/robots.ts` blocking `/api/*`.
+- Add stub `public/og-image.png` placeholder (1200x630px) for social sharing previews.
+- Add `src/lib/docs.ts` shared server utility extracting `DocFile`, `getDocTree`, `getDocContent`, and `preprocessMermaid` from the API route.
+- Add `src/components/docs/DocsClient.tsx` client wrapper for interactive docs navigation with URL-based routing (`/docs?file=path`).
+- Add sunny-stack as a new Professional project in `src/lib/data/projects.ts`.
+- Add "Building since August 2025 · Open to opportunities" subtitle to the homepage hero section.
+- Add Electron to Frameworks, Lua to Languages, and SQLite to Tools in `TechArsenal.tsx`.
+- Add merged PR links to Reactive Resume (#2788) and GSD (#1532) contribution cards.
+- Add `tests/lib/docs.test.ts` with 11 tests for the shared docs utility (tree building, content reading, Mermaid preprocessing, security checks).
+- Add SEO feature bullet to README.md.
+
+### Changed
+
+- Refactor `/docs` page from client-side fetch to server-rendered architecture: page.tsx is now an async server component that reads files at request time and passes pre-loaded data to `DocsClient`.
+- Refactor `/api/docs` route to thin wrapper delegating to `src/lib/docs.ts`.
+- Update `DocNav.tsx` to import `DocFile` from `@/lib/docs` instead of `@/app/api/docs/route`.
+- Rewrite `tests/components/docs.test.tsx` to test `DocsClient` instead of the now-server-rendered `DocsPage` (10 tests including URL navigation verification).
+- Replace "Luka is in your extended network" text in `NetworkBanner.tsx` with a professional blurb.
+- Reorder portfolio categories from Professional → Personal → Contribution to Contribution → Professional → Personal.
+- Move Cola Records to first position in Professional section with expanded product description (AI assistant, xterm.js, 15 shipped releases).
+- Update Hytale Server Manager tagline to "Free, open-source desktop app wrapping Hytale dedicated servers with a clean UI".
+- Wrap homepage "Luka Fagundes" text in semantic `<h1>` tag for SEO.
+- Remove Java from TechArsenal Languages category.
+- Extend `outputFileTracingIncludes` and `outputFileTracingExcludes` in `next.config.ts` to cover the `/docs` page route (required for Vercel deployment with server-side `fs` reads).
+- Update test assertions in `TechArsenal.test.tsx`, `about.test.tsx`, and `about` page test to match new content.
+- Update README test badge from 434 to 445, suites from 46 to 47.
+- Update 7 documentation files to reflect all architectural and content changes.
+
 ## [3.0.2] - 2026-04-01
 
 ### Added
