@@ -2,13 +2,13 @@
 
 ## Overview
 
-A simple presentational component that displays a MySpace-inspired network connection banner. It shows the message "[Name] is in your extended network" in a styled, centered box with a golden border, mimicking the classic social network UI pattern.
+A presentational component that displays a professional blurb at the top of the About page's right column. Shows a short professional introduction in a styled, centered box with a golden border.
 
 **Source:** `src/components/about/NetworkBanner.tsx`
 
 ## Props
 
-This component accepts **no props**. The user name is sourced from the static `profile` import.
+This component accepts **no props**. The blurb text is hardcoded.
 
 ## State Management
 
@@ -26,17 +26,17 @@ This component has **no event handlers**.
 
 This component renders **no child components**. It outputs a single `<div>` containing a `<p>` element.
 
-## Data Sources
+## Content
 
-| Source | Import Path | Fields Used | Description |
-|--------|-------------|-------------|-------------|
-| `profile` | `@/lib/data/personal` | `name` | The profile name displayed in the banner message |
+Displays the following professional blurb:
+
+> Self-taught full stack developer building production software with TypeScript, React, Next.js, and Node.js since August 2025. Based remotely in California. Open to full-time, contract, and freelance opportunities.
 
 ## Styling Details
 
 - **Background:** `bg-sunny-surface`
 - **Border:** `1px solid #B8860B` (dark goldenrod), with `borderRadius: 4`
-- **Text:** `text-sunny-gold font-bold text-sm`, centered
+- **Text:** `text-sunny-cream text-sm leading-relaxed`, centered
 - **Padding:** `px-4 py-3`
 
 ## Usage
@@ -47,6 +47,5 @@ This component renders **no child components**. It outputs a single `<div>` cont
 
 ## Integration Points
 
-- **Parent:** Rendered within the About page layout, typically placed between the profile card and detail sections.
-- **Data:** Imports `profile` from `@/lib/data/personal` for the user's name.
+- **Parent:** Rendered within the About page layout, at the top of the right column in the "profile" view.
 - **Note:** This component is **not** marked as `"use client"` -- it is a server component by default since it has no client-side interactivity.

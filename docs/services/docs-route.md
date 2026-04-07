@@ -2,9 +2,10 @@
 
 ## Overview
 
-Serves project documentation with two modes: a file tree listing for sidebar navigation and markdown content retrieval with Mermaid diagram preprocessing. Reads files from the local filesystem at runtime. Includes path traversal security protections.
+Thin API wrapper that serves project documentation via two modes: a file tree listing for sidebar navigation and markdown content retrieval. Delegates all file reading and processing to `src/lib/docs.ts`. Used by `DocsClient` for client-side navigation after the initial server-rendered page load.
 
-**Source:** `src/app/api/docs/route.ts` (127 lines)
+**Source:** `src/app/api/docs/route.ts`
+**Shared logic:** `src/lib/docs.ts` (file tree building, content reading, Mermaid preprocessing, security checks)
 
 ## Endpoint
 
@@ -35,7 +36,7 @@ None required. This is a public endpoint.
 
 ## Response Types
 
-### `DocFile` (exported)
+### `DocFile` (re-exported from `@/lib/docs`)
 
 ```typescript
 interface DocFile {
@@ -71,25 +72,14 @@ interface DocFile {
 
 ## Implementation Details
 
-### `buildTree(dirPath: string, relativeTo: string): DocFile[]`
+The route handler is a thin wrapper that delegates to two functions from `src/lib/docs.ts`:
 
-Recursive directory scanner that:
-1. Reads directory entries with `fs.readdirSync` using `withFileTypes: true`
-2. For directories: recursively builds child tree
-3. For files: only includes `.md` files
-4. Sorts results: directories first, then files, alphabetically within each group
+- **`getDocTree()`** — Returns the complete file tree. Called when `list=true`.
+- **`getDocContent(filePath)`** — Reads and returns a single file's content with Mermaid preprocessing. Returns `null` for invalid/missing paths.
 
-### `preprocessMermaid(markdown: string): string`
+When `getDocContent()` returns `null`, the route determines the appropriate HTTP error (400 or 404) by checking the path validation rules inline.
 
-Converts fenced Mermaid code blocks into custom HTML elements for client-side rendering:
-
-1. Matches fenced mermaid code blocks via regex (`` ```mermaid ... ``` ``)
-2. Base64-encodes the trimmed diagram code
-3. Replaces the code block with `<mermaid-diagram data-chart="{base64}"></mermaid-diagram>`
-
-The `MarkdownRenderer` component detects these custom elements (via `rehype-raw`) and renders them client-side using the `MermaidDiagram` component, which calls `mermaid.render()` in the browser. This avoids font mismatch issues that occurred with server-side rendering via external services.
-
-### Security Protections
+### Security Protections (in `src/lib/docs.ts`)
 
 Four layers of path validation:
 
@@ -97,6 +87,16 @@ Four layers of path validation:
 2. **Directory restriction:** Only allows root-level files (`README.md`, `CHANGELOG.md`) or paths starting with `docs/`
 3. **File type restriction:** Only allows `.md` file extensions
 4. **Resolution check:** Verifies the resolved absolute path starts with the project root via `path.resolve()`
+
+### Mermaid Preprocessing (in `src/lib/docs.ts`)
+
+Converts fenced Mermaid code blocks into custom HTML elements:
+
+1. Matches fenced mermaid code blocks via regex (`` ```mermaid ... ``` ``)
+2. Base64-encodes the trimmed diagram code
+3. Replaces the code block with `<mermaid-diagram data-chart="{base64}"></mermaid-diagram>`
+
+The `MarkdownRenderer` component detects these custom elements (via `rehype-raw`) and renders them client-side using the `MermaidDiagram` component.
 
 ## Error Handling
 
@@ -106,21 +106,19 @@ Four layers of path validation:
 | Path contains `".."` | 400 | `{ error: "Invalid path" }` |
 | Path not in allowed locations | 400 | `{ error: "Invalid path" }` |
 | Path doesn't end in `.md` | 400 | `{ error: "Invalid path" }` |
-| Resolved path escapes project root | 400 | `{ error: "Invalid path" }` |
 | File not found | 404 | `{ error: "File not found" }` |
 
 ## Dependencies
 
-- **Node.js:** `fs` (readFileSync, readdirSync, existsSync), `path` (join, relative, resolve)
+- **`@/lib/docs`** — `getDocTree()`, `getDocContent()`, `DocFile` type
 - **Next.js:** `NextRequest`, `NextResponse` from `next/server`
-- **Client-side:** Mermaid diagrams are rendered in the browser by the `MermaidDiagram` component (no external service dependency)
 
 ## Usage
 
-Consumed by the Docs page (`src/app/docs/page.tsx`) which uses both modes: file tree for sidebar navigation and file content for the main viewer.
+Used by `DocsClient` for client-side file navigation after the initial server render. The `/docs` page itself reads files directly via `src/lib/docs.ts` at request time.
 
 ```typescript
-// Fetch file tree
+// Fetch file tree (used by DocsClient on client-side navigation)
 const treeRes = await fetch("/api/docs?list=true");
 const { files } = await treeRes.json();
 
