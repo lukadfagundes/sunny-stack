@@ -40,9 +40,7 @@ const nextConfig: NextConfig = {
   },
   outputFileTracingExcludes: {
     "/api/docs": [
-      "./node_modules/**/*",
       "./src/**/*",
-      "./.next/**/*",
       "./.git/**/*",
       "./tests/**/*",
     ],
