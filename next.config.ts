@@ -37,9 +37,17 @@ const nextConfig: NextConfig = {
   // App Router page routes on Vercel (see vercel/next.js#55228).
   outputFileTracingIncludes: {
     "/api/docs": ["./docs/**/*", "./README.md", "./CHANGELOG.md"],
+    "/docs": ["./docs/**/*", "./README.md", "./CHANGELOG.md"],
   },
   outputFileTracingExcludes: {
     "/api/docs": [
+      "./node_modules/**/*",
+      "./src/**/*",
+      "./.next/**/*",
+      "./.git/**/*",
+      "./tests/**/*",
+    ],
+    "/docs": [
       "./node_modules/**/*",
       "./src/**/*",
       "./.next/**/*",
