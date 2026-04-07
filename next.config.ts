@@ -28,10 +28,13 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  // Scope docs file tracing to only docs/ and root .md files.
-  // Both the API route and the server-rendered page use dynamic fs operations
-  // (readdirSync, readFileSync) which causes Turbopack NFT to trace the entire
-  // project. This limits the trace to the directories they actually read from.
+  // Scope /api/docs file tracing to only docs/ and root .md files.
+  // The route uses dynamic fs operations (readdirSync, readFileSync) which
+  // causes Turbopack NFT to trace the entire project. This limits the trace
+  // to the directories that route actually reads from.
+  // Note: The /docs page route fetches from /api/docs instead of reading fs
+  // directly, because outputFileTracingIncludes has unreliable support for
+  // App Router page routes on Vercel (see vercel/next.js#55228).
   outputFileTracingIncludes: {
     "/api/docs": ["./docs/**/*", "./README.md", "./CHANGELOG.md"],
     "/docs": ["./docs/**/*", "./README.md", "./CHANGELOG.md"],

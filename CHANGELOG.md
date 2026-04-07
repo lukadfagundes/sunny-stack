@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.0.3] - 2026-04-07
-
 ### Added
 
 - Add comprehensive SEO metadata to root layout: Open Graph tags, Twitter Cards, Person JSON-LD schema, and `metadataBase`.
