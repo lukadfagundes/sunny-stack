@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.5] - 2026-04-07
+
+### Fixed
+
+- Fix /docs page 500 error on Vercel: remove `./node_modules/**/*` and `./.next/**/*` from `outputFileTracingExcludes` which were stripping Next.js internal Turbopack SSR chunks from the serverless function bundle (see vercel/next.js#62331).
+- Switch production build from Turbopack to Webpack (`next build --webpack`) to avoid known Turbopack ChunkLoadError issues on Vercel (see vercel/next.js#82651). Dev server continues using Turbopack.
+
+- Fix /docs page 500 error on Vercel: remove `./node_modules/**/*` and `./.next/**/*` from `outputFileTracingExcludes` which were stripping Next.js internal Turbopack SSR chunks from the serverless function bundle (see vercel/next.js#62331).
+- Switch production build from Turbopack to Webpack (`next build --webpack`) to avoid known Turbopack ChunkLoadError issues on Vercel (see vercel/next.js#82651). Dev server continues using Turbopack.
+
+## [3.0.4] - 2026-04-07
+
+### Changed
+
+- Modify `next.config.ts` to no longer exclude `docs/**/*`, `README.md`, and `CHANGELOG.md` for the `/docs` path.
+- Modify `next.config.ts` to no longer exclude `node_modules/**/*`, `src/**/*`, `.next/**/*`, `.git/**/*`, and `tests/**/*` for the `/docs` path.
+
+## [3.0.3] - 2026-04-07
+
 ### Added
 
 - Add comprehensive SEO metadata to root layout: Open Graph tags, Twitter Cards, Person JSON-LD schema, and `metadataBase`.
