@@ -7,9 +7,9 @@ import CategorySection from "@/components/portfolio/CategorySection";
 import ProjectCard from "@/components/portfolio/ProjectCard";
 
 const CATEGORIES: ProjectCategory[] = [
+  "contribution",
   "professional",
   "personal",
-  "contribution",
 ];
 
 export default function PortfolioPage() {
