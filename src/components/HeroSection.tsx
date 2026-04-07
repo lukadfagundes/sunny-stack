@@ -35,15 +35,13 @@ export default function HeroSection() {
             reducedMotion={reducedMotion}
           />
         </h1>
-        <p>
-          <LetterReveal
-            text="Full Stack Developer"
-            className="text-lg sm:text-xl md:text-2xl text-sunny-cream-muted tracking-wide"
-            delay={1.2}
-            staggerDelay={0.03}
-            reducedMotion={reducedMotion}
-          />
-        </p>
+        <LetterReveal
+          text="Full Stack Developer"
+          className="text-lg sm:text-xl md:text-2xl text-sunny-cream-muted tracking-wide"
+          delay={1.2}
+          staggerDelay={0.03}
+          reducedMotion={reducedMotion}
+        />
         <p className="text-sm sm:text-base text-sunny-cream-muted/60 tracking-wide mt-3">
           Building since August 2025 · Open to opportunities
         </p>

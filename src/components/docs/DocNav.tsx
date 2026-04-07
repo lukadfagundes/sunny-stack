@@ -13,7 +13,7 @@ import {
   Compass,
   Library,
 } from "lucide-react";
-import type { DocFile } from "@/app/api/docs/route";
+import type { DocFile } from "@/lib/docs";
 
 export interface NavSubgroup {
   id: string;
