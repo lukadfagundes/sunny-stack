@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add Google site verification meta tag in `src/app/layout.tsx` for SEO.
+
 ## [3.0.5] - 2026-04-07
 
 ### Fixed
