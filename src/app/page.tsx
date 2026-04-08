@@ -6,13 +6,7 @@ import StatsDashboard from "@/components/landing/StatsDashboard";
 import TechArsenal from "@/components/landing/TechArsenal";
 import CurrentlyBuilding from "@/components/landing/CurrentlyBuilding";
 
-export const metadata: Metadata = {
-  openGraph: {
-    title: "Luka Fagundes — Full Stack Developer | sunny-stack.com",
-    description:
-      "Self-taught full stack developer building production software with TypeScript, React, Next.js, and Node.js. Based remotely. Open to full-time, contract, and freelance opportunities.",
-  },
-};
+export const metadata: Metadata = {};
 
 export const revalidate = 3600; // ISR: revalidate every hour
 

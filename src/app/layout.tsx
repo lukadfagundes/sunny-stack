@@ -56,6 +56,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     creator: "@strawhatluka",
+    images: ["/og-image.png"],
   },
   verification: {
     google: "wzN3J4OUQyK1xqPzANPXOnyRVIMBtVMqdi_a4QWgtyk",

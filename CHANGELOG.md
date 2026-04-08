@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix OG image not appearing on social previews by removing page-level `openGraph` override in `src/app/page.tsx` that was replacing layout's `images` array.
+- Add explicit `twitter.images` to layout metadata for reliable Twitter Card rendering.
+- Compress `public/og-image.png` from 3MB to 646KB and resize to standard 1200x630 OG dimensions.
+
 ## [3.0.6] - 2026-04-08
 
 ### Added
