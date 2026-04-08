@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.7] - 2026-04-08
+
 ### Fixed
 
 - Fix OG image not appearing on social previews by removing page-level `openGraph` override in `src/app/page.tsx` that was replacing layout's `images` array.
