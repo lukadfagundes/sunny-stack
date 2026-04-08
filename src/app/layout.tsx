@@ -57,6 +57,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     creator: "@strawhatluka",
   },
+  verification: {
+    google: "wzN3J4OUQyK1xqPzANPXOnyRVIMBtVMqdi_a4QWgtyk",
+  },
 };
 
 const personSchema = {
