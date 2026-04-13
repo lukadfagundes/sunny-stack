@@ -19,7 +19,7 @@ describe("ContributionHeatmap", () => {
       <ContributionHeatmap calendar={{ totalContributions: 0, weeks: [] }} />
     );
     expect(
-      screen.getByText("No charts available — the seas remain uncharted")
+      screen.getByText("No charts available - the seas remain uncharted")
     ).toBeInTheDocument();
   });
 

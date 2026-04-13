@@ -16,7 +16,7 @@ export async function generateMetadata({
     .replace(/\b\w/g, (c) => c.toUpperCase());
 
   return {
-    title: `${title} — sunny-stack.com Docs`,
+    title: `${title} - sunny-stack.com Docs`,
     description: `Technical documentation for sunny-stack.com: ${title}`,
   };
 }

@@ -100,7 +100,7 @@ export default function ContributionHeatmap({
           The Captain&apos;s Chart
         </h3>
         <p className="text-sunny-cream-muted/60 text-sm italic">
-          No charts available — the seas remain uncharted
+          No charts available - the seas remain uncharted
         </p>
       </div>
     );
@@ -254,7 +254,7 @@ export default function ContributionHeatmap({
                 }}
               >
                 <span className="text-sunny-gold font-bold">{tooltip.count}</span>
-                {" "}contribution{tooltip.count !== 1 ? "s" : ""} — {tooltip.date}
+                {" "}contribution{tooltip.count !== 1 ? "s" : ""} - {tooltip.date}
               </div>
             </div>
           )}

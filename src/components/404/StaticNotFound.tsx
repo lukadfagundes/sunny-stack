@@ -48,7 +48,7 @@ export default function StaticNotFound() {
               place.&rdquo;
             </p>
             <p className="text-xs text-sunny-cream-muted/50">
-              — Definitely not what Zoro would say
+              - Definitely not what Zoro would say
             </p>
           </div>
 

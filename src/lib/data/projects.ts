@@ -1,6 +1,6 @@
 /**
  * V3 Portfolio Project Data
- * Pure TypeScript — no React/JSX imports.
+ * Pure TypeScript - no React/JSX imports.
  * Migrated from V2 app/portfolio/projects-data.tsx with JSX stripped.
  */
 
@@ -120,7 +120,7 @@ const projects: ProjectData[] = [
     id: "sunny-stack",
     title: "sunny-stack",
     tagline:
-      "This portfolio site — Next.js 16 with 6 live API integrations and a playable 404 game",
+      "This portfolio site - Next.js 16 with 6 live API integrations and a playable 404 game",
     description:
       "This portfolio site. Next.js 16 + React 19 with 6 live API integrations (GitHub, Bluesky, Instagram, YouTube, Spotify, Steam), 10 REST endpoints, ISR caching, IP-based rate limiting, 434 tests at 90% coverage, a playable Zoro-themed 404 game, and a built-in documentation viewer with Mermaid diagram rendering.",
     category: "professional",
@@ -170,7 +170,7 @@ const projects: ProjectData[] = [
       },
     ],
     status: "active",
-    footer: "v3.0.2 — 252 commits. Deployed on Vercel.",
+    footer: "v3.0.2 - 252 commits. Deployed on Vercel.",
   },
   {
     id: "rinoa-platform",
@@ -219,7 +219,7 @@ const projects: ProjectData[] = [
     links: [],
     status: "proprietary",
     footer:
-      "Proprietary application — technical architecture and performance metrics showcased with client approval.",
+      "Proprietary application - technical architecture and performance metrics showcased with client approval.",
   },
 
   // ─── Personal ─────────────────────────────────────────────────
@@ -228,7 +228,7 @@ const projects: ProjectData[] = [
     title: "Hytale Server Manager",
     tagline: "Free, open-source desktop app wrapping Hytale dedicated servers with a clean UI",
     description:
-      "Monitor server status, view connected players with their gear and stats, manage warps, toggle mods, and browse game assets — all from a single interface. Built with Electron's multi-process architecture and strict context isolation. 17 invoke + 13 event IPC channels, 7 Zustand stores, 18 React components, and 240+ tests across 17 suites.",
+      "Monitor server status, view connected players with their gear and stats, manage warps, toggle mods, and browse game assets - all from a single interface. Built with Electron's multi-process architecture and strict context isolation. 17 invoke + 13 event IPC channels, 7 Zustand stores, 18 React components, and 240+ tests across 17 suites.",
     category: "personal",
     techStack: [
       "Electron 40",
@@ -302,7 +302,7 @@ const projects: ProjectData[] = [
       {
         label: "Triple Interface",
         description:
-          "Discord bot, REST API with JWT auth, and installable PWA — all sharing the same backend",
+          "Discord bot, REST API with JWT auth, and installable PWA - all sharing the same backend",
       },
       {
         label: "Full Productivity Suite",
@@ -407,7 +407,7 @@ const projects: ProjectData[] = [
       {
         label: "Automatic Token Management",
         description:
-          "OAuth 2.0 tokens refresh automatically every ~55 minutes — set it and forget it",
+          "OAuth 2.0 tokens refresh automatically every ~55 minutes - set it and forget it",
       },
       {
         label: "Album Artwork Caching",
@@ -437,7 +437,7 @@ const projects: ProjectData[] = [
     ],
     status: "active",
     footer:
-      "Windows desktop enhancement — MIT licensed with 1-second real-time polling. Fully customizable colors, fonts, and layout.",
+      "Windows desktop enhancement - MIT licensed with 1-second real-time polling. Fully customizable colors, fonts, and layout.",
   },
 
   // ─── Contributions ────────────────────────────────────────────
@@ -500,7 +500,7 @@ const projects: ProjectData[] = [
     ],
     status: "active",
     footer:
-      "Contributed to Reactive Resume — an open-source resume builder with 30k+ GitHub stars. Merged PR #2788.",
+      "Contributed to Reactive Resume - an open-source resume builder with 30k+ GitHub stars. Merged PR #2788.",
   },
   {
     id: "get-shit-done",
@@ -508,7 +508,7 @@ const projects: ProjectData[] = [
     tagline:
       "Documentation generation and verification system for AI-assisted development",
     description:
-      "A documentation command for GSD that writes, updates, and verifies project docs against the actual codebase. Every factual claim — file paths, CLI commands, API endpoints, function signatures — is checked against the live repo before commit. Handles both initial doc creation and incremental updates, generating up to 9 documentation types with parallel subagent orchestration.",
+      "A documentation command for GSD that writes, updates, and verifies project docs against the actual codebase. Every factual claim - file paths, CLI commands, API endpoints, function signatures - is checked against the live repo before commit. Handles both initial doc creation and incremental updates, generating up to 9 documentation types with parallel subagent orchestration.",
     category: "contribution",
     techStack: [
       "JavaScript",
@@ -520,7 +520,7 @@ const projects: ProjectData[] = [
       {
         label: "Docs Verification Gate",
         description:
-          "Filesystem-only fact-checking — extracts every claim from generated docs and validates against the live codebase. No hallucinated paths, no phantom endpoints, no stale signatures.",
+          "Filesystem-only fact-checking - extracts every claim from generated docs and validates against the live codebase. No hallucinated paths, no phantom endpoints, no stale signatures.",
       },
       {
         label: "9 Documentation Types",
@@ -530,7 +530,7 @@ const projects: ProjectData[] = [
       {
         label: "4 Operating Modes",
         description:
-          "Create, update, supplement, and fix modes with hand-written doc preservation — never overwrites human-authored content without explicit consent",
+          "Create, update, supplement, and fix modes with hand-written doc preservation - never overwrites human-authored content without explicit consent",
       },
       {
         label: "Parallel Subagent Orchestration",
@@ -555,7 +555,7 @@ const projects: ProjectData[] = [
     ],
     status: "active",
     footer:
-      "Contributed to GSD — an AI workflow CLI for plan-execute-verify development. 2,559 lines across 9 files. Merged PR #1532.",
+      "Contributed to GSD - an AI workflow CLI for plan-execute-verify development. 2,559 lines across 9 files. Merged PR #1532.",
   },
 ];
 

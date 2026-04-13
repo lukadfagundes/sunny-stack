@@ -1,5 +1,5 @@
 /**
- * GitHub GraphQL API — single batched query for all landing page data.
+ * GitHub GraphQL API - single batched query for all landing page data.
  * Runs server-side only (called from page.tsx server component).
  * Private repos: aggregate stats are included, but names/descriptions/URLs
  * are only returned for public repos.
@@ -169,7 +169,7 @@ export async function fetchGitHubData(): Promise<GitHubData> {
   const token = process.env.GITHUB_TOKEN;
 
   if (!token) {
-    console.warn("[github] GITHUB_TOKEN not set — using fallback data");
+    console.warn("[github] GITHUB_TOKEN not set - using fallback data");
     return FALLBACK_DATA;
   }
 

@@ -65,7 +65,7 @@ describe("GameHUD", () => {
     expect(
       screen.getByText(/I don't know where I am!/)
     ).toBeInTheDocument();
-    expect(screen.getByText("— Zoro")).toBeInTheDocument();
+    expect(screen.getByText("- Zoro")).toBeInTheDocument();
   });
 
   it("does not display quote when won is true", () => {
@@ -79,6 +79,6 @@ describe("GameHUD", () => {
 
   it("does not display quote when currentQuote is null", () => {
     render(<GameHUD state={makeState({ currentQuote: null })} />);
-    expect(screen.queryByText("— Zoro")).not.toBeInTheDocument();
+    expect(screen.queryByText("- Zoro")).not.toBeInTheDocument();
   });
 });

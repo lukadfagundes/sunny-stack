@@ -182,7 +182,7 @@ export default function ProjectCard({
                                 {feature.label}
                               </span>
                               <span className="text-sunny-cream-muted text-sm">
-                                {" — "}
+                                {" - "}
                                 {feature.description}
                               </span>
                             </div>
