@@ -42,31 +42,31 @@ AboutPage (client component, manages view state)
 
 ### Left Column (always visible)
 
-| Component | Props |
-|-----------|-------|
-| `ProfileCard` | `onViewPics: () => void`, `onViewVideos: () => void` |
-| `ContactTable` | None |
-| `MusicPlayer` | `onViewMusic: () => void` |
-| `DetailsBox` | None |
+| Component      | Props                                                |
+| -------------- | ---------------------------------------------------- |
+| `ProfileCard`  | `onViewPics: () => void`, `onViewVideos: () => void` |
+| `ContactTable` | None                                                 |
+| `MusicPlayer`  | `onViewMusic: () => void`                            |
+| `DetailsBox`   | None                                                 |
 
 ### Right Column (profile view -- default)
 
-| Component | Props |
-|-----------|-------|
-| `NetworkBanner` | None |
-| `BlogEntry` | None |
-| `BioSections` | None |
-| `InterestsTable` | None |
-| `TopEight` | `onViewGame: (game: SteamGame) => void` |
+| Component        | Props                                   |
+| ---------------- | --------------------------------------- |
+| `NetworkBanner`  | None                                    |
+| `BlogEntry`      | None                                    |
+| `BioSections`    | None                                    |
+| `InterestsTable` | None                                    |
+| `TopEight`       | `onViewGame: (game: SteamGame) => void` |
 
 ### Right Column (alternate views)
 
-| View | Component | Props |
-|------|-----------|-------|
-| `pics` | `PhotoGallery` | `onBack: () => void` |
-| `videos` | `VideoGallery` | `onBack: () => void` |
-| `music` | `MusicGallery` | `onBack: () => void` |
-| `game` | `GameStats` | `game: SteamGame`, `onBack: () => void` |
+| View     | Component      | Props                                   |
+| -------- | -------------- | --------------------------------------- |
+| `pics`   | `PhotoGallery` | `onBack: () => void`                    |
+| `videos` | `VideoGallery` | `onBack: () => void`                    |
+| `music`  | `MusicGallery` | `onBack: () => void`                    |
+| `game`   | `GameStats`    | `game: SteamGame`, `onBack: () => void` |
 
 ## State Management
 
@@ -96,6 +96,7 @@ const [selectedGame, setSelectedGame] = useState<SteamGame | null>(null);
 ```
 md:grid-cols-[300px_1fr]
 ```
+
 - Left column: fixed 300px on medium+ screens
 - Right column: fluid remaining space
 - Stacks to single column on small screens
@@ -107,6 +108,7 @@ Uses `Verdana, sans-serif` as the base font for the MySpace aesthetic.
 ### Conditional Rendering
 
 The right column uses a chain of ternary expressions:
+
 1. `view === "profile"` -> render all profile sections
 2. `view === "pics"` -> render PhotoGallery
 3. `view === "videos"` -> render VideoGallery

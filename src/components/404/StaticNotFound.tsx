@@ -35,8 +35,8 @@ export default function StaticNotFound() {
 
           <p className="text-sunny-cream/80 mb-6 leading-relaxed">
             Don&apos;t worry, it happens to the best swordsmen. This page seems
-            to have wandered off in a completely different direction...
-            probably ended up at a sake shop.
+            to have wandered off in a completely different direction... probably
+            ended up at a sake shop.
           </p>
 
           <div
@@ -48,7 +48,7 @@ export default function StaticNotFound() {
               place.&rdquo;
             </p>
             <p className="text-xs text-sunny-cream-muted/50">
-              — Definitely not what Zoro would say
+              - Definitely not what Zoro would say
             </p>
           </div>
 

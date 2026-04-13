@@ -45,7 +45,7 @@ export function generateGrid(): {
 } {
   // Create empty grid
   const grid: TileType[][] = Array.from({ length: GRID_SIZE }, () =>
-    Array.from({ length: GRID_SIZE }, () => "empty" as TileType)
+    Array.from({ length: GRID_SIZE }, () => "empty" as TileType),
   );
 
   // Pick random edge for player, opposite for goal

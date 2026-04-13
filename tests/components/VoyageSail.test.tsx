@@ -48,8 +48,8 @@ describe("VoyageSail", () => {
     const { container } = render(<VoyageSail />);
     // The horizon line has a box-shadow with rgba(240, 180, 41)
     const horizonElements = container.querySelectorAll("[style]");
-    const horizonLine = Array.from(horizonElements).find(
-      (el) => (el as HTMLElement).style.boxShadow?.includes("240, 180, 41")
+    const horizonLine = Array.from(horizonElements).find((el) =>
+      (el as HTMLElement).style.boxShadow?.includes("240, 180, 41"),
     );
     expect(horizonLine).toBeTruthy();
   });
@@ -71,9 +71,9 @@ describe("VoyageSail", () => {
   it("applies wave-drift animation to wave SVGs", () => {
     const { container } = render(<VoyageSail />);
     const animatedSvgs = Array.from(
-      container.querySelectorAll("svg[aria-hidden='true']")
+      container.querySelectorAll("svg[aria-hidden='true']"),
     ).filter((svg) =>
-      (svg as HTMLElement).style.animation?.includes("voyage-wave-drift")
+      (svg as HTMLElement).style.animation?.includes("voyage-wave-drift"),
     );
     expect(animatedSvgs.length).toBe(3);
   });
@@ -115,7 +115,7 @@ describe("VoyageSail (reduced motion)", () => {
   it("waves have animation none when reduced motion is preferred", () => {
     const { container } = render(<VoyageSail />);
     const waveSvgs = Array.from(
-      container.querySelectorAll("svg[aria-hidden='true']")
+      container.querySelectorAll("svg[aria-hidden='true']"),
     ).filter((svg) => (svg as HTMLElement).style.animation === "none");
     expect(waveSvgs.length).toBe(3);
   });
@@ -123,8 +123,7 @@ describe("VoyageSail (reduced motion)", () => {
   it("stars have static opacity when reduced motion is preferred", () => {
     const { container } = render(<VoyageSail />);
     const starDivs = Array.from(container.querySelectorAll("div")).filter(
-      (div) =>
-        div.style.borderRadius === "50%" && div.style.opacity === "0.4"
+      (div) => div.style.borderRadius === "50%" && div.style.opacity === "0.4",
     );
     expect(starDivs.length).toBe(60);
   });
@@ -134,7 +133,7 @@ describe("VoyageSail (reduced motion)", () => {
     const staticShip = Array.from(container.querySelectorAll("div")).find(
       (div) =>
         div.style.left === "50%" &&
-        div.style.transform === "translate(-50%, -100%)"
+        div.style.transform === "translate(-50%, -100%)",
     );
     expect(staticShip).toBeTruthy();
   });
@@ -142,11 +141,11 @@ describe("VoyageSail (reduced motion)", () => {
   it("shooting stars are not rendered when reduced motion is preferred", () => {
     const { container } = render(<VoyageSail />);
     const overflowContainers = Array.from(
-      container.querySelectorAll("div[aria-hidden='true']")
+      container.querySelectorAll("div[aria-hidden='true']"),
     ).filter(
       (div) =>
         (div as HTMLElement).style.height === "70%" &&
-        div.className.includes("overflow")
+        div.className.includes("overflow"),
     );
     expect(overflowContainers.length).toBe(1);
   });

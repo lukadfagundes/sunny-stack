@@ -8,11 +8,11 @@
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `sections` | `NavSection[]` | Yes | Structured navigation sections to render. Built by `buildSections()`. |
-| `currentPath` | `string` | Yes | The file path of the currently displayed document. Used for active highlighting and auto-expansion. |
-| `onSelect` | `(path: string) => void` | Yes | Callback invoked when a document item is clicked. Receives the file path. |
+| Prop          | Type                     | Required | Description                                                                                         |
+| ------------- | ------------------------ | -------- | --------------------------------------------------------------------------------------------------- |
+| `sections`    | `NavSection[]`           | Yes      | Structured navigation sections to render. Built by `buildSections()`.                               |
+| `currentPath` | `string`                 | Yes      | The file path of the currently displayed document. Used for active highlighting and auto-expansion. |
+| `onSelect`    | `(path: string) => void` | Yes      | Callback invoked when a document item is clicked. Receives the file path.                           |
 
 ## Exported Types
 
@@ -33,7 +33,7 @@ interface NavSubsection {
   id: string;
   label: string;
   items: { path: string; label: string }[];
-  subgroups?: NavSubgroup[];     // 3rd-level groups (e.g., component categories)
+  subgroups?: NavSubgroup[]; // 3rd-level groups (e.g., component categories)
 }
 ```
 
@@ -41,10 +41,11 @@ interface NavSubsection {
 
 ```typescript
 interface NavSection {
-  id: string;                    // Unique section identifier
-  label: string;                 // Display label
-  icon: React.ReactNode;         // Lucide icon element
-  items: {                       // Direct file items
+  id: string; // Unique section identifier
+  label: string; // Display label
+  icon: React.ReactNode; // Lucide icon element
+  items: {
+    // Direct file items
     path: string;
     label: string;
   }[];
@@ -57,12 +58,14 @@ interface NavSection {
 ### `formatName(filename: string): string`
 
 Converts a filename to a human-readable title:
+
 1. Strips `.md` extension.
 2. Converts ADR prefixes: `ADR-001-title` becomes `ADR-001: Title`.
 3. Replaces hyphens with spaces.
 4. Capitalizes the first letter of each word.
 
 **Examples:**
+
 - `"getting-started.md"` -> `"Getting Started"`
 - `"ADR-001-api-design.md"` -> `"ADR-001: Api Design"`
 
@@ -75,14 +78,14 @@ Converts the flat file tree from the docs API into structured `NavSection[]`:
 3. **Docs README:** Appends the docs hub README to the Overview section as "Docs Hub".
 4. **Subdirectories:** Each subdirectory becomes a section. Known directories get custom labels and icons:
 
-| Directory | Label | Icon |
-|-----------|-------|------|
-| `api` | API | `Code2` |
-| `architecture` | Architecture | `Layers` |
-| `deployment` | Deployment | `Rocket` |
-| `guides` | Guides | `Compass` |
-| `reference` | Reference | `Library` |
-| (other) | Formatted name | `BookOpen` |
+| Directory      | Label          | Icon       |
+| -------------- | -------------- | ---------- |
+| `api`          | API            | `Code2`    |
+| `architecture` | Architecture   | `Layers`   |
+| `deployment`   | Deployment     | `Rocket`   |
+| `guides`       | Guides         | `Compass`  |
+| `reference`    | Reference      | `Library`  |
+| (other)        | Formatted name | `BookOpen` |
 
 5. **Files in subdirectories** become section items.
 6. **Nested directories** become subsections with their own items.
@@ -91,29 +94,30 @@ Converts the flat file tree from the docs API into structured `NavSection[]`:
 ### `getAutoExpanded(sections: NavSection[], path: string): Set<string>`
 
 Computes which section/subsection/subgroup IDs should be expanded to reveal the current document path:
+
 1. Iterates all sections, their subsections, and their subgroups.
 2. Adds section IDs, subsection IDs, and subgroup IDs that contain an item matching the given path.
 3. If no matches found, defaults to expanding the first section.
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
+| Hook       | Variable    | Type                                     | Initial                                     | Description                                                                 |
+| ---------- | ----------- | ---------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------- |
 | `useState` | `overrides` | `{ path: string; toggled: Set<string> }` | `{ path: currentPath, toggled: new Set() }` | Manual toggle overrides, keyed by current path to auto-reset on navigation. |
 
 ### Memoized Computations
 
-| Variable | Hook | Dependencies | Description |
-|----------|------|--------------|-------------|
-| `autoExpanded` | `useMemo` | `[sections, currentPath]` | The set of section IDs that should be auto-expanded for the current path. |
-| `expanded` | `useMemo` | `[autoExpanded, overrides, currentPath]` | Effective expanded set: starts from `autoExpanded`, then XORs manual toggle overrides. If `overrides.path !== currentPath`, overrides are ignored (reset on navigation). |
+| Variable       | Hook      | Dependencies                             | Description                                                                                                                                                              |
+| -------------- | --------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `autoExpanded` | `useMemo` | `[sections, currentPath]`                | The set of section IDs that should be auto-expanded for the current path.                                                                                                |
+| `expanded`     | `useMemo` | `[autoExpanded, overrides, currentPath]` | Effective expanded set: starts from `autoExpanded`, then XORs manual toggle overrides. If `overrides.path !== currentPath`, overrides are ignored (reset on navigation). |
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
-| `toggle(id)` | Section, subsection, and subgroup header buttons | XOR-toggles the given ID in the overrides set. Resets overrides if navigation has changed since last toggle. |
-| `onSelect(path)` | Document item buttons | Calls the `onSelect` prop with the file path. |
+| Handler          | Element                                          | Description                                                                                                  |
+| ---------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `toggle(id)`     | Section, subsection, and subgroup header buttons | XOR-toggles the given ID in the overrides set. Resets overrides if navigation has changed since last toggle. |
+| `onSelect(path)` | Document item buttons                            | Calls the `onSelect` prop with the file path.                                                                |
 
 ## Render Structure
 
@@ -143,19 +147,19 @@ Computes which section/subsection/subgroup IDs should be expanded to reveal the 
 
 ## Child Components
 
-| Component | Source | Description |
-|-----------|--------|-------------|
-| `ChevronRight`, `ChevronDown` | `lucide-react` | Expand/collapse indicators. |
-| `FileText` | `lucide-react` | Document item icon. |
-| `Home`, `BookOpen`, `Code2`, `Layers`, `Rocket`, `Compass`, `Library` | `lucide-react` | Section icons. |
+| Component                                                             | Source         | Description                 |
+| --------------------------------------------------------------------- | -------------- | --------------------------- |
+| `ChevronRight`, `ChevronDown`                                         | `lucide-react` | Expand/collapse indicators. |
+| `FileText`                                                            | `lucide-react` | Document item icon.         |
+| `Home`, `BookOpen`, `Code2`, `Layers`, `Rocket`, `Compass`, `Library` | `lucide-react` | Section icons.              |
 
 ## Data Sources
 
-| Source | Type | Description |
-|--------|------|-------------|
-| `sections` prop | `NavSection[]` | Pre-built navigation structure (typically from `buildSections()`). |
-| `currentPath` prop | `string` | Current document path for active state tracking. |
-| `DocFile` type | `@/lib/docs` | Type import for the docs file tree structure. |
+| Source             | Type           | Description                                                        |
+| ------------------ | -------------- | ------------------------------------------------------------------ |
+| `sections` prop    | `NavSection[]` | Pre-built navigation structure (typically from `buildSections()`). |
+| `currentPath` prop | `string`       | Current document path for active state tracking.                   |
+| `DocFile` type     | `@/lib/docs`   | Type import for the docs file tree structure.                      |
 
 ## Styling
 
@@ -178,7 +182,7 @@ const sections = buildSections(fileTree);
   sections={sections}
   currentPath="docs/guides/getting-started.md"
   onSelect={(path) => loadDocument(path)}
-/>
+/>;
 ```
 
 ## Integration Points

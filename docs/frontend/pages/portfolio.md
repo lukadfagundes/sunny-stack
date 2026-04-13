@@ -33,10 +33,10 @@ PortfolioPage
 
 ## Component Composition
 
-| Component | Source | Props |
-|-----------|--------|-------|
-| `CategorySection` | `@/components/portfolio/CategorySection` | `category: ProjectCategory`, `children: ReactNode` |
-| `ProjectCard` | `@/components/portfolio/ProjectCard` | `project: ProjectData`, `isExpanded: boolean`, `onToggle: () => void` |
+| Component         | Source                                   | Props                                                                 |
+| ----------------- | ---------------------------------------- | --------------------------------------------------------------------- |
+| `CategorySection` | `@/components/portfolio/CategorySection` | `category: ProjectCategory`, `children: ReactNode`                    |
+| `ProjectCard`     | `@/components/portfolio/ProjectCard`     | `project: ProjectData`, `isExpanded: boolean`, `onToggle: () => void` |
 
 ## State Management
 
@@ -54,7 +54,11 @@ const [expandedId, setExpandedId] = useState<string | null>(null);
 ### Category Iteration
 
 ```typescript
-const CATEGORIES: ProjectCategory[] = ["contribution", "professional", "personal"];
+const CATEGORIES: ProjectCategory[] = [
+  "contribution",
+  "professional",
+  "personal",
+];
 ```
 
 Iterates over all three categories in fixed order: Contributions first (open-source PRs), then Professional, then Personal. Categories with no projects are skipped via `if (projects.length === 0) return null`.

@@ -12,10 +12,10 @@ Fetches the top 8 most-played Steam games for a configured user, sorted by all-t
 
 ## Authentication
 
-| Environment Variable | Required | Description |
-|---------------------|----------|-------------|
-| `STEAM_API_KEY` | Yes | Steam Web API key |
-| `STEAM_ID` | Yes | Steam 64-bit user ID |
+| Environment Variable | Required | Description          |
+| -------------------- | -------- | -------------------- |
+| `STEAM_API_KEY`      | Yes      | Steam Web API key    |
+| `STEAM_ID`           | Yes      | Steam 64-bit user ID |
 
 ## Response Type
 
@@ -31,10 +31,10 @@ interface SteamGamesData {
 
 ```typescript
 interface SteamGame {
-  appid: number;          // Steam application ID
-  name: string;           // Game name (fallback: "App {appid}")
+  appid: number; // Steam application ID
+  name: string; // Game name (fallback: "App {appid}")
   playtimeMinutes: number; // Total playtime in minutes
-  headerImage: string;    // Steam store header image URL
+  headerImage: string; // Steam store header image URL
   recentlyPlayed: boolean; // true if playtime_2weeks > 0
 }
 ```
@@ -50,6 +50,7 @@ Raw Steam API game object with `appid`, optional `name`, `playtime_forever`, `pl
 ### Excluded Apps
 
 A `Set` of app IDs to exclude from results:
+
 - `431960` (Wallpaper Engine) -- a utility, not a game
 
 ### Processing Pipeline
@@ -67,12 +68,12 @@ Each game's header image is fetched individually from the Steam Store API with `
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| Missing API key or Steam ID | Returns `null` with HTTP 200 |
-| Steam API error | Logs status, returns `null` with HTTP 200 |
-| Individual header image fetch fails | Empty string used for that game |
-| Network exception | Logs error, returns `null` with HTTP 200 |
+| Condition                           | Behavior                                  |
+| ----------------------------------- | ----------------------------------------- |
+| Missing API key or Steam ID         | Returns `null` with HTTP 200              |
+| Steam API error                     | Logs status, returns `null` with HTTP 200 |
+| Individual header image fetch fails | Empty string used for that game           |
+| Network exception                   | Logs error, returns `null` with HTTP 200  |
 
 ## Dependencies
 

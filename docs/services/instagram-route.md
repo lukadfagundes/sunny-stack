@@ -12,9 +12,9 @@ Fetches the 5 most recent image posts from an Instagram account using the Instag
 
 ## Authentication
 
-| Environment Variable | Required | Description |
-|---------------------|----------|-------------|
-| `INSTAGRAM_ACCESS_TOKEN` | Yes | Instagram Graph API long-lived access token |
+| Environment Variable     | Required | Description                                 |
+| ------------------------ | -------- | ------------------------------------------- |
+| `INSTAGRAM_ACCESS_TOKEN` | Yes      | Instagram Graph API long-lived access token |
 
 If the token is missing, the endpoint returns `[]` with HTTP 200.
 
@@ -24,12 +24,12 @@ If the token is missing, the endpoint returns `[]` with HTTP 200.
 
 ```typescript
 interface InstagramPost {
-  id: string;            // Instagram media ID
-  imageUrl: string;      // Direct image URL
-  caption: string;       // Post caption (default: "")
-  timestamp: string;     // ISO 8601 timestamp
-  permalink: string;     // Direct link to the post on Instagram
-  likeCount: number;     // Like count (default: 0)
+  id: string; // Instagram media ID
+  imageUrl: string; // Direct image URL
+  caption: string; // Post caption (default: "")
+  timestamp: string; // ISO 8601 timestamp
+  permalink: string; // Direct link to the post on Instagram
+  likeCount: number; // Like count (default: 0)
   commentsCount: number; // Comment count (default: 0)
 }
 ```
@@ -77,11 +77,11 @@ The API fetches 50 posts to ensure enough IMAGE posts remain after filtering out
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| Missing access token | Returns `[]` with HTTP 200 |
-| Instagram API error | Logs error text, returns `[]` with HTTP 200 |
-| Network exception | Logs error, returns `[]` with HTTP 200 |
+| Condition            | Behavior                                    |
+| -------------------- | ------------------------------------------- |
+| Missing access token | Returns `[]` with HTTP 200                  |
+| Instagram API error  | Logs error text, returns `[]` with HTTP 200 |
+| Network exception    | Logs error, returns `[]` with HTTP 200      |
 
 ## Dependencies
 

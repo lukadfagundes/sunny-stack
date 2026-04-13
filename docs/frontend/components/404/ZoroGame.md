@@ -12,37 +12,38 @@ This component takes no props.
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
-| `useReducer` | `state` | `GameState` | `createInitialState()` | Full game state managed by `gameReducer`. See [game-logic.md](./game-logic.md) for complete state documentation. |
-| `useIsClient` (custom) | `isClient` | `boolean` | `false`/`true` | SSR hydration gate. |
+| Hook                   | Variable   | Type        | Initial                | Description                                                                                                      |
+| ---------------------- | ---------- | ----------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `useReducer`           | `state`    | `GameState` | `createInitialState()` | Full game state managed by `gameReducer`. See [game-logic.md](./game-logic.md) for complete state documentation. |
+| `useIsClient` (custom) | `isClient` | `boolean`   | `false`/`true`         | SSR hydration gate.                                                                                              |
 
 ### Key State Fields Used
 
-| Field | Usage in Component |
-|-------|--------------------|
-| `state.moveCount` | Drives Nami escalation visibility and takeover thresholds. |
-| `state.won` | Controls win celebration overlay and hides D-Pad. |
-| `state.currentQuote` | Passed to `GameHUD` for display. |
+| Field                | Usage in Component                                         |
+| -------------------- | ---------------------------------------------------------- |
+| `state.moveCount`    | Drives Nami escalation visibility and takeover thresholds. |
+| `state.won`          | Controls win celebration overlay and hides D-Pad.          |
+| `state.currentQuote` | Passed to `GameHUD` for display.                           |
 
 ## Derived State
 
-| Variable | Calculation | Description |
-|----------|-------------|-------------|
+| Variable         | Calculation                           | Description                                           |
+| ---------------- | ------------------------------------- | ----------------------------------------------------- |
 | `showNamiButton` | `state.moveCount >= 21 && !state.won` | Whether to show the escalating Nami "go home" button. |
-| `namiTakeover` | `state.moveCount >= 40 && !state.won` | Whether Nami has taken over, blocking all game input. |
+| `namiTakeover`   | `state.moveCount >= 40 && !state.won` | Whether Nami has taken over, blocking all game input. |
 
 ## Event Handlers
 
-| Handler | Type | Description |
-|---------|------|-------------|
-| `handleMove` | `useCallback((direction: Direction) => void)` | Dispatches a `MOVE` action to the reducer. Stable reference via `useCallback`. |
-| `handleReset` | `useCallback(() => void)` | Dispatches a `RESET` action to regenerate the grid. |
-| `onTouchStart` / `onTouchEnd` | From `useGameInput` | Touch swipe handlers attached to the main container. |
+| Handler                       | Type                                          | Description                                                                    |
+| ----------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------ |
+| `handleMove`                  | `useCallback((direction: Direction) => void)` | Dispatches a `MOVE` action to the reducer. Stable reference via `useCallback`. |
+| `handleReset`                 | `useCallback(() => void)`                     | Dispatches a `RESET` action to regenerate the grid.                            |
+| `onTouchStart` / `onTouchEnd` | From `useGameInput`                           | Touch swipe handlers attached to the main container.                           |
 
 ## Input Handling
 
 Uses the `useGameInput` custom hook which provides:
+
 - **Keyboard input:** Arrow keys and WASD mapped to directions. Disabled when `namiTakeover` is `true`.
 - **Touch swipe input:** `onTouchStart` and `onTouchEnd` handlers with a 50px swipe threshold.
 
@@ -52,11 +53,12 @@ Uses the `useGameInput` custom hook which provides:
 
 Renders an escalating "go home" button that grows in size, glow, and urgency from moves 21-39.
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop        | Type     | Description                                                |
+| ----------- | -------- | ---------------------------------------------------------- |
 | `moveCount` | `number` | Current move count, used to calculate escalation progress. |
 
 **Visual Escalation (moves 21-39):**
+
 - `progress` = `(moveCount - 21) / 19` (0 to 1)
 - Font size: 0.75rem to 1.25rem
 - Padding: 8-16px vertical, 16-32px horizontal
@@ -97,25 +99,25 @@ Nami Takeover Modal (AnimatePresence, when moveCount >= 40 && !won):
 
 ## Child Components
 
-| Component | Source | Description |
-|-----------|--------|-------------|
-| `GameBoard` | `./GameBoard` | Renders the 7x7 game grid with player, goal, and tile types. |
-| `GameHUD` | `./GameHUD` | Displays move counter and current quote. |
-| `DPad` | `./DPad` | Mobile directional pad for touch input. |
-| `WinCelebration` | `./WinCelebration` | Victory overlay with quote and move count. |
-| `NamiEscalation` | Internal | Escalating "go home" button. |
-| `Link` | `next/link` | Navigation links to home page. |
-| `Home`, `RotateCcw`, `Swords` | `lucide-react` | Icons for navigation and UI. |
-| `motion.*`, `AnimatePresence` | `framer-motion` | Animation wrappers. |
+| Component                     | Source             | Description                                                  |
+| ----------------------------- | ------------------ | ------------------------------------------------------------ |
+| `GameBoard`                   | `./GameBoard`      | Renders the 7x7 game grid with player, goal, and tile types. |
+| `GameHUD`                     | `./GameHUD`        | Displays move counter and current quote.                     |
+| `DPad`                        | `./DPad`           | Mobile directional pad for touch input.                      |
+| `WinCelebration`              | `./WinCelebration` | Victory overlay with quote and move count.                   |
+| `NamiEscalation`              | Internal           | Escalating "go home" button.                                 |
+| `Link`                        | `next/link`        | Navigation links to home page.                               |
+| `Home`, `RotateCcw`, `Swords` | `lucide-react`     | Icons for navigation and UI.                                 |
+| `motion.*`, `AnimatePresence` | `framer-motion`    | Animation wrappers.                                          |
 
 ## Data Sources
 
-| Source | Type | Description |
-|--------|------|-------------|
-| `gameReducer` | `./reducer` | Pure function managing all game state transitions. |
-| `createInitialState` | `./reducer` | Factory function for initial game state. |
-| `useGameInput` | `./useGameInput` | Custom hook for keyboard + touch input handling. |
-| `getNamiLine` | `./quotes` | Returns the Nami dialogue line for the current move count. |
+| Source               | Type             | Description                                                |
+| -------------------- | ---------------- | ---------------------------------------------------------- |
+| `gameReducer`        | `./reducer`      | Pure function managing all game state transitions.         |
+| `createInitialState` | `./reducer`      | Factory function for initial game state.                   |
+| `useGameInput`       | `./useGameInput` | Custom hook for keyboard + touch input handling.           |
+| `getNamiLine`        | `./quotes`       | Returns the Nami dialogue line for the current move count. |
 
 ## Usage
 

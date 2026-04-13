@@ -97,9 +97,7 @@ export default function DocsClient({
                 {(() => {
                   const crumbs: { label: string }[] = [];
                   for (const s of sections) {
-                    const inItems = s.items.some(
-                      (i) => i.path === currentPath,
-                    );
+                    const inItems = s.items.some((i) => i.path === currentPath);
                     const inSub = s.subsections?.find((sub) =>
                       sub.items.some((i) => i.path === currentPath),
                     );

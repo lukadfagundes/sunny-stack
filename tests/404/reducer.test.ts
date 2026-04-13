@@ -12,7 +12,7 @@ function makeState(overrides: Partial<GameState> = {}): GameState {
 
 function emptyGrid(): TileType[][] {
   return Array.from({ length: GRID_SIZE }, () =>
-    new Array<TileType>(GRID_SIZE).fill("empty")
+    new Array<TileType>(GRID_SIZE).fill("empty"),
   ) as TileType[][];
 }
 

@@ -34,9 +34,7 @@ export default function PortfolioPage() {
                   project={project}
                   isExpanded={expandedId === project.id}
                   onToggle={() =>
-                    setExpandedId(
-                      expandedId === project.id ? null : project.id
-                    )
+                    setExpandedId(expandedId === project.id ? null : project.id)
                   }
                 />
               ))}

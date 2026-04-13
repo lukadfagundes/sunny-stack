@@ -1,17 +1,17 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-} from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useSyncExternalStore } from "react";
 
 const emptySubscribe = () => () => {};
 
 function useIsClient() {
-  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 }
 
 function useReducedMotion() {
@@ -23,7 +23,7 @@ function useReducedMotion() {
 
   const getSnapshot = useCallback(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    []
+    [],
   );
 
   const getServerSnapshot = useCallback(() => false, []);
@@ -51,28 +51,35 @@ function ShipImage() {
 // Round to 2 decimals to avoid hydration mismatch (server vs browser precision)
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
-const STARS: Array<{ x: number; y: number; size: number; delay: number; duration: number }> = Array.from(
-  { length: 60 },
-  (_, i) => {
-    const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
-    const v1 = s - Math.floor(s);
-    const s2 = Math.sin(i * 269.5 + 183.3) * 43758.5453;
-    const v2 = s2 - Math.floor(s2);
-    const s3 = Math.sin(i * 419.2 + 71.9) * 43758.5453;
-    const v3 = s3 - Math.floor(s3);
-    return {
-      x: r2(v1 * 100),
-      y: r2(v2 * 65),
-      size: r2(1 + v3 * 1.5),
-      delay: r2(v1 * 5),
-      duration: r2(2 + v2 * 4),
-    };
-  }
-);
+const STARS: Array<{
+  x: number;
+  y: number;
+  size: number;
+  delay: number;
+  duration: number;
+}> = Array.from({ length: 60 }, (_, i) => {
+  const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+  const v1 = s - Math.floor(s);
+  const s2 = Math.sin(i * 269.5 + 183.3) * 43758.5453;
+  const v2 = s2 - Math.floor(s2);
+  const s3 = Math.sin(i * 419.2 + 71.9) * 43758.5453;
+  const v3 = s3 - Math.floor(s3);
+  return {
+    x: r2(v1 * 100),
+    y: r2(v2 * 65),
+    size: r2(1 + v3 * 1.5),
+    delay: r2(v1 * 5),
+    duration: r2(2 + v2 * 4),
+  };
+});
 
 function StarField({ reducedMotion }: { reducedMotion: boolean }) {
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ height: "70%" }} aria-hidden="true">
+    <div
+      className="absolute inset-0 overflow-hidden"
+      style={{ height: "70%" }}
+      aria-hidden="true"
+    >
       {STARS.map((star, i) => (
         <div
           key={i}
@@ -150,7 +157,11 @@ function ShootingStars({ reducedMotion }: { reducedMotion: boolean }) {
   if (reducedMotion) return null;
 
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ height: "70%" }} aria-hidden="true">
+    <div
+      className="absolute inset-0 overflow-hidden"
+      style={{ height: "70%" }}
+      aria-hidden="true"
+    >
       {stars.map((star) => (
         <div
           key={star.id}
@@ -162,7 +173,8 @@ function ShootingStars({ reducedMotion }: { reducedMotion: boolean }) {
             height: 3,
             borderRadius: "50%",
             background: "#F5E6D3",
-            boxShadow: "0 0 6px 2px rgba(245, 230, 211, 0.8), -8px 4px 12px 1px rgba(245, 230, 211, 0.3)",
+            boxShadow:
+              "0 0 6px 2px rgba(245, 230, 211, 0.8), -8px 4px 12px 1px rgba(245, 230, 211, 0.3)",
             animation: `voyage-shooting-star ${star.duration}s ease-out forwards`,
             transform: `rotate(${star.angle}deg)`,
           }}
@@ -192,7 +204,9 @@ function OceanWaves({ reducedMotion }: { reducedMotion: boolean }) {
         className="absolute w-[200%] h-16"
         style={{
           top: -6,
-          animation: reducedMotion ? "none" : "voyage-wave-drift 8s linear infinite",
+          animation: reducedMotion
+            ? "none"
+            : "voyage-wave-drift 8s linear infinite",
         }}
         viewBox="0 0 2400 60"
         preserveAspectRatio="none"
@@ -208,7 +222,9 @@ function OceanWaves({ reducedMotion }: { reducedMotion: boolean }) {
         className="absolute w-[200%] h-12"
         style={{
           top: 2,
-          animation: reducedMotion ? "none" : "voyage-wave-drift 12s linear infinite reverse",
+          animation: reducedMotion
+            ? "none"
+            : "voyage-wave-drift 12s linear infinite reverse",
         }}
         viewBox="0 0 2400 50"
         preserveAspectRatio="none"
@@ -224,7 +240,9 @@ function OceanWaves({ reducedMotion }: { reducedMotion: boolean }) {
         className="absolute w-[200%] h-10"
         style={{
           top: 8,
-          animation: reducedMotion ? "none" : "voyage-wave-drift 16s linear infinite",
+          animation: reducedMotion
+            ? "none"
+            : "voyage-wave-drift 16s linear infinite",
         }}
         viewBox="0 0 2400 40"
         preserveAspectRatio="none"
@@ -243,7 +261,10 @@ function OceanWaves({ reducedMotion }: { reducedMotion: boolean }) {
 
 function SunGlow() {
   return (
-    <div className="absolute w-full pointer-events-none" style={{ top: "55%", height: "30%" }}>
+    <div
+      className="absolute w-full pointer-events-none"
+      style={{ top: "55%", height: "30%" }}
+    >
       <div
         className="absolute"
         style={{
@@ -286,7 +307,8 @@ export default function VoyageSail() {
   // and resets correctly on navigation without stale MotionValue issues.
   useEffect(() => {
     const update = () => {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollable =
+        document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
       const clamped = Math.min(Math.max(progress, 0), 1);
 

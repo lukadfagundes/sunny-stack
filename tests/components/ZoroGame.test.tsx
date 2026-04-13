@@ -41,7 +41,7 @@ describe("ZoroGame", () => {
   it("renders help text", () => {
     render(<ZoroGame />);
     expect(
-      screen.getByText("Help Zoro find the Thousand Sunny")
+      screen.getByText("Help Zoro find the Thousand Sunny"),
     ).toBeInTheDocument();
   });
 
@@ -70,15 +70,13 @@ describe("ZoroGame", () => {
 
   it("renders the error footer", () => {
     render(<ZoroGame />);
-    expect(
-      screen.getByText(/Error 404: Page not found/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Error 404: Page not found/)).toBeInTheDocument();
   });
 
   it("renders movement instructions", () => {
     render(<ZoroGame />);
     expect(
-      screen.getByText(/Arrow keys \/ WASD \/ Swipe to move/)
+      screen.getByText(/Arrow keys \/ WASD \/ Swipe to move/),
     ).toBeInTheDocument();
   });
 });
@@ -111,7 +109,7 @@ describe("ZoroGame (game states)", () => {
     };
     render(<ZoroGame />);
     expect(
-      screen.getByText("I can SEE the Sunny from here!")
+      screen.getByText("I can SEE the Sunny from here!"),
     ).toBeInTheDocument();
   });
 
@@ -124,7 +122,7 @@ describe("ZoroGame (game states)", () => {
     };
     render(<ZoroGame />);
     expect(
-      screen.getByText("Zoro... the ship is that way.")
+      screen.getByText("Zoro... the ship is that way."),
     ).toBeInTheDocument();
   });
 

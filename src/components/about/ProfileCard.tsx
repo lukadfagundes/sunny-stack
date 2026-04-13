@@ -12,8 +12,13 @@ interface ProfileCardProps {
   onViewVideos?: () => void;
 }
 
-export default function ProfileCard({ onViewPics, onViewVideos }: ProfileCardProps) {
-  const [githubProfile, setGithubProfile] = useState<GitHubProfile | null>(null);
+export default function ProfileCard({
+  onViewPics,
+  onViewVideos,
+}: ProfileCardProps) {
+  const [githubProfile, setGithubProfile] = useState<GitHubProfile | null>(
+    null,
+  );
   const [activity, setActivity] = useState<ActivityStatus | null>(null);
 
   useEffect(() => {

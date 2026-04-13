@@ -17,11 +17,7 @@ const TILE_ICONS: Record<Exclude<TileType, "empty">, typeof Wine> = {
   deadend: Skull,
 };
 
-export default function GameTile({
-  type,
-  isPlayer,
-  isGoal,
-}: GameTileProps) {
+export default function GameTile({ type, isPlayer, isGoal }: GameTileProps) {
   const showObstacle = !isPlayer && !isGoal && type !== "empty";
   const Icon = type !== "empty" ? TILE_ICONS[type] : null;
 

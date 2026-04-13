@@ -24,14 +24,11 @@ describe("VideoCard", () => {
 
     const iframe = document.querySelector("iframe");
     expect(iframe).toBeInTheDocument();
-    expect(iframe).toHaveAttribute(
-      "src",
-      "https://www.youtube.com/embed/vid1"
-    );
+    expect(iframe).toHaveAttribute("src", "https://www.youtube.com/embed/vid1");
     expect(iframe).toHaveAttribute("allowfullscreen");
     expect(iframe).toHaveAttribute(
       "sandbox",
-      "allow-scripts allow-same-origin allow-popups"
+      "allow-scripts allow-same-origin allow-popups",
     );
   });
 
@@ -54,7 +51,7 @@ describe("VideoCard", () => {
 
     // Description should not be visible initially
     expect(
-      screen.queryByText("This is a test video description")
+      screen.queryByText("This is a test video description"),
     ).not.toBeInTheDocument();
 
     // Click Description button
@@ -62,7 +59,7 @@ describe("VideoCard", () => {
 
     // Description should now be visible
     expect(
-      screen.getByText("This is a test video description")
+      screen.getByText("This is a test video description"),
     ).toBeInTheDocument();
     expect(screen.getByText("Hide description")).toBeInTheDocument();
   });
@@ -72,12 +69,12 @@ describe("VideoCard", () => {
 
     fireEvent.click(screen.getByText("Description"));
     expect(
-      screen.getByText("This is a test video description")
+      screen.getByText("This is a test video description"),
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByText("Hide description"));
     expect(
-      screen.queryByText("This is a test video description")
+      screen.queryByText("This is a test video description"),
     ).not.toBeInTheDocument();
   });
 

@@ -23,7 +23,7 @@ describe("CurrentlyBuilding", () => {
     render(<CurrentlyBuilding repos={[]} />);
     expect(screen.getByText("Through the Spyglass")).toBeInTheDocument();
     expect(
-      screen.getByText("Nothing sighted on the horizon")
+      screen.getByText("Nothing sighted on the horizon"),
     ).toBeInTheDocument();
   });
 
@@ -49,8 +49,10 @@ describe("CurrentlyBuilding", () => {
   it("renders repo links with correct href", () => {
     render(
       <CurrentlyBuilding
-        repos={[makeRepo({ name: "my-repo", url: "https://github.com/test/my-repo" })]}
-      />
+        repos={[
+          makeRepo({ name: "my-repo", url: "https://github.com/test/my-repo" }),
+        ]}
+      />,
     );
     const link = screen.getByText("my-repo").closest("a");
     expect(link).toHaveAttribute("href", "https://github.com/test/my-repo");
@@ -61,8 +63,10 @@ describe("CurrentlyBuilding", () => {
     const now = Date.now();
     render(
       <CurrentlyBuilding
-        repos={[makeRepo({ pushedAt: new Date(now - 30 * 1000).toISOString() })]}
-      />
+        repos={[
+          makeRepo({ pushedAt: new Date(now - 30 * 1000).toISOString() }),
+        ]}
+      />,
     );
     expect(screen.getByText("just now")).toBeInTheDocument();
   });
@@ -71,8 +75,10 @@ describe("CurrentlyBuilding", () => {
     const now = Date.now();
     render(
       <CurrentlyBuilding
-        repos={[makeRepo({ pushedAt: new Date(now - 5 * 60 * 1000).toISOString() })]}
-      />
+        repos={[
+          makeRepo({ pushedAt: new Date(now - 5 * 60 * 1000).toISOString() }),
+        ]}
+      />,
     );
     expect(screen.getByText("5m ago")).toBeInTheDocument();
   });
@@ -81,8 +87,12 @@ describe("CurrentlyBuilding", () => {
     const now = Date.now();
     render(
       <CurrentlyBuilding
-        repos={[makeRepo({ pushedAt: new Date(now - 3 * 60 * 60 * 1000).toISOString() })]}
-      />
+        repos={[
+          makeRepo({
+            pushedAt: new Date(now - 3 * 60 * 60 * 1000).toISOString(),
+          }),
+        ]}
+      />,
     );
     expect(screen.getByText("3h ago")).toBeInTheDocument();
   });
@@ -91,8 +101,12 @@ describe("CurrentlyBuilding", () => {
     const now = Date.now();
     render(
       <CurrentlyBuilding
-        repos={[makeRepo({ pushedAt: new Date(now - 2 * 24 * 60 * 60 * 1000).toISOString() })]}
-      />
+        repos={[
+          makeRepo({
+            pushedAt: new Date(now - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          }),
+        ]}
+      />,
     );
     expect(screen.getByText("2d ago")).toBeInTheDocument();
   });
@@ -101,16 +115,18 @@ describe("CurrentlyBuilding", () => {
     const now = Date.now();
     render(
       <CurrentlyBuilding
-        repos={[makeRepo({ pushedAt: new Date(now - 14 * 24 * 60 * 60 * 1000).toISOString() })]}
-      />
+        repos={[
+          makeRepo({
+            pushedAt: new Date(now - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          }),
+        ]}
+      />,
     );
     expect(screen.getByText("2w ago")).toBeInTheDocument();
   });
 
   it("handles hover on spyglass container", () => {
-    const { container } = render(
-      <CurrentlyBuilding repos={[makeRepo()]} />
-    );
+    const { container } = render(<CurrentlyBuilding repos={[makeRepo()]} />);
     // Spyglass frame uses responsive Tailwind classes (w-[260px] sm:w-[340px])
     const spyglass = container.querySelector(".rounded-full");
     if (spyglass) {

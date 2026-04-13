@@ -44,7 +44,8 @@ describe("GET /api/github", () => {
       json: async () => ({
         data: {
           user: {
-            avatarUrl: "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
+            avatarUrl:
+              "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
             name: "Luka Fagundes",
             bio: "Software developer",
             location: "San Francisco, CA",
@@ -75,7 +76,7 @@ describe("GET /api/github", () => {
         headers: expect.objectContaining({
           Authorization: "bearer test-token",
         }),
-      })
+      }),
     );
   });
 
@@ -128,7 +129,8 @@ describe("GET /api/github", () => {
       json: async () => ({
         data: {
           user: {
-            avatarUrl: "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
+            avatarUrl:
+              "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
             name: null,
             bio: null,
             location: null,

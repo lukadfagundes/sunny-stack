@@ -10,9 +10,7 @@ interface CurrentlyBuildingProps {
 }
 
 function timeAgo(dateStr: string): string {
-  const seconds = Math.floor(
-    (Date.now() - new Date(dateStr).getTime()) / 1000
-  );
+  const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
   if (seconds < 60) return "just now";
   const minutes = Math.floor(seconds / 60);
   if (minutes < 60) return `${minutes}m ago`;
@@ -80,7 +78,10 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
                 padding: 4,
               }}
             >
-              <div className="w-full h-full rounded-full" style={{ background: "rgba(26, 18, 9, 0.95)" }} />
+              <div
+                className="w-full h-full rounded-full"
+                style={{ background: "rgba(26, 18, 9, 0.95)" }}
+              />
             </div>
           </div>
 
@@ -113,7 +114,8 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
                 left: "12%",
                 width: "30%",
                 height: "18%",
-                background: "radial-gradient(ellipse, rgba(245, 230, 211, 0.06) 0%, transparent 70%)",
+                background:
+                  "radial-gradient(ellipse, rgba(245, 230, 211, 0.06) 0%, transparent 70%)",
                 transform: "rotate(-30deg)",
                 opacity: isHovered ? 0.6 : 0.3,
               }}
@@ -133,7 +135,12 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
                     <div className="flex items-center justify-center gap-2">
                       <span
                         className="text-sm sm:text-xl font-serif font-bold group-hover:text-sunny-gold transition-colors duration-200 truncate"
-                        style={{ color: i === 0 ? "rgba(245, 230, 211, 0.9)" : "rgba(245, 230, 211, 0.6)" }}
+                        style={{
+                          color:
+                            i === 0
+                              ? "rgba(245, 230, 211, 0.9)"
+                              : "rgba(245, 230, 211, 0.6)",
+                        }}
                       >
                         {repo.name}
                       </span>
@@ -169,15 +176,23 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
             <div
               className="absolute pointer-events-none"
               style={{
-                top: "50%", left: 16, right: 16, height: 1,
-                background: "linear-gradient(90deg, rgba(184, 134, 11, 0.12), transparent 25%, transparent 75%, rgba(184, 134, 11, 0.12))",
+                top: "50%",
+                left: 16,
+                right: 16,
+                height: 1,
+                background:
+                  "linear-gradient(90deg, rgba(184, 134, 11, 0.12), transparent 25%, transparent 75%, rgba(184, 134, 11, 0.12))",
               }}
             />
             <div
               className="absolute pointer-events-none"
               style={{
-                left: "50%", top: 16, bottom: 16, width: 1,
-                background: "linear-gradient(180deg, rgba(184, 134, 11, 0.12), transparent 25%, transparent 75%, rgba(184, 134, 11, 0.12))",
+                left: "50%",
+                top: 16,
+                bottom: 16,
+                width: 1,
+                background:
+                  "linear-gradient(180deg, rgba(184, 134, 11, 0.12), transparent 25%, transparent 75%, rgba(184, 134, 11, 0.12))",
               }}
             />
           </div>
@@ -195,7 +210,8 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
                   left: `calc(50% + ${(pct * 100 * Math.cos(rad)).toFixed(2)}% - 4px)`,
                   top: `calc(50% - ${(pct * 100 * Math.sin(rad)).toFixed(2)}% - 4px)`,
                   borderRadius: "50%",
-                  background: "radial-gradient(circle at 35% 35%, rgba(240, 180, 41, 0.5), rgba(107, 66, 38, 0.7))",
+                  background:
+                    "radial-gradient(circle at 35% 35%, rgba(240, 180, 41, 0.5), rgba(107, 66, 38, 0.7))",
                   boxShadow: "inset 0 1px 1px rgba(0,0,0,0.3)",
                 }}
               />
@@ -203,7 +219,6 @@ export default function CurrentlyBuilding({ repos }: CurrentlyBuildingProps) {
           })}
         </div>
       </motion.div>
-
     </div>
   );
 }

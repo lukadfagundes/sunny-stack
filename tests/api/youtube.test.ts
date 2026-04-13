@@ -47,7 +47,9 @@ const mockPlaylistResponse = {
         resourceId: { videoId: "vid1" },
         title: "First Video",
         description: "Description of first video",
-        thumbnails: { high: { url: "https://i.ytimg.com/vi/vid1/hqdefault.jpg" } },
+        thumbnails: {
+          high: { url: "https://i.ytimg.com/vi/vid1/hqdefault.jpg" },
+        },
         publishedAt: "2026-03-20T12:00:00Z",
       },
     },
@@ -56,7 +58,9 @@ const mockPlaylistResponse = {
         resourceId: { videoId: "vid2" },
         title: "Second Video",
         description: "Description of second video",
-        thumbnails: { medium: { url: "https://i.ytimg.com/vi/vid2/mqdefault.jpg" } },
+        thumbnails: {
+          medium: { url: "https://i.ytimg.com/vi/vid2/mqdefault.jpg" },
+        },
         publishedAt: "2026-03-19T12:00:00Z",
       },
     },
@@ -121,8 +125,14 @@ describe("GET /api/youtube", () => {
     process.env.YOUTUBE_CHANNEL_ID = "UC_test";
 
     mockFetch
-      .mockResolvedValueOnce({ ok: true, json: async () => mockChannelResponse })
-      .mockResolvedValueOnce({ ok: true, json: async () => mockPlaylistResponse })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockChannelResponse,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockPlaylistResponse,
+      })
       .mockResolvedValueOnce({ ok: true, json: async () => mockStatsResponse });
 
     const { GET } = await import("@/app/api/youtube/route");
@@ -133,7 +143,9 @@ describe("GET /api/youtube", () => {
     expect(data[0].id).toBe("vid1");
     expect(data[0].title).toBe("First Video");
     expect(data[0].description).toBe("Description of first video");
-    expect(data[0].thumbnailUrl).toBe("https://i.ytimg.com/vi/vid1/hqdefault.jpg");
+    expect(data[0].thumbnailUrl).toBe(
+      "https://i.ytimg.com/vi/vid1/hqdefault.jpg",
+    );
     expect(data[0].viewCount).toBe(1000);
     expect(data[0].likeCount).toBe(50);
     expect(data[0].commentCount).toBe(10);
@@ -194,7 +206,10 @@ describe("GET /api/youtube", () => {
     process.env.YOUTUBE_CHANNEL_ID = "UC_test";
 
     mockFetch
-      .mockResolvedValueOnce({ ok: true, json: async () => mockChannelResponse })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockChannelResponse,
+      })
       .mockResolvedValueOnce({ ok: false, text: async () => "Error" });
 
     const { GET } = await import("@/app/api/youtube/route");

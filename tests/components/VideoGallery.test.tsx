@@ -45,7 +45,7 @@ describe("VideoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockVideos),
-      })
+      }),
     ) as jest.Mock;
 
     render(<VideoGallery onBack={jest.fn()} />);
@@ -63,7 +63,7 @@ describe("VideoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockVideos),
-      })
+      }),
     ) as jest.Mock;
 
     render(<VideoGallery onBack={jest.fn()} />);
@@ -73,14 +73,14 @@ describe("VideoGallery", () => {
 
   it("shows error message when fetch fails", async () => {
     global.fetch = jest.fn(() =>
-      Promise.reject(new Error("fail"))
+      Promise.reject(new Error("fail")),
     ) as jest.Mock;
 
     render(<VideoGallery onBack={jest.fn()} />);
 
     await waitFor(() => {
       expect(
-        screen.getByText("Could not load videos. Please try again later.")
+        screen.getByText("Could not load videos. Please try again later."),
       ).toBeInTheDocument();
     });
   });
@@ -90,7 +90,7 @@ describe("VideoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      }),
     ) as jest.Mock;
 
     render(<VideoGallery onBack={jest.fn()} />);
@@ -105,7 +105,7 @@ describe("VideoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockVideos),
-      })
+      }),
     ) as jest.Mock;
 
     const onBack = jest.fn();
@@ -116,15 +116,13 @@ describe("VideoGallery", () => {
   });
 
   it("shows error on non-ok response", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: false })
-    ) as jest.Mock;
+    global.fetch = jest.fn(() => Promise.resolve({ ok: false })) as jest.Mock;
 
     render(<VideoGallery onBack={jest.fn()} />);
 
     await waitFor(() => {
       expect(
-        screen.getByText("Could not load videos. Please try again later.")
+        screen.getByText("Could not load videos. Please try again later."),
       ).toBeInTheDocument();
     });
   });

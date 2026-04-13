@@ -100,9 +100,26 @@ function CrateItem({
         }}
       >
         {!isOpen && (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ borderRadius: 6 }}>
-            <div className="absolute w-full opacity-[0.06]" style={{ top: "33%", height: 1, background: "rgba(184, 134, 11, 1)" }} />
-            <div className="absolute w-full opacity-[0.06]" style={{ top: "66%", height: 1, background: "rgba(184, 134, 11, 1)" }} />
+          <div
+            className="absolute inset-0 pointer-events-none overflow-hidden"
+            style={{ borderRadius: 6 }}
+          >
+            <div
+              className="absolute w-full opacity-[0.06]"
+              style={{
+                top: "33%",
+                height: 1,
+                background: "rgba(184, 134, 11, 1)",
+              }}
+            />
+            <div
+              className="absolute w-full opacity-[0.06]"
+              style={{
+                top: "66%",
+                height: 1,
+                background: "rgba(184, 134, 11, 1)",
+              }}
+            />
           </div>
         )}
 
@@ -162,16 +179,38 @@ function CategoryShelf({
   return (
     <div ref={ref}>
       <div className="flex items-center gap-2 mb-2">
-        <div style={{ width: 3, height: 14, borderRadius: 1, background: "rgba(184, 134, 11, 0.3)" }} />
-        <h4 className="text-xs font-medium uppercase tracking-wider font-serif" style={{ color: "rgba(240, 180, 41, 0.5)" }}>
+        <div
+          style={{
+            width: 3,
+            height: 14,
+            borderRadius: 1,
+            background: "rgba(184, 134, 11, 0.3)",
+          }}
+        />
+        <h4
+          className="text-xs font-medium uppercase tracking-wider font-serif"
+          style={{ color: "rgba(240, 180, 41, 0.5)" }}
+        >
           {category.label}
         </h4>
-        <div className="flex-1" style={{ height: 1, background: "linear-gradient(90deg, rgba(107, 66, 38, 0.3), transparent)" }} />
+        <div
+          className="flex-1"
+          style={{
+            height: 1,
+            background:
+              "linear-gradient(90deg, rgba(107, 66, 38, 0.3), transparent)",
+          }}
+        />
       </div>
 
       <div className="flex flex-wrap gap-2">
         {category.items.map((item, i) => (
-          <CrateItem key={item.name} item={item} delay={shelfIndex * 0.1 + i * 0.04} isInView={isInView} />
+          <CrateItem
+            key={item.name}
+            item={item}
+            delay={shelfIndex * 0.1 + i * 0.04}
+            isInView={isInView}
+          />
         ))}
       </div>
     </div>

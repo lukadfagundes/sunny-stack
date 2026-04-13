@@ -26,7 +26,7 @@ function formatUnlockDate(timestamp: number): string {
 
 export default function GameStats({ game, onBack }: GameStatsProps) {
   const [achievements, setAchievements] = useState<SteamAchievementData | null>(
-    null
+    null,
   );
   const [achievementsLoading, setAchievementsLoading] = useState(true);
 
@@ -67,10 +67,7 @@ export default function GameStats({ game, onBack }: GameStatsProps) {
           borderBottom: "1px solid #66c0f4",
         }}
       >
-        <span
-          className="font-bold text-sm"
-          style={{ color: "#c7d5e0" }}
-        >
+        <span className="font-bold text-sm" style={{ color: "#c7d5e0" }}>
           {game.name}
         </span>
         <button
@@ -85,20 +82,13 @@ export default function GameStats({ game, onBack }: GameStatsProps) {
       {/* Hero banner */}
       <div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={game.headerImage}
-          alt={game.name}
-          className="w-full h-auto"
-        />
+        <img src={game.headerImage} alt={game.name} className="w-full h-auto" />
       </div>
 
       {/* Stats content */}
       <div className="p-5 space-y-5">
         {/* Status */}
-        <div
-          className="rounded p-4"
-          style={{ backgroundColor: "#2a475e" }}
-        >
+        <div className="rounded p-4" style={{ backgroundColor: "#2a475e" }}>
           <span
             className="text-xs uppercase tracking-wide block mb-1"
             style={{ color: "#8f98a0" }}
@@ -106,46 +96,31 @@ export default function GameStats({ game, onBack }: GameStatsProps) {
             Status
           </span>
           {game.recentlyPlayed ? (
-            <span
-              className="text-sm font-medium"
-              style={{ color: "#5ba32b" }}
-            >
+            <span className="text-sm font-medium" style={{ color: "#5ba32b" }}>
               Played recently
             </span>
           ) : (
-            <span
-              className="text-sm"
-              style={{ color: "#8f98a0" }}
-            >
+            <span className="text-sm" style={{ color: "#8f98a0" }}>
               Not played recently
             </span>
           )}
         </div>
 
         {/* Playtime */}
-        <div
-          className="rounded p-4"
-          style={{ backgroundColor: "#2a475e" }}
-        >
+        <div className="rounded p-4" style={{ backgroundColor: "#2a475e" }}>
           <span
             className="text-xs uppercase tracking-wide block mb-1"
             style={{ color: "#8f98a0" }}
           >
             Total Playtime
           </span>
-          <span
-            className="text-lg font-bold"
-            style={{ color: "#66c0f4" }}
-          >
+          <span className="text-lg font-bold" style={{ color: "#66c0f4" }}>
             {formatPlaytime(game.playtimeMinutes)}
           </span>
         </div>
 
         {/* Achievements */}
-        <div
-          className="rounded p-4"
-          style={{ backgroundColor: "#2a475e" }}
-        >
+        <div className="rounded p-4" style={{ backgroundColor: "#2a475e" }}>
           <span
             className="text-xs uppercase tracking-wide block mb-2"
             style={{ color: "#8f98a0" }}
@@ -153,10 +128,7 @@ export default function GameStats({ game, onBack }: GameStatsProps) {
             Achievements
           </span>
           {achievementsLoading ? (
-            <span
-              className="text-xs italic"
-              style={{ color: "#8f98a0" }}
-            >
+            <span className="text-xs italic" style={{ color: "#8f98a0" }}>
               Loading...
             </span>
           ) : achievements ? (
@@ -206,57 +178,54 @@ export default function GameStats({ game, onBack }: GameStatsProps) {
                     className="overflow-y-auto steam-scrollbar"
                     style={{ maxHeight: "312px" }}
                   >
-                  <div className="grid grid-cols-2 gap-2">
-                    {achievements.achievements.map((ach) => (
-                      <div
-                        key={ach.apiname}
-                        className="flex items-center gap-3 rounded p-2"
-                        style={{ backgroundColor: "#1b2838" }}
-                      >
-                        {ach.icon && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={ach.icon}
-                            alt={ach.displayName}
-                            className="w-10 h-10 rounded flex-shrink-0"
-                          />
-                        )}
-                        <div className="min-w-0 flex-1">
-                          <span
-                            className="text-xs font-bold block truncate"
-                            style={{ color: "#c7d5e0" }}
-                          >
-                            {ach.displayName}
-                          </span>
-                          {ach.description && (
-                            <span
-                              className="text-xs block truncate"
-                              style={{ color: "#8f98a0" }}
-                            >
-                              {ach.description}
-                            </span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {achievements.achievements.map((ach) => (
+                        <div
+                          key={ach.apiname}
+                          className="flex items-center gap-3 rounded p-2"
+                          style={{ backgroundColor: "#1b2838" }}
+                        >
+                          {ach.icon && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={ach.icon}
+                              alt={ach.displayName}
+                              className="w-10 h-10 rounded flex-shrink-0"
+                            />
                           )}
-                          {ach.unlocktime > 0 && (
+                          <div className="min-w-0 flex-1">
                             <span
-                              className="text-xs"
-                              style={{ color: "#5ba32b" }}
+                              className="text-xs font-bold block truncate"
+                              style={{ color: "#c7d5e0" }}
                             >
-                              Unlocked {formatUnlockDate(ach.unlocktime)}
+                              {ach.displayName}
                             </span>
-                          )}
+                            {ach.description && (
+                              <span
+                                className="text-xs block truncate"
+                                style={{ color: "#8f98a0" }}
+                              >
+                                {ach.description}
+                              </span>
+                            )}
+                            {ach.unlocktime > 0 && (
+                              <span
+                                className="text-xs"
+                                style={{ color: "#5ba32b" }}
+                              >
+                                Unlocked {formatUnlockDate(ach.unlocktime)}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <span
-              className="text-xs italic"
-              style={{ color: "#8f98a0" }}
-            >
+            <span className="text-xs italic" style={{ color: "#8f98a0" }}>
               No achievements
             </span>
           )}

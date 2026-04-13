@@ -49,7 +49,7 @@ export async function GET() {
       {
         headers: { Authorization: `Bearer ${accessToken}` },
         cache: "no-store",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -61,7 +61,7 @@ export async function GET() {
     const items: SpotifyTrackItem[] = data.items ?? [];
 
     if (items.length === 0) {
-        return NextResponse.json(null, { status: 200 });
+      return NextResponse.json(null, { status: 200 });
     }
 
     const track = items[0];

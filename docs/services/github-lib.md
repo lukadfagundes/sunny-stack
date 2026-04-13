@@ -15,9 +15,11 @@ Server-side GitHub GraphQL API client that fetches all landing page data in a si
 Fetches all GitHub data for the landing page in a single GraphQL query. Returns `FALLBACK_DATA` if the token is missing or any error occurs.
 
 **Environment Variables:**
+
 - `GITHUB_TOKEN` (required) -- GitHub personal access token
 
 **Behavior:**
+
 1. Returns `FALLBACK_DATA` immediately if `GITHUB_TOKEN` is not set
 2. Calculates a 365-day date range for the contribution calendar
 3. Executes a single GraphQL query with `username`, `from`, and `to` variables
@@ -127,6 +129,7 @@ interface GitHubPullRequest {
 ### GraphQL Query
 
 The `GitHubProfile` query fetches in a single request:
+
 - `avatarUrl(size: 200)`
 - `pinnedItems(first: 6, types: [REPOSITORY])` -- up to 6 pinned repos
 - `repositories(first: 100, ownerAffiliations: OWNER, privacy: PUBLIC, orderBy: PUSHED_AT DESC)` -- up to 100 public repos with languages (first 10 by size)
@@ -136,6 +139,7 @@ The `GitHubProfile` query fetches in a single request:
 ### Contribution Calendar Date Range
 
 Dynamically calculates a 365-day window:
+
 ```typescript
 const now = new Date();
 const oneYearAgo = new Date(now);
@@ -145,13 +149,17 @@ oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 ### Private Repo PR Filtering
 
 Merged PRs are filtered to exclude those from private repositories before returning, even though the total count (`totalMergedPRs`) includes all merged PRs:
+
 ```typescript
-const publicMergedPRs = user.pullRequests.nodes.filter(pr => !pr.repository.isPrivate);
+const publicMergedPRs = user.pullRequests.nodes.filter(
+  (pr) => !pr.repository.isPrivate,
+);
 ```
 
 ### Star Count Aggregation
 
 Total stars are computed by reducing over all public repos:
+
 ```typescript
 const totalStars = repos.reduce((sum, r) => sum + r.stargazerCount, 0);
 ```
@@ -162,12 +170,12 @@ const totalStars = repos.reduce((sum, r) => sum + r.stargazerCount, 0);
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| `GITHUB_TOKEN` not set | Logs warning, returns `FALLBACK_DATA` |
-| API returns non-OK status | Logs status code, returns `FALLBACK_DATA` |
-| GraphQL errors in response | Logs errors, returns `FALLBACK_DATA` |
-| Network exception | Logs error, returns `FALLBACK_DATA` |
+| Condition                  | Behavior                                  |
+| -------------------------- | ----------------------------------------- |
+| `GITHUB_TOKEN` not set     | Logs warning, returns `FALLBACK_DATA`     |
+| API returns non-OK status  | Logs status code, returns `FALLBACK_DATA` |
+| GraphQL errors in response | Logs errors, returns `FALLBACK_DATA`      |
+| Network exception          | Logs error, returns `FALLBACK_DATA`       |
 
 ## Dependencies
 

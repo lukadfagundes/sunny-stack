@@ -106,8 +106,10 @@ describe("GET /api/instagram", () => {
     expect(mockFetch).toHaveBeenCalledWith(
       expect.not.stringContaining("access_token="),
       expect.objectContaining({
-        headers: expect.objectContaining({ Authorization: "Bearer test-token" }),
-      })
+        headers: expect.objectContaining({
+          Authorization: "Bearer test-token",
+        }),
+      }),
     );
   });
 

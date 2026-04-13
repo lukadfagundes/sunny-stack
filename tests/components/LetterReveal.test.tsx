@@ -21,15 +21,13 @@ describe("LetterReveal", () => {
   });
 
   it("does not render individual spans in reduced motion mode", () => {
-    const { container } = render(
-      <LetterReveal text="Hello" reducedMotion />
-    );
+    const { container } = render(<LetterReveal text="Hello" reducedMotion />);
     expect(container.querySelectorAll("[aria-hidden='true']")).toHaveLength(0);
   });
 
   it("applies custom className", () => {
     const { container } = render(
-      <LetterReveal text="Test" className="custom-class" reducedMotion />
+      <LetterReveal text="Test" className="custom-class" reducedMotion />,
     );
     expect(container.querySelector(".custom-class")).toBeInTheDocument();
   });

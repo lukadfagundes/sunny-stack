@@ -53,7 +53,10 @@ export default function MusicPlayer({ onViewMusic }: MusicPlayerProps) {
         {/* Error */}
         {error && (
           <div className="px-3 py-3 text-center">
-            <Music className="w-5 h-5 mx-auto mb-1" style={{ color: "#535353" }} />
+            <Music
+              className="w-5 h-5 mx-auto mb-1"
+              style={{ color: "#535353" }}
+            />
             <p className="text-xs" style={{ color: "#B3B3B3" }}>
               Could not load music.
             </p>

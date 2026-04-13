@@ -2,12 +2,15 @@ export {};
 
 const mockNext = jest.fn(() => ({ type: "next" }));
 const mockJson = jest.fn(
-  (body: unknown, init?: { status?: number; headers?: Record<string, string> }) => ({
+  (
+    body: unknown,
+    init?: { status?: number; headers?: Record<string, string> },
+  ) => ({
     type: "json",
     body,
     status: init?.status,
     headers: init?.headers,
-  })
+  }),
 );
 
 jest.mock("next/server", () => ({
@@ -76,7 +79,7 @@ describe("rate limiting proxy", () => {
 
     expect(mockJson).toHaveBeenCalledWith(
       { error: "Too many requests" },
-      expect.objectContaining({ status: 429 })
+      expect.objectContaining({ status: 429 }),
     );
   });
 

@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import {
+  Inter,
+  Playfair_Display,
+  Space_Grotesk,
+  JetBrains_Mono,
+} from "next/font/google";
 import ShipWheel from "@/components/ShipWheel";
 import VoyageSail from "@/components/landing/VoyageSail";
 import "./globals.css";
@@ -30,7 +35,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Luka Fagundes — Full Stack Developer | sunny-stack.com",
+    default: "Luka Fagundes - Full Stack Developer | sunny-stack.com",
     template: "%s | Luka Fagundes",
   },
   description:
@@ -39,8 +44,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://sunny-stack.com"),
   openGraph: {
     type: "website",
-    siteName: "Luka Fagundes — Portfolio",
-    title: "Luka Fagundes — Full Stack Developer",
+    siteName: "Luka Fagundes - Portfolio",
+    title: "Luka Fagundes - Full Stack Developer",
     description:
       "Self-taught full stack developer. TypeScript, React, Next.js, Node.js.",
     url: "https://sunny-stack.com",
@@ -49,7 +54,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Luka Fagundes — Full Stack Developer",
+        alt: "Luka Fagundes - Full Stack Developer",
       },
     ],
   },
@@ -102,10 +107,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-          <VoyageSail />
-          {children}
-          <ShipWheel />
-        </body>
+        <VoyageSail />
+        {children}
+        <ShipWheel />
+      </body>
     </html>
   );
 }

@@ -24,17 +24,24 @@ This component has **no explicit event handlers**. Links use native `<a>` tag cl
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
+| Component       | Source            | Purpose                                                               |
+| --------------- | ----------------- | --------------------------------------------------------------------- |
 | `SectionHeader` | `./SectionHeader` | Renders the section title ("Contacting Luka") with consistent styling |
 
 ## Internal Components
 
 ### `XIcon`
+
 A custom inline SVG component rendering the X (formerly Twitter) logo, since lucide-react does not include a native X icon.
 
 ```ts
-function XIcon({ className, style }: { className?: string; style?: React.CSSProperties })
+function XIcon({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+});
 ```
 
 ## Icon Mapping
@@ -43,34 +50,34 @@ The component uses two lookup maps to associate contact types with icons and col
 
 ### `ICON_MAP`
 
-| Key | Icon Component |
-|-----|---------------|
+| Key         | Icon Component             |
+| ----------- | -------------------------- |
 | `instagram` | `Instagram` (lucide-react) |
-| `twitter` | `XIcon` (custom SVG) |
-| `bluesky` | `CloudSun` (lucide-react) |
-| `twitch` | `Twitch` (lucide-react) |
-| `youtube` | `Youtube` (lucide-react) |
-| `linkedin` | `Linkedin` (lucide-react) |
-| `github` | `Github` (lucide-react) |
-| `email` | `Mail` (lucide-react) |
+| `twitter`   | `XIcon` (custom SVG)       |
+| `bluesky`   | `CloudSun` (lucide-react)  |
+| `twitch`    | `Twitch` (lucide-react)    |
+| `youtube`   | `Youtube` (lucide-react)   |
+| `linkedin`  | `Linkedin` (lucide-react)  |
+| `github`    | `Github` (lucide-react)    |
+| `email`     | `Mail` (lucide-react)      |
 
 ### `COLOR_MAP`
 
-| Key | Color |
-|-----|-------|
-| `instagram` | `#E1306C` (pink) |
-| `twitter` | `#FFFFFF` (white) |
-| `bluesky` | `#0085FF` (blue) |
-| `twitch` | `#9146FF` (purple) |
-| `youtube` | `#FF0000` (red) |
-| `linkedin` | `#0A66C2` (blue) |
-| `github` | `#F5E6D3` (cream) |
-| `email` | `#F0B429` (gold) |
+| Key         | Color              |
+| ----------- | ------------------ |
+| `instagram` | `#E1306C` (pink)   |
+| `twitter`   | `#FFFFFF` (white)  |
+| `bluesky`   | `#0085FF` (blue)   |
+| `twitch`    | `#9146FF` (purple) |
+| `youtube`   | `#FF0000` (red)    |
+| `linkedin`  | `#0A66C2` (blue)   |
+| `github`    | `#F5E6D3` (cream)  |
+| `email`     | `#F0B429` (gold)   |
 
 ## Data Sources
 
-| Source | Import Path | Type | Description |
-|--------|-------------|------|-------------|
+| Source         | Import Path           | Type            | Description                                                     |
+| -------------- | --------------------- | --------------- | --------------------------------------------------------------- |
 | `contactLinks` | `@/lib/data/personal` | `ContactLink[]` | Array of contact objects with `label`, `url`, and `type` fields |
 
 ### ContactLink Structure
@@ -79,7 +86,15 @@ The component uses two lookup maps to associate contact types with icons and col
 interface ContactLink {
   label: string;
   url: string;
-  type: "instagram" | "twitter" | "bluesky" | "twitch" | "youtube" | "linkedin" | "github" | "email";
+  type:
+    | "instagram"
+    | "twitter"
+    | "bluesky"
+    | "twitch"
+    | "youtube"
+    | "linkedin"
+    | "github"
+    | "email";
 }
 ```
 

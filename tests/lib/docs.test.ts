@@ -3,7 +3,8 @@ import path from "path";
 const PROJECT_ROOT = process.cwd();
 
 const VIRTUAL_FILES: Record<string, string> = {
-  [path.join(PROJECT_ROOT, "README.md")]: "# Sunny Stack\n\nProject README content.",
+  [path.join(PROJECT_ROOT, "README.md")]:
+    "# Sunny Stack\n\nProject README content.",
   [path.join(PROJECT_ROOT, "docs", "README.md")]:
     "# Documentation\n\nWelcome to the docs.",
   [path.join(PROJECT_ROOT, "docs", "guides", "getting-started.md")]:
@@ -79,9 +80,9 @@ describe("getDocTree", () => {
 
     expect(Array.isArray(tree)).toBe(true);
     expect(tree.some((f) => f.name === "README.md")).toBe(true);
-    expect(
-      tree.some((f) => f.name === "docs" && f.type === "directory"),
-    ).toBe(true);
+    expect(tree.some((f) => f.name === "docs" && f.type === "directory")).toBe(
+      true,
+    );
   });
 
   it("contains only .md files", async () => {

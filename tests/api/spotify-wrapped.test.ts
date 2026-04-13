@@ -48,7 +48,13 @@ const mockTracksResponse = {
       artists: [{ name: "Artist A" }],
       album: {
         name: "Album A",
-        images: [{ url: "https://i.scdn.co/image/album-a.jpg", width: 640, height: 640 }],
+        images: [
+          {
+            url: "https://i.scdn.co/image/album-a.jpg",
+            width: 640,
+            height: 640,
+          },
+        ],
       },
       external_urls: { spotify: "https://open.spotify.com/track/t1" },
     },
@@ -58,7 +64,13 @@ const mockTracksResponse = {
       artists: [{ name: "Artist B" }, { name: "Artist C" }],
       album: {
         name: "Album B",
-        images: [{ url: "https://i.scdn.co/image/album-b.jpg", width: 640, height: 640 }],
+        images: [
+          {
+            url: "https://i.scdn.co/image/album-b.jpg",
+            width: 640,
+            height: 640,
+          },
+        ],
       },
       external_urls: { spotify: "https://open.spotify.com/track/t2" },
     },
@@ -70,14 +82,26 @@ const mockArtistsResponse = {
     {
       id: "a1",
       name: "Artist A",
-      images: [{ url: "https://i.scdn.co/image/artist-a.jpg", width: 640, height: 640 }],
+      images: [
+        {
+          url: "https://i.scdn.co/image/artist-a.jpg",
+          width: 640,
+          height: 640,
+        },
+      ],
       genres: ["pop", "indie pop"],
       external_urls: { spotify: "https://open.spotify.com/artist/a1" },
     },
     {
       id: "a2",
       name: "Artist B",
-      images: [{ url: "https://i.scdn.co/image/artist-b.jpg", width: 640, height: 640 }],
+      images: [
+        {
+          url: "https://i.scdn.co/image/artist-b.jpg",
+          width: 640,
+          height: 640,
+        },
+      ],
       genres: ["pop", "dance pop"],
       external_urls: { spotify: "https://open.spotify.com/artist/a2" },
     },

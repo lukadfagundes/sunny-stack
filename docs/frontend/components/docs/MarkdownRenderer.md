@@ -8,23 +8,23 @@
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `content` | `string` | Yes | Raw markdown string to render. |
-| `currentPath` | `string` | Yes | File path of the currently displayed document, used to resolve relative links. |
-| `loadFile` | `(path: string) => void` | Yes | Callback to navigate to another document. Invoked when internal doc links are clicked. |
+| Prop          | Type                     | Required | Description                                                                            |
+| ------------- | ------------------------ | -------- | -------------------------------------------------------------------------------------- |
+| `content`     | `string`                 | Yes      | Raw markdown string to render.                                                         |
+| `currentPath` | `string`                 | Yes      | File path of the currently displayed document, used to resolve relative links.         |
+| `loadFile`    | `(path: string) => void` | Yes      | Callback to navigate to another document. Invoked when internal doc links are clicked. |
 
 ## Remark Plugins
 
-| Plugin | Source | Description |
-|--------|--------|-------------|
-| `remarkGfm` | `remark-gfm` | Enables GitHub-Flavored Markdown: tables, strikethrough, task lists, autolinks. |
-| `remarkDefaultCodeLang` | Internal | Custom plugin that assigns `"plaintext"` as the default language to fenced code blocks without a language specifier. This ensures block code always receives a `className`, distinguishing it from inline code. |
+| Plugin                  | Source       | Description                                                                                                                                                                                                     |
+| ----------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `remarkGfm`             | `remark-gfm` | Enables GitHub-Flavored Markdown: tables, strikethrough, task lists, autolinks.                                                                                                                                 |
+| `remarkDefaultCodeLang` | Internal     | Custom plugin that assigns `"plaintext"` as the default language to fenced code blocks without a language specifier. This ensures block code always receives a `className`, distinguishing it from inline code. |
 
 ## Rehype Plugins
 
-| Plugin | Source | Description |
-|--------|--------|-------------|
+| Plugin      | Source       | Description                                                                                                            |
+| ----------- | ------------ | ---------------------------------------------------------------------------------------------------------------------- |
 | `rehypeRaw` | `rehype-raw` | Parses raw HTML elements in markdown (e.g., `<mermaid-diagram>`) so they can be handled by custom component overrides. |
 
 ## Exported Functions
@@ -37,20 +37,20 @@ Builds and returns the component overrides object for `react-markdown`. This is 
 
 ### Headings
 
-| Element | Styling |
-|---------|---------|
-| `h1` | 2xl bold, sunny-gold, bottom border, top margin (first:mt-0). |
-| `h2` | xl bold, sunny-gold. |
-| `h3` | lg semibold, sunny-gold. |
-| `h4` | base semibold, sunny-cream. |
+| Element | Styling                                                       |
+| ------- | ------------------------------------------------------------- |
+| `h1`    | 2xl bold, sunny-gold, bottom border, top margin (first:mt-0). |
+| `h2`    | xl bold, sunny-gold.                                          |
+| `h3`    | lg semibold, sunny-gold.                                      |
+| `h4`    | base semibold, sunny-cream.                                   |
 
 ### Text Elements
 
-| Element | Styling |
-|---------|---------|
-| `p` | sm text, sunny-cream, relaxed line-height. |
-| `strong` | Bold, sunny-cream. |
-| `em` | Italic, sunny-cream-muted. |
+| Element  | Styling                                    |
+| -------- | ------------------------------------------ |
+| `p`      | sm text, sunny-cream, relaxed line-height. |
+| `strong` | Bold, sunny-cream.                         |
+| `em`     | Italic, sunny-cream-muted.                 |
 
 ### Links (`a`)
 
@@ -71,27 +71,27 @@ Implements smart link routing with three modes:
 
 ### Lists
 
-| Element | Styling |
-|---------|---------|
-| `ul` | Disc markers, inside positioning, sunny-cream, left margin. |
-| `ol` | Decimal markers, inside positioning, sunny-cream, left margin. |
-| `li` | sm text, sunny-cream. |
+| Element | Styling                                                        |
+| ------- | -------------------------------------------------------------- |
+| `ul`    | Disc markers, inside positioning, sunny-cream, left margin.    |
+| `ol`    | Decimal markers, inside positioning, sunny-cream, left margin. |
+| `li`    | sm text, sunny-cream.                                          |
 
 ### Block Elements
 
-| Element | Styling |
-|---------|---------|
+| Element      | Styling                                                                      |
+| ------------ | ---------------------------------------------------------------------------- |
 | `blockquote` | 4px left border (sunny-gold-muted), left padding, italic, sunny-cream-muted. |
-| `hr` | sunny-surface-light border, vertical margin. |
+| `hr`         | sunny-surface-light border, vertical margin.                                 |
 
 ### Tables
 
-| Element | Styling |
-|---------|---------|
+| Element | Styling                                                              |
+| ------- | -------------------------------------------------------------------- |
 | `table` | Full width, collapsed borders, wrapped in overflow-x-auto container. |
-| `thead` | sunny-surface-light background. |
-| `th` | Left-aligned, sunny-gold, semibold, bordered. |
-| `td` | sunny-cream, bordered. |
+| `thead` | sunny-surface-light background.                                      |
+| `th`    | Left-aligned, sunny-gold, semibold, bordered.                        |
+| `td`    | sunny-cream, bordered.                                               |
 
 ### Images (`img`)
 
@@ -111,7 +111,7 @@ Custom HTML element handled via `rehype-raw`:
 
 Three rendering modes based on context:
 
-1. **Block code with language** (e.g., `` ```typescript ``):
+1. **Block code with language** (e.g., ` ```typescript `):
    - Uses `SyntaxHighlighter` from `react-syntax-highlighter` with `oneDark` theme.
    - Custom styles: 13px font, Cascadia Code font family, transparent background.
 
@@ -132,15 +132,15 @@ Three rendering modes based on context:
 
 ## Child Components / Dependencies
 
-| Component | Source | Description |
-|-----------|--------|-------------|
-| `ReactMarkdown` | `react-markdown` | Core markdown rendering engine. |
-| `remarkGfm` | `remark-gfm` | GFM plugin for tables, strikethrough, etc. |
-| `rehypeRaw` | `rehype-raw` | Parses raw HTML in markdown for custom element handling. |
-| `SyntaxHighlighter` (Prism) | `react-syntax-highlighter` | Code syntax highlighting. |
-| `oneDark` | `react-syntax-highlighter/dist/esm/styles/prism` | Dark syntax highlighting theme. |
-| `visit` | `unist-util-visit` | AST traversal utility for the custom remark plugin. |
-| `MermaidDiagram` | `@/components/docs/MermaidDiagram` | Client-side mermaid diagram renderer with loading state. |
+| Component                   | Source                                           | Description                                              |
+| --------------------------- | ------------------------------------------------ | -------------------------------------------------------- |
+| `ReactMarkdown`             | `react-markdown`                                 | Core markdown rendering engine.                          |
+| `remarkGfm`                 | `remark-gfm`                                     | GFM plugin for tables, strikethrough, etc.               |
+| `rehypeRaw`                 | `rehype-raw`                                     | Parses raw HTML in markdown for custom element handling. |
+| `SyntaxHighlighter` (Prism) | `react-syntax-highlighter`                       | Code syntax highlighting.                                |
+| `oneDark`                   | `react-syntax-highlighter/dist/esm/styles/prism` | Dark syntax highlighting theme.                          |
+| `visit`                     | `unist-util-visit`                               | AST traversal utility for the custom remark plugin.      |
+| `MermaidDiagram`            | `@/components/docs/MermaidDiagram`               | Client-side mermaid diagram renderer with loading state. |
 
 ## Styling
 

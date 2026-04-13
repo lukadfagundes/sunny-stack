@@ -8,25 +8,26 @@
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `onViewGame` | `(game: SteamGame) => void` | No | Callback invoked when a game card is clicked. Receives the full `SteamGame` object for the selected game. |
+| Prop         | Type                        | Required | Description                                                                                               |
+| ------------ | --------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `onViewGame` | `(game: SteamGame) => void` | No       | Callback invoked when a game card is clicked. Receives the full `SteamGame` object for the selected game. |
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
-| `useState` | `games` | `SteamGame[]` | `[]` | Array of top Steam games fetched from the API. |
-| `useState` | `error` | `boolean` | `false` | Whether the API request failed or returned empty data. |
-| `useState` | `loading` | `boolean` | `true` | Whether the API request is in flight. |
+| Hook       | Variable  | Type          | Initial | Description                                            |
+| ---------- | --------- | ------------- | ------- | ------------------------------------------------------ |
+| `useState` | `games`   | `SteamGame[]` | `[]`    | Array of top Steam games fetched from the API.         |
+| `useState` | `error`   | `boolean`     | `false` | Whether the API request failed or returned empty data. |
+| `useState` | `loading` | `boolean`     | `true`  | Whether the API request is in flight.                  |
 
 ## API Integration
 
-| Endpoint | Method | Trigger | Response Type | Description |
-|----------|--------|---------|---------------|-------------|
-| `/api/steam` | GET | `useEffect` on mount | `SteamGamesData \| null` | Fetches the user's top Steam games. Response includes a `games` array of `SteamGame` objects. |
+| Endpoint     | Method | Trigger              | Response Type            | Description                                                                                   |
+| ------------ | ------ | -------------------- | ------------------------ | --------------------------------------------------------------------------------------------- |
+| `/api/steam` | GET    | `useEffect` on mount | `SteamGamesData \| null` | Fetches the user's top Steam games. Response includes a `games` array of `SteamGame` objects. |
 
 **Fetch flow:**
+
 1. On mount, fetches `/api/steam`.
 2. If the response is not OK, throws and enters the error state.
 3. If the response data contains a non-empty `games` array, sets it in state; otherwise sets `error` to `true`.
@@ -34,11 +35,11 @@
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
-| `onClick` | Game card button | Calls `onViewGame?.(game)` with the clicked game's data. |
+| Handler        | Element          | Description                                                                        |
+| -------------- | ---------------- | ---------------------------------------------------------------------------------- |
+| `onClick`      | Game card button | Calls `onViewGame?.(game)` with the clicked game's data.                           |
 | `onMouseEnter` | Game card button | Sets the card background to `#2a475e` and border to `#66c0f4` (Steam hover style). |
-| `onMouseLeave` | Game card button | Resets card background and border to transparent. |
+| `onMouseLeave` | Game card button | Resets card background and border to transparent.                                  |
 
 ## Render States
 
@@ -52,11 +53,11 @@ None (the component renders plain HTML elements and `<img>` tags).
 
 ## Data Sources
 
-| Source | Type | Description |
-|--------|------|-------------|
-| `/api/steam` | API | Returns `SteamGamesData` containing a `games` array of `SteamGame` objects. |
-| `profile` | `@/lib/data/personal` | Used for `profile.name` to display in the header as "{name}'s Top 8 Games". |
-| `SteamGame`, `SteamGamesData` | `@/app/api/steam/route` | TypeScript type imports for the API response shape. |
+| Source                        | Type                    | Description                                                                 |
+| ----------------------------- | ----------------------- | --------------------------------------------------------------------------- |
+| `/api/steam`                  | API                     | Returns `SteamGamesData` containing a `games` array of `SteamGame` objects. |
+| `profile`                     | `@/lib/data/personal`   | Used for `profile.name` to display in the header as "{name}'s Top 8 Games". |
+| `SteamGame`, `SteamGamesData` | `@/app/api/steam/route` | TypeScript type imports for the API response shape.                         |
 
 ## Styling
 

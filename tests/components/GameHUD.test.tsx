@@ -58,27 +58,26 @@ describe("GameHUD", () => {
   it("displays a quote when currentQuote is set and not won", () => {
     render(
       <GameHUD
-        state={makeState({ currentQuote: "I don't know where I am!", won: false })}
-      />
+        state={makeState({
+          currentQuote: "I don't know where I am!",
+          won: false,
+        })}
+      />,
     );
     // Quote is wrapped in curly quotes
-    expect(
-      screen.getByText(/I don't know where I am!/)
-    ).toBeInTheDocument();
-    expect(screen.getByText("— Zoro")).toBeInTheDocument();
+    expect(screen.getByText(/I don't know where I am!/)).toBeInTheDocument();
+    expect(screen.getByText("- Zoro")).toBeInTheDocument();
   });
 
   it("does not display quote when won is true", () => {
     render(
-      <GameHUD
-        state={makeState({ currentQuote: "Some quote", won: true })}
-      />
+      <GameHUD state={makeState({ currentQuote: "Some quote", won: true })} />,
     );
     expect(screen.queryByText(/Some quote/)).not.toBeInTheDocument();
   });
 
   it("does not display quote when currentQuote is null", () => {
     render(<GameHUD state={makeState({ currentQuote: null })} />);
-    expect(screen.queryByText("— Zoro")).not.toBeInTheDocument();
+    expect(screen.queryByText("- Zoro")).not.toBeInTheDocument();
   });
 });

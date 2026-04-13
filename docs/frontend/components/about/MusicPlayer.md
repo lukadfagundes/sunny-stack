@@ -8,25 +8,26 @@
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `onViewMusic` | `() => void` | No | Callback invoked when the "Check out more music" button is clicked. When omitted, the button is not rendered. |
+| Prop          | Type         | Required | Description                                                                                                   |
+| ------------- | ------------ | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `onViewMusic` | `() => void` | No       | Callback invoked when the "Check out more music" button is clicked. When omitted, the button is not rendered. |
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
-| `useState` | `track` | `SpotifyTopTrack \| null` | `null` | The fetched top track data (id, name, artist). |
-| `useState` | `loading` | `boolean` | `true` | Whether the API request is in flight. |
-| `useState` | `error` | `boolean` | `false` | Whether the API request failed. |
+| Hook       | Variable  | Type                      | Initial | Description                                    |
+| ---------- | --------- | ------------------------- | ------- | ---------------------------------------------- |
+| `useState` | `track`   | `SpotifyTopTrack \| null` | `null`  | The fetched top track data (id, name, artist). |
+| `useState` | `loading` | `boolean`                 | `true`  | Whether the API request is in flight.          |
+| `useState` | `error`   | `boolean`                 | `false` | Whether the API request failed.                |
 
 ## API Integration
 
-| Endpoint | Method | Trigger | Response Type | Description |
-|----------|--------|---------|---------------|-------------|
-| `/api/spotify/top-track` | GET | `useEffect` on mount | `SpotifyTopTrack \| null` | Fetches the user's top Spotify track. The response includes `id`, `name`, and `artist` fields. |
+| Endpoint                 | Method | Trigger              | Response Type             | Description                                                                                    |
+| ------------------------ | ------ | -------------------- | ------------------------- | ---------------------------------------------------------------------------------------------- |
+| `/api/spotify/top-track` | GET    | `useEffect` on mount | `SpotifyTopTrack \| null` | Fetches the user's top Spotify track. The response includes `id`, `name`, and `artist` fields. |
 
 **Fetch flow:**
+
 1. On mount, fetches `/api/spotify/top-track`.
 2. If the response is not OK, throws and enters the error state.
 3. If the response contains a valid track (with a truthy `id`), sets it in state; otherwise sets `track` to `null`.
@@ -34,8 +35,8 @@
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
+| Handler                       | Element                       | Description                                        |
+| ----------------------------- | ----------------------------- | -------------------------------------------------- |
 | `onClick` (via `onViewMusic`) | "Check out more music" button | Calls the `onViewMusic` prop callback if provided. |
 
 ## Render States
@@ -49,16 +50,16 @@ The component renders one of four states inside an 80px-tall container with a Sp
 
 ## Child Components
 
-| Component | Source | Description |
-|-----------|--------|-------------|
-| `Music` | `lucide-react` | Icon used in error and empty states. |
+| Component | Source         | Description                          |
+| --------- | -------------- | ------------------------------------ |
+| `Music`   | `lucide-react` | Icon used in error and empty states. |
 
 ## Data Sources
 
-| Source | Type | Description |
-|--------|------|-------------|
-| `/api/spotify/top-track` | API | Returns `SpotifyTopTrack` with `id`, `name`, and `artist` fields. |
-| `SpotifyTopTrack` type | `@/app/api/spotify/top-track/route` | TypeScript type import for the API response shape. |
+| Source                   | Type                                | Description                                                       |
+| ------------------------ | ----------------------------------- | ----------------------------------------------------------------- |
+| `/api/spotify/top-track` | API                                 | Returns `SpotifyTopTrack` with `id`, `name`, and `artist` fields. |
+| `SpotifyTopTrack` type   | `@/app/api/spotify/top-track/route` | TypeScript type import for the API response shape.                |
 
 ## Styling
 

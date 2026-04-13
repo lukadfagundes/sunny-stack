@@ -43,20 +43,20 @@ Client navigation:
 
 ## Component Composition
 
-| Component | Source | Props |
-|-----------|--------|-------|
-| `DocsClient` | `@/components/docs/DocsClient` | `files: DocFile[]`, `initialPath: string`, `initialContent: string` |
-| `DocNav` | `@/components/docs/DocNav` | `sections: NavSection[]`, `currentPath: string`, `onSelect: (path: string) => void` |
-| `MarkdownRenderer` | `@/components/docs/MarkdownRenderer` | `content: string`, `currentPath: string`, `loadFile: (path: string) => void` |
+| Component          | Source                               | Props                                                                               |
+| ------------------ | ------------------------------------ | ----------------------------------------------------------------------------------- |
+| `DocsClient`       | `@/components/docs/DocsClient`       | `files: DocFile[]`, `initialPath: string`, `initialContent: string`                 |
+| `DocNav`           | `@/components/docs/DocNav`           | `sections: NavSection[]`, `currentPath: string`, `onSelect: (path: string) => void` |
+| `MarkdownRenderer` | `@/components/docs/MarkdownRenderer` | `content: string`, `currentPath: string`, `loadFile: (path: string) => void`        |
 
 ## State Management (DocsClient)
 
 ```typescript
 const sections = useMemo(() => buildSections(files), [files]); // Derived from server-provided files
-const [currentPath, setCurrentPath] = useState(initialPath);   // Currently displayed file path
-const [content, setContent] = useState(initialContent);         // Current file markdown content
-const [loading, setLoading] = useState(false);                  // Loading indicator (false initially — content pre-loaded)
-const [sidebarOpen, setSidebarOpen] = useState(false);          // Mobile sidebar toggle
+const [currentPath, setCurrentPath] = useState(initialPath); // Currently displayed file path
+const [content, setContent] = useState(initialContent); // Current file markdown content
+const [loading, setLoading] = useState(false); // Loading indicator (false initially — content pre-loaded)
+const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar toggle
 ```
 
 Note: `loading` starts as `false` because the server pre-loads the initial content. No "Loading..." flash on first visit.
@@ -67,7 +67,8 @@ Note: `loading` starts as `false` because the server pre-loads the initial conte
 
 ```typescript
 const tree = getDocTree();
-const content = getDocContent(requestedPath) ?? getDocContent("README.md") ?? "";
+const content =
+  getDocContent(requestedPath) ?? getDocContent("README.md") ?? "";
 ```
 
 Reads the file tree and requested file content at request time. Falls back to README.md if the requested path is invalid.
@@ -75,6 +76,7 @@ Reads the file tree and requested file content at request time. Falls back to RE
 ### Dynamic Metadata (generateMetadata)
 
 Produces per-file titles by parsing the file path:
+
 - `/docs` → "Readme — sunny-stack.com Docs"
 - `/docs?file=docs/guides/getting-started.md` → "Getting Started — sunny-stack.com Docs"
 
@@ -97,6 +99,7 @@ Updates the URL via `router.push` (enabling direct URL sharing and browser back/
 ### Breadcrumb Generation
 
 Dynamically generated inline from the navigation sections:
+
 1. Iterates over all sections, their subsections, and subgroups
 2. Finds the section/subsection/subgroup containing the current path
 3. Builds breadcrumb array: `[section label] > [subsection label] > [filename]`
@@ -115,6 +118,7 @@ Uses `ChevronRight` icon from lucide-react as the separator.
 ```
 md:grid-cols-[260px_1fr]
 ```
+
 - Sidebar: 260px fixed width on medium+ screens
 - Content area: fluid remaining space with padding and rounded border
 

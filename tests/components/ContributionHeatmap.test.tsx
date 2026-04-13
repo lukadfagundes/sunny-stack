@@ -16,10 +16,10 @@ function makeWeek(days: Array<{ count: number; date: string }>) {
 describe("ContributionHeatmap", () => {
   it("shows empty state when weeks array is empty", () => {
     render(
-      <ContributionHeatmap calendar={{ totalContributions: 0, weeks: [] }} />
+      <ContributionHeatmap calendar={{ totalContributions: 0, weeks: [] }} />,
     );
     expect(
-      screen.getByText("No charts available — the seas remain uncharted")
+      screen.getByText("No charts available - the seas remain uncharted"),
     ).toBeInTheDocument();
   });
 
@@ -30,7 +30,7 @@ describe("ContributionHeatmap", () => {
           totalContributions: 100,
           weeks: [makeWeek([{ count: 5, date: "2025-06-01" }])],
         }}
-      />
+      />,
     );
     expect(screen.getByText("The Captain's Chart")).toBeInTheDocument();
   });
@@ -42,7 +42,7 @@ describe("ContributionHeatmap", () => {
           totalContributions: 1234,
           weeks: [makeWeek([{ count: 5, date: "2025-06-01" }])],
         }}
-      />
+      />,
     );
     expect(screen.getByText("1,234 territories charted")).toBeInTheDocument();
   });
@@ -54,7 +54,7 @@ describe("ContributionHeatmap", () => {
           totalContributions: 10,
           weeks: [makeWeek([{ count: 1, date: "2025-01-06" }])],
         }}
-      />
+      />,
     );
     expect(screen.getByText("Mon")).toBeInTheDocument();
     expect(screen.getByText("Wed")).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe("ContributionHeatmap", () => {
           totalContributions: 10,
           weeks: [makeWeek([{ count: 1, date: "2025-01-06" }])],
         }}
-      />
+      />,
     );
     expect(screen.getByText("Uncharted")).toBeInTheDocument();
     expect(screen.getByText("Gold Strike")).toBeInTheDocument();
@@ -81,7 +81,7 @@ describe("ContributionHeatmap", () => {
           totalContributions: 10,
           weeks: [makeWeek([{ count: 1, date: "2025-01-06" }])],
         }}
-      />
+      />,
     );
     // CompassRose renders an SVG with aria-hidden
     const svg = container.querySelector("svg[aria-hidden]");
@@ -100,7 +100,7 @@ describe("ContributionHeatmap", () => {
       ]),
     ];
     const { container } = render(
-      <ContributionHeatmap calendar={{ totalContributions: 26, weeks }} />
+      <ContributionHeatmap calendar={{ totalContributions: 26, weeks }} />,
     );
     // Should render contribution cells (they have cursor: crosshair style)
     const cells = container.querySelectorAll("[style*='crosshair']");
@@ -108,13 +108,9 @@ describe("ContributionHeatmap", () => {
   });
 
   it("handles mouse hover on cells", () => {
-    const weeks = [
-      makeWeek([{ count: 5, date: "2025-06-01" }]),
-    ];
+    const weeks = [makeWeek([{ count: 5, date: "2025-06-01" }])];
     const { container } = render(
-      <ContributionHeatmap
-        calendar={{ totalContributions: 5, weeks }}
-      />
+      <ContributionHeatmap calendar={{ totalContributions: 5, weeks }} />,
     );
     // Find contribution cells (they have cursor: crosshair)
     const cells = container.querySelectorAll("[style*='crosshair']");
@@ -131,11 +127,7 @@ describe("ContributionHeatmap", () => {
       makeWeek([{ count: 1, date: "2025-01-06" }]),
       makeWeek([{ count: 2, date: "2025-02-03" }]),
     ];
-    render(
-      <ContributionHeatmap
-        calendar={{ totalContributions: 3, weeks }}
-      />
-    );
+    render(<ContributionHeatmap calendar={{ totalContributions: 3, weeks }} />);
     expect(screen.getByText("Jan")).toBeInTheDocument();
     expect(screen.getByText("Feb")).toBeInTheDocument();
   });

@@ -1,5 +1,9 @@
 import { generateGrid } from "@/components/404/grid";
-import { GRID_SIZE, SAKE_SHOP_COUNT, DEAD_END_COUNT } from "@/components/404/types";
+import {
+  GRID_SIZE,
+  SAKE_SHOP_COUNT,
+  DEAD_END_COUNT,
+} from "@/components/404/types";
 
 describe("generateGrid", () => {
   it("returns a grid of the correct size", () => {
@@ -73,7 +77,7 @@ describe("generateGrid", () => {
   it("produces different grids on repeated calls (randomness)", () => {
     const results = Array.from({ length: 10 }, () => generateGrid());
     const positions = results.map(
-      (r) => `${r.playerPos.row},${r.playerPos.col}`
+      (r) => `${r.playerPos.row},${r.playerPos.col}`,
     );
     // With 10 random grids, not all player positions should be identical
     const unique = new Set(positions);

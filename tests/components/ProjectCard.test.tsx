@@ -11,7 +11,14 @@ function makeProject(overrides: Partial<ProjectData> = {}): ProjectData {
     tagline: "A test project tagline",
     description: "Full description of the test project.",
     category: "professional",
-    techStack: ["TypeScript", "React", "Next.js", "Node.js", "Docker", "PostgreSQL"],
+    techStack: [
+      "TypeScript",
+      "React",
+      "Next.js",
+      "Node.js",
+      "Docker",
+      "PostgreSQL",
+    ],
     features: [
       { label: "Feature 1", description: "First feature desc" },
       { label: "Feature 2", description: "Second feature desc" },
@@ -29,7 +36,11 @@ function makeProject(overrides: Partial<ProjectData> = {}): ProjectData {
 describe("ProjectCard", () => {
   it("renders project title and tagline", () => {
     render(
-      <ProjectCard project={makeProject()} isExpanded={false} onToggle={jest.fn()} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={false}
+        onToggle={jest.fn()}
+      />,
     );
     expect(screen.getByText("Test Project")).toBeInTheDocument();
     expect(screen.getByText("A test project tagline")).toBeInTheDocument();
@@ -37,7 +48,11 @@ describe("ProjectCard", () => {
 
   it("shows at most 5 tech stack pills when collapsed", () => {
     render(
-      <ProjectCard project={makeProject()} isExpanded={false} onToggle={jest.fn()} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={false}
+        onToggle={jest.fn()}
+      />,
     );
     expect(screen.getByText("TypeScript")).toBeInTheDocument();
     expect(screen.getByText("Docker")).toBeInTheDocument();
@@ -48,7 +63,11 @@ describe("ProjectCard", () => {
 
   it("shows all tech stack pills when expanded", () => {
     render(
-      <ProjectCard project={makeProject()} isExpanded={true} onToggle={jest.fn()} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={true}
+        onToggle={jest.fn()}
+      />,
     );
     expect(screen.getByText("PostgreSQL")).toBeInTheDocument();
     expect(screen.queryByText("+1")).not.toBeInTheDocument();
@@ -57,7 +76,11 @@ describe("ProjectCard", () => {
   it("calls onToggle when clicked in collapsed state", () => {
     const onToggle = jest.fn();
     render(
-      <ProjectCard project={makeProject()} isExpanded={false} onToggle={onToggle} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={false}
+        onToggle={onToggle}
+      />,
     );
     fireEvent.click(screen.getByText("Test Project"));
     expect(onToggle).toHaveBeenCalledTimes(1);
@@ -65,16 +88,26 @@ describe("ProjectCard", () => {
 
   it("shows close button when expanded", () => {
     render(
-      <ProjectCard project={makeProject()} isExpanded={true} onToggle={jest.fn()} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={true}
+        onToggle={jest.fn()}
+      />,
     );
     expect(screen.getByRole("button", { name: /close/i })).toBeInTheDocument();
   });
 
   it("shows description, features, and links when expanded", () => {
     render(
-      <ProjectCard project={makeProject()} isExpanded={true} onToggle={jest.fn()} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={true}
+        onToggle={jest.fn()}
+      />,
     );
-    expect(screen.getByText("Full description of the test project.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Full description of the test project."),
+    ).toBeInTheDocument();
     expect(screen.getByText("Key Features")).toBeInTheDocument();
     expect(screen.getByText("Feature 1")).toBeInTheDocument();
     expect(screen.getByText("Feature 2")).toBeInTheDocument();
@@ -88,22 +121,32 @@ describe("ProjectCard", () => {
         project={makeProject({ footer: "Footer info here" })}
         isExpanded={true}
         onToggle={jest.fn()}
-      />
+      />,
     );
     expect(screen.getByText("Footer info here")).toBeInTheDocument();
   });
 
   it("hides expanded content when collapsed", () => {
     render(
-      <ProjectCard project={makeProject()} isExpanded={false} onToggle={jest.fn()} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={false}
+        onToggle={jest.fn()}
+      />,
     );
-    expect(screen.queryByText("Full description of the test project.")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Full description of the test project."),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText("Key Features")).not.toBeInTheDocument();
   });
 
   it("renders link with GitHub icon for GitHub links", () => {
     render(
-      <ProjectCard project={makeProject()} isExpanded={true} onToggle={jest.fn()} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={true}
+        onToggle={jest.fn()}
+      />,
     );
     const ghLink = screen.getByText("GitHub").closest("a");
     expect(ghLink).toHaveAttribute("href", "https://github.com/test/project");
@@ -113,7 +156,11 @@ describe("ProjectCard", () => {
   it("calls onToggle when close button is clicked", () => {
     const onToggle = jest.fn();
     render(
-      <ProjectCard project={makeProject()} isExpanded={true} onToggle={onToggle} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={true}
+        onToggle={onToggle}
+      />,
     );
     const closeBtn = screen.getByRole("button", { name: /close/i });
     fireEvent.click(closeBtn);
@@ -122,7 +169,11 @@ describe("ProjectCard", () => {
 
   it("renders mouse move handler for tilt effect", () => {
     const { container } = render(
-      <ProjectCard project={makeProject()} isExpanded={false} onToggle={jest.fn()} />
+      <ProjectCard
+        project={makeProject()}
+        isExpanded={false}
+        onToggle={jest.fn()}
+      />,
     );
     const card = container.firstElementChild as HTMLElement;
     // Trigger mouse move on the card
@@ -136,7 +187,7 @@ describe("ProjectCard", () => {
         project={makeProject({ techStack: ["TS", "React", "Node"] })}
         isExpanded={false}
         onToggle={jest.fn()}
-      />
+      />,
     );
     expect(screen.queryByText(/^\+\d+$/)).not.toBeInTheDocument();
   });

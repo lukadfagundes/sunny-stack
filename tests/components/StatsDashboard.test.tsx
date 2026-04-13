@@ -28,12 +28,7 @@ describe("StatsDashboard", () => {
   });
 
   it("shows 'Instruments offline' when totalContributions is 0", () => {
-    render(
-      <StatsDashboard
-        {...defaultProps}
-        totalContributions={0}
-      />
-    );
+    render(<StatsDashboard {...defaultProps} totalContributions={0} />);
     expect(screen.getByText("Instruments offline")).toBeInTheDocument();
     expect(screen.queryByText("Commits")).not.toBeInTheDocument();
   });

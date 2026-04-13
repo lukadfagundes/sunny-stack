@@ -12,10 +12,10 @@ Fetches the 5 most recent videos from a YouTube channel using a 3-step pipeline:
 
 ## Authentication
 
-| Environment Variable | Required | Description |
-|---------------------|----------|-------------|
-| `YOUTUBE_API_KEY` | Yes | YouTube Data API v3 key |
-| `YOUTUBE_CHANNEL_ID` | Yes | Target YouTube channel ID |
+| Environment Variable | Required | Description               |
+| -------------------- | -------- | ------------------------- |
+| `YOUTUBE_API_KEY`    | Yes      | YouTube Data API v3 key   |
+| `YOUTUBE_CHANNEL_ID` | Yes      | Target YouTube channel ID |
 
 If either variable is missing, the endpoint returns `[]` with HTTP 200.
 
@@ -25,13 +25,13 @@ If either variable is missing, the endpoint returns `[]` with HTTP 200.
 
 ```typescript
 interface YouTubeVideo {
-  id: string;           // YouTube video ID
-  title: string;        // Video title
-  description: string;  // Video description
+  id: string; // YouTube video ID
+  title: string; // Video title
+  description: string; // Video description
   thumbnailUrl: string; // Thumbnail URL (highest available quality)
-  publishedAt: string;  // ISO 8601 publish timestamp
-  viewCount: number;    // View count (parsed to integer, default 0)
-  likeCount: number;    // Like count (parsed to integer, default 0)
+  publishedAt: string; // ISO 8601 publish timestamp
+  viewCount: number; // View count (parsed to integer, default 0)
+  likeCount: number; // Like count (parsed to integer, default 0)
   commentCount: number; // Comment count (parsed to integer, default 0)
 }
 ```
@@ -77,15 +77,15 @@ All statistics values arrive as strings from the YouTube API and are parsed to i
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| Missing API key or channel ID | Returns `[]` with HTTP 200 |
-| Channel API error | Logs error, returns `[]` with HTTP 200 |
-| No uploads playlist found | Returns `[]` with HTTP 200 |
-| Playlist API error | Logs error, returns `[]` with HTTP 200 |
-| Empty playlist | Returns `[]` with HTTP 200 |
-| Statistics fetch failure | Statistics map remains empty; videos still returned with 0 counts |
-| Network exception | Logs error, returns `[]` with HTTP 200 |
+| Condition                     | Behavior                                                          |
+| ----------------------------- | ----------------------------------------------------------------- |
+| Missing API key or channel ID | Returns `[]` with HTTP 200                                        |
+| Channel API error             | Logs error, returns `[]` with HTTP 200                            |
+| No uploads playlist found     | Returns `[]` with HTTP 200                                        |
+| Playlist API error            | Logs error, returns `[]` with HTTP 200                            |
+| Empty playlist                | Returns `[]` with HTTP 200                                        |
+| Statistics fetch failure      | Statistics map remains empty; videos still returned with 0 counts |
+| Network exception             | Logs error, returns `[]` with HTTP 200                            |
 
 ## Dependencies
 

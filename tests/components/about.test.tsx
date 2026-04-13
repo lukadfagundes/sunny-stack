@@ -26,7 +26,7 @@ describe("ProfileCard", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(null),
-      })
+      }),
     ) as jest.Mock;
   });
 
@@ -60,7 +60,11 @@ describe("ProfileCard", () => {
       if (url === "/api/activity") {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ lastActivityAt: new Date().toISOString(), isOnline: true }),
+          json: () =>
+            Promise.resolve({
+              lastActivityAt: new Date().toISOString(),
+              isOnline: true,
+            }),
         });
       }
       return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
@@ -78,7 +82,11 @@ describe("ProfileCard", () => {
       if (url === "/api/activity") {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ lastActivityAt: "2026-03-20T10:00:00Z", isOnline: false }),
+          json: () =>
+            Promise.resolve({
+              lastActivityAt: "2026-03-20T10:00:00Z",
+              isOnline: false,
+            }),
         });
       }
       return Promise.resolve({ ok: true, json: () => Promise.resolve(null) });
@@ -108,7 +116,8 @@ describe("ProfileCard", () => {
           ok: true,
           json: () =>
             Promise.resolve({
-              avatarUrl: "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
+              avatarUrl:
+                "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
               name: "Luka Fagundes",
               bio: null,
               location: null,
@@ -135,7 +144,7 @@ describe("ProfileCard", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(null),
-      })
+      }),
     ) as jest.Mock;
 
     render(<ProfileCard />);
@@ -150,7 +159,7 @@ describe("ProfileCard", () => {
 
   it("shows placeholder icon when fetch fails", async () => {
     global.fetch = jest.fn(() =>
-      Promise.reject(new Error("fail"))
+      Promise.reject(new Error("fail")),
     ) as jest.Mock;
 
     render(<ProfileCard />);
@@ -239,7 +248,7 @@ describe("MusicPlayer", () => {
             albumImageUrl: "https://i.scdn.co/image/test.jpg",
             spotifyUrl: "https://open.spotify.com/track/abc",
           }),
-      })
+      }),
     ) as jest.Mock;
 
     render(<MusicPlayer />);
@@ -271,7 +280,7 @@ describe("NetworkBanner", () => {
   it("renders the professional blurb", () => {
     render(<NetworkBanner />);
     expect(
-      screen.getByText(/Self-taught full stack developer/)
+      screen.getByText(/Self-taught full stack developer/),
     ).toBeInTheDocument();
   });
 });
@@ -301,7 +310,10 @@ describe("BlogEntry", () => {
               {
                 index: { byteStart: 10, byteEnd: 29 },
                 features: [
-                  { $type: "app.bsky.richtext.facet#link", uri: "https://example.com" },
+                  {
+                    $type: "app.bsky.richtext.facet#link",
+                    uri: "https://example.com",
+                  },
                 ],
               },
               {
@@ -318,7 +330,7 @@ describe("BlogEntry", () => {
             permalink: "https://bsky.app/profile/test/post/abc",
             createdAt: "2026-03-20T12:00:00.000Z",
           }),
-      })
+      }),
     ) as jest.Mock;
 
     render(<BlogEntry />);
@@ -340,12 +352,16 @@ describe("BlogEntry", () => {
   });
 
   it("shows error message when fetch fails", async () => {
-    global.fetch = jest.fn(() => Promise.reject(new Error("fail"))) as jest.Mock;
+    global.fetch = jest.fn(() =>
+      Promise.reject(new Error("fail")),
+    ) as jest.Mock;
 
     render(<BlogEntry />);
 
     await waitFor(() => {
-      expect(screen.getByText("Could not load latest post.")).toBeInTheDocument();
+      expect(
+        screen.getByText("Could not load latest post."),
+      ).toBeInTheDocument();
     });
   });
 
@@ -354,7 +370,7 @@ describe("BlogEntry", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(null),
-      })
+      }),
     ) as jest.Mock;
 
     render(<BlogEntry />);
@@ -375,7 +391,10 @@ describe("BlogEntry", () => {
               {
                 index: { byteStart: 6, byteEnd: 14 },
                 features: [
-                  { $type: "app.bsky.richtext.facet#mention", did: "did:plc:abc123" },
+                  {
+                    $type: "app.bsky.richtext.facet#mention",
+                    did: "did:plc:abc123",
+                  },
                 ],
               },
             ],
@@ -386,7 +405,7 @@ describe("BlogEntry", () => {
             permalink: "https://bsky.app/profile/test/post/def",
             createdAt: "2026-03-20T12:00:00.000Z",
           }),
-      })
+      }),
     ) as jest.Mock;
 
     render(<BlogEntry />);
@@ -394,7 +413,10 @@ describe("BlogEntry", () => {
     await waitFor(() => {
       const mention = screen.getByText("@someone");
       expect(mention.tagName).toBe("A");
-      expect(mention).toHaveAttribute("href", "https://bsky.app/profile/did:plc:abc123");
+      expect(mention).toHaveAttribute(
+        "href",
+        "https://bsky.app/profile/did:plc:abc123",
+      );
     });
   });
 
@@ -421,7 +443,7 @@ describe("BlogEntry", () => {
             permalink: "https://bsky.app/profile/test/post/ext1",
             createdAt: "2026-03-20T12:00:00.000Z",
           }),
-      })
+      }),
     ) as jest.Mock;
 
     render(<BlogEntry />);
@@ -456,7 +478,7 @@ describe("BlogEntry", () => {
             permalink: "https://bsky.app/profile/test/post/ext2",
             createdAt: "2026-03-20T12:00:00.000Z",
           }),
-      })
+      }),
     ) as jest.Mock;
 
     render(<BlogEntry />);
@@ -479,7 +501,11 @@ describe("BlogEntry", () => {
             embed: {
               type: "images",
               images: [
-                { thumb: "https://example.com/img1.jpg", fullsize: "https://example.com/img1-full.jpg", alt: "Image 1" },
+                {
+                  thumb: "https://example.com/img1.jpg",
+                  fullsize: "https://example.com/img1-full.jpg",
+                  alt: "Image 1",
+                },
               ],
             },
             likeCount: 8,
@@ -488,7 +514,7 @@ describe("BlogEntry", () => {
             permalink: "https://bsky.app/profile/test/post/img1",
             createdAt: "2026-03-20T12:00:00.000Z",
           }),
-      })
+      }),
     ) as jest.Mock;
 
     render(<BlogEntry />);
@@ -496,7 +522,9 @@ describe("BlogEntry", () => {
     await waitFor(() => {
       expect(screen.getByAltText("Image 1")).toBeInTheDocument();
     });
-    const container = screen.getByAltText("Image 1").closest("a")!.parentElement!;
+    const container = screen
+      .getByAltText("Image 1")
+      .closest("a")!.parentElement!;
     expect(container.className).not.toContain("grid");
   });
 
@@ -511,8 +539,16 @@ describe("BlogEntry", () => {
             embed: {
               type: "images",
               images: [
-                { thumb: "https://example.com/img1.jpg", fullsize: "https://example.com/img1-full.jpg", alt: "Image 1" },
-                { thumb: "https://example.com/img2.jpg", fullsize: "https://example.com/img2-full.jpg", alt: "Image 2" },
+                {
+                  thumb: "https://example.com/img1.jpg",
+                  fullsize: "https://example.com/img1-full.jpg",
+                  alt: "Image 1",
+                },
+                {
+                  thumb: "https://example.com/img2.jpg",
+                  fullsize: "https://example.com/img2-full.jpg",
+                  alt: "Image 2",
+                },
               ],
             },
             likeCount: 12,
@@ -521,7 +557,7 @@ describe("BlogEntry", () => {
             permalink: "https://bsky.app/profile/test/post/img2",
             createdAt: "2026-03-20T12:00:00.000Z",
           }),
-      })
+      }),
     ) as jest.Mock;
 
     render(<BlogEntry />);
@@ -529,19 +565,21 @@ describe("BlogEntry", () => {
     await waitFor(() => {
       expect(screen.getByAltText("Image 1")).toBeInTheDocument();
     });
-    const container = screen.getByAltText("Image 1").closest("a")!.parentElement!;
+    const container = screen
+      .getByAltText("Image 1")
+      .closest("a")!.parentElement!;
     expect(container.className).toContain("grid-cols-2");
   });
 
   it("shows error when response is not ok", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: false })
-    ) as jest.Mock;
+    global.fetch = jest.fn(() => Promise.resolve({ ok: false })) as jest.Mock;
 
     render(<BlogEntry />);
 
     await waitFor(() => {
-      expect(screen.getByText("Could not load latest post.")).toBeInTheDocument();
+      expect(
+        screen.getByText("Could not load latest post."),
+      ).toBeInTheDocument();
     });
   });
 });
@@ -559,7 +597,9 @@ describe("BioSections", () => {
 
   it("renders the bio text", () => {
     render(<BioSections />);
-    expect(screen.getByText(/I'm Luka\. I'm a little scatterbrained/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/I'm Luka\. I'm a little scatterbrained/),
+    ).toBeInTheDocument();
   });
 });
 
@@ -569,7 +609,7 @@ describe("InterestsTable", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(null),
-      })
+      }),
     ) as jest.Mock;
   });
 
@@ -616,13 +656,15 @@ describe("InterestsTable", () => {
 
   it("shows error message when Spotify fetch fails", async () => {
     global.fetch = jest.fn(() =>
-      Promise.reject(new Error("fail"))
+      Promise.reject(new Error("fail")),
     ) as jest.Mock;
 
     render(<InterestsTable />);
 
     await waitFor(() => {
-      expect(screen.getByText("Unable to load Spotify data")).toBeInTheDocument();
+      expect(
+        screen.getByText("Unable to load Spotify data"),
+      ).toBeInTheDocument();
     });
   });
 
@@ -674,9 +716,27 @@ describe("InterestsTable", () => {
 describe("TopEight (Game Grid)", () => {
   const mockGames = {
     games: [
-      { appid: 730, name: "Counter-Strike 2", playtimeMinutes: 14040, headerImage: "https://example.com/730.jpg", recentlyPlayed: true },
-      { appid: 570, name: "Dota 2", playtimeMinutes: 8520, headerImage: "https://example.com/570.jpg", recentlyPlayed: false },
-      { appid: 440, name: "Team Fortress 2", playtimeMinutes: 6000, headerImage: "https://example.com/440.jpg", recentlyPlayed: true },
+      {
+        appid: 730,
+        name: "Counter-Strike 2",
+        playtimeMinutes: 14040,
+        headerImage: "https://example.com/730.jpg",
+        recentlyPlayed: true,
+      },
+      {
+        appid: 570,
+        name: "Dota 2",
+        playtimeMinutes: 8520,
+        headerImage: "https://example.com/570.jpg",
+        recentlyPlayed: false,
+      },
+      {
+        appid: 440,
+        name: "Team Fortress 2",
+        playtimeMinutes: 6000,
+        headerImage: "https://example.com/440.jpg",
+        recentlyPlayed: true,
+      },
     ],
   };
 
@@ -727,7 +787,7 @@ describe("TopEight (Game Grid)", () => {
 
   it("shows error message when Steam fetch fails", async () => {
     global.fetch = jest.fn(() =>
-      Promise.reject(new Error("Network error"))
+      Promise.reject(new Error("Network error")),
     ) as jest.Mock;
     render(<TopEight />);
     await waitFor(() => {
@@ -749,8 +809,20 @@ describe("GameStats", () => {
     achieved: 2,
     total: 5,
     achievements: [
-      { apiname: "ach1", displayName: "First Blood", description: "Get your first kill", icon: "https://steam.com/ach1.jpg", unlocktime: 1700000000 },
-      { apiname: "ach3", displayName: "Hat Trick", description: "Get three kills", icon: "https://steam.com/ach3.jpg", unlocktime: 1690000000 },
+      {
+        apiname: "ach1",
+        displayName: "First Blood",
+        description: "Get your first kill",
+        icon: "https://steam.com/ach1.jpg",
+        unlocktime: 1700000000,
+      },
+      {
+        apiname: "ach3",
+        displayName: "Hat Trick",
+        description: "Get three kills",
+        icon: "https://steam.com/ach3.jpg",
+        unlocktime: 1690000000,
+      },
     ],
   };
 
@@ -813,7 +885,11 @@ describe("GameStats", () => {
       expect(screen.getByText("First Blood")).toBeInTheDocument();
     });
     const icons = screen.getAllByRole("img");
-    const achIcons = icons.filter((img) => img.getAttribute("alt") === "First Blood" || img.getAttribute("alt") === "Hat Trick");
+    const achIcons = icons.filter(
+      (img) =>
+        img.getAttribute("alt") === "First Blood" ||
+        img.getAttribute("alt") === "Hat Trick",
+    );
     expect(achIcons).toHaveLength(2);
   });
 
@@ -833,7 +909,7 @@ describe("GameStats", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(null),
-      })
+      }),
     ) as jest.Mock;
     render(<GameStats game={mockGame} onBack={jest.fn()} />);
     await waitFor(() => {

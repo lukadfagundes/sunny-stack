@@ -12,19 +12,15 @@ describe("StaticNotFound", () => {
   it("renders the lost message", () => {
     render(<StaticNotFound />);
     expect(
-      screen.getByText("You Got Lost Again, Didn't You?")
+      screen.getByText("You Got Lost Again, Didn't You?"),
     ).toBeInTheDocument();
   });
 
   it("renders navigation tips", () => {
     render(<StaticNotFound />);
     expect(screen.getByText("Marimo Navigation Tips:")).toBeInTheDocument();
-    expect(
-      screen.getByText(/Turn around 180/)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Follow literally anyone/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Turn around 180/)).toBeInTheDocument();
+    expect(screen.getByText(/Follow literally anyone/)).toBeInTheDocument();
   });
 
   it("renders the Go Home link", () => {
@@ -35,15 +31,11 @@ describe("StaticNotFound", () => {
 
   it("renders the error footer", () => {
     render(<StaticNotFound />);
-    expect(
-      screen.getByText(/Error 404: Page not found/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Error 404: Page not found/)).toBeInTheDocument();
   });
 
   it("renders the Zoro quote", () => {
     render(<StaticNotFound />);
-    expect(
-      screen.getByText(/I'm not lost/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/I'm not lost/)).toBeInTheDocument();
   });
 });

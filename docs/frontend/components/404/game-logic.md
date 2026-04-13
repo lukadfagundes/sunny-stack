@@ -5,6 +5,7 @@
 The Zoro 404 game is a grid-based puzzle where the player (Zoro) must navigate to the goal (the Thousand Sunny ship) on a 7x7 grid. The game progressively increases difficulty through control shuffling, visual distortions, and an AI that moves the goal away from the player. All game logic is pure and deterministic (given the same random seed), managed through a React `useReducer` pattern.
 
 **Source Files:**
+
 - `src/components/404/types.ts` -- Type definitions, constants, and direction deltas
 - `src/components/404/grid.ts` -- Grid generation algorithm
 - `src/components/404/reducer.ts` -- Game state machine (reducer + initial state factory)
@@ -19,15 +20,15 @@ Defined in `types.ts`:
 
 ```typescript
 interface GameState {
-  grid: TileType[][];       // 7x7 grid of tile types
-  playerPos: Position;       // Current player position {row, col}
-  goalPos: Position;         // Current goal/Sunny position {row, col}
-  moveCount: number;         // Total moves made
-  controlMapping: ControlMapping;  // Current direction remapping
-  currentQuote: string | null;     // Active quote to display (or null)
-  won: boolean;              // Whether the player has reached the goal
-  gridRotation: number;      // CSS rotation in degrees (visual only)
-  colorShiftAmount: number;  // Color distortion amount 0-1 (visual only)
+  grid: TileType[][]; // 7x7 grid of tile types
+  playerPos: Position; // Current player position {row, col}
+  goalPos: Position; // Current goal/Sunny position {row, col}
+  moveCount: number; // Total moves made
+  controlMapping: ControlMapping; // Current direction remapping
+  currentQuote: string | null; // Active quote to display (or null)
+  won: boolean; // Whether the player has reached the goal
+  gridRotation: number; // CSS rotation in degrees (visual only)
+  colorShiftAmount: number; // Color distortion amount 0-1 (visual only)
 }
 ```
 
@@ -57,15 +58,13 @@ interface ControlMapping {
 Defined in `types.ts`:
 
 ```typescript
-type GameAction =
-  | { type: "MOVE"; direction: Direction }
-  | { type: "RESET" };
+type GameAction = { type: "MOVE"; direction: Direction } | { type: "RESET" };
 ```
 
-| Action | Payload | Description |
-|--------|---------|-------------|
-| `MOVE` | `direction: Direction` | Attempts to move the player in the specified direction (subject to control mapping). |
-| `RESET` | None | Regenerates the entire game state (new grid, positions, reset counters). |
+| Action  | Payload                | Description                                                                          |
+| ------- | ---------------------- | ------------------------------------------------------------------------------------ |
+| `MOVE`  | `direction: Direction` | Attempts to move the player in the specified direction (subject to control mapping). |
+| `RESET` | None                   | Regenerates the entire game state (new grid, positions, reset counters).             |
 
 ---
 
@@ -73,13 +72,13 @@ type GameAction =
 
 Defined in `types.ts`:
 
-| Constant | Value | Description |
-|----------|-------|-------------|
-| `GRID_SIZE` | `7` | Grid dimensions (7x7). |
-| `SAKE_SHOP_COUNT` | `3` | Number of sake shop tiles placed on the grid. |
-| `DEAD_END_COUNT` | `4` | Number of dead end tiles placed on the grid. |
-| `DIRECTION_DELTAS` | `{ up: [-1,0], down: [1,0], left: [0,-1], right: [0,1] }` | Row/column deltas for each direction. |
-| `DEFAULT_CONTROLS` | Identity mapping | Default control mapping where each direction maps to itself. |
+| Constant           | Value                                                     | Description                                                  |
+| ------------------ | --------------------------------------------------------- | ------------------------------------------------------------ |
+| `GRID_SIZE`        | `7`                                                       | Grid dimensions (7x7).                                       |
+| `SAKE_SHOP_COUNT`  | `3`                                                       | Number of sake shop tiles placed on the grid.                |
+| `DEAD_END_COUNT`   | `4`                                                       | Number of dead end tiles placed on the grid.                 |
+| `DIRECTION_DELTAS` | `{ up: [-1,0], down: [1,0], left: [0,-1], right: [0,1] }` | Row/column deltas for each direction.                        |
+| `DEFAULT_CONTROLS` | Identity mapping                                          | Default control mapping where each direction maps to itself. |
 
 ---
 
@@ -87,15 +86,15 @@ Defined in `types.ts`:
 
 Difficulty is derived purely from `moveCount`. No explicit phase state is stored. The reducer applies effects based on move count thresholds:
 
-| Move Range | Phase | Effects |
-|------------|-------|---------|
-| 0-3 | Normal | No difficulty modifiers. Default controls. |
-| 4-8 | First Shuffle | Controls shuffled once at move 4. Player must discover the new mapping. |
-| 9-15 | Frequent Shuffle | Controls reshuffle every 2 moves (on even move counts). |
-| 16-20 | Visual Distortion | Grid rotation begins. Random +/-3 to 5 degrees per move, cumulative. |
-| 21-25 | Color Shift + Nami | `colorShiftAmount` increases by 0.04 per move (capped at 1.0). Nami escalation button appears in the UI. |
-| 26-39 | Sunny AI | The Sunny (goal) moves to an adjacent empty tile farthest from the player every 3 moves. All previous effects continue. |
-| 40+ | Nami Takeover | Game input is blocked. The UI displays a full-screen modal forcing navigation home. |
+| Move Range | Phase              | Effects                                                                                                                 |
+| ---------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| 0-3        | Normal             | No difficulty modifiers. Default controls.                                                                              |
+| 4-8        | First Shuffle      | Controls shuffled once at move 4. Player must discover the new mapping.                                                 |
+| 9-15       | Frequent Shuffle   | Controls reshuffle every 2 moves (on even move counts).                                                                 |
+| 16-20      | Visual Distortion  | Grid rotation begins. Random +/-3 to 5 degrees per move, cumulative.                                                    |
+| 21-25      | Color Shift + Nami | `colorShiftAmount` increases by 0.04 per move (capped at 1.0). Nami escalation button appears in the UI.                |
+| 26-39      | Sunny AI           | The Sunny (goal) moves to an adjacent empty tile farthest from the player every 3 moves. All previous effects continue. |
+| 40+        | Nami Takeover      | Game input is blocked. The UI displays a full-screen modal forcing navigation home.                                     |
 
 ---
 
@@ -144,9 +143,9 @@ The function creates a random permutation of the four directions and maps them t
 
 ### Shuffle Triggers
 
-| Condition | Trigger |
-|-----------|---------|
-| `moveCount === 4` | Single shuffle at move 4. |
+| Condition                               | Trigger                                  |
+| --------------------------------------- | ---------------------------------------- |
+| `moveCount === 4`                       | Single shuffle at move 4.                |
 | `moveCount >= 9 && moveCount % 2 === 0` | Reshuffle every even move from 9 onward. |
 
 ---
@@ -167,7 +166,7 @@ When triggered (moves 26+, every 3rd move), the Sunny moves to maximize distance
 ### Trigger Condition
 
 ```typescript
-moveCount >= 26 && moveCount % 3 === 0
+moveCount >= 26 && moveCount % 3 === 0;
 ```
 
 ---
@@ -178,21 +177,21 @@ Defined in `quotes.ts`:
 
 ### Quote Pools
 
-| Pool | Count | Trigger | Example |
-|------|-------|---------|---------|
-| `DEAD_END_QUOTES` | 12 | Player steps on a `deadend` tile. | "This is clearly a shortcut." |
-| `SAKE_QUOTES` | 8 | Player steps on a `sake` tile. | "*takes a long sip* ...What was I doing again?" |
-| `WIN_QUOTES` | 4 | Player reaches the goal. | "See? I knew exactly where I was going." |
-| `NAMI_LINES` | 20 | Moves 21-40, displayed as escalating button text. | "RORONOA ZORO GET BACK HERE THIS INSTANT!" |
+| Pool              | Count | Trigger                                           | Example                                         |
+| ----------------- | ----- | ------------------------------------------------- | ----------------------------------------------- |
+| `DEAD_END_QUOTES` | 12    | Player steps on a `deadend` tile.                 | "This is clearly a shortcut."                   |
+| `SAKE_QUOTES`     | 8     | Player steps on a `sake` tile.                    | "_takes a long sip_ ...What was I doing again?" |
+| `WIN_QUOTES`      | 4     | Player reaches the goal.                          | "See? I knew exactly where I was going."        |
+| `NAMI_LINES`      | 20    | Moves 21-40, displayed as escalating button text. | "RORONOA ZORO GET BACK HERE THIS INSTANT!"      |
 
 ### Selection Functions
 
-| Function | Returns | Description |
-|----------|---------|-------------|
-| `getRandomDeadEndQuote()` | `string` | Random quote from `DEAD_END_QUOTES`. |
-| `getRandomSakeQuote()` | `string` | Random quote from `SAKE_QUOTES`. |
-| `getRandomWinQuote()` | `string` | Random quote from `WIN_QUOTES`. |
-| `getNamiLine(moveCount)` | `string` | Returns the Nami line at index `moveCount - 21`, clamped to array bounds. Lines escalate from calm ("Zoro... the ship is that way.") to furious ("THAT'S IT, I'M COMING TO GET YOU!"). |
+| Function                  | Returns  | Description                                                                                                                                                                            |
+| ------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `getRandomDeadEndQuote()` | `string` | Random quote from `DEAD_END_QUOTES`.                                                                                                                                                   |
+| `getRandomSakeQuote()`    | `string` | Random quote from `SAKE_QUOTES`.                                                                                                                                                       |
+| `getRandomWinQuote()`     | `string` | Random quote from `WIN_QUOTES`.                                                                                                                                                        |
+| `getNamiLine(moveCount)`  | `string` | Returns the Nami line at index `moveCount - 21`, clamped to array bounds. Lines escalate from calm ("Zoro... the ship is that way.") to furious ("THAT'S IT, I'M COMING TO GET YOU!"). |
 
 ### Quote Display Logic in Reducer
 
@@ -212,15 +211,16 @@ Defined in `reducer.ts`:
 ### `createInitialState()`
 
 Factory function that generates a fresh game state:
+
 1. Calls `generateGrid()` to get a new grid, player position, and goal position.
 2. Returns a `GameState` with `moveCount: 0`, `DEFAULT_CONTROLS`, no quote, `won: false`, `gridRotation: 0`, and `colorShiftAmount: 0`.
 
 ### `gameReducer(state, action)`
 
-| Action | Behavior |
-|--------|----------|
+| Action  | Behavior                                                  |
+| ------- | --------------------------------------------------------- |
 | `RESET` | Returns `createInitialState()` -- completely fresh state. |
-| `MOVE` | See detailed flow below. |
+| `MOVE`  | See detailed flow below.                                  |
 
 ### MOVE Action Flow
 
@@ -250,25 +250,26 @@ Defined in `useGameInput.ts`:
 ```typescript
 function useGameInput(
   onMove: (direction: Direction) => void,
-  disabled?: boolean
+  disabled?: boolean,
 ): {
   onTouchStart: (e: React.TouchEvent) => void;
   onTouchEnd: (e: React.TouchEvent) => void;
-}
+};
 ```
 
 ### Keyboard Input
 
 Registers a global `keydown` listener that maps keys to directions:
 
-| Key | Direction |
-|-----|-----------|
-| `ArrowUp` / `w` / `W` | `up` |
-| `ArrowDown` / `s` / `S` | `down` |
-| `ArrowLeft` / `a` / `A` | `left` |
-| `ArrowRight` / `d` / `D` | `right` |
+| Key                      | Direction |
+| ------------------------ | --------- |
+| `ArrowUp` / `w` / `W`    | `up`      |
+| `ArrowDown` / `s` / `S`  | `down`    |
+| `ArrowLeft` / `a` / `A`  | `left`    |
+| `ArrowRight` / `d` / `D` | `right`   |
 
 When a mapped key is detected:
+
 1. Check if `disabled` is `true` -- if so, ignore.
 2. Call `e.preventDefault()` to prevent scroll.
 3. Call `onMove(direction)`.
@@ -277,11 +278,12 @@ When a mapped key is detected:
 
 Returns `onTouchStart` and `onTouchEnd` callbacks for the parent to attach to a container element.
 
-| Constant | Value | Description |
-|----------|-------|-------------|
-| `SWIPE_THRESHOLD` | `50` | Minimum pixel distance for a swipe to register. |
+| Constant          | Value | Description                                     |
+| ----------------- | ----- | ----------------------------------------------- |
+| `SWIPE_THRESHOLD` | `50`  | Minimum pixel distance for a swipe to register. |
 
 **Swipe Detection:**
+
 1. On `touchstart`, record the touch coordinates.
 2. On `touchend`, calculate the delta from start to end.
 3. If both `|dx|` and `|dy|` are below the threshold, ignore (tap, not swipe).

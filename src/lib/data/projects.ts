@@ -1,6 +1,6 @@
 /**
  * V3 Portfolio Project Data
- * Pure TypeScript — no React/JSX imports.
+ * Pure TypeScript - no React/JSX imports.
  * Migrated from V2 app/portfolio/projects-data.tsx with JSX stripped.
  */
 
@@ -120,7 +120,7 @@ const projects: ProjectData[] = [
     id: "sunny-stack",
     title: "sunny-stack",
     tagline:
-      "This portfolio site — Next.js 16 with 6 live API integrations and a playable 404 game",
+      "This portfolio site - Next.js 16 with 6 live API integrations and a playable 404 game",
     description:
       "This portfolio site. Next.js 16 + React 19 with 6 live API integrations (GitHub, Bluesky, Instagram, YouTube, Spotify, Steam), 10 REST endpoints, ISR caching, IP-based rate limiting, 434 tests at 90% coverage, a playable Zoro-themed 404 game, and a built-in documentation viewer with Mermaid diagram rendering.",
     category: "professional",
@@ -170,12 +170,13 @@ const projects: ProjectData[] = [
       },
     ],
     status: "active",
-    footer: "v3.0.2 — 252 commits. Deployed on Vercel.",
+    footer: "v3.0.2 - 252 commits. Deployed on Vercel.",
   },
   {
     id: "rinoa-platform",
     title: "Rinoa",
-    tagline: "Hybrid cloud-edge data platform for a proprietary client application",
+    tagline:
+      "Hybrid cloud-edge data platform for a proprietary client application",
     description:
       "Production-grade hybrid platform combining Vercel serverless frontend with Raspberry Pi 5 edge computing backend. Manages 13,000+ database records with sub-3ms query performance and 99.9% uptime. Built using Trinity Method v2.0 investigation-first development methodology.",
     category: "professional",
@@ -219,16 +220,17 @@ const projects: ProjectData[] = [
     links: [],
     status: "proprietary",
     footer:
-      "Proprietary application — technical architecture and performance metrics showcased with client approval.",
+      "Proprietary application - technical architecture and performance metrics showcased with client approval.",
   },
 
   // ─── Personal ─────────────────────────────────────────────────
   {
     id: "hytale-server-manager",
     title: "Hytale Server Manager",
-    tagline: "Free, open-source desktop app wrapping Hytale dedicated servers with a clean UI",
+    tagline:
+      "Free, open-source desktop app wrapping Hytale dedicated servers with a clean UI",
     description:
-      "Monitor server status, view connected players with their gear and stats, manage warps, toggle mods, and browse game assets — all from a single interface. Built with Electron's multi-process architecture and strict context isolation. 17 invoke + 13 event IPC channels, 7 Zustand stores, 18 React components, and 240+ tests across 17 suites.",
+      "Monitor server status, view connected players with their gear and stats, manage warps, toggle mods, and browse game assets - all from a single interface. Built with Electron's multi-process architecture and strict context isolation. 17 invoke + 13 event IPC channels, 7 Zustand stores, 18 React components, and 240+ tests across 17 suites.",
     category: "personal",
     techStack: [
       "Electron 40",
@@ -284,7 +286,8 @@ const projects: ProjectData[] = [
   {
     id: "bwaincell",
     title: "Bwaincell",
-    tagline: "Unified productivity platform with Discord bot, REST API, and PWA",
+    tagline:
+      "Unified productivity platform with Discord bot, REST API, and PWA",
     description:
       "A monorepo productivity platform providing task management, reminders, lists, notes, budgets, scheduling, AI-powered suggestions, and random generators through three integrated interfaces: Discord Bot (10 slash commands with 49+ subcommands), REST API (39 authenticated endpoints), and Progressive Web App (Next.js 14).",
     category: "personal",
@@ -302,7 +305,7 @@ const projects: ProjectData[] = [
       {
         label: "Triple Interface",
         description:
-          "Discord bot, REST API with JWT auth, and installable PWA — all sharing the same backend",
+          "Discord bot, REST API with JWT auth, and installable PWA - all sharing the same backend",
       },
       {
         label: "Full Productivity Suite",
@@ -336,51 +339,58 @@ const projects: ProjectData[] = [
   {
     id: "stilltide",
     title: "Stilltide",
-    tagline: "AI platform transforming equipment photos into valuation reports",
+    tagline:
+      "SaaS platform that turns industrial equipment photos into AI valuation reports",
     description:
-      "Production AI platform that combines Gemini AI with Google Workspace integration for automated equipment analysis, market research, and comprehensive reporting — all delivered via email in minutes. Deployed on Vercel frontend + Fly.io Docker backend with JWT auth.",
-    category: "personal",
+      "Production SaaS platform for industrial machinery resale - upload photos and documents, receive a full valuation report in minutes. A two-phase Gemini 2.5 Flash pipeline handles equipment extraction (specs, condition, serial number pattern matching) then web-grounded market research (pricing, comparables, marketing copy), delivered by email and exportable as PDF. Built on Next.js 16 frontend on Vercel, Express backend on Fly.io, Supabase PostgreSQL with 8 RLS-enforced tables, Stripe subscription billing, and 754+ tests across 56 frontend test files.",
+    category: "professional",
     techStack: [
+      "Next.js 16",
       "React 19",
-      "Vite",
+      "TypeScript",
+      "Supabase (PostgreSQL)",
       "Express",
-      "Gemini AI",
-      "Google APIs",
+      "Gemini 2.5 Flash",
+      "Stripe",
       "Docker",
     ],
     features: [
       {
-        label: "Two-Phase AI Analysis",
+        label: "Two-Phase AI Pipeline",
         description:
-          "Gemini 2.5 Flash for verified extraction + web-grounded market research",
+          "Phase 1 extracts equipment type, make, model, year, serial number, specs, and condition via Gemini Vision; Phase 2 runs web-grounded market research for pricing, comparables, and ready-to-post marketing copy",
       },
       {
-        label: "Full Google Integration",
-        description: "Drive, Docs, Gmail APIs with OAuth 2.0",
+        label: "Single Machine Evaluation",
+        description:
+          "Upload photos and optional documents (PDF, DOCX, XLSX) for any piece of industrial equipment - AI identifies make, model, year, serial number, specs, and condition grade from visual evidence alone",
       },
       {
-        label: "Automated Workflow",
+        label: "Stripe Credit Billing",
         description:
-          "Background processing, professional report generation, email delivery",
+          "Free Trial and Basic subscription tiers with per-cycle credit resets, Stripe Checkout and Customer Portal, idempotent webhook processing, and a full credit transaction audit log",
       },
       {
-        label: "Production Deployed",
+        label: "PDF & Email Delivery",
         description:
-          "Vercel frontend + Fly.io Docker backend with JWT auth",
+          "Reports viewable in-app, exportable as PDF via @react-pdf/renderer, and emailed on completion with a branded Resend template",
       },
     ],
     links: [
       {
         label: "Live App",
-        url: "https://stilltide.sunny-stack.com",
+        url: "https://stilltide.us",
       },
     ],
     status: "active",
+    footer:
+      "Live at stilltide.us - actively serving industrial equipment resellers.",
   },
   {
     id: "spotify-rainmeter",
     title: "Spotify Now Playing",
-    tagline: "Lightweight Rainmeter skin for Windows displaying Spotify track info",
+    tagline:
+      "Lightweight Rainmeter skin for Windows displaying Spotify track info",
     description:
       "Beautiful Rainmeter skin that displays your currently playing Spotify track with full playback controls. Features automatic OAuth 2.0 token management, album artwork caching, and real-time updates with 1-second API polling. Includes SpotifySetup.exe GUI utility for easy OAuth configuration.",
     category: "personal",
@@ -401,7 +411,7 @@ const projects: ProjectData[] = [
       {
         label: "Automatic Token Management",
         description:
-          "OAuth 2.0 tokens refresh automatically every ~55 minutes — set it and forget it",
+          "OAuth 2.0 tokens refresh automatically every ~55 minutes - set it and forget it",
       },
       {
         label: "Album Artwork Caching",
@@ -431,7 +441,7 @@ const projects: ProjectData[] = [
     ],
     status: "active",
     footer:
-      "Windows desktop enhancement — MIT licensed with 1-second real-time polling. Fully customizable colors, fonts, and layout.",
+      "Windows desktop enhancement - MIT licensed with 1-second real-time polling. Fully customizable colors, fonts, and layout.",
   },
 
   // ─── Contributions ────────────────────────────────────────────
@@ -494,7 +504,7 @@ const projects: ProjectData[] = [
     ],
     status: "active",
     footer:
-      "Contributed to Reactive Resume — an open-source resume builder with 30k+ GitHub stars. Merged PR #2788.",
+      "Contributed to Reactive Resume - an open-source resume builder with 30k+ GitHub stars. Merged PR #2788.",
   },
   {
     id: "get-shit-done",
@@ -502,19 +512,14 @@ const projects: ProjectData[] = [
     tagline:
       "Documentation generation and verification system for AI-assisted development",
     description:
-      "A documentation command for GSD that writes, updates, and verifies project docs against the actual codebase. Every factual claim — file paths, CLI commands, API endpoints, function signatures — is checked against the live repo before commit. Handles both initial doc creation and incremental updates, generating up to 9 documentation types with parallel subagent orchestration.",
+      "A documentation command for GSD that writes, updates, and verifies project docs against the actual codebase. Every factual claim - file paths, CLI commands, API endpoints, function signatures - is checked against the live repo before commit. Handles both initial doc creation and incremental updates, generating up to 9 documentation types with parallel subagent orchestration.",
     category: "contribution",
-    techStack: [
-      "JavaScript",
-      "Node.js",
-      "CommonJS",
-      "Claude Agent SDK",
-    ],
+    techStack: ["JavaScript", "Node.js", "CommonJS", "Claude Agent SDK"],
     features: [
       {
         label: "Docs Verification Gate",
         description:
-          "Filesystem-only fact-checking — extracts every claim from generated docs and validates against the live codebase. No hallucinated paths, no phantom endpoints, no stale signatures.",
+          "Filesystem-only fact-checking - extracts every claim from generated docs and validates against the live codebase. No hallucinated paths, no phantom endpoints, no stale signatures.",
       },
       {
         label: "9 Documentation Types",
@@ -524,7 +529,7 @@ const projects: ProjectData[] = [
       {
         label: "4 Operating Modes",
         description:
-          "Create, update, supplement, and fix modes with hand-written doc preservation — never overwrites human-authored content without explicit consent",
+          "Create, update, supplement, and fix modes with hand-written doc preservation - never overwrites human-authored content without explicit consent",
       },
       {
         label: "Parallel Subagent Orchestration",
@@ -549,7 +554,7 @@ const projects: ProjectData[] = [
     ],
     status: "active",
     footer:
-      "Contributed to GSD — an AI workflow CLI for plan-execute-verify development. 2,559 lines across 9 files. Merged PR #1532.",
+      "Contributed to GSD - an AI workflow CLI for plan-execute-verify development. 2,559 lines across 9 files. Merged PR #1532.",
   },
 ];
 
@@ -558,7 +563,7 @@ export function getAllProjects(): ProjectData[] {
 }
 
 export function getProjectsByCategory(
-  category: ProjectCategory
+  category: ProjectCategory,
 ): ProjectData[] {
   return projects.filter((p) => p.category === category);
 }

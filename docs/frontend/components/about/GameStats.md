@@ -8,46 +8,47 @@
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `game` | `SteamGame` | Yes | The Steam game object containing `appid`, `name`, `headerImage`, `playtimeMinutes`, and `recentlyPlayed`. |
-| `onBack` | `() => void` | Yes | Callback invoked when the "Back to Profile" button is clicked. |
+| Prop     | Type         | Required | Description                                                                                               |
+| -------- | ------------ | -------- | --------------------------------------------------------------------------------------------------------- |
+| `game`   | `SteamGame`  | Yes      | The Steam game object containing `appid`, `name`, `headerImage`, `playtimeMinutes`, and `recentlyPlayed`. |
+| `onBack` | `() => void` | Yes      | Callback invoked when the "Back to Profile" button is clicked.                                            |
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
-| `useState` | `achievements` | `SteamAchievementData \| null` | `null` | Achievement data for the game (achieved count, total, individual achievements). |
-| `useState` | `achievementsLoading` | `boolean` | `true` | Whether the achievements API request is in flight. |
+| Hook       | Variable              | Type                           | Initial | Description                                                                     |
+| ---------- | --------------------- | ------------------------------ | ------- | ------------------------------------------------------------------------------- |
+| `useState` | `achievements`        | `SteamAchievementData \| null` | `null`  | Achievement data for the game (achieved count, total, individual achievements). |
+| `useState` | `achievementsLoading` | `boolean`                      | `true`  | Whether the achievements API request is in flight.                              |
 
 ## Derived State
 
-| Variable | Calculation | Description |
-|----------|-------------|-------------|
+| Variable             | Calculation                                                      | Description                                                                                                                            |
+| -------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `achievementPercent` | `Math.round((achievements.achieved / achievements.total) * 100)` | Percentage of achievements earned, used for the progress bar width and display text. Returns `0` if no achievement data or total is 0. |
 
 ## API Integration
 
-| Endpoint | Method | Trigger | Response Type | Description |
-|----------|--------|---------|---------------|-------------|
-| `/api/steam/achievements?appid={appid}` | GET | `useEffect` on `game.appid` change | `SteamAchievementData \| null` | Fetches achievement data for the specified game. |
+| Endpoint                                | Method | Trigger                            | Response Type                  | Description                                      |
+| --------------------------------------- | ------ | ---------------------------------- | ------------------------------ | ------------------------------------------------ |
+| `/api/steam/achievements?appid={appid}` | GET    | `useEffect` on `game.appid` change | `SteamAchievementData \| null` | Fetches achievement data for the specified game. |
 
 **Fetch flow:**
+
 1. When `game.appid` changes, fetches `/api/steam/achievements?appid={game.appid}`.
 2. On success, stores the achievement data in state.
 3. On failure, silently sets loading to `false` (achievements remain `null`).
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
+| Handler                  | Element                  | Description                                        |
+| ------------------------ | ------------------------ | -------------------------------------------------- |
 | `onClick` (via `onBack`) | "Back to Profile" button | Calls the `onBack` prop callback to navigate back. |
 
 ## Helper Functions
 
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `formatPlaytime` | `(minutes: number) => string` | Converts minutes to a human-readable format. Under 1 hour: `"{minutes}m"`. 1+ hours: `"{hours.toFixed(1)} hrs"`. |
+| Function           | Signature                       | Description                                                                                                             |
+| ------------------ | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `formatPlaytime`   | `(minutes: number) => string`   | Converts minutes to a human-readable format. Under 1 hour: `"{minutes}m"`. 1+ hours: `"{hours.toFixed(1)} hrs"`.        |
 | `formatUnlockDate` | `(timestamp: number) => string` | Converts a Unix timestamp to a formatted date string (e.g., "Mar 15, 2024"). Returns empty string for falsy timestamps. |
 
 ## Render Sections
@@ -69,12 +70,12 @@ None (renders plain HTML elements and `<img>` tags).
 
 ## Data Sources
 
-| Source | Type | Description |
-|--------|------|-------------|
-| `game` prop | `SteamGame` | Passed from parent; contains `appid`, `name`, `headerImage`, `playtimeMinutes`, `recentlyPlayed`. |
-| `/api/steam/achievements` | API | Returns `SteamAchievementData` with `achieved`, `total`, and `achievements` array. |
-| `SteamGame` | `@/app/api/steam/route` | Type import. |
-| `SteamAchievementData` | `@/app/api/steam/achievements/route` | Type import. |
+| Source                    | Type                                 | Description                                                                                       |
+| ------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `game` prop               | `SteamGame`                          | Passed from parent; contains `appid`, `name`, `headerImage`, `playtimeMinutes`, `recentlyPlayed`. |
+| `/api/steam/achievements` | API                                  | Returns `SteamAchievementData` with `achieved`, `total`, and `achievements` array.                |
+| `SteamGame`               | `@/app/api/steam/route`              | Type import.                                                                                      |
+| `SteamAchievementData`    | `@/app/api/steam/achievements/route` | Type import.                                                                                      |
 
 ## Styling
 

@@ -24,14 +24,14 @@ This component has **no event handlers**. It is purely display-oriented.
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
+| Component       | Source            | Purpose                                                              |
+| --------------- | ----------------- | -------------------------------------------------------------------- |
 | `SectionHeader` | `./SectionHeader` | Renders the section title ("Luka's Details") with consistent styling |
 
 ## Data Sources
 
-| Source | Import Path | Type | Description |
-|--------|-------------|------|-------------|
+| Source    | Import Path           | Type          | Description                                                                  |
+| --------- | --------------------- | ------------- | ---------------------------------------------------------------------------- |
 | `details` | `@/lib/data/personal` | `DetailRow[]` | Array of `{ label: string; value: string }` objects defining each detail row |
 
 ### DetailRow Structure
@@ -45,12 +45,12 @@ interface DetailRow {
 
 ### Current Data Values
 
-| Label | Value |
-|-------|-------|
-| Status | Married |
-| Pets | Aly & AJ |
+| Label         | Value      |
+| ------------- | ---------- |
+| Status        | Married    |
+| Pets          | Aly & AJ   |
 | Comfort Movie | Mean Girls |
-| Zodiac Sign | Gemini |
+| Zodiac Sign   | Gemini     |
 
 ## Rendering Logic
 

@@ -52,7 +52,12 @@ export default function AboutPage() {
                   <BlogEntry />
                   <BioSections />
                   <InterestsTable />
-                  <TopEight onViewGame={(game) => { setSelectedGame(game); setView("game"); }} />
+                  <TopEight
+                    onViewGame={(game) => {
+                      setSelectedGame(game);
+                      setView("game");
+                    }}
+                  />
                 </>
               ) : view === "pics" ? (
                 <PhotoGallery onBack={() => setView("profile")} />
@@ -61,7 +66,10 @@ export default function AboutPage() {
               ) : view === "music" ? (
                 <MusicGallery onBack={() => setView("profile")} />
               ) : selectedGame ? (
-                <GameStats game={selectedGame} onBack={() => setView("profile")} />
+                <GameStats
+                  game={selectedGame}
+                  onBack={() => setView("profile")}
+                />
               ) : null}
             </div>
           </div>

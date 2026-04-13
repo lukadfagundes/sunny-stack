@@ -33,7 +33,7 @@ export default function GameHUD({ state }: GameHUDProps) {
         </span>
       </div>
 
-      {/* Quote display — crossfade between quotes, no flicker */}
+      {/* Quote display - crossfade between quotes, no flicker */}
       <AnimatePresence mode="wait">
         {state.currentQuote && !state.won ? (
           <motion.div
@@ -55,7 +55,7 @@ export default function GameHUD({ state }: GameHUDProps) {
               &ldquo;{state.currentQuote}&rdquo;
             </p>
             <p className="text-sunny-cream-muted/50 text-xs text-left mt-1">
-              — Zoro
+              - Zoro
             </p>
           </motion.div>
         ) : null}

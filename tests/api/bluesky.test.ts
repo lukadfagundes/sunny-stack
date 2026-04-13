@@ -35,14 +35,15 @@ const mockFeedResponse = {
             {
               index: { byteStart: 10, byteEnd: 29 },
               features: [
-                { $type: "app.bsky.richtext.facet#link", uri: "https://example.com" },
+                {
+                  $type: "app.bsky.richtext.facet#link",
+                  uri: "https://example.com",
+                },
               ],
             },
             {
               index: { byteStart: 30, byteEnd: 34 },
-              features: [
-                { $type: "app.bsky.richtext.facet#tag", tag: "dev" },
-              ],
+              features: [{ $type: "app.bsky.richtext.facet#tag", tag: "dev" }],
             },
           ],
         },
@@ -107,18 +108,22 @@ describe("GET /api/bluesky", () => {
     expect(data.replyCount).toBe(3);
     expect(data.repostCount).toBe(7);
     expect(data.permalink).toBe(
-      "https://bsky.app/profile/strawhatluka.bsky.social/post/3k4duaz5vfs2b"
+      "https://bsky.app/profile/strawhatluka.bsky.social/post/3k4duaz5vfs2b",
     );
     expect(data.createdAt).toBe("2026-03-20T12:00:00.000Z");
     // Facets
     expect(data.facets).toHaveLength(2);
-    expect(data.facets[0].features[0].$type).toBe("app.bsky.richtext.facet#link");
+    expect(data.facets[0].features[0].$type).toBe(
+      "app.bsky.richtext.facet#link",
+    );
     expect(data.facets[1].features[0].tag).toBe("dev");
     // Embed
     expect(data.embed).not.toBeNull();
     expect(data.embed.type).toBe("external");
     expect(data.embed.external.title).toBe("Example Site");
-    expect(data.embed.external.thumb).toBe("https://cdn.bsky.app/img/thumb.jpg");
+    expect(data.embed.external.thumb).toBe(
+      "https://cdn.bsky.app/img/thumb.jpg",
+    );
   });
 
   it("returns null when feed is empty", async () => {
@@ -176,7 +181,10 @@ describe("GET /api/bluesky", () => {
             post: {
               uri: "at://did:plc:abc123/app.bsky.feed.post/xyz",
               author: { handle: "strawhatluka.bsky.social" },
-              record: { text: "No stats", createdAt: "2026-03-20T12:00:00.000Z" },
+              record: {
+                text: "No stats",
+                createdAt: "2026-03-20T12:00:00.000Z",
+              },
             },
           },
         ],

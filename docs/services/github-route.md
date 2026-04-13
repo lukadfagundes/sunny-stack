@@ -12,9 +12,9 @@ Fetches GitHub user profile card data (avatar, name, bio, location, last push ti
 
 ## Authentication
 
-| Environment Variable | Required | Description |
-|---------------------|----------|-------------|
-| `GITHUB_TOKEN` | Yes | GitHub personal access token with `read:user` scope |
+| Environment Variable | Required | Description                                         |
+| -------------------- | -------- | --------------------------------------------------- |
+| `GITHUB_TOKEN`       | Yes      | GitHub personal access token with `read:user` scope |
 
 If `GITHUB_TOKEN` is not set, the endpoint returns `null` with HTTP 200.
 
@@ -24,10 +24,10 @@ If `GITHUB_TOKEN` is not set, the endpoint returns `null` with HTTP 200.
 
 ```typescript
 interface GitHubProfile {
-  avatarUrl: string;          // GitHub avatar URL (200px size)
-  name: string | null;        // Display name
-  bio: string | null;         // Bio text
-  location: string | null;    // Location string
+  avatarUrl: string; // GitHub avatar URL (200px size)
+  name: string | null; // Display name
+  bio: string | null; // Bio text
+  location: string | null; // Location string
   lastPushedAt: string | null; // ISO 8601 timestamp of most recent push
 }
 ```
@@ -46,7 +46,9 @@ query GitHubProfileCard($username: String!) {
     bio
     location
     repositories(first: 1, orderBy: { field: PUSHED_AT, direction: DESC }) {
-      nodes { pushedAt }
+      nodes {
+        pushedAt
+      }
     }
   }
 }
@@ -65,12 +67,12 @@ query GitHubProfileCard($username: String!) {
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| `GITHUB_TOKEN` not set | Returns `null` with HTTP 200 |
-| API returns non-OK status | Logs status code, returns `null` with HTTP 200 |
+| Condition                  | Behavior                                        |
+| -------------------------- | ----------------------------------------------- |
+| `GITHUB_TOKEN` not set     | Returns `null` with HTTP 200                    |
+| API returns non-OK status  | Logs status code, returns `null` with HTTP 200  |
 | GraphQL errors in response | Logs errors array, returns `null` with HTTP 200 |
-| Network exception | Logs error, returns `null` with HTTP 200 |
+| Network exception          | Logs error, returns `null` with HTTP 200        |
 
 ## Dependencies
 

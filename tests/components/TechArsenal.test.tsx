@@ -27,7 +27,14 @@ describe("TechArsenal", () => {
 
   it("renders all language items", () => {
     render(<TechArsenal />);
-    const languages = ["TypeScript", "JavaScript", "Python", "Lua", "HTML/CSS", "SQL"];
+    const languages = [
+      "TypeScript",
+      "JavaScript",
+      "Python",
+      "Lua",
+      "HTML/CSS",
+      "SQL",
+    ];
     for (const lang of languages) {
       expect(screen.getByText(lang)).toBeInTheDocument();
     }
@@ -35,7 +42,14 @@ describe("TechArsenal", () => {
 
   it("renders all framework items", () => {
     render(<TechArsenal />);
-    const frameworks = ["React", "Next.js", "Node.js", "Express", "Tailwind CSS", "Discord.js"];
+    const frameworks = [
+      "React",
+      "Next.js",
+      "Node.js",
+      "Express",
+      "Tailwind CSS",
+      "Discord.js",
+    ];
     for (const fw of frameworks) {
       expect(screen.getByText(fw)).toBeInTheDocument();
     }

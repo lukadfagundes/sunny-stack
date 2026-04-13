@@ -8,9 +8,9 @@ A client-side component that renders a Spotify-inspired music gallery displaying
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `onBack` | `() => void` | Yes | Callback invoked when the user clicks "Back to Profile". Used by the parent to switch back to the main profile view. |
+| Prop     | Type         | Required | Description                                                                                                          |
+| -------- | ------------ | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| `onBack` | `() => void` | Yes      | Callback invoked when the user clicks "Back to Profile". Used by the parent to switch back to the main profile view. |
 
 ### Props Interface
 
@@ -22,15 +22,16 @@ interface MusicGalleryProps {
 
 ## State Management
 
-| Hook | State Variable | Type | Initial Value | Purpose |
-|------|---------------|------|---------------|---------|
-| `useState` | `data` | `SpotifyWrappedData \| null` | `null` | Stores the Spotify wrapped data (tracks, artists, genres) fetched from the API |
-| `useState` | `loading` | `boolean` | `true` | Tracks whether the API request is in progress |
-| `useState` | `error` | `boolean` | `false` | Tracks whether the API request failed |
+| Hook       | State Variable | Type                         | Initial Value | Purpose                                                                        |
+| ---------- | -------------- | ---------------------------- | ------------- | ------------------------------------------------------------------------------ |
+| `useState` | `data`         | `SpotifyWrappedData \| null` | `null`        | Stores the Spotify wrapped data (tracks, artists, genres) fetched from the API |
+| `useState` | `loading`      | `boolean`                    | `true`        | Tracks whether the API request is in progress                                  |
+| `useState` | `error`        | `boolean`                    | `false`       | Tracks whether the API request failed                                          |
 
 ## API Integration
 
 ### Spotify Wrapped (`/api/spotify/wrapped`)
+
 - **Method:** `GET`
 - **Triggered:** On mount via `useEffect` (empty dependency array)
 - **Response Type:** `SpotifyWrappedData | null` (imported from `@/app/api/spotify/wrapped/route`)
@@ -67,16 +68,16 @@ interface SpotifyWrappedArtist {
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
+| Handler  | Element                      | Description                                                |
+| -------- | ---------------------------- | ---------------------------------------------------------- |
 | `onBack` | "Back to Profile" `<button>` | Delegates to parent callback to return to the profile view |
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
-| `Image` | `next/image` | Renders album art (48x48, square, rounded) and artist images (48x48, circular) |
-| `Music` | `lucide-react` | Used as the icon in the header, error state, empty state, and as a fallback for artists without images |
+| Component | Source         | Purpose                                                                                                |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------ |
+| `Image`   | `next/image`   | Renders album art (48x48, square, rounded) and artist images (48x48, circular)                         |
+| `Music`   | `lucide-react` | Used as the icon in the header, error state, empty state, and as a fallback for artists without images |
 
 ## Conditional Rendering States
 
@@ -88,9 +89,11 @@ interface SpotifyWrappedArtist {
 ## Rendering Structure (Success State)
 
 ### Header
+
 - Title: "Luka's Recent Favorites" (white, bold, `text-lg`)
 
 ### 1. Top Tracks Section
+
 - Subheading: "TOP TRACKS" (Spotify green, uppercase, tracked)
 - Each track renders as a clickable row linking to Spotify:
   - Rank number (1-based index)
@@ -100,6 +103,7 @@ interface SpotifyWrappedArtist {
 - Background per row: `#282828`
 
 ### 2. Top Artists Section
+
 - Subheading: "TOP ARTISTS" (Spotify green, uppercase, tracked)
 - Each artist renders as a clickable row linking to Spotify:
   - Rank number (1-based index)
@@ -109,6 +113,7 @@ interface SpotifyWrappedArtist {
 - Background per row: `#282828`
 
 ### 3. Top Genres Section
+
 - Subheading: "TOP GENRES" (Spotify green, uppercase, tracked)
 - Genres rendered as pill badges (`rounded-full`, `px-3 py-1`)
 - Badge colors: Spotify green background (`#1DB954`) with dark text (`#191414`)

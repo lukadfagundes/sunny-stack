@@ -13,7 +13,11 @@ jest.mock("unist-util-visit", () => ({ __esModule: true, visit: jest.fn() }));
 jest.mock("react-syntax-highlighter", () => ({
   __esModule: true,
   Prism: ({ children, language }: { children: string; language: string }) =>
-    React.createElement("code", { "data-testid": "syntax-hl", "data-lang": language }, children),
+    React.createElement(
+      "code",
+      { "data-testid": "syntax-hl", "data-lang": language },
+      children,
+    ),
 }));
 jest.mock("react-syntax-highlighter/dist/esm/styles/prism", () => ({
   __esModule: true,
@@ -36,7 +40,7 @@ describe("createMarkdownComponents", () => {
   it("renders internal .md link and calls loadFile on click", () => {
     const C = getComponents();
     const { container } = render(
-      React.createElement(C.a, { href: "other.md" }, "Link")
+      React.createElement(C.a, { href: "other.md" }, "Link"),
     );
     const a = container.querySelector("a")!;
     expect(a).toHaveAttribute("href", "#");
@@ -56,7 +60,7 @@ describe("createMarkdownComponents", () => {
   it("renders external http link with target _blank", () => {
     const C = getComponents();
     const { container } = render(
-      React.createElement(C.a, { href: "https://example.com" }, "Ext")
+      React.createElement(C.a, { href: "https://example.com" }, "Ext"),
     );
     const a = container.querySelector("a")!;
     expect(a).toHaveAttribute("target", "_blank");
@@ -67,7 +71,7 @@ describe("createMarkdownComponents", () => {
   it("renders non-external non-doc link without target", () => {
     const C = getComponents();
     const { container } = render(
-      React.createElement(C.a, { href: "#section" }, "Anchor")
+      React.createElement(C.a, { href: "#section" }, "Anchor"),
     );
     const a = container.querySelector("a")!;
     expect(a).not.toHaveAttribute("target");
@@ -87,7 +91,7 @@ describe("createMarkdownComponents", () => {
   it("renders normal image inline", () => {
     const C = getComponents();
     const { container } = render(
-      React.createElement(C.img, { src: "/photo.png", alt: "photo" })
+      React.createElement(C.img, { src: "/photo.png", alt: "photo" }),
     );
     const img = container.querySelector("img")!;
     expect(img.className).toContain("inline-block");
@@ -96,7 +100,10 @@ describe("createMarkdownComponents", () => {
   it("handles Blob src gracefully", () => {
     const C = getComponents();
     const { container } = render(
-      React.createElement(C.img, { src: new Blob() as unknown as string, alt: "blob" })
+      React.createElement(C.img, {
+        src: new Blob() as unknown as string,
+        alt: "blob",
+      }),
     );
     const img = container.querySelector("img")!;
     // Blob src is converted to undefined
@@ -108,15 +115,26 @@ describe("createMarkdownComponents", () => {
   it("renders syntax-highlighted code for known language", () => {
     const C = getComponents();
     render(
-      React.createElement(C.code, { className: "language-typescript" }, "const x = 1;")
+      React.createElement(
+        C.code,
+        { className: "language-typescript" },
+        "const x = 1;",
+      ),
     );
-    expect(screen.getByTestId("syntax-hl")).toHaveAttribute("data-lang", "typescript");
+    expect(screen.getByTestId("syntax-hl")).toHaveAttribute(
+      "data-lang",
+      "typescript",
+    );
   });
 
   it("renders plaintext block code with block class", () => {
     const C = getComponents();
     const { container } = render(
-      React.createElement(C.code, { className: "language-plaintext" }, "ASCII art")
+      React.createElement(
+        C.code,
+        { className: "language-plaintext" },
+        "ASCII art",
+      ),
     );
     const code = container.querySelector("code")!;
     expect(code.className).toContain("block");
@@ -124,9 +142,7 @@ describe("createMarkdownComponents", () => {
 
   it("renders inline code without className", () => {
     const C = getComponents();
-    const { container } = render(
-      React.createElement(C.code, {}, "inline")
-    );
+    const { container } = render(React.createElement(C.code, {}, "inline"));
     const code = container.querySelector("code")!;
     expect(code.className).toContain("bg-sunny-surface-light");
   });
@@ -135,10 +151,12 @@ describe("createMarkdownComponents", () => {
 
   it("applies plaintext centering style to pre with plaintext child", () => {
     const C = getComponents();
-    const child = React.createElement("code", { className: "language-plaintext" }, "art");
-    const { container } = render(
-      React.createElement(C.pre, {}, child)
+    const child = React.createElement(
+      "code",
+      { className: "language-plaintext" },
+      "art",
     );
+    const { container } = render(React.createElement(C.pre, {}, child));
     const pre = container.querySelector("pre")!;
     expect(pre.style.width).toBe("fit-content");
     expect(pre.style.marginInline).toBe("auto");
@@ -146,10 +164,12 @@ describe("createMarkdownComponents", () => {
 
   it("does not apply centering style to pre with non-plaintext child", () => {
     const C = getComponents();
-    const child = React.createElement("code", { className: "language-typescript" }, "code");
-    const { container } = render(
-      React.createElement(C.pre, {}, child)
+    const child = React.createElement(
+      "code",
+      { className: "language-typescript" },
+      "code",
     );
+    const { container } = render(React.createElement(C.pre, {}, child));
     const pre = container.querySelector("pre")!;
     expect(pre.style.width).toBe("");
   });
@@ -161,7 +181,7 @@ describe("createMarkdownComponents", () => {
     const component = C["mermaid-diagram"];
     const chart = btoa("graph TD\n  A-->B");
     const { container } = render(
-      React.createElement(component, { "data-chart": chart })
+      React.createElement(component, { "data-chart": chart }),
     );
     // MermaidDiagram initially shows loading state
     expect(container.textContent).toContain("Rendering diagram...");
@@ -170,9 +190,7 @@ describe("createMarkdownComponents", () => {
   it("returns null for mermaid-diagram without data-chart", () => {
     const C = getComponents();
     const component = C["mermaid-diagram"];
-    const { container } = render(
-      React.createElement(component, {})
-    );
+    const { container } = render(React.createElement(component, {}));
     expect(container.innerHTML).toBe("");
   });
 });

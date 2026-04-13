@@ -16,7 +16,11 @@ import type { Direction } from "./types";
 // Client-only gate: returns false on server, true on client
 const emptySubscribe = () => () => {};
 function useIsClient() {
-  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 }
 
 // Nami escalation button — stable component, CSS transitions for smooth growth
@@ -40,17 +44,18 @@ function NamiEscalation({ moveCount }: { moveCount: number }) {
     >
       <Link
         href="/"
-
         className="inline-block bg-sunny-red/80 hover:bg-sunny-red text-sunny-cream font-medium text-center"
         style={{
           fontSize: `${fontSize}rem`,
           padding: `${py}px ${px}px`,
           border: `${borderWidth}px solid rgba(240, 180, 41, ${0.4 + progress * 0.6})`,
           borderRadius: 8,
-          boxShadow: glow > 0
-            ? `0 0 ${glow}px rgba(240, 180, 41, ${progress * 0.5})`
-            : undefined,
-          transition: "font-size 0.3s ease, padding 0.3s ease, border 0.3s ease, box-shadow 0.3s ease",
+          boxShadow:
+            glow > 0
+              ? `0 0 ${glow}px rgba(240, 180, 41, ${progress * 0.5})`
+              : undefined,
+          transition:
+            "font-size 0.3s ease, padding 0.3s ease, border 0.3s ease, box-shadow 0.3s ease",
         }}
       >
         {getNamiLine(moveCount)}
@@ -63,12 +68,9 @@ export default function ZoroGame() {
   const isClient = useIsClient();
   const [state, dispatch] = useReducer(gameReducer, null, createInitialState);
 
-  const handleMove = useCallback(
-    (direction: Direction) => {
-      dispatch({ type: "MOVE", direction });
-    },
-    []
-  );
+  const handleMove = useCallback((direction: Direction) => {
+    dispatch({ type: "MOVE", direction });
+  }, []);
 
   const handleReset = useCallback(() => {
     dispatch({ type: "RESET" });
@@ -146,9 +148,7 @@ export default function ZoroGame() {
         <GameHUD state={state} />
 
         {/* D-Pad (mobile only) */}
-        {!state.won && (
-          <DPad onMove={handleMove} />
-        )}
+        {!state.won && <DPad onMove={handleMove} />}
 
         {/* Nami escalation button (moves 21–39) */}
         <AnimatePresence>
@@ -161,7 +161,6 @@ export default function ZoroGame() {
         <div className="flex items-center gap-3 mt-2">
           <Link
             href="/"
-    
             className="inline-flex items-center gap-2 text-sunny-cream-muted hover:text-sunny-cream text-xs transition-colors"
           >
             <Home className="w-3 h-3" />
@@ -179,7 +178,8 @@ export default function ZoroGame() {
 
         {/* Footer */}
         <p className="text-xs text-sunny-cream-muted/50 mt-4 pb-8">
-          Error 404: Page not found (but your sense of direction was lost long ago)
+          Error 404: Page not found (but your sense of direction was lost long
+          ago)
         </p>
       </div>
 
@@ -196,13 +196,19 @@ export default function ZoroGame() {
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 200, damping: 25, delay: 0.1 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 25,
+                delay: 0.1,
+              }}
               className="text-center p-8 sm:p-10 max-w-sm w-full"
               style={{
                 background: "rgba(26, 18, 9, 0.98)",
                 border: "2px solid #F0B429",
                 borderRadius: 16,
-                boxShadow: "0 0 60px rgba(240, 180, 41, 0.15), 0 0 120px rgba(240, 180, 41, 0.05)",
+                boxShadow:
+                  "0 0 60px rgba(240, 180, 41, 0.15), 0 0 120px rgba(240, 180, 41, 0.05)",
               }}
             >
               <Swords className="w-10 h-10 text-sunny-red mx-auto mb-4" />
@@ -213,11 +219,11 @@ export default function ZoroGame() {
                 THAT&apos;S IT!
               </h2>
               <p className="text-sunny-cream text-sm mb-6 leading-relaxed">
-                Nami has grabbed Zoro by the ear and is dragging him back to the ship.
+                Nami has grabbed Zoro by the ear and is dragging him back to the
+                ship.
               </p>
               <Link
                 href="/"
-        
                 className="inline-flex items-center justify-center gap-2 bg-sunny-red hover:bg-sunny-dark-red text-sunny-cream font-bold py-3 px-8 transition-colors w-full"
                 style={{ borderRadius: 8, fontSize: "1.1rem" }}
               >

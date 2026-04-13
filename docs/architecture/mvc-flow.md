@@ -51,18 +51,18 @@ sequenceDiagram
 
 All 10 route handlers follow the same pattern: export an async `GET` function from `route.ts`.
 
-| Route File | External API | Response Type |
-|---|---|---|
-| `bluesky/route.ts` | Bluesky AT Protocol | BlueskyPost |
-| `youtube/route.ts` | YouTube Data API v3 | YouTubeVideo[] |
-| `github/route.ts` | GitHub GraphQL | GitHubProfile |
-| `activity/route.ts` | Multiple APIs | ActivityStatus |
-| `spotify/top-track/route.ts` | Spotify Web API | SpotifyTopTrack |
-| `spotify/wrapped/route.ts` | Spotify Web API | SpotifyWrappedData |
-| `steam/route.ts` | Steam Web API | SteamGame[] |
-| `steam/achievements/route.ts` | Steam Web API | SteamAchievementData |
-| `docs/route.ts` | Local filesystem | DocFile |
-| `instagram/route.ts` | Instagram Graph API | InstagramPost[] |
+| Route File                    | External API        | Response Type        |
+| ----------------------------- | ------------------- | -------------------- |
+| `bluesky/route.ts`            | Bluesky AT Protocol | BlueskyPost          |
+| `youtube/route.ts`            | YouTube Data API v3 | YouTubeVideo[]       |
+| `github/route.ts`             | GitHub GraphQL      | GitHubProfile        |
+| `activity/route.ts`           | Multiple APIs       | ActivityStatus       |
+| `spotify/top-track/route.ts`  | Spotify Web API     | SpotifyTopTrack      |
+| `spotify/wrapped/route.ts`    | Spotify Web API     | SpotifyWrappedData   |
+| `steam/route.ts`              | Steam Web API       | SteamGame[]          |
+| `steam/achievements/route.ts` | Steam Web API       | SteamAchievementData |
+| `docs/route.ts`               | Local filesystem    | DocFile              |
+| `instagram/route.ts`          | Instagram Graph API | InstagramPost[]      |
 
 ## TypeScript Interfaces (Models)
 
@@ -82,13 +82,13 @@ Data flows through typed interfaces that enforce structure between the external 
 
 5 pages rendered by React Server Components:
 
-| Page | Route | Description |
-|---|---|---|
-| Home | `/` | Hero section, contribution heatmap, stats dashboard, tech arsenal, currently building |
-| About | `/about` | Profile card, social feeds, music gallery, game stats, interests |
-| Portfolio | `/portfolio` | Project cards organized by category |
-| Docs | `/docs` | Documentation viewer with navigation and Markdown rendering |
-| NotFound | `/not-found` | 404 page with interactive ZoroGame |
+| Page      | Route        | Description                                                                           |
+| --------- | ------------ | ------------------------------------------------------------------------------------- |
+| Home      | `/`          | Hero section, contribution heatmap, stats dashboard, tech arsenal, currently building |
+| About     | `/about`     | Profile card, social feeds, music gallery, game stats, interests                      |
+| Portfolio | `/portfolio` | Project cards organized by category                                                   |
+| Docs      | `/docs`      | Documentation viewer with navigation and Markdown rendering                           |
+| NotFound  | `/not-found` | 404 page with interactive ZoroGame                                                    |
 
 ## Key Architecture Notes
 

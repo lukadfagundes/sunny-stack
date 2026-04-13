@@ -12,9 +12,9 @@ Fetches the latest non-reply post from a Bluesky (AT Protocol) account. Transfor
 
 ## Authentication
 
-| Environment Variable | Required | Description |
-|---------------------|----------|-------------|
-| `BLUESKY_HANDLE` | Yes | The Bluesky account handle (e.g., `user.bsky.social`) |
+| Environment Variable | Required | Description                                           |
+| -------------------- | -------- | ----------------------------------------------------- |
+| `BLUESKY_HANDLE`     | Yes      | The Bluesky account handle (e.g., `user.bsky.social`) |
 
 If `BLUESKY_HANDLE` is not set, the endpoint returns `null` with HTTP 200.
 
@@ -24,14 +24,14 @@ If `BLUESKY_HANDLE` is not set, the endpoint returns `null` with HTTP 200.
 
 ```typescript
 interface BlueskyPost {
-  text: string;           // Post text content
+  text: string; // Post text content
   facets: BlueskyFacet[]; // Rich text annotations (links, mentions, hashtags)
   embed: BlueskyEmbed | null; // Attached media or link preview
-  likeCount: number;      // Number of likes (defaults to 0)
-  replyCount: number;     // Number of replies (defaults to 0)
-  repostCount: number;    // Number of reposts (defaults to 0)
-  permalink: string;      // Constructed URL: https://bsky.app/profile/{handle}/post/{rkey}
-  createdAt: string;      // ISO 8601 timestamp from the post record
+  likeCount: number; // Number of likes (defaults to 0)
+  replyCount: number; // Number of replies (defaults to 0)
+  repostCount: number; // Number of reposts (defaults to 0)
+  permalink: string; // Constructed URL: https://bsky.app/profile/{handle}/post/{rkey}
+  createdAt: string; // ISO 8601 timestamp from the post record
 }
 ```
 
@@ -40,7 +40,7 @@ interface BlueskyPost {
 ```typescript
 interface BlueskyFacet {
   index: { byteStart: number; byteEnd: number }; // Byte range in the post text
-  features: BlueskyFacetFeature[];                // What the annotation represents
+  features: BlueskyFacetFeature[]; // What the annotation represents
 }
 ```
 
@@ -48,10 +48,10 @@ interface BlueskyFacet {
 
 ```typescript
 interface BlueskyFacetFeature {
-  $type: string;   // AT Protocol type identifier
-  uri?: string;    // Link URL (for link facets)
-  did?: string;    // DID (for mention facets)
-  tag?: string;    // Hashtag value (for tag facets)
+  $type: string; // AT Protocol type identifier
+  uri?: string; // Link URL (for link facets)
+  did?: string; // DID (for mention facets)
+  tag?: string; // Hashtag value (for tag facets)
 }
 ```
 
@@ -61,15 +61,15 @@ interface BlueskyFacetFeature {
 interface BlueskyEmbed {
   type: "external" | "images" | "unknown"; // Embed category
   external?: {
-    uri: string;         // Link URL
-    title: string;       // Link preview title
+    uri: string; // Link URL
+    title: string; // Link preview title
     description: string; // Link preview description
-    thumb?: string;      // Thumbnail URL
+    thumb?: string; // Thumbnail URL
   };
   images?: {
-    thumb: string;    // Thumbnail URL
+    thumb: string; // Thumbnail URL
     fullsize: string; // Full-size image URL
-    alt: string;      // Alt text
+    alt: string; // Alt text
   }[];
 }
 ```
@@ -113,12 +113,12 @@ URL:  https://bsky.app/profile/{handle}/post/{rkey}
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| `BLUESKY_HANDLE` not set | Returns `null` with HTTP 200 |
+| Condition                 | Behavior                                      |
+| ------------------------- | --------------------------------------------- |
+| `BLUESKY_HANDLE` not set  | Returns `null` with HTTP 200                  |
 | API returns non-OK status | Logs error text, returns `null` with HTTP 200 |
-| Empty feed (no posts) | Returns `null` with HTTP 200 |
-| Network/fetch exception | Logs error, returns `null` with HTTP 200 |
+| Empty feed (no posts)     | Returns `null` with HTTP 200                  |
+| Network/fetch exception   | Logs error, returns `null` with HTTP 200      |
 
 All errors return HTTP 200 with a `null` body to enable graceful frontend degradation.
 

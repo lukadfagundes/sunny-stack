@@ -48,7 +48,9 @@ describe("GET /api/activity", () => {
     process.env.BLUESKY_HANDLE = "test.bsky.social";
 
     const now = new Date();
-    const githubDate = new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(); // 2 hours ago
+    const githubDate = new Date(
+      now.getTime() - 2 * 60 * 60 * 1000,
+    ).toISOString(); // 2 hours ago
     const blueskyDate = new Date(now.getTime() - 30 * 60 * 1000).toISOString(); // 30 min ago (most recent)
 
     mockFetch

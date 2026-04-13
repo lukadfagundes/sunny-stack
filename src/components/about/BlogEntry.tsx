@@ -4,10 +4,7 @@ import { useState, useEffect } from "react";
 import { Heart, MessageCircle, Repeat2, CloudSun } from "lucide-react";
 import Image from "next/image";
 import { profile } from "@/lib/data/personal";
-import type {
-  BlueskyPost,
-  BlueskyFacet,
-} from "@/app/api/bluesky/route";
+import type { BlueskyPost, BlueskyFacet } from "@/app/api/bluesky/route";
 
 /**
  * Build rich text segments from Bluesky facets.
@@ -16,8 +13,8 @@ import type {
  */
 interface RichSegment {
   text: string;
-  link?: string;  // external link URI
-  tag?: string;   // hashtag (without #)
+  link?: string; // external link URI
+  tag?: string; // hashtag (without #)
   mention?: string; // mention DID
 }
 
@@ -27,7 +24,7 @@ function buildSegments(text: string, facets: BlueskyFacet[]): RichSegment[] {
   const encoder = new TextEncoder();
   const utf8 = encoder.encode(text);
   const sorted = [...facets].sort(
-    (a, b) => a.index.byteStart - b.index.byteStart
+    (a, b) => a.index.byteStart - b.index.byteStart,
   );
   const decoder = new TextDecoder();
   const segments: RichSegment[] = [];
@@ -42,7 +39,7 @@ function buildSegments(text: string, facets: BlueskyFacet[]): RichSegment[] {
     }
 
     const segText = decoder.decode(
-      utf8.slice(facet.index.byteStart, facet.index.byteEnd)
+      utf8.slice(facet.index.byteStart, facet.index.byteEnd),
     );
     const feature = facet.features[0];
 
@@ -236,10 +233,7 @@ export default function BlogEntry() {
                   >
                     {post.embed.external.description}
                   </p>
-                  <p
-                    className="text-xs mt-1"
-                    style={{ color: "#536471" }}
-                  >
+                  <p className="text-xs mt-1" style={{ color: "#536471" }}>
                     {new URL(post.embed.external.uri).hostname}
                   </p>
                 </div>
@@ -250,9 +244,7 @@ export default function BlogEntry() {
             {post.embed?.type === "images" && post.embed.images && (
               <div
                 className={`mt-3 gap-1 ${
-                  post.embed.images.length === 1
-                    ? ""
-                    : "grid grid-cols-2"
+                  post.embed.images.length === 1 ? "" : "grid grid-cols-2"
                 }`}
               >
                 {post.embed.images.map((img, i) => (

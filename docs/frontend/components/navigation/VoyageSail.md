@@ -12,20 +12,22 @@ This component takes no props.
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
-| `useIsClient` (custom) | `isClient` | `boolean` | `false` (server) / `true` (client) | SSR gate to prevent hydration mismatch for client-only sub-components. |
-| `useReducedMotion` (custom) | `reducedMotion` | `boolean` | `false` | Detects the user's `prefers-reduced-motion: reduce` media query preference. |
-| `useMotionValue` | `scrollProgress` | `MotionValue<number>` | `0` | Current scroll progress from 0 to 1. |
-| `useRef` | `prevProgress` | `number` | `0` | Previous scroll progress value for calculating direction. |
-| `useState` | `facingRight` | `boolean` | `true` | Whether the ship is facing right (scrolling down) or left (scrolling up). |
+| Hook                        | Variable         | Type                  | Initial                            | Description                                                                 |
+| --------------------------- | ---------------- | --------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
+| `useIsClient` (custom)      | `isClient`       | `boolean`             | `false` (server) / `true` (client) | SSR gate to prevent hydration mismatch for client-only sub-components.      |
+| `useReducedMotion` (custom) | `reducedMotion`  | `boolean`             | `false`                            | Detects the user's `prefers-reduced-motion: reduce` media query preference. |
+| `useMotionValue`            | `scrollProgress` | `MotionValue<number>` | `0`                                | Current scroll progress from 0 to 1.                                        |
+| `useRef`                    | `prevProgress`   | `number`              | `0`                                | Previous scroll progress value for calculating direction.                   |
+| `useState`                  | `facingRight`    | `boolean`             | `true`                             | Whether the ship is facing right (scrolling down) or left (scrolling up).   |
 
 ## Custom Hooks
 
 ### `useIsClient()`
+
 Uses `useSyncExternalStore` with an empty subscribe function to return `false` on the server and `true` on the client. This prevents rendering client-only animations during SSR.
 
 ### `useReducedMotion()`
+
 Uses `useSyncExternalStore` to subscribe to the `prefers-reduced-motion: reduce` media query. Returns `true` when the user prefers reduced motion.
 
 ## Scroll Tracking
@@ -41,10 +43,10 @@ The component uses a manual scroll tracking system via `useEffect`:
 
 ## Ship Position
 
-| Transform | Input | Output | Description |
-|-----------|-------|--------|-------------|
-| `shipX` | `scrollProgress [0, 1]` | `[5, 90]` | Maps scroll progress to viewport width percentage. |
-| `shipLeft` | `shipX` | `"{value}vw"` | Converts to CSS vw string for positioning. |
+| Transform  | Input                   | Output        | Description                                        |
+| ---------- | ----------------------- | ------------- | -------------------------------------------------- |
+| `shipX`    | `scrollProgress [0, 1]` | `[5, 90]`     | Maps scroll progress to viewport width percentage. |
+| `shipLeft` | `shipX`                 | `"{value}vw"` | Converts to CSS vw string for positioning.         |
 
 ## Internal Components
 
@@ -92,19 +94,19 @@ When `reducedMotion` is `true`, the ship is rendered as a static centered elemen
 
 The component references these CSS keyframe animations that must be defined in global styles:
 
-| Animation | Description |
-|-----------|-------------|
-| `voyage-twinkle` | Star twinkling opacity animation. |
-| `voyage-shooting-star` | Shooting star movement and fade. |
-| `voyage-wave-drift` | Horizontal wave scrolling. |
-| `voyage-ship-bob` | Ship vertical bobbing motion (4s ease-in-out infinite). |
+| Animation              | Description                                             |
+| ---------------------- | ------------------------------------------------------- |
+| `voyage-twinkle`       | Star twinkling opacity animation.                       |
+| `voyage-shooting-star` | Shooting star movement and fade.                        |
+| `voyage-wave-drift`    | Horizontal wave scrolling.                              |
+| `voyage-ship-bob`      | Ship vertical bobbing motion (4s ease-in-out infinite). |
 
 ## Child Components
 
-| Component | Source | Description |
-|-----------|--------|-------------|
-| `motion.div` | `framer-motion` | Used for scroll-driven ship positioning. |
-| `useMotionValue`, `useTransform` | `framer-motion` | Scroll-to-position transform chain. |
+| Component                        | Source          | Description                              |
+| -------------------------------- | --------------- | ---------------------------------------- |
+| `motion.div`                     | `framer-motion` | Used for scroll-driven ship positioning. |
+| `useMotionValue`, `useTransform` | `framer-motion` | Scroll-to-position transform chain.      |
 
 ## Usage
 

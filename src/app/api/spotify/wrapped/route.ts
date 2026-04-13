@@ -61,18 +61,18 @@ export async function GET() {
     const [tracksRes, artistsRes] = await Promise.all([
       fetch(
         "https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=5",
-        fetchOptions
+        fetchOptions,
       ),
       fetch(
         "https://api.spotify.com/v1/me/top/artists?time_range=medium_term&limit=5",
-        fetchOptions
+        fetchOptions,
       ),
     ]);
 
     if (!tracksRes.ok || !artistsRes.ok) {
       console.error(
         "Spotify wrapped API error:",
-        !tracksRes.ok ? await tracksRes.text() : await artistsRes.text()
+        !tracksRes.ok ? await tracksRes.text() : await artistsRes.text(),
       );
       return NextResponse.json(null, { status: 200 });
     }

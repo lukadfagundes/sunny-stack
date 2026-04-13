@@ -12,13 +12,13 @@ Aggregates last-activity timestamps from four platforms (GitHub, Bluesky, Instag
 
 ## Authentication
 
-| Environment Variable | Required | Description |
-|---------------------|----------|-------------|
-| `GITHUB_TOKEN` | Optional | GitHub personal access token |
-| `BLUESKY_HANDLE` | Optional | Bluesky account handle |
-| `INSTAGRAM_ACCESS_TOKEN` | Optional | Instagram Graph API token |
-| `YOUTUBE_API_KEY` | Optional | YouTube Data API v3 key |
-| `YOUTUBE_CHANNEL_ID` | Optional | YouTube channel ID |
+| Environment Variable     | Required | Description                  |
+| ------------------------ | -------- | ---------------------------- |
+| `GITHUB_TOKEN`           | Optional | GitHub personal access token |
+| `BLUESKY_HANDLE`         | Optional | Bluesky account handle       |
+| `INSTAGRAM_ACCESS_TOKEN` | Optional | Instagram Graph API token    |
+| `YOUTUBE_API_KEY`        | Optional | YouTube Data API v3 key      |
+| `YOUTUBE_CHANNEL_ID`     | Optional | YouTube channel ID           |
 
 All variables are optional. Platforms with missing credentials are silently skipped.
 
@@ -29,7 +29,7 @@ All variables are optional. Platforms with missing credentials are silently skip
 ```typescript
 interface ActivityStatus {
   lastActivityAt: string | null; // ISO 8601 timestamp of most recent activity across all platforms
-  isOnline: boolean;             // true if most recent activity is within 1 hour
+  isOnline: boolean; // true if most recent activity is within 1 hour
 }
 ```
 
@@ -62,12 +62,12 @@ Each returns `Promise<string | null>` (ISO 8601 timestamp or null):
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| All platform tokens missing | Returns `{ lastActivityAt: null, isOnline: false }` |
-| Individual platform fetch fails | That platform returns `null`, others continue |
-| No valid timestamps collected | Returns `{ lastActivityAt: null, isOnline: false }` |
-| Top-level exception | Logs error, returns `{ lastActivityAt: null, isOnline: false }` |
+| Condition                       | Behavior                                                        |
+| ------------------------------- | --------------------------------------------------------------- |
+| All platform tokens missing     | Returns `{ lastActivityAt: null, isOnline: false }`             |
+| Individual platform fetch fails | That platform returns `null`, others continue                   |
+| No valid timestamps collected   | Returns `{ lastActivityAt: null, isOnline: false }`             |
+| Top-level exception             | Logs error, returns `{ lastActivityAt: null, isOnline: false }` |
 
 Individual platform errors are silently caught and return `null` without affecting other platforms.
 

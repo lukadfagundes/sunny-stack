@@ -32,17 +32,74 @@ const mockGamesResponse = {
   response: {
     game_count: 5,
     games: [
-      { appid: 730, name: "Counter-Strike 2", playtime_forever: 14040, img_icon_url: "icon730", playtime_2weeks: 120 },
-      { appid: 431960, name: "Wallpaper Engine", playtime_forever: 10000, img_icon_url: "icon431960" },
-      { appid: 570, name: "Dota 2", playtime_forever: 8520, img_icon_url: "icon570" },
-      { appid: 440, name: "Team Fortress 2", playtime_forever: 6000, img_icon_url: "icon440", playtime_2weeks: 60 },
-      { appid: 1245620, name: "Elden Ring", playtime_forever: 3000, img_icon_url: "icon1245620" },
-      { appid: 292030, name: "The Witcher 3", playtime_forever: 2400, img_icon_url: "icon292030" },
-      { appid: 413150, name: "Stardew Valley", playtime_forever: 1800, img_icon_url: "icon413150" },
-      { appid: 367520, name: "Hollow Knight", playtime_forever: 1200, img_icon_url: "icon367520" },
-      { appid: 1091500, name: "Cyberpunk 2077", playtime_forever: 900, img_icon_url: "icon1091500" },
-      { appid: 105600, name: "Terraria", playtime_forever: 600, img_icon_url: "icon105600" },
-      { appid: 252950, name: "Rocket League", playtime_forever: 300, img_icon_url: "icon252950" },
+      {
+        appid: 730,
+        name: "Counter-Strike 2",
+        playtime_forever: 14040,
+        img_icon_url: "icon730",
+        playtime_2weeks: 120,
+      },
+      {
+        appid: 431960,
+        name: "Wallpaper Engine",
+        playtime_forever: 10000,
+        img_icon_url: "icon431960",
+      },
+      {
+        appid: 570,
+        name: "Dota 2",
+        playtime_forever: 8520,
+        img_icon_url: "icon570",
+      },
+      {
+        appid: 440,
+        name: "Team Fortress 2",
+        playtime_forever: 6000,
+        img_icon_url: "icon440",
+        playtime_2weeks: 60,
+      },
+      {
+        appid: 1245620,
+        name: "Elden Ring",
+        playtime_forever: 3000,
+        img_icon_url: "icon1245620",
+      },
+      {
+        appid: 292030,
+        name: "The Witcher 3",
+        playtime_forever: 2400,
+        img_icon_url: "icon292030",
+      },
+      {
+        appid: 413150,
+        name: "Stardew Valley",
+        playtime_forever: 1800,
+        img_icon_url: "icon413150",
+      },
+      {
+        appid: 367520,
+        name: "Hollow Knight",
+        playtime_forever: 1200,
+        img_icon_url: "icon367520",
+      },
+      {
+        appid: 1091500,
+        name: "Cyberpunk 2077",
+        playtime_forever: 900,
+        img_icon_url: "icon1091500",
+      },
+      {
+        appid: 105600,
+        name: "Terraria",
+        playtime_forever: 600,
+        img_icon_url: "icon105600",
+      },
+      {
+        appid: 252950,
+        name: "Rocket League",
+        playtime_forever: 300,
+        img_icon_url: "icon252950",
+      },
     ],
   },
 };
@@ -119,12 +176,16 @@ describe("GET /api/steam", () => {
     expect(data.games[0].playtimeMinutes).toBe(14040);
     expect(data.games[0].appid).toBe(730);
     expect(data.games[0].recentlyPlayed).toBe(true);
-    expect(data.games[0].headerImage).toBe("https://cdn.steam.com/730/header.jpg");
+    expect(data.games[0].headerImage).toBe(
+      "https://cdn.steam.com/730/header.jpg",
+    );
     expect(data.games[1].name).toBe("Dota 2");
     expect(data.games[1].recentlyPlayed).toBe(false);
     expect(data.games[7].name).toBe("Cyberpunk 2077");
     // Wallpaper Engine (appid 431960) should be excluded
-    expect(data.games.every((g: { appid: number }) => g.appid !== 431960)).toBe(true);
+    expect(data.games.every((g: { appid: number }) => g.appid !== 431960)).toBe(
+      true,
+    );
   });
 
   it("passes API key and Steam ID in URL", async () => {
@@ -141,11 +202,11 @@ describe("GET /api/steam", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining("key=TESTAPIKEY"),
-      expect.objectContaining({ cache: "no-store" })
+      expect.objectContaining({ cache: "no-store" }),
     );
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining("steamid=76561198012345678"),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -301,11 +362,46 @@ describe("GET /api/steam/achievements", () => {
             game: {
               availableGameStats: {
                 achievements: [
-                  { name: "ach1", displayName: "First Blood", description: "Get your first kill", icon: "https://steam.com/ach1.jpg", icongray: "https://steam.com/ach1_gray.jpg", hidden: 0 },
-                  { name: "ach2", displayName: "Double Kill", description: "Get two kills", icon: "https://steam.com/ach2.jpg", icongray: "https://steam.com/ach2_gray.jpg", hidden: 0 },
-                  { name: "ach3", displayName: "Hat Trick", description: "Get three kills", icon: "https://steam.com/ach3.jpg", icongray: "https://steam.com/ach3_gray.jpg", hidden: 0 },
-                  { name: "ach4", displayName: "Rampage", description: "Get four kills", icon: "https://steam.com/ach4.jpg", icongray: "https://steam.com/ach4_gray.jpg", hidden: 0 },
-                  { name: "ach5", displayName: "Ace", description: "Get five kills", icon: "https://steam.com/ach5.jpg", icongray: "https://steam.com/ach5_gray.jpg", hidden: 0 },
+                  {
+                    name: "ach1",
+                    displayName: "First Blood",
+                    description: "Get your first kill",
+                    icon: "https://steam.com/ach1.jpg",
+                    icongray: "https://steam.com/ach1_gray.jpg",
+                    hidden: 0,
+                  },
+                  {
+                    name: "ach2",
+                    displayName: "Double Kill",
+                    description: "Get two kills",
+                    icon: "https://steam.com/ach2.jpg",
+                    icongray: "https://steam.com/ach2_gray.jpg",
+                    hidden: 0,
+                  },
+                  {
+                    name: "ach3",
+                    displayName: "Hat Trick",
+                    description: "Get three kills",
+                    icon: "https://steam.com/ach3.jpg",
+                    icongray: "https://steam.com/ach3_gray.jpg",
+                    hidden: 0,
+                  },
+                  {
+                    name: "ach4",
+                    displayName: "Rampage",
+                    description: "Get four kills",
+                    icon: "https://steam.com/ach4.jpg",
+                    icongray: "https://steam.com/ach4_gray.jpg",
+                    hidden: 0,
+                  },
+                  {
+                    name: "ach5",
+                    displayName: "Ace",
+                    description: "Get five kills",
+                    icon: "https://steam.com/ach5.jpg",
+                    icongray: "https://steam.com/ach5_gray.jpg",
+                    hidden: 0,
+                  },
                 ],
               },
             },

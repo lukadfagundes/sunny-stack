@@ -8,7 +8,7 @@ describe("CategorySection", () => {
     render(
       <CategorySection category="professional">
         <div>Project 1</div>
-      </CategorySection>
+      </CategorySection>,
     );
     expect(screen.getByText("Professional")).toBeInTheDocument();
   });
@@ -17,7 +17,7 @@ describe("CategorySection", () => {
     render(
       <CategorySection category="personal">
         <div>Project 1</div>
-      </CategorySection>
+      </CategorySection>,
     );
     expect(screen.getByText("Personal")).toBeInTheDocument();
   });
@@ -26,7 +26,7 @@ describe("CategorySection", () => {
     render(
       <CategorySection category="contribution">
         <div>Project 1</div>
-      </CategorySection>
+      </CategorySection>,
     );
     expect(screen.getByText("Contributions")).toBeInTheDocument();
   });
@@ -35,7 +35,7 @@ describe("CategorySection", () => {
     render(
       <CategorySection category="professional">
         <div>Test Project</div>
-      </CategorySection>
+      </CategorySection>,
     );
     expect(screen.getByText("Test Project")).toBeInTheDocument();
   });

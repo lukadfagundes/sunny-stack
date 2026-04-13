@@ -21,18 +21,18 @@ Before deploying, ensure:
 
 All environment variables are optional for the application to run, but each variable enables a specific data source. Configure the variables for the services you want active:
 
-| Variable | Service | How to Obtain |
-|----------|---------|---------------|
-| `GITHUB_TOKEN` | GitHub | [Generate a personal access token](https://github.com/settings/tokens) with `read:user` scope |
+| Variable                 | Service   | How to Obtain                                                                                      |
+| ------------------------ | --------- | -------------------------------------------------------------------------------------------------- |
+| `GITHUB_TOKEN`           | GitHub    | [Generate a personal access token](https://github.com/settings/tokens) with `read:user` scope      |
 | `INSTAGRAM_ACCESS_TOKEN` | Instagram | [Instagram Graph API](https://developers.facebook.com/docs/instagram-api/) long-lived access token |
-| `YOUTUBE_API_KEY` | YouTube | [Google Cloud Console](https://console.cloud.google.com/) > YouTube Data API v3 |
-| `YOUTUBE_CHANNEL_ID` | YouTube | Your YouTube channel ID |
-| `BLUESKY_HANDLE` | Bluesky | Your Bluesky handle (e.g., `user.bsky.social`) |
-| `SPOTIFY_CLIENT_ID` | Spotify | [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) |
-| `SPOTIFY_CLIENT_SECRET` | Spotify | Spotify Developer Dashboard |
-| `SPOTIFY_REFRESH_TOKEN` | Spotify | OAuth 2.0 authorization code flow |
-| `STEAM_API_KEY` | Steam | [Steam Web API Key](https://steamcommunity.com/dev/apikey) |
-| `STEAM_ID` | Steam | Your Steam 64-bit ID ([steamid.io](https://steamid.io)) |
+| `YOUTUBE_API_KEY`        | YouTube   | [Google Cloud Console](https://console.cloud.google.com/) > YouTube Data API v3                    |
+| `YOUTUBE_CHANNEL_ID`     | YouTube   | Your YouTube channel ID                                                                            |
+| `BLUESKY_HANDLE`         | Bluesky   | Your Bluesky handle (e.g., `user.bsky.social`)                                                     |
+| `SPOTIFY_CLIENT_ID`      | Spotify   | [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)                             |
+| `SPOTIFY_CLIENT_SECRET`  | Spotify   | Spotify Developer Dashboard                                                                        |
+| `SPOTIFY_REFRESH_TOKEN`  | Spotify   | OAuth 2.0 authorization code flow                                                                  |
+| `STEAM_API_KEY`          | Steam     | [Steam Web API Key](https://steamcommunity.com/dev/apikey)                                         |
+| `STEAM_ID`               | Steam     | Your Steam 64-bit ID ([steamid.io](https://steamid.io))                                            |
 
 ### Environment Files
 
@@ -148,22 +148,22 @@ jobs:
 
 **Required GitHub Secrets for CI/CD:**
 
-| Secret | Description |
-|--------|-------------|
-| `VERCEL_TOKEN` | Vercel API token ([create here](https://vercel.com/account/tokens)) |
-| `VERCEL_ORG_ID` | Vercel organization/team ID |
-| `VERCEL_PROJECT_ID` | Vercel project ID |
+| Secret              | Description                                                         |
+| ------------------- | ------------------------------------------------------------------- |
+| `VERCEL_TOKEN`      | Vercel API token ([create here](https://vercel.com/account/tokens)) |
+| `VERCEL_ORG_ID`     | Vercel organization/team ID                                         |
+| `VERCEL_PROJECT_ID` | Vercel project ID                                                   |
 
 #### Additional CI/CD Workflows
 
 The project includes 4 GitHub Actions workflows:
 
-| Workflow | File | Trigger |
-|----------|------|---------|
-| Deploy | `.github/workflows/deploy.yml` | Release published |
-| CI | `.github/workflows/ci.yml` | Push/PR to main |
-| Code Quality | `.github/workflows/quality.yml` | Push/PR |
-| Release | `.github/workflows/release.yml` | Manual/automated |
+| Workflow     | File                            | Trigger           |
+| ------------ | ------------------------------- | ----------------- |
+| Deploy       | `.github/workflows/deploy.yml`  | Release published |
+| CI           | `.github/workflows/ci.yml`      | Push/PR to main   |
+| Code Quality | `.github/workflows/quality.yml` | Push/PR           |
+| Release      | `.github/workflows/release.yml` | Manual/automated  |
 
 ---
 
@@ -217,7 +217,7 @@ CMD ["node", "server.js"]
 #### docker-compose.yml
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -322,6 +322,7 @@ sudo systemctl enable certbot.timer
 Vercel Analytics is built-in for Vercel deployments. No additional setup required.
 
 For self-hosted deployments, consider:
+
 - **PM2 monitoring:** `pm2 monit`
 - **UptimeRobot:** Free uptime monitoring with alerts
 
@@ -338,11 +339,11 @@ Spotify token refresh error: ...
 
 ### Log Access
 
-| Platform | Command |
-|----------|---------|
-| Vercel | `vercel logs` (via Vercel CLI) or Vercel Dashboard > Deployments > Function Logs |
-| Docker | `docker logs sunny-stack` |
-| PM2 | `pm2 logs sunny-stack` |
+| Platform | Command                                                                          |
+| -------- | -------------------------------------------------------------------------------- |
+| Vercel   | `vercel logs` (via Vercel CLI) or Vercel Dashboard > Deployments > Function Logs |
+| Docker   | `docker logs sunny-stack`                                                        |
+| PM2      | `pm2 logs sunny-stack`                                                           |
 
 ---
 
@@ -439,7 +440,6 @@ The application does not expose a dedicated `/health` endpoint. To verify the de
 - [API Development](./api-development.md) - API development guide
 - [API Reference](../api/README.md) - Complete endpoint documentation
 
-
 ---
 
-*Last updated: 2026-03-24*
+_Last updated: 2026-03-24_

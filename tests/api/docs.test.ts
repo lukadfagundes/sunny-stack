@@ -6,7 +6,8 @@ import path from "path";
 const PROJECT_ROOT = process.cwd();
 
 const VIRTUAL_FILES: Record<string, string> = {
-  [path.join(PROJECT_ROOT, "README.md")]: "# Sunny Stack\n\nProject README content.",
+  [path.join(PROJECT_ROOT, "README.md")]:
+    "# Sunny Stack\n\nProject README content.",
   [path.join(PROJECT_ROOT, "docs", "README.md")]:
     "# Documentation\n\nWelcome to the docs.",
   [path.join(PROJECT_ROOT, "docs", "guides", "getting-started.md")]:
@@ -18,7 +19,9 @@ const VIRTUAL_FILES: Record<string, string> = {
 };
 
 // Build directory entries from virtual files
-function virtualReaddirSync(dirPath: string): { name: string; isDirectory: () => boolean; isFile: () => boolean }[] {
+function virtualReaddirSync(
+  dirPath: string,
+): { name: string; isDirectory: () => boolean; isFile: () => boolean }[] {
   const names = new Set<string>();
   const dirs = new Set<string>();
   const normalDir = dirPath.replace(/\\/g, "/");
@@ -35,7 +38,11 @@ function virtualReaddirSync(dirPath: string): { name: string; isDirectory: () =>
     }
   }
 
-  const entries: { name: string; isDirectory: () => boolean; isFile: () => boolean }[] = [];
+  const entries: {
+    name: string;
+    isDirectory: () => boolean;
+    isFile: () => boolean;
+  }[] = [];
   for (const d of dirs) {
     entries.push({ name: d, isDirectory: () => true, isFile: () => false });
   }
@@ -115,11 +122,14 @@ describe("GET /api/docs", () => {
     expect(data.files).toBeDefined();
     expect(Array.isArray(data.files)).toBe(true);
     // Should include README.md at root
-    expect(data.files.some((f: { name: string }) => f.name === "README.md")).toBe(true);
+    expect(
+      data.files.some((f: { name: string }) => f.name === "README.md"),
+    ).toBe(true);
     // Should include docs directory
     expect(
       data.files.some(
-        (f: { name: string; type: string }) => f.name === "docs" && f.type === "directory",
+        (f: { name: string; type: string }) =>
+          f.name === "docs" && f.type === "directory",
       ),
     ).toBe(true);
   });
@@ -174,7 +184,9 @@ describe("GET /api/docs", () => {
 
   it("returns 400 for non-.md files", async () => {
     const { GET } = await import("@/app/api/docs/route");
-    const response = await GET(createRequest("path=docs/images/logo.png") as never);
+    const response = await GET(
+      createRequest("path=docs/images/logo.png") as never,
+    );
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -183,7 +195,9 @@ describe("GET /api/docs", () => {
 
   it("returns 404 for non-existent file", async () => {
     const { GET } = await import("@/app/api/docs/route");
-    const response = await GET(createRequest("path=docs/nonexistent.md") as never);
+    const response = await GET(
+      createRequest("path=docs/nonexistent.md") as never,
+    );
     const data = await response.json();
 
     expect(response.status).toBe(404);
@@ -221,7 +235,9 @@ describe("GET /api/docs", () => {
     const response = await GET(createRequest("list=true") as never);
     const data = await response.json();
 
-    function checkFiles(files: { type: string; name: string; children?: unknown[] }[]) {
+    function checkFiles(
+      files: { type: string; name: string; children?: unknown[] }[],
+    ) {
       for (const f of files) {
         if (f.type === "file") {
           expect(f.name).toMatch(/\.md$/);

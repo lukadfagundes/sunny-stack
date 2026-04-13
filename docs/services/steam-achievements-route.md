@@ -12,16 +12,16 @@ Fetches achievement data for a specific Steam game. Retrieves both the player's 
 
 ## Authentication
 
-| Environment Variable | Required | Description |
-|---------------------|----------|-------------|
-| `STEAM_API_KEY` | Yes | Steam Web API key |
-| `STEAM_ID` | Yes | Steam 64-bit user ID |
+| Environment Variable | Required | Description          |
+| -------------------- | -------- | -------------------- |
+| `STEAM_API_KEY`      | Yes      | Steam Web API key    |
+| `STEAM_ID`           | Yes      | Steam 64-bit user ID |
 
 ## Query Parameters
 
-| Parameter | Type | Required | Validation | Description |
-|-----------|------|----------|------------|-------------|
-| `appid` | string | Yes | `/^\d+$/` (digits only) | Steam application ID |
+| Parameter | Type   | Required | Validation              | Description          |
+| --------- | ------ | -------- | ----------------------- | -------------------- |
+| `appid`   | string | Yes      | `/^\d+$/` (digits only) | Steam application ID |
 
 ## Response Type
 
@@ -29,8 +29,8 @@ Fetches achievement data for a specific Steam game. Retrieves both the player's 
 
 ```typescript
 interface SteamAchievementData {
-  achieved: number;                       // Count of earned achievements
-  total: number;                          // Total achievement count for the game
+  achieved: number; // Count of earned achievements
+  total: number; // Total achievement count for the game
   achievements: SteamEarnedAchievement[]; // Earned achievements sorted by unlock time (newest first)
 }
 ```
@@ -39,11 +39,11 @@ interface SteamAchievementData {
 
 ```typescript
 interface SteamEarnedAchievement {
-  apiname: string;     // Internal achievement identifier
+  apiname: string; // Internal achievement identifier
   displayName: string; // Human-readable achievement name (from schema, fallback: apiname)
   description: string; // Achievement description (from schema, fallback: "")
-  icon: string;        // Achievement icon URL (from schema, fallback: "")
-  unlocktime: number;  // Unix timestamp when the achievement was earned
+  icon: string; // Achievement icon URL (from schema, fallback: "")
+  unlocktime: number; // Unix timestamp when the achievement was earned
 }
 ```
 
@@ -54,7 +54,7 @@ interface SteamEarnedAchievement {
 ```typescript
 interface PlayerAchievement {
   apiname: string;
-  achieved: number;  // 1 = earned, 0 = not earned
+  achieved: number; // 1 = earned, 0 = not earned
   unlocktime: number; // Unix timestamp
 }
 ```
@@ -77,6 +77,7 @@ interface SchemaAchievement {
 ### Parallel Fetch
 
 Player achievements and game schema are fetched simultaneously via `Promise.all`:
+
 - `ISteamUserStats/GetPlayerAchievements/v1` -- player's achievement state
 - `ISteamUserStats/GetSchemaForGame/v2` -- game's achievement definitions
 
@@ -96,16 +97,16 @@ A `Map<string, SchemaAchievement>` is built from the schema response for O(1) lo
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| Missing API key or Steam ID | Returns `null` with HTTP 200 |
-| Missing `appid` parameter | Returns `null` with HTTP 200 |
-| Invalid `appid` format | Returns `null` with HTTP 200 |
-| Player achievements API fails | Returns `null` with HTTP 200 |
-| `playerstats.success === false` | Returns `null` with HTTP 200 |
-| No achievements exist | Returns `null` with HTTP 200 |
-| Schema fetch fails | Achievements still returned with fallback names |
-| Network exception | Returns `null` with HTTP 200 |
+| Condition                       | Behavior                                        |
+| ------------------------------- | ----------------------------------------------- |
+| Missing API key or Steam ID     | Returns `null` with HTTP 200                    |
+| Missing `appid` parameter       | Returns `null` with HTTP 200                    |
+| Invalid `appid` format          | Returns `null` with HTTP 200                    |
+| Player achievements API fails   | Returns `null` with HTTP 200                    |
+| `playerstats.success === false` | Returns `null` with HTTP 200                    |
+| No achievements exist           | Returns `null` with HTTP 200                    |
+| Schema fetch fails              | Achievements still returned with fallback names |
+| Network exception               | Returns `null` with HTTP 200                    |
 
 ## Dependencies
 

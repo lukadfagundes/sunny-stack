@@ -8,9 +8,9 @@ A client-side component that renders an individual YouTube video card with an em
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `video` | `YouTubeVideo` | Yes | The YouTube video data object containing all fields needed for rendering |
+| Prop    | Type           | Required | Description                                                              |
+| ------- | -------------- | -------- | ------------------------------------------------------------------------ |
+| `video` | `YouTubeVideo` | Yes      | The YouTube video data object containing all fields needed for rendering |
 
 ### Props Interface
 
@@ -37,9 +37,9 @@ interface YouTubeVideo {
 
 ## State Management
 
-| Hook | State Variable | Type | Initial Value | Purpose |
-|------|---------------|------|---------------|---------|
-| `useState` | `descOpen` | `boolean` | `false` | Toggles the visibility of the video description text |
+| Hook       | State Variable | Type      | Initial Value | Purpose                                              |
+| ---------- | -------------- | --------- | ------------- | ---------------------------------------------------- |
+| `useState` | `descOpen`     | `boolean` | `false`       | Toggles the visibility of the video description text |
 
 ## API Integration
 
@@ -47,19 +47,19 @@ This component makes **no API calls**. It receives all data via the `video` prop
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
+| Handler                        | Element                                       | Description                                                     |
+| ------------------------------ | --------------------------------------------- | --------------------------------------------------------------- |
 | `() => setDescOpen((o) => !o)` | "Description" / "Hide description" `<button>` | Toggles the `descOpen` state to show/hide the video description |
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
-| `ThumbsUp` | `lucide-react` | Like count icon |
-| `MessageSquare` | `lucide-react` | Comment count icon |
-| `Eye` | `lucide-react` | View count icon |
-| `ChevronDown` | `lucide-react` | Shown when description is collapsed |
-| `ChevronUp` | `lucide-react` | Shown when description is expanded |
+| Component       | Source         | Purpose                             |
+| --------------- | -------------- | ----------------------------------- |
+| `ThumbsUp`      | `lucide-react` | Like count icon                     |
+| `MessageSquare` | `lucide-react` | Comment count icon                  |
+| `Eye`           | `lucide-react` | View count icon                     |
+| `ChevronDown`   | `lucide-react` | Shown when description is collapsed |
+| `ChevronUp`     | `lucide-react` | Shown when description is expanded  |
 
 ## Helper Functions
 
@@ -67,11 +67,11 @@ This component makes **no API calls**. It receives all data via the `video` prop
 
 Formats large numbers with K/M suffixes for compact display:
 
-| Input Range | Output Format | Example |
-|-------------|--------------|---------|
-| >= 1,000,000 | `X.XM` | `1500000` -> `"1.5M"` |
-| >= 1,000 | `X.XK` | `4500` -> `"4.5K"` |
-| < 1,000 | Raw number | `750` -> `"750"` |
+| Input Range  | Output Format | Example               |
+| ------------ | ------------- | --------------------- |
+| >= 1,000,000 | `X.XM`        | `1500000` -> `"1.5M"` |
+| >= 1,000     | `X.XK`        | `4500` -> `"4.5K"`    |
+| < 1,000      | Raw number    | `750` -> `"750"`      |
 
 ## Rendering Structure
 

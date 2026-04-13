@@ -34,7 +34,6 @@ export default function InterestsTable() {
       .catch(() => {
         setGenresError(true);
       });
-
   }, []);
 
   function renderBadges(items: string[], bg: string) {

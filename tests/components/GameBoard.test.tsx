@@ -8,7 +8,7 @@ import { GRID_SIZE } from "@/components/404/types";
 
 function emptyGrid(): TileType[][] {
   return Array.from({ length: GRID_SIZE }, () =>
-    new Array<TileType>(GRID_SIZE).fill("empty")
+    new Array<TileType>(GRID_SIZE).fill("empty"),
   ) as TileType[][];
 }
 

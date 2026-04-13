@@ -8,9 +8,9 @@ A client-side component that renders an Instagram-inspired photo gallery. It fet
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `onBack` | `() => void` | Yes | Callback invoked when the user clicks "Back to Profile". Used by the parent to switch back to the main profile view. |
+| Prop     | Type         | Required | Description                                                                                                          |
+| -------- | ------------ | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| `onBack` | `() => void` | Yes      | Callback invoked when the user clicks "Back to Profile". Used by the parent to switch back to the main profile view. |
 
 ### Props Interface
 
@@ -22,15 +22,16 @@ interface PhotoGalleryProps {
 
 ## State Management
 
-| Hook | State Variable | Type | Initial Value | Purpose |
-|------|---------------|------|---------------|---------|
-| `useState` | `posts` | `InstagramPost[]` | `[]` | Stores the array of Instagram posts fetched from the API |
-| `useState` | `loading` | `boolean` | `true` | Tracks whether the API request is in progress |
-| `useState` | `error` | `boolean` | `false` | Tracks whether the API request failed |
+| Hook       | State Variable | Type              | Initial Value | Purpose                                                  |
+| ---------- | -------------- | ----------------- | ------------- | -------------------------------------------------------- |
+| `useState` | `posts`        | `InstagramPost[]` | `[]`          | Stores the array of Instagram posts fetched from the API |
+| `useState` | `loading`      | `boolean`         | `true`        | Tracks whether the API request is in progress            |
+| `useState` | `error`        | `boolean`         | `false`       | Tracks whether the API request failed                    |
 
 ## API Integration
 
 ### Instagram Posts (`/api/instagram`)
+
 - **Method:** `GET`
 - **Triggered:** On mount via `useEffect` (empty dependency array)
 - **Response Type:** `InstagramPost[]` (imported from `@/app/api/instagram/route`)
@@ -53,15 +54,15 @@ interface InstagramPost {
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
+| Handler  | Element                      | Description                                                |
+| -------- | ---------------------------- | ---------------------------------------------------------- |
 | `onBack` | "Back to Profile" `<button>` | Delegates to parent callback to return to the profile view |
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
-| `PostCard` | `./PostCard` | Renders individual Instagram post cards within the feed |
+| Component   | Source         | Purpose                                                      |
+| ----------- | -------------- | ------------------------------------------------------------ |
+| `PostCard`  | `./PostCard`   | Renders individual Instagram post cards within the feed      |
 | `Instagram` | `lucide-react` | Used as the icon in the header, error state, and empty state |
 
 ## Conditional Rendering States
