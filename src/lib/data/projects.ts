@@ -336,46 +336,52 @@ const projects: ProjectData[] = [
   {
     id: "stilltide",
     title: "Stilltide",
-    tagline: "AI platform transforming equipment photos into valuation reports",
+    tagline:
+      "SaaS platform that turns industrial equipment photos into AI valuation reports",
     description:
-      "Production AI platform that combines Gemini AI with Google Workspace integration for automated equipment analysis, market research, and comprehensive reporting — all delivered via email in minutes. Deployed on Vercel frontend + Fly.io Docker backend with JWT auth.",
-    category: "personal",
+      "Production SaaS platform for industrial machinery resale - upload photos and documents, receive a full valuation report in minutes. A two-phase Gemini 2.5 Flash pipeline handles equipment extraction (specs, condition, serial number pattern matching) then web-grounded market research (pricing, comparables, marketing copy), delivered by email and exportable as PDF. Built on Next.js 16 frontend on Vercel, Express backend on Fly.io, Supabase PostgreSQL with 8 RLS-enforced tables, Stripe subscription billing, and 754+ tests across 56 frontend test files.",
+    category: "professional",
     techStack: [
+      "Next.js 16",
       "React 19",
-      "Vite",
+      "TypeScript",
+      "Supabase (PostgreSQL)",
       "Express",
-      "Gemini AI",
-      "Google APIs",
+      "Gemini 2.5 Flash",
+      "Stripe",
       "Docker",
     ],
     features: [
       {
-        label: "Two-Phase AI Analysis",
+        label: "Two-Phase AI Pipeline",
         description:
-          "Gemini 2.5 Flash for verified extraction + web-grounded market research",
+          "Phase 1 extracts equipment type, make, model, year, serial number, specs, and condition via Gemini Vision; Phase 2 runs web-grounded market research for pricing, comparables, and ready-to-post marketing copy",
       },
       {
-        label: "Full Google Integration",
-        description: "Drive, Docs, Gmail APIs with OAuth 2.0",
+        label: "Single Machine Evaluation",
+        description:
+          "Upload photos and optional documents (PDF, DOCX, XLSX) for any piece of industrial equipment - AI identifies make, model, year, serial number, specs, and condition grade from visual evidence alone",
       },
       {
-        label: "Automated Workflow",
+        label: "Stripe Credit Billing",
         description:
-          "Background processing, professional report generation, email delivery",
+          "Free Trial and Basic subscription tiers with per-cycle credit resets, Stripe Checkout and Customer Portal, idempotent webhook processing, and a full credit transaction audit log",
       },
       {
-        label: "Production Deployed",
+        label: "PDF & Email Delivery",
         description:
-          "Vercel frontend + Fly.io Docker backend with JWT auth",
+          "Reports viewable in-app, exportable as PDF via @react-pdf/renderer, and emailed on completion with a branded Resend template",
       },
     ],
     links: [
       {
         label: "Live App",
-        url: "https://stilltide.sunny-stack.com",
+        url: "https://stilltide.us",
       },
     ],
     status: "active",
+    footer:
+      "Live at stilltide.us - actively serving industrial equipment resellers.",
   },
   {
     id: "spotify-rainmeter",

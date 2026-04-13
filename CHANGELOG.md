@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `tagline` field in `src/lib/data/projects.ts` to reflect "SaaS platform that turns industrial equipment photos into AI valuation reports".
+- Revise `description` field in `src/lib/data/projects.ts` to detail the updated SaaS platform architecture, feature set, and testing coverage.
+- Change `category` field in `src/lib/data/projects.ts` from "personal" to "professional".
+- Update technology stack listed in `src/lib/data/projects.ts` by adding "Next.js 16", "TypeScript", "Supabase (PostgreSQL)", and "Stripe" while removing "Vite", "Google APIs", and "JWT auth".
+- Remove explicit `label` and `description` fields for "Two-Phase AI Analysis", "Full Google Integration", "Automated Workflow", and "Production Deployed" from `src/lib/data/projects.ts`, integrating relevant details into the main project description.
+
+### Added
+
+- Add new test file `tests/lib/no-emdash.test.ts` to enforce code style rules.
+
 ## [3.0.7] - 2026-04-08
 
 ### Fixed
