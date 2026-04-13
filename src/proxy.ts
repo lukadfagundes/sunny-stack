@@ -37,7 +37,7 @@ export function proxy(request: NextRequest) {
         headers: {
           "Retry-After": String(Math.ceil((entry.resetAt - now) / 1000)),
         },
-      }
+      },
     );
   }
 

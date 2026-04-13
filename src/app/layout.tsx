@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import {
+  Inter,
+  Playfair_Display,
+  Space_Grotesk,
+  JetBrains_Mono,
+} from "next/font/google";
 import ShipWheel from "@/components/ShipWheel";
 import VoyageSail from "@/components/landing/VoyageSail";
 import "./globals.css";
@@ -102,10 +107,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-          <VoyageSail />
-          {children}
-          <ShipWheel />
-        </body>
+        <VoyageSail />
+        {children}
+        <ShipWheel />
+      </body>
     </html>
   );
 }

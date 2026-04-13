@@ -54,10 +54,7 @@ export default function PostCard({ post }: PostCardProps) {
         )}
 
         {/* Date */}
-        <p
-          className="text-xs mt-2"
-          style={{ color: "#737373" }}
-        >
+        <p className="text-xs mt-2" style={{ color: "#737373" }}>
           {new Date(post.timestamp).toLocaleDateString("en-US", {
             month: "long",
             day: "numeric",

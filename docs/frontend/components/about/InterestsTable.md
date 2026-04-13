@@ -12,27 +12,28 @@ This component takes no props.
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
-| `useState` | `genres` | `string[]` | `[]` | Top music genres fetched from the Spotify Wrapped API. |
-| `useState` | `genresError` | `boolean` | `false` | Whether the Spotify Wrapped API request failed or returned empty data. |
+| Hook       | Variable      | Type       | Initial | Description                                                            |
+| ---------- | ------------- | ---------- | ------- | ---------------------------------------------------------------------- |
+| `useState` | `genres`      | `string[]` | `[]`    | Top music genres fetched from the Spotify Wrapped API.                 |
+| `useState` | `genresError` | `boolean`  | `false` | Whether the Spotify Wrapped API request failed or returned empty data. |
 
 ## API Integration
 
-| Endpoint | Method | Trigger | Response Type | Description |
-|----------|--------|---------|---------------|-------------|
-| `/api/spotify/wrapped` | GET | `useEffect` on mount | `SpotifyWrappedData \| null` | Fetches Spotify Wrapped data including `topGenres` array. |
+| Endpoint               | Method | Trigger              | Response Type                | Description                                               |
+| ---------------------- | ------ | -------------------- | ---------------------------- | --------------------------------------------------------- |
+| `/api/spotify/wrapped` | GET    | `useEffect` on mount | `SpotifyWrappedData \| null` | Fetches Spotify Wrapped data including `topGenres` array. |
 
 **Fetch flow:**
+
 1. On mount, fetches `/api/spotify/wrapped`.
 2. If the response contains a non-empty `topGenres` array, sets it in `genres` state.
 3. If the array is empty or the request fails, sets `genresError` to `true`.
 
 ## Helper Functions
 
-| Function | Description |
-|----------|-------------|
-| `renderBadges(items, bg)` | Takes an array of strings and a background color, returns a flex-wrapped row of colored pill badges. |
+| Function                    | Description                                                                                                                                                                                                                         |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `renderBadges(items, bg)`   | Takes an array of strings and a background color, returns a flex-wrapped row of colored pill badges.                                                                                                                                |
 | `renderValue(label, value)` | Determines how to render a row's value. For the "Music" row, uses fetched genres or shows loading/error states. For other categories, splits comma-separated values into badge pills using the category's color from `badgeColors`. |
 
 ## Constants
@@ -41,18 +42,19 @@ This component takes no props.
 
 Maps category labels to their badge background colors:
 
-| Category | Color | Hex |
-|----------|-------|-----|
-| General | Orange | `#E67E22` |
-| Music | Spotify Green | `#1DB954` |
-| Movies | Red | `#E74C3C` |
-| Television | Purple | `#9B59B6` |
-| Books | Blue | `#3498DB` |
-| Heroes | Orange | `#F97316` |
+| Category   | Color         | Hex       |
+| ---------- | ------------- | --------- |
+| General    | Orange        | `#E67E22` |
+| Music      | Spotify Green | `#1DB954` |
+| Movies     | Red           | `#E74C3C` |
+| Television | Purple        | `#9B59B6` |
+| Books      | Blue          | `#3498DB` |
+| Heroes     | Orange        | `#F97316` |
 
 ## Render Structure
 
 The component renders:
+
 1. A `SectionHeader` with the title "Interests".
 2. A table-like layout using alternating row backgrounds (`#2A1F14` and `#1A1209`).
 3. Each row has a fixed-width label column (120px on mobile, 140px on sm+) and a flexible value column.
@@ -64,17 +66,17 @@ The component renders:
 
 ## Child Components
 
-| Component | Source | Description |
-|-----------|--------|-------------|
+| Component       | Source            | Description                                                          |
+| --------------- | ----------------- | -------------------------------------------------------------------- |
 | `SectionHeader` | `./SectionHeader` | Renders the section title header with consistent About page styling. |
 
 ## Data Sources
 
-| Source | Type | Description |
-|--------|------|-------------|
-| `interests` | `@/lib/data/personal` | Static array of `{ label, value }` objects defining interest categories and their values. |
-| `/api/spotify/wrapped` | API | Returns `SpotifyWrappedData` with a `topGenres` string array. |
-| `SpotifyWrappedData` | `@/app/api/spotify/wrapped/route` | TypeScript type import. |
+| Source                 | Type                              | Description                                                                               |
+| ---------------------- | --------------------------------- | ----------------------------------------------------------------------------------------- |
+| `interests`            | `@/lib/data/personal`             | Static array of `{ label, value }` objects defining interest categories and their values. |
+| `/api/spotify/wrapped` | API                               | Returns `SpotifyWrappedData` with a `topGenres` string array.                             |
+| `SpotifyWrappedData`   | `@/app/api/spotify/wrapped/route` | TypeScript type import.                                                                   |
 
 ## Styling
 

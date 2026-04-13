@@ -12,15 +12,16 @@ This component accepts **no props**. It fetches its data from the `/api/bluesky`
 
 ## State Management
 
-| Hook | State Variable | Type | Initial Value | Purpose |
-|------|---------------|------|---------------|---------|
-| `useState` | `post` | `BlueskyPost \| null` | `null` | Stores the latest Bluesky post fetched from the API |
-| `useState` | `loading` | `boolean` | `true` | Tracks whether the API request is in progress |
-| `useState` | `error` | `boolean` | `false` | Tracks whether the API request failed |
+| Hook       | State Variable | Type                  | Initial Value | Purpose                                             |
+| ---------- | -------------- | --------------------- | ------------- | --------------------------------------------------- |
+| `useState` | `post`         | `BlueskyPost \| null` | `null`        | Stores the latest Bluesky post fetched from the API |
+| `useState` | `loading`      | `boolean`             | `true`        | Tracks whether the API request is in progress       |
+| `useState` | `error`        | `boolean`             | `false`       | Tracks whether the API request failed               |
 
 ## API Integration
 
 ### Bluesky Latest Post (`/api/bluesky`)
+
 - **Method:** `GET`
 - **Triggered:** On mount via `useEffect` (empty dependency array)
 - **Response Type:** `BlueskyPost | null` (imported from `@/app/api/bluesky/route`)
@@ -52,9 +53,9 @@ interface BlueskyFacet {
 
 interface BlueskyFacetFeature {
   $type: string;
-  uri?: string;   // for links
-  did?: string;   // for mentions
-  tag?: string;   // for hashtags
+  uri?: string; // for links
+  did?: string; // for mentions
+  tag?: string; // for hashtags
 }
 ```
 
@@ -92,29 +93,29 @@ Processes Bluesky rich text by splitting the post text into segments based on fa
 ```ts
 interface RichSegment {
   text: string;
-  link?: string;    // external link URI
-  tag?: string;     // hashtag (without #)
+  link?: string; // external link URI
+  tag?: string; // hashtag (without #)
   mention?: string; // mention DID
 }
 ```
 
 **Supported Facet Types:**
 
-| Facet `$type` | Rendered As | Link Target |
-|---------------|------------|-------------|
-| `app.bsky.richtext.facet#link` | `<a>` with original URI | External URL |
-| `app.bsky.richtext.facet#tag` | `<a>` linking to Bluesky search | `https://bsky.app/search?q=%23{tag}` |
-| `app.bsky.richtext.facet#mention` | `<a>` linking to profile | `https://bsky.app/profile/{did}` |
+| Facet `$type`                     | Rendered As                     | Link Target                          |
+| --------------------------------- | ------------------------------- | ------------------------------------ |
+| `app.bsky.richtext.facet#link`    | `<a>` with original URI         | External URL                         |
+| `app.bsky.richtext.facet#tag`     | `<a>` linking to Bluesky search | `https://bsky.app/search?q=%23{tag}` |
+| `app.bsky.richtext.facet#mention` | `<a>` linking to profile        | `https://bsky.app/profile/{did}`     |
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
-| `Image` | `next/image` | Renders embed thumbnails and images |
-| `Heart` | `lucide-react` | Like count icon |
-| `MessageCircle` | `lucide-react` | Reply count icon |
-| `Repeat2` | `lucide-react` | Repost count icon |
-| `CloudSun` | `lucide-react` | Bluesky icon in the header |
+| Component       | Source         | Purpose                             |
+| --------------- | -------------- | ----------------------------------- |
+| `Image`         | `next/image`   | Renders embed thumbnails and images |
+| `Heart`         | `lucide-react` | Like count icon                     |
+| `MessageCircle` | `lucide-react` | Reply count icon                    |
+| `Repeat2`       | `lucide-react` | Repost count icon                   |
+| `CloudSun`      | `lucide-react` | Bluesky icon in the header          |
 
 ## Conditional Rendering States
 
@@ -133,11 +134,11 @@ interface RichSegment {
 
 ## Data Sources
 
-| Source | Import Path | Fields Used | Description |
-|--------|-------------|-------------|-------------|
-| `profile` | `@/lib/data/personal` | `name` | Used in the header title ("[Name]'s Latest Blog Entry") |
-| `BlueskyPost` (type) | `@/app/api/bluesky/route` | All fields | API response type |
-| `BlueskyFacet` (type) | `@/app/api/bluesky/route` | `index`, `features` | Rich text facet annotations |
+| Source                | Import Path               | Fields Used         | Description                                             |
+| --------------------- | ------------------------- | ------------------- | ------------------------------------------------------- |
+| `profile`             | `@/lib/data/personal`     | `name`              | Used in the header title ("[Name]'s Latest Blog Entry") |
+| `BlueskyPost` (type)  | `@/app/api/bluesky/route` | All fields          | API response type                                       |
+| `BlueskyFacet` (type) | `@/app/api/bluesky/route` | `index`, `features` | Rich text facet annotations                             |
 
 ## Styling Details
 

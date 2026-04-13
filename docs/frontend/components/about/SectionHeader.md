@@ -8,9 +8,9 @@ A simple, reusable presentational component that renders a styled section headin
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `title` | `string` | Yes | The text content to display in the section header |
+| Prop    | Type     | Required | Description                                       |
+| ------- | -------- | -------- | ------------------------------------------------- |
+| `title` | `string` | Yes      | The text content to display in the section header |
 
 ### Props Interface
 

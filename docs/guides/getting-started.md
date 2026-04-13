@@ -45,18 +45,18 @@ All environment variables are optional -- the app gracefully falls back to empty
 
 **Environment variables:**
 
-| Variable | Service | Description |
-|----------|---------|-------------|
-| `GITHUB_TOKEN` | GitHub | Personal access token for GitHub GraphQL API |
+| Variable                 | Service   | Description                                     |
+| ------------------------ | --------- | ----------------------------------------------- |
+| `GITHUB_TOKEN`           | GitHub    | Personal access token for GitHub GraphQL API    |
 | `INSTAGRAM_ACCESS_TOKEN` | Instagram | Long-lived access token for Instagram Graph API |
-| `YOUTUBE_API_KEY` | YouTube | YouTube Data API v3 key |
-| `YOUTUBE_CHANNEL_ID` | YouTube | YouTube channel ID |
-| `BLUESKY_HANDLE` | Bluesky | Bluesky handle/username |
-| `SPOTIFY_CLIENT_ID` | Spotify | Spotify OAuth client ID |
-| `SPOTIFY_CLIENT_SECRET` | Spotify | Spotify OAuth client secret |
-| `SPOTIFY_REFRESH_TOKEN` | Spotify | Spotify OAuth refresh token |
-| `STEAM_API_KEY` | Steam | Steam Web API key |
-| `STEAM_ID` | Steam | Steam 64-bit user ID |
+| `YOUTUBE_API_KEY`        | YouTube   | YouTube Data API v3 key                         |
+| `YOUTUBE_CHANNEL_ID`     | YouTube   | YouTube channel ID                              |
+| `BLUESKY_HANDLE`         | Bluesky   | Bluesky handle/username                         |
+| `SPOTIFY_CLIENT_ID`      | Spotify   | Spotify OAuth client ID                         |
+| `SPOTIFY_CLIENT_SECRET`  | Spotify   | Spotify OAuth client secret                     |
+| `SPOTIFY_REFRESH_TOKEN`  | Spotify   | Spotify OAuth refresh token                     |
+| `STEAM_API_KEY`          | Steam     | Steam Web API key                               |
+| `STEAM_ID`               | Steam     | Steam 64-bit user ID                            |
 
 You can start with zero credentials configured. The site will render normally with placeholder/empty content for any missing service.
 
@@ -78,12 +78,12 @@ The development server uses Turbopack for fast hot module replacement. Changes t
 
 ### Available Pages
 
-| Route | Description |
-|-------|-------------|
-| `/` | Home page with hero section, contribution heatmap, stats dashboard |
-| `/about` | About page with profile card, social feeds, music, gaming stats |
-| `/portfolio` | Portfolio page with project categories |
-| `/docs` | Documentation viewer with navigation sidebar |
+| Route        | Description                                                        |
+| ------------ | ------------------------------------------------------------------ |
+| `/`          | Home page with hero section, contribution heatmap, stats dashboard |
+| `/about`     | About page with profile card, social feeds, music, gaming stats    |
+| `/portfolio` | Portfolio page with project categories                             |
+| `/docs`      | Documentation viewer with navigation sidebar                       |
 
 ### Running Tests
 
@@ -182,18 +182,23 @@ After completing the setup, verify everything works:
 ### Common Issues
 
 **Issue:** Dependencies fail to install
+
 - **Solution:** Delete `node_modules` and `package-lock.json`, then run `npm install` to regenerate
 
 **Issue:** Port 3000 already in use
+
 - **Solution:** Stop the process using port 3000 (`lsof -ti:3000 | xargs kill`) or start on another port: `npm run dev -- -p 3001`
 
 **Issue:** API routes return `null` or empty arrays
+
 - **Solution:** This is expected behavior when environment variables are not set. Check `.env.local` contains valid credentials for the service you are testing
 
 **Issue:** TypeScript errors in IDE but build passes
+
 - **Solution:** Restart your TypeScript language server. In VS Code: `Cmd+Shift+P` > "TypeScript: Restart TS Server"
 
 **Issue:** Tests fail with timeout errors in CI
+
 - **Solution:** Integration tests require `maxWorkers=1` to avoid cross-suite data pollution. Run with: `npx jest --maxWorkers=1`
 
 ---
@@ -215,4 +220,4 @@ After completing the setup, verify everything works:
 
 ---
 
-*Last updated: 2026-03-24*
+_Last updated: 2026-03-24_

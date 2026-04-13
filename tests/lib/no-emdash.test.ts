@@ -120,7 +120,7 @@ describe("No emdash in user-visible UI", () => {
         if (strippedLines[lineIdx].includes(EMDASH)) {
           const rel = path.relative(SRC_DIR, filePath).replace(/\\/g, "/");
           violations.push(
-            `  ${rel}:${lineIdx + 1}  ${originalLines[lineIdx].trim()}`
+            `  ${rel}:${lineIdx + 1}  ${originalLines[lineIdx].trim()}`,
           );
         }
       }
@@ -130,7 +130,7 @@ describe("No emdash in user-visible UI", () => {
       throw new Error(
         `Found ${violations.length} em dash violation(s) in source files:\n\n` +
           violations.join("\n") +
-          "\n\nReplace \u2014 (em dash) with - (hyphen) in user-visible text."
+          "\n\nReplace \u2014 (em dash) with - (hyphen) in user-visible text.",
       );
     }
   });

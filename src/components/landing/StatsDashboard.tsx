@@ -28,13 +28,13 @@ interface GaugeProps {
 // This eliminates arc-flag / coordinate-system misalignment entirely.
 // Ref: https://tomekdev.com/posts/interactive-radial-gauge-in-react
 
-const SIZE = 100;                // viewBox is 100×100
-const CX = SIZE / 2;             // center X = 50
-const CY = SIZE / 2;             // center Y = 50
-const STROKE = 6;                // track width
-const R = (SIZE - STROKE) / 2;   // radius = 47, keeps stroke inside viewBox
+const SIZE = 100; // viewBox is 100×100
+const CX = SIZE / 2; // center X = 50
+const CY = SIZE / 2; // center Y = 50
+const STROKE = 6; // track width
+const R = (SIZE - STROKE) / 2; // radius = 47, keeps stroke inside viewBox
 const CIRCUMFERENCE = 2 * Math.PI * R;
-const TRACK_DEG = 270;           // 270° arc, 90° gap at bottom
+const TRACK_DEG = 270; // 270° arc, 90° gap at bottom
 const TRACK_FRACTION = TRACK_DEG / 360; // 0.75
 const TRACK_LENGTH = CIRCUMFERENCE * TRACK_FRACTION;
 const TRACK_GAP = CIRCUMFERENCE - TRACK_LENGTH;
@@ -64,7 +64,9 @@ function Gauge({ label, value, maxValue, delay, color, isInView }: GaugeProps) {
       const eased =
         t === 1
           ? 1
-          : 1 - Math.pow(2, -10 * t) * Math.cos((t * 10 - 0.75) * (2 * Math.PI / 3));
+          : 1 -
+            Math.pow(2, -10 * t) *
+              Math.cos((t * 10 - 0.75) * ((2 * Math.PI) / 3));
       const clamped = Math.min(eased, 1);
 
       setProgress(clamped * ratio);
@@ -131,7 +133,9 @@ function Gauge({ label, value, maxValue, delay, color, isInView }: GaugeProps) {
 
         {/* Background track */}
         <circle
-          cx={CX} cy={CY} r={R}
+          cx={CX}
+          cy={CY}
+          r={R}
           stroke="rgba(42, 31, 20, 0.8)"
           strokeWidth={STROKE}
           strokeLinecap="round"
@@ -142,7 +146,9 @@ function Gauge({ label, value, maxValue, delay, color, isInView }: GaugeProps) {
 
         {/* Filled track */}
         <circle
-          cx={CX} cy={CY} r={R}
+          cx={CX}
+          cy={CY}
+          r={R}
           stroke={color}
           strokeWidth={STROKE}
           strokeLinecap="round"
@@ -150,23 +156,41 @@ function Gauge({ label, value, maxValue, delay, color, isInView }: GaugeProps) {
           strokeDashoffset={valueOffset}
           transform={`rotate(${ROTATION} ${CX} ${CY})`}
           fill="none"
-          style={{ filter: `drop-shadow(0 0 3px ${color}60)`, transition: "stroke-dashoffset 0.05s linear" }}
+          style={{
+            filter: `drop-shadow(0 0 3px ${color}60)`,
+            transition: "stroke-dashoffset 0.05s linear",
+          }}
         />
 
         {/* Needle */}
         <line
-          x1={CX} y1={CY} x2={nx} y2={ny}
-          stroke="#F5E6D3" strokeWidth="1.5" strokeLinecap="round"
+          x1={CX}
+          y1={CY}
+          x2={nx}
+          y2={ny}
+          stroke="#F5E6D3"
+          strokeWidth="1.5"
+          strokeLinecap="round"
           style={{ filter: "drop-shadow(0 0 2px rgba(245, 230, 211, 0.3))" }}
         />
 
         {/* Center cap */}
-        <circle cx={CX} cy={CY} r="4" fill="rgba(42, 31, 20, 0.9)" stroke={color} strokeWidth="1.2" />
+        <circle
+          cx={CX}
+          cy={CY}
+          r="4"
+          fill="rgba(42, 31, 20, 0.9)"
+          stroke={color}
+          strokeWidth="1.2"
+        />
         <circle cx={CX} cy={CY} r="1.5" fill={color} />
       </svg>
 
       {/* Value + label below the gauge */}
-      <span className="text-xl sm:text-2xl font-bold tabular-nums mt-1" style={{ color }}>
+      <span
+        className="text-xl sm:text-2xl font-bold tabular-nums mt-1"
+        style={{ color }}
+      >
         {displayNum.toLocaleString()}
       </span>
       <span className="text-[10px] sm:text-xs text-sunny-cream-muted font-serif mt-0.5">
@@ -208,11 +232,46 @@ export default function StatsDashboard({
         </p>
       ) : (
         <div className="flex flex-wrap justify-center gap-2 sm:grid sm:grid-cols-5">
-          <Gauge label="Commits" value={totalCommits} maxValue={commitMax} delay={0} color="rgba(240, 180, 41, 0.9)" isInView={isInView} />
-          <Gauge label="PRs" value={totalPRs} maxValue={prMax} delay={0.1} color="rgba(220, 160, 30, 0.85)" isInView={isInView} />
-          <Gauge label="Issues" value={totalIssues} maxValue={issueMax} delay={0.2} color="rgba(200, 140, 20, 0.8)" isInView={isInView} />
-          <Gauge label="Repos" value={totalRepos} maxValue={repoMax} delay={0.3} color="rgba(184, 134, 11, 0.85)" isInView={isInView} />
-          <Gauge label="Stars" value={totalStars} maxValue={starMax} delay={0.4} color="rgba(245, 200, 66, 0.9)" isInView={isInView} />
+          <Gauge
+            label="Commits"
+            value={totalCommits}
+            maxValue={commitMax}
+            delay={0}
+            color="rgba(240, 180, 41, 0.9)"
+            isInView={isInView}
+          />
+          <Gauge
+            label="PRs"
+            value={totalPRs}
+            maxValue={prMax}
+            delay={0.1}
+            color="rgba(220, 160, 30, 0.85)"
+            isInView={isInView}
+          />
+          <Gauge
+            label="Issues"
+            value={totalIssues}
+            maxValue={issueMax}
+            delay={0.2}
+            color="rgba(200, 140, 20, 0.8)"
+            isInView={isInView}
+          />
+          <Gauge
+            label="Repos"
+            value={totalRepos}
+            maxValue={repoMax}
+            delay={0.3}
+            color="rgba(184, 134, 11, 0.85)"
+            isInView={isInView}
+          />
+          <Gauge
+            label="Stars"
+            value={totalStars}
+            maxValue={starMax}
+            delay={0.4}
+            color="rgba(245, 200, 66, 0.9)"
+            isInView={isInView}
+          />
         </div>
       )}
     </div>

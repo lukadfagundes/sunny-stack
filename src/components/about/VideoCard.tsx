@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { ThumbsUp, MessageSquare, Eye, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ThumbsUp,
+  MessageSquare,
+  Eye,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import type { YouTubeVideo } from "@/app/api/youtube/route";
 
 interface VideoCardProps {
@@ -67,7 +73,10 @@ export default function VideoCard({ video }: VideoCardProps) {
             <button
               onClick={() => setDescOpen((o) => !o)}
               className="flex items-center gap-1 text-sm mt-1 bg-transparent border-none p-0 cursor-pointer"
-              style={{ color: "#AAAAAA", fontFamily: "Roboto, Arial, sans-serif" }}
+              style={{
+                color: "#AAAAAA",
+                fontFamily: "Roboto, Arial, sans-serif",
+              }}
             >
               {descOpen ? (
                 <>
@@ -84,7 +93,10 @@ export default function VideoCard({ video }: VideoCardProps) {
             {descOpen && (
               <p
                 className="text-sm mt-2 whitespace-pre-line"
-                style={{ color: "#AAAAAA", fontFamily: "Roboto, Arial, sans-serif" }}
+                style={{
+                  color: "#AAAAAA",
+                  fontFamily: "Roboto, Arial, sans-serif",
+                }}
               >
                 {video.description}
               </p>
@@ -93,10 +105,7 @@ export default function VideoCard({ video }: VideoCardProps) {
         )}
 
         {/* Date */}
-        <p
-          className="text-xs mt-2"
-          style={{ color: "#717171" }}
-        >
+        <p className="text-xs mt-2" style={{ color: "#717171" }}>
           {new Date(video.publishedAt).toLocaleDateString("en-US", {
             month: "long",
             day: "numeric",

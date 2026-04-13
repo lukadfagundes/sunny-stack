@@ -263,6 +263,7 @@ const accessToken = await getSpotifyAccessToken();
 ```
 
 The token module handles:
+
 - Checking if all three Spotify env vars are set (`SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN`)
 - Refreshing the access token using the OAuth 2.0 refresh token grant
 - Caching the access token in memory with a 60-second buffer before expiry
@@ -449,7 +450,7 @@ export async function GET() {
       {
         headers: { Authorization: `Bearer ${bearerToken}` },
         cache: "no-store",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -512,7 +513,6 @@ describe("GET /api/twitter", () => {
 - [Getting Started](./getting-started.md) - Project setup guide
 - [Deployment Guide](./deployment.md) - Production deployment
 
-
 ---
 
-*Last updated: 2026-03-24*
+_Last updated: 2026-03-24_

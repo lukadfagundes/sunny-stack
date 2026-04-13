@@ -31,7 +31,7 @@ describe("MusicPlayer", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockTrack),
-      })
+      }),
     ) as jest.Mock;
 
     render(<MusicPlayer />);
@@ -42,11 +42,13 @@ describe("MusicPlayer", () => {
     });
 
     const iframe = document.querySelector("iframe");
-    expect(iframe?.src).toContain("https://open.spotify.com/embed/track/track123");
+    expect(iframe?.src).toContain(
+      "https://open.spotify.com/embed/track/track123",
+    );
     expect(iframe?.src).toContain("theme=0");
     expect(iframe).toHaveAttribute(
       "sandbox",
-      "allow-scripts allow-same-origin allow-popups"
+      "allow-scripts allow-same-origin allow-popups",
     );
   });
 
@@ -55,7 +57,7 @@ describe("MusicPlayer", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockTrack),
-      })
+      }),
     ) as jest.Mock;
 
     const onViewMusic = jest.fn();
@@ -71,7 +73,7 @@ describe("MusicPlayer", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(null),
-      })
+      }),
     ) as jest.Mock;
 
     render(<MusicPlayer />);
@@ -85,7 +87,7 @@ describe("MusicPlayer", () => {
 
   it("shows error state on fetch failure", async () => {
     global.fetch = jest.fn(() =>
-      Promise.reject(new Error("fail"))
+      Promise.reject(new Error("fail")),
     ) as jest.Mock;
 
     render(<MusicPlayer />);
@@ -96,9 +98,7 @@ describe("MusicPlayer", () => {
   });
 
   it("shows error on non-ok response", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: false })
-    ) as jest.Mock;
+    global.fetch = jest.fn(() => Promise.resolve({ ok: false })) as jest.Mock;
 
     render(<MusicPlayer />);
 
@@ -112,7 +112,7 @@ describe("MusicPlayer", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockTrack),
-      })
+      }),
     ) as jest.Mock;
 
     render(<MusicPlayer />);
@@ -129,7 +129,7 @@ describe("MusicPlayer", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockTrack),
-      })
+      }),
     ) as jest.Mock;
 
     render(<MusicPlayer />);

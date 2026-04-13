@@ -44,54 +44,54 @@ flowchart LR
 
 ### Bluesky (1 endpoint)
 
-| Method | Endpoint | Description | Parameters | Response Type |
-|---|---|---|---|---|
-| GET | `/api/bluesky` | Latest Bluesky post | None | `BlueskyPost \| null` |
+| Method | Endpoint       | Description         | Parameters | Response Type         |
+| ------ | -------------- | ------------------- | ---------- | --------------------- |
+| GET    | `/api/bluesky` | Latest Bluesky post | None       | `BlueskyPost \| null` |
 
 ### YouTube (1 endpoint)
 
-| Method | Endpoint | Description | Parameters | Response Type |
-|---|---|---|---|---|
-| GET | `/api/youtube` | 5 most recent videos with statistics | None | `YouTubeVideo[]` |
+| Method | Endpoint       | Description                          | Parameters | Response Type    |
+| ------ | -------------- | ------------------------------------ | ---------- | ---------------- |
+| GET    | `/api/youtube` | 5 most recent videos with statistics | None       | `YouTubeVideo[]` |
 
 ### GitHub (1 endpoint)
 
-| Method | Endpoint | Description | Parameters | Response Type |
-|---|---|---|---|---|
-| GET | `/api/github` | Profile card data (avatar, name, bio, location) | None | `GitHubProfile \| null` |
+| Method | Endpoint      | Description                                     | Parameters | Response Type           |
+| ------ | ------------- | ----------------------------------------------- | ---------- | ----------------------- |
+| GET    | `/api/github` | Profile card data (avatar, name, bio, location) | None       | `GitHubProfile \| null` |
 
 ### Activity (1 endpoint)
 
-| Method | Endpoint | Description | Parameters | Response Type |
-|---|---|---|---|---|
-| GET | `/api/activity` | Cross-platform activity status | None | `ActivityStatus` |
+| Method | Endpoint        | Description                    | Parameters | Response Type    |
+| ------ | --------------- | ------------------------------ | ---------- | ---------------- |
+| GET    | `/api/activity` | Cross-platform activity status | None       | `ActivityStatus` |
 
 ### Spotify (2 endpoints)
 
-| Method | Endpoint | Description | Parameters | Response Type |
-|---|---|---|---|---|
-| GET | `/api/spotify/top-track` | Current top track | None | `SpotifyTopTrack \| null` |
-| GET | `/api/spotify/wrapped` | Top 5 tracks, top 5 artists, top genres | None | `SpotifyWrappedData \| null` |
+| Method | Endpoint                 | Description                             | Parameters | Response Type                |
+| ------ | ------------------------ | --------------------------------------- | ---------- | ---------------------------- |
+| GET    | `/api/spotify/top-track` | Current top track                       | None       | `SpotifyTopTrack \| null`    |
+| GET    | `/api/spotify/wrapped`   | Top 5 tracks, top 5 artists, top genres | None       | `SpotifyWrappedData \| null` |
 
 ### Steam (2 endpoints)
 
-| Method | Endpoint | Description | Parameters | Response Type |
-|---|---|---|---|---|
-| GET | `/api/steam` | Top 8 most-played games with header images | None | `SteamGame[]` |
-| GET | `/api/steam/achievements` | Achievement data for a specific game | `?appid={number}` (required, validated with `/^\d+$/`) | `SteamAchievementData \| null` |
+| Method | Endpoint                  | Description                                | Parameters                                             | Response Type                  |
+| ------ | ------------------------- | ------------------------------------------ | ------------------------------------------------------ | ------------------------------ |
+| GET    | `/api/steam`              | Top 8 most-played games with header images | None                                                   | `SteamGame[]`                  |
+| GET    | `/api/steam/achievements` | Achievement data for a specific game       | `?appid={number}` (required, validated with `/^\d+$/`) | `SteamAchievementData \| null` |
 
 ### Docs (1 endpoint, 2 modes)
 
-| Method | Endpoint | Description | Parameters | Response Type |
-|---|---|---|---|---|
-| GET | `/api/docs` | Documentation file tree | `?list=true` | `DocFile[]` |
-| GET | `/api/docs` | Markdown file content with Mermaid preprocessing | `?path={filepath}` (validated against path traversal) | `string` |
+| Method | Endpoint    | Description                                      | Parameters                                            | Response Type |
+| ------ | ----------- | ------------------------------------------------ | ----------------------------------------------------- | ------------- |
+| GET    | `/api/docs` | Documentation file tree                          | `?list=true`                                          | `DocFile[]`   |
+| GET    | `/api/docs` | Markdown file content with Mermaid preprocessing | `?path={filepath}` (validated against path traversal) | `string`      |
 
 ### Instagram (1 endpoint)
 
-| Method | Endpoint | Description | Parameters | Response Type |
-|---|---|---|---|---|
-| GET | `/api/instagram` | 5 most recent image posts | None | `InstagramPost[]` |
+| Method | Endpoint         | Description               | Parameters | Response Type     |
+| ------ | ---------------- | ------------------------- | ---------- | ----------------- |
+| GET    | `/api/instagram` | 5 most recent image posts | None       | `InstagramPost[]` |
 
 ## Rate Limiting
 
@@ -103,12 +103,12 @@ All endpoints are protected by the rate limiter in `src/proxy.ts`:
 
 ## Error Responses
 
-| Status Code | Meaning | When |
-|---|---|---|
-| 200 | Success | Data returned (or `null`/empty array as graceful fallback when credentials are missing) |
-| 400 | Bad Request | Missing or invalid parameters (only from `/api/docs`, `/api/steam/achievements`) |
-| 404 | Not Found | Requested file not found (only from `/api/docs`) |
-| 429 | Too Many Requests | Rate limit exceeded (includes `Retry-After` header) |
+| Status Code | Meaning           | When                                                                                    |
+| ----------- | ----------------- | --------------------------------------------------------------------------------------- |
+| 200         | Success           | Data returned (or `null`/empty array as graceful fallback when credentials are missing) |
+| 400         | Bad Request       | Missing or invalid parameters (only from `/api/docs`, `/api/steam/achievements`)        |
+| 404         | Not Found         | Requested file not found (only from `/api/docs`)                                        |
+| 429         | Too Many Requests | Rate limit exceeded (includes `Retry-After` header)                                     |
 
 ## Authentication
 

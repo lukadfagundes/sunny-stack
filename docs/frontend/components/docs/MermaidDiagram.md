@@ -8,15 +8,15 @@
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `code` | `string` | Yes | Raw Mermaid diagram code (e.g., `flowchart TD\n  A --> B`). Decoded from base64 by the `MarkdownRenderer` before passing. |
+| Prop   | Type     | Required | Description                                                                                                               |
+| ------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `code` | `string` | Yes      | Raw Mermaid diagram code (e.g., `flowchart TD\n  A --> B`). Decoded from base64 by the `MarkdownRenderer` before passing. |
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
-| `useState` | `svg` | `string` | `""` | The rendered SVG markup. Empty string while rendering is in progress. |
+| Hook       | Variable | Type     | Initial | Description                                                           |
+| ---------- | -------- | -------- | ------- | --------------------------------------------------------------------- |
+| `useState` | `svg`    | `string` | `""`    | The rendered SVG markup. Empty string while rendering is in progress. |
 
 ## Initialization
 
@@ -64,8 +64,8 @@ All elements use `<span>` with `style={{ display: "block" }}` or `style={{ displ
 
 ## Child Components / Dependencies
 
-| Component | Source | Description |
-|-----------|--------|-------------|
+| Component | Source    | Description                                                                    |
+| --------- | --------- | ------------------------------------------------------------------------------ |
 | `mermaid` | `mermaid` | Mermaid diagram rendering library. Renders diagram code to SVG in the browser. |
 
 ## Styling

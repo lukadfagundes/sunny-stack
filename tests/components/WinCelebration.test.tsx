@@ -23,9 +23,7 @@ describe("WinCelebration", () => {
 
   it("shows the move count message", () => {
     render(<WinCelebration quote={null} moveCount={42} />);
-    expect(
-      screen.getByText(/42 moves to find a ship/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/42 moves to find a ship/)).toBeInTheDocument();
   });
 
   it("renders the Go Home link", () => {
@@ -36,7 +34,7 @@ describe("WinCelebration", () => {
 
   it("renders particle burst elements", () => {
     const { container } = render(
-      <WinCelebration quote={null} moveCount={10} />
+      <WinCelebration quote={null} moveCount={10} />,
     );
     // 25 particles
     const particles = container.querySelectorAll(".rounded-full");

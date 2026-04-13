@@ -60,7 +60,7 @@ export async function GET() {
         } catch {
           return "";
         }
-      })
+      }),
     );
 
     const sorted = top8.map((game, i) => ({

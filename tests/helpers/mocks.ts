@@ -5,26 +5,35 @@ jest.mock("framer-motion", () => {
   const React = require("react");
 
   const FRAMER_PROPS = new Set([
-    "initial", "animate", "exit", "transition", "variants",
-    "whileHover", "whileTap", "whileInView", "layoutId",
-    "layout", "onAnimationComplete",
+    "initial",
+    "animate",
+    "exit",
+    "transition",
+    "variants",
+    "whileHover",
+    "whileTap",
+    "whileInView",
+    "layoutId",
+    "layout",
+    "onAnimationComplete",
   ]);
 
-  const MotionProxy = React.forwardRef(
-    function MotionProxy(props: Record<string, unknown>, ref: unknown) {
-      const filtered: Record<string, unknown> = {};
-      for (const [k, v] of Object.entries(props)) {
-        if (!FRAMER_PROPS.has(k)) filtered[k] = v;
-      }
-      return React.createElement("div", { ...filtered, ref });
+  const MotionProxy = React.forwardRef(function MotionProxy(
+    props: Record<string, unknown>,
+    ref: unknown,
+  ) {
+    const filtered: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(props)) {
+      if (!FRAMER_PROPS.has(k)) filtered[k] = v;
     }
-  );
+    return React.createElement("div", { ...filtered, ref });
+  });
 
   const motion = new Proxy(
     {},
     {
       get: () => MotionProxy,
-    }
+    },
   );
 
   return {

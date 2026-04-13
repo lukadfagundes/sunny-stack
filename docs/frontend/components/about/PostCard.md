@@ -8,9 +8,9 @@ A client-side presentational component that renders an individual Instagram post
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `post` | `InstagramPost` | Yes | The Instagram post data object containing all fields needed for rendering |
+| Prop   | Type            | Required | Description                                                               |
+| ------ | --------------- | -------- | ------------------------------------------------------------------------- |
+| `post` | `InstagramPost` | Yes      | The Instagram post data object containing all fields needed for rendering |
 
 ### Props Interface
 
@@ -48,11 +48,11 @@ This component has **no explicit event handlers**. The image is wrapped in a nat
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
-| `Image` | `next/image` | Renders the Instagram post image with optimized loading (`fill` layout, responsive `sizes`) |
-| `Heart` | `lucide-react` | Like count icon |
-| `MessageCircle` | `lucide-react` | Comment count icon |
+| Component       | Source         | Purpose                                                                                     |
+| --------------- | -------------- | ------------------------------------------------------------------------------------------- |
+| `Image`         | `next/image`   | Renders the Instagram post image with optimized loading (`fill` layout, responsive `sizes`) |
+| `Heart`         | `lucide-react` | Like count icon                                                                             |
+| `MessageCircle` | `lucide-react` | Comment count icon                                                                          |
 
 ## Rendering Structure
 

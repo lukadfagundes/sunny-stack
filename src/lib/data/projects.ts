@@ -175,7 +175,8 @@ const projects: ProjectData[] = [
   {
     id: "rinoa-platform",
     title: "Rinoa",
-    tagline: "Hybrid cloud-edge data platform for a proprietary client application",
+    tagline:
+      "Hybrid cloud-edge data platform for a proprietary client application",
     description:
       "Production-grade hybrid platform combining Vercel serverless frontend with Raspberry Pi 5 edge computing backend. Manages 13,000+ database records with sub-3ms query performance and 99.9% uptime. Built using Trinity Method v2.0 investigation-first development methodology.",
     category: "professional",
@@ -226,7 +227,8 @@ const projects: ProjectData[] = [
   {
     id: "hytale-server-manager",
     title: "Hytale Server Manager",
-    tagline: "Free, open-source desktop app wrapping Hytale dedicated servers with a clean UI",
+    tagline:
+      "Free, open-source desktop app wrapping Hytale dedicated servers with a clean UI",
     description:
       "Monitor server status, view connected players with their gear and stats, manage warps, toggle mods, and browse game assets - all from a single interface. Built with Electron's multi-process architecture and strict context isolation. 17 invoke + 13 event IPC channels, 7 Zustand stores, 18 React components, and 240+ tests across 17 suites.",
     category: "personal",
@@ -284,7 +286,8 @@ const projects: ProjectData[] = [
   {
     id: "bwaincell",
     title: "Bwaincell",
-    tagline: "Unified productivity platform with Discord bot, REST API, and PWA",
+    tagline:
+      "Unified productivity platform with Discord bot, REST API, and PWA",
     description:
       "A monorepo productivity platform providing task management, reminders, lists, notes, budgets, scheduling, AI-powered suggestions, and random generators through three integrated interfaces: Discord Bot (10 slash commands with 49+ subcommands), REST API (39 authenticated endpoints), and Progressive Web App (Next.js 14).",
     category: "personal",
@@ -386,7 +389,8 @@ const projects: ProjectData[] = [
   {
     id: "spotify-rainmeter",
     title: "Spotify Now Playing",
-    tagline: "Lightweight Rainmeter skin for Windows displaying Spotify track info",
+    tagline:
+      "Lightweight Rainmeter skin for Windows displaying Spotify track info",
     description:
       "Beautiful Rainmeter skin that displays your currently playing Spotify track with full playback controls. Features automatic OAuth 2.0 token management, album artwork caching, and real-time updates with 1-second API polling. Includes SpotifySetup.exe GUI utility for easy OAuth configuration.",
     category: "personal",
@@ -510,12 +514,7 @@ const projects: ProjectData[] = [
     description:
       "A documentation command for GSD that writes, updates, and verifies project docs against the actual codebase. Every factual claim - file paths, CLI commands, API endpoints, function signatures - is checked against the live repo before commit. Handles both initial doc creation and incremental updates, generating up to 9 documentation types with parallel subagent orchestration.",
     category: "contribution",
-    techStack: [
-      "JavaScript",
-      "Node.js",
-      "CommonJS",
-      "Claude Agent SDK",
-    ],
+    techStack: ["JavaScript", "Node.js", "CommonJS", "Claude Agent SDK"],
     features: [
       {
         label: "Docs Verification Gate",
@@ -564,7 +563,7 @@ export function getAllProjects(): ProjectData[] {
 }
 
 export function getProjectsByCategory(
-  category: ProjectCategory
+  category: ProjectCategory,
 ): ProjectData[] {
   return projects.filter((p) => p.category === category);
 }

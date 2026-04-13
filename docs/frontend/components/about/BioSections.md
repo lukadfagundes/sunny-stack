@@ -24,17 +24,17 @@ This component has **no event handlers**.
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
+| Component       | Source            | Purpose                                                               |
+| --------------- | ----------------- | --------------------------------------------------------------------- |
 | `SectionHeader` | `./SectionHeader` | Renders the section title ("[Name]'s Blurbs") with consistent styling |
 
 ## Data Sources
 
-| Source | Import Path | Type | Description |
-|--------|-------------|------|-------------|
-| `profile` | `@/lib/data/personal` | `ProfileData` | Used for `profile.name` in the section header title |
-| `aboutMe` | `@/lib/data/personal` | `string` | Multi-paragraph "About me" text, paragraphs separated by `\n\n` |
-| `whoIdLikeToMeet` | `@/lib/data/personal` | `string` | Multi-paragraph "Who I'd like to meet" text, paragraphs separated by `\n\n` |
+| Source            | Import Path           | Type          | Description                                                                 |
+| ----------------- | --------------------- | ------------- | --------------------------------------------------------------------------- |
+| `profile`         | `@/lib/data/personal` | `ProfileData` | Used for `profile.name` in the section header title                         |
+| `aboutMe`         | `@/lib/data/personal` | `string`      | Multi-paragraph "About me" text, paragraphs separated by `\n\n`             |
+| `whoIdLikeToMeet` | `@/lib/data/personal` | `string`      | Multi-paragraph "Who I'd like to meet" text, paragraphs separated by `\n\n` |
 
 ## Rendering Logic
 

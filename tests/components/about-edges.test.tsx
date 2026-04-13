@@ -3,7 +3,16 @@ import { render, screen } from "@testing-library/react";
 import "../../tests/helpers/mocks";
 
 jest.mock("../../src/lib/data/personal", () => ({
-  profile: { name: "Luka", tagline: "", gender: "Male", age: 0, location: "", country: "", status: "Online Now!", lastLogin: "" },
+  profile: {
+    name: "Luka",
+    tagline: "",
+    gender: "Male",
+    age: 0,
+    location: "",
+    country: "",
+    status: "Online Now!",
+    lastLogin: "",
+  },
   aboutMe: "First paragraph.\n\nSecond paragraph.\n\nThird paragraph.",
   whoIdLikeToMeet: "Meet one.\n\nMeet two.",
   details: [],

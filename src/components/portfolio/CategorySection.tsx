@@ -49,16 +49,16 @@ export default function CategorySection({
         >
           {config.label}
         </h2>
-        <div
-          className={`flex-1 h-px border-t ${config.border} opacity-30`}
-        />
+        <div className={`flex-1 h-px border-t ${config.border} opacity-30`} />
       </div>
 
       <LayoutGroup id={category}>
         <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          transition={{ layout: { type: "spring", stiffness: 200, damping: 30 } }}
+          transition={{
+            layout: { type: "spring", stiffness: 200, damping: 30 },
+          }}
         >
           {children}
         </motion.div>

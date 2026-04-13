@@ -29,10 +29,10 @@ None required. This is a public endpoint.
 
 ## Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `list` | string | No | Set to `"true"` to get file tree |
-| `path` | string | No | File path relative to project root (e.g., `docs/api/README.md` or `README.md`) |
+| Parameter | Type   | Required | Description                                                                    |
+| --------- | ------ | -------- | ------------------------------------------------------------------------------ |
+| `list`    | string | No       | Set to `"true"` to get file tree                                               |
+| `path`    | string | No       | File path relative to project root (e.g., `docs/api/README.md` or `README.md`) |
 
 ## Response Types
 
@@ -40,10 +40,10 @@ None required. This is a public endpoint.
 
 ```typescript
 interface DocFile {
-  name: string;           // File or directory name
-  path: string;           // Relative path from project root
+  name: string; // File or directory name
+  path: string; // Relative path from project root
   type: "file" | "directory";
-  children?: DocFile[];   // Subdirectories and files (only for directories)
+  children?: DocFile[]; // Subdirectories and files (only for directories)
 }
 ```
 
@@ -92,7 +92,7 @@ Four layers of path validation:
 
 Converts fenced Mermaid code blocks into custom HTML elements:
 
-1. Matches fenced mermaid code blocks via regex (`` ```mermaid ... ``` ``)
+1. Matches fenced mermaid code blocks via regex (` ```mermaid ... ``` `)
 2. Base64-encodes the trimmed diagram code
 3. Replaces the code block with `<mermaid-diagram data-chart="{base64}"></mermaid-diagram>`
 
@@ -100,13 +100,13 @@ The `MarkdownRenderer` component detects these custom elements (via `rehype-raw`
 
 ## Error Handling
 
-| Condition | Status | Response |
-|-----------|--------|----------|
-| Missing `path` parameter (non-list mode) | 400 | `{ error: "Missing 'path' parameter" }` |
-| Path contains `".."` | 400 | `{ error: "Invalid path" }` |
-| Path not in allowed locations | 400 | `{ error: "Invalid path" }` |
-| Path doesn't end in `.md` | 400 | `{ error: "Invalid path" }` |
-| File not found | 404 | `{ error: "File not found" }` |
+| Condition                                | Status | Response                                |
+| ---------------------------------------- | ------ | --------------------------------------- |
+| Missing `path` parameter (non-list mode) | 400    | `{ error: "Missing 'path' parameter" }` |
+| Path contains `".."`                     | 400    | `{ error: "Invalid path" }`             |
+| Path not in allowed locations            | 400    | `{ error: "Invalid path" }`             |
+| Path doesn't end in `.md`                | 400    | `{ error: "Invalid path" }`             |
+| File not found                           | 404    | `{ error: "File not found" }`           |
 
 ## Dependencies
 

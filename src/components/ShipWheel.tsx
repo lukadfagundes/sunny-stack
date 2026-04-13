@@ -62,17 +62,26 @@ const LABEL_POSITIONS: {
   },
   {
     // Right
-    style: { left: `${WHEEL_SIZE + LABEL_OFFSET}px`, top: `calc(50% - ${LABEL_SHIFT_UP}px)` },
+    style: {
+      left: `${WHEEL_SIZE + LABEL_OFFSET}px`,
+      top: `calc(50% - ${LABEL_SHIFT_UP}px)`,
+    },
     align: "-translate-y-1/2",
   },
   {
     // Bottom
-    style: { top: `${WHEEL_SIZE + LABEL_OFFSET - LABEL_SHIFT_UP}px`, left: "50%" },
+    style: {
+      top: `${WHEEL_SIZE + LABEL_OFFSET - LABEL_SHIFT_UP}px`,
+      left: "50%",
+    },
     align: "-translate-x-1/2",
   },
   {
     // Left
-    style: { right: `${WHEEL_SIZE + LABEL_OFFSET}px`, top: `calc(50% - ${LABEL_SHIFT_UP}px)` },
+    style: {
+      right: `${WHEEL_SIZE + LABEL_OFFSET}px`,
+      top: `calc(50% - ${LABEL_SHIFT_UP}px)`,
+    },
     align: "-translate-y-1/2",
   },
 ];
@@ -97,7 +106,7 @@ export default function ShipWheel() {
   // Position p corresponds to visual angle p*90.
   // So svgAngle = p*90 - currentAngle. The item at that svgAngle has item.angle = svgAngle.
   const labelsAtPositions = [0, 1, 2, 3].map((p) => {
-    const targetSvgAngle = ((p * 90 - currentAngle) % 360 + 360) % 360;
+    const targetSvgAngle = (((p * 90 - currentAngle) % 360) + 360) % 360;
     return NAV_ITEMS.find((item) => item.angle === targetSvgAngle)!;
   });
 
@@ -118,7 +127,10 @@ export default function ShipWheel() {
         onMouseLeave={() => setHovered(false)}
         style={{ padding: LABEL_OFFSET + 40 }}
       >
-        <div className="relative" style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}>
+        <div
+          className="relative"
+          style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}
+        >
           {/* Wheel */}
           <div
             className={`transition-opacity duration-300 ${

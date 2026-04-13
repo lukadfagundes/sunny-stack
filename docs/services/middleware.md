@@ -20,11 +20,11 @@ Non-API requests (pages, static assets, etc.) pass through immediately via `Next
 
 ## Configuration
 
-| Constant | Value | Description |
-|----------|-------|-------------|
-| `WINDOW_MS` | `60_000` (60 seconds) | Rate limit window duration |
-| `MAX_REQUESTS` | `30` | Maximum requests per IP per window |
-| `MAX_MAP_SIZE` | `10_000` | Maximum entries in the rate limit map before cleanup |
+| Constant       | Value                 | Description                                          |
+| -------------- | --------------------- | ---------------------------------------------------- |
+| `WINDOW_MS`    | `60_000` (60 seconds) | Rate limit window duration                           |
+| `MAX_REQUESTS` | `30`                  | Maximum requests per IP per window                   |
+| `MAX_MAP_SIZE` | `10_000`              | Maximum entries in the rate limit map before cleanup |
 
 ## Exports
 
@@ -35,7 +35,9 @@ The rate limiting proxy function. Returns either `NextResponse.next()` (pass thr
 ### `config`
 
 ```typescript
-{ matcher: "/api/:path*" }
+{
+  matcher: "/api/:path*";
+}
 ```
 
 ## Implementation Details
@@ -43,6 +45,7 @@ The rate limiting proxy function. Returns either `NextResponse.next()` (pass thr
 ### IP Resolution
 
 Client IP is determined in order of precedence:
+
 1. First entry from `x-forwarded-for` header (split by comma, trimmed)
 2. `x-real-ip` header
 3. `"unknown"` fallback
@@ -87,6 +90,7 @@ When rate limited, the response includes a `Retry-After` header with the number 
 ```
 
 Headers:
+
 - `Retry-After: {seconds}` -- Seconds until the rate limit window resets
 
 ## Dependencies

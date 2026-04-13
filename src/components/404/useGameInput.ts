@@ -20,7 +20,10 @@ const KEY_MAP: Record<string, Direction> = {
 
 const SWIPE_THRESHOLD = 50;
 
-export function useGameInput(onMove: (direction: Direction) => void, disabled = false) {
+export function useGameInput(
+  onMove: (direction: Direction) => void,
+  disabled = false,
+) {
   const onMoveRef = useRef(onMove);
   const disabledRef = useRef(disabled);
 

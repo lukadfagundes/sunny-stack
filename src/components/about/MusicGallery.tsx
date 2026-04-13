@@ -122,10 +122,7 @@ export default function MusicGallery({ onBack }: MusicGalleryProps) {
         {!loading && !error && data && (
           <div className="px-4 py-4">
             {/* Wrapped header */}
-            <p
-              className="text-lg font-bold mb-4"
-              style={{ color: "#FFFFFF" }}
-            >
+            <p className="text-lg font-bold mb-4" style={{ color: "#FFFFFF" }}>
               Luka&apos;s Recent Favorites
             </p>
 

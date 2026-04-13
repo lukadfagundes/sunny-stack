@@ -36,26 +36,26 @@ const WIN_QUOTES = [
 // 20 escalating Nami lines, one per move from 21-40
 // Severity increases with each step
 const NAMI_LINES: string[] = [
-  "Zoro... the ship is that way.",                        // 21 - calm
-  "Hey. Wrong direction.",                                // 22
-  "Are you even trying?",                                 // 23
-  "The ship is LITERALLY right there.",                   // 24
-  "I can SEE the Sunny from here!",                       // 25
-  "Zoro. Turn around. Now.",                              // 26
-  "How are you getting FURTHER away?!",                   // 27
-  "LEFT! YOUR OTHER LEFT!",                               // 28
-  "I'm not asking anymore. GO STRAIGHT.",                 // 29
-  "I swear you'd get lost in a hallway.",                 // 30 - mid frustration
-  "ZORO! THE SHIP IS RIGHT THERE!",                       // 31
-  "I'm adding navigation lessons to your debt.",          // 32
-  "That's it, I'm getting the newspaper.",                // 33
-  "Even Luffy has better directions than you!",           // 34
-  "TURN. AROUND. RIGHT. NOW.",                            // 35 - yelling
-  "I WILL come down there and DRAG you back!",            // 36
-  "YOU OWE ME 500,000 BERRIES FOR THIS!",                 // 37
-  "RORONOA ZORO GET BACK HERE THIS INSTANT!",             // 38
-  "I'M DONE. I AM ABSOLUTELY DONE.",                      // 39
-  "THAT'S IT, I'M COMING TO GET YOU!",                    // 40 - final
+  "Zoro... the ship is that way.", // 21 - calm
+  "Hey. Wrong direction.", // 22
+  "Are you even trying?", // 23
+  "The ship is LITERALLY right there.", // 24
+  "I can SEE the Sunny from here!", // 25
+  "Zoro. Turn around. Now.", // 26
+  "How are you getting FURTHER away?!", // 27
+  "LEFT! YOUR OTHER LEFT!", // 28
+  "I'm not asking anymore. GO STRAIGHT.", // 29
+  "I swear you'd get lost in a hallway.", // 30 - mid frustration
+  "ZORO! THE SHIP IS RIGHT THERE!", // 31
+  "I'm adding navigation lessons to your debt.", // 32
+  "That's it, I'm getting the newspaper.", // 33
+  "Even Luffy has better directions than you!", // 34
+  "TURN. AROUND. RIGHT. NOW.", // 35 - yelling
+  "I WILL come down there and DRAG you back!", // 36
+  "YOU OWE ME 500,000 BERRIES FOR THIS!", // 37
+  "RORONOA ZORO GET BACK HERE THIS INSTANT!", // 38
+  "I'M DONE. I AM ABSOLUTELY DONE.", // 39
+  "THAT'S IT, I'M COMING TO GET YOU!", // 40 - final
 ];
 
 export function getRandomDeadEndQuote(): string {

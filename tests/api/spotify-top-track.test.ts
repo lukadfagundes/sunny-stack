@@ -49,8 +49,16 @@ const mockTopTrackResponse = {
       album: {
         name: "Test Album",
         images: [
-          { url: "https://i.scdn.co/image/album-large.jpg", width: 640, height: 640 },
-          { url: "https://i.scdn.co/image/album-small.jpg", width: 64, height: 64 },
+          {
+            url: "https://i.scdn.co/image/album-large.jpg",
+            width: 640,
+            height: 640,
+          },
+          {
+            url: "https://i.scdn.co/image/album-small.jpg",
+            width: 64,
+            height: 64,
+          },
         ],
       },
       external_urls: {

@@ -19,6 +19,7 @@ Returns the complete array of all 8 projects.
 Filters and returns projects matching the specified category.
 
 **Parameters:**
+
 - `category` (`ProjectCategory`) -- One of `"professional"`, `"personal"`, or `"contribution"`
 
 **Returns:** `ProjectData[]` -- Filtered array of projects
@@ -28,6 +29,7 @@ Filters and returns projects matching the specified category.
 Finds and returns a single project by its unique ID.
 
 **Parameters:**
+
 - `id` (`string`) -- Project identifier (e.g., `"trinity-sdk"`, `"cola-records"`)
 
 **Returns:** `ProjectData | undefined` -- The matching project or undefined
@@ -36,25 +38,25 @@ Finds and returns a single project by its unique ID.
 
 ### Professional (3 projects)
 
-| ID | Title | Tech Stack | Status |
-|----|-------|------------|--------|
-| `trinity-sdk` | Trinity Method SDK | TypeScript, Node.js, CLI, AI Agents, npm | active |
-| `cola-records` | Cola Records | Electron, React 19, TypeScript, Vite, SQLite, Zustand, Tailwind CSS, Docker | active |
-| `rinoa-platform` | Rinoa | Next.js 15, React 19, PostgreSQL 18, Express.js, Docker, Playwright, Raspberry Pi 5, NextAuth v5 | proprietary |
+| ID               | Title              | Tech Stack                                                                                       | Status      |
+| ---------------- | ------------------ | ------------------------------------------------------------------------------------------------ | ----------- |
+| `trinity-sdk`    | Trinity Method SDK | TypeScript, Node.js, CLI, AI Agents, npm                                                         | active      |
+| `cola-records`   | Cola Records       | Electron, React 19, TypeScript, Vite, SQLite, Zustand, Tailwind CSS, Docker                      | active      |
+| `rinoa-platform` | Rinoa              | Next.js 15, React 19, PostgreSQL 18, Express.js, Docker, Playwright, Raspberry Pi 5, NextAuth v5 | proprietary |
 
 ### Personal (4 projects)
 
-| ID | Title | Tech Stack | Status |
-|----|-------|------------|--------|
-| `hytale-server-manager` | Hytale Server Manager | Electron 40, React 19, TypeScript, Vite 6, Zustand, Tailwind CSS, Jest, Chokidar | active |
-| `bwaincell` | Bwaincell | TypeScript, Discord.js, Express, Next.js 14, PostgreSQL, Sequelize, Docker, Gemini AI | active |
-| `stilltide` | Stilltide | React 19, Vite, Express, Gemini AI, Google APIs, Docker | active |
-| `spotify-rainmeter` | Spotify Now Playing | Rainmeter, Lua, Python, Spotify Web API, OAuth 2.0, PyInstaller | active |
+| ID                      | Title                 | Tech Stack                                                                            | Status |
+| ----------------------- | --------------------- | ------------------------------------------------------------------------------------- | ------ |
+| `hytale-server-manager` | Hytale Server Manager | Electron 40, React 19, TypeScript, Vite 6, Zustand, Tailwind CSS, Jest, Chokidar      | active |
+| `bwaincell`             | Bwaincell             | TypeScript, Discord.js, Express, Next.js 14, PostgreSQL, Sequelize, Docker, Gemini AI | active |
+| `stilltide`             | Stilltide             | React 19, Vite, Express, Gemini AI, Google APIs, Docker                               | active |
+| `spotify-rainmeter`     | Spotify Now Playing   | Rainmeter, Lua, Python, Spotify Web API, OAuth 2.0, PyInstaller                       | active |
 
 ### Contribution (1 project)
 
-| ID | Title | Tech Stack | Status |
-|----|-------|------------|--------|
+| ID                | Title           | Tech Stack                                               | Status |
+| ----------------- | --------------- | -------------------------------------------------------- | ------ |
 | `reactive-resume` | Reactive Resume | React, TypeScript, Zustand, Zod, docx, tRPC/oRPC, Vitest | active |
 
 ## Implementation Details
@@ -62,6 +64,7 @@ Finds and returns a single project by its unique ID.
 ### Data Structure
 
 Each project follows the `ProjectData` interface (from `./types`) with:
+
 - `id` -- Unique kebab-case identifier
 - `title` -- Display title
 - `tagline` -- One-line summary
@@ -85,14 +88,18 @@ The `projects` array is a module-level constant (not exported directly). Access 
 ## Usage
 
 ```typescript
-import { getAllProjects, getProjectsByCategory, getProjectById } from "@/lib/data/projects";
+import {
+  getAllProjects,
+  getProjectsByCategory,
+  getProjectById,
+} from "@/lib/data/projects";
 
 // Get all projects
 const all = getAllProjects(); // 8 projects
 
 // Get by category
 const professional = getProjectsByCategory("professional"); // 3 projects
-const personal = getProjectsByCategory("personal");         // 4 projects
+const personal = getProjectsByCategory("personal"); // 4 projects
 const contributions = getProjectsByCategory("contribution"); // 1 project
 
 // Get by ID

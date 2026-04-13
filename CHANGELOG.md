@@ -128,6 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Project Documentation
+
 - Add `README.md` for project overview and setup.
 - Add `docs/api/README.md` to document API structure, reflecting `CHANGELOG.md` inclusion in file tree and client-side Mermaid rendering.
 - Add `docs/api/endpoint-map.md` to provide a map of API endpoints with simplified labels and left-to-right flowchart direction.
@@ -138,6 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `docs/guides/getting-started.md` to provide a getting started guide.
 
 #### Frontend Component Documentation
+
 - Add `docs/frontend/components/404/ZoroGame.md` to document the 404 page Zoro game component.
 - Add `docs/frontend/components/404/game-logic.md` to document the 404 page game logic.
 - Add `docs/frontend/components/about/BioSections.md` to document the About page bio sections component.
@@ -164,6 +166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `docs/frontend/components/navigation/VoyageSail.md` to document the navigation voyage sail component.
 
 #### Frontend Page Documentation
+
 - Add `docs/frontend/pages/about.md` to document the About page.
 - Add `docs/frontend/pages/docs-page.md` to document the documentation page with iteration over subgroups when finding the current document path.
 - Add `docs/frontend/pages/home.md` to document the Home page.
@@ -171,6 +174,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `docs/frontend/pages/portfolio.md` to document the Portfolio page.
 
 #### Service Documentation
+
 - Add `docs/services/activity-route.md` to document the activity route service.
 - Add `docs/services/bluesky-route.md` to document the Bluesky route service.
 - Add `docs/services/data-personal.md` to document personal data handling.
@@ -189,6 +193,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `docs/services/youtube-route.md` to document the YouTube route service.
 
 #### CI/CD and Configuration
+
 - Add `.github/workflows/quality.yml` to implement code quality checks.
 - Add `.github/dependabot.yml` to configure Dependabot for automated dependency updates.
 - Add `.github/workflows/ci.yml` to implement Continuous Integration checks using GitHub Actions.
@@ -199,6 +204,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `license` property to `package.json` to specify the `CC-BY-NC-4.0` license.
 
 #### Build and Test Configuration
+
 - Add `jest.config.ts` for Jest test runner configuration with `moduleNameMapper` configurations for mocking `mermaid` and `rehype-raw` in tests.
 - Add `eslint.config.mjs` for ESLint configuration, ignoring the `coverage/**` directory.
 - Add `next.config.ts` for Next.js project settings with security headers (`securityHeaders` constant, `poweredByHeader: false`, `headers()` function), and image domains for `avatars.githubusercontent.com`, `i.scdn.co`, `cdn.bsky.app`, `i.ytimg.com`, `*.cdninstagram.com`, and `*.fbcdn.net`.
@@ -210,11 +216,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update `.gitignore` to specifically ignore `.env` and `.env.local`.
 
 #### Assets
+
 - Add `public/Wheel.png` for the ship wheel image asset.
 - Add `public/favicon.png` for the application favicon.
 - Add `public/ship.png` for the ship image asset.
 
 #### API Routes
+
 - Add `src/app/api/activity/route.ts` to provide real-time user activity status.
 - Add `src/app/api/bluesky/route.ts` to fetch Bluesky user posts with `cache: "no-store"` for real-time data.
 - Add `src/app/api/docs/route.ts` to serve documentation content, generating `<mermaid-diagram>` custom HTML elements with base64-encoded diagram code, including `CHANGELOG.md` in the file tree, and explicitly allowing `CHANGELOG.md` during path validation.
@@ -228,6 +236,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `src/app/api/youtube/route.ts` to fetch YouTube channel videos with `cache: "no-store"` for real-time data.
 
 #### Pages
+
 - Add `src/app/layout.tsx` to define the root layout structure for the application, including VoyageSail component and `/favicon.png` for the application icon.
 - Add `src/app/page.tsx` for the main landing page with ContributionHeatmap, StatsDashboard, TechArsenal, and CurrentlyBuilding sections, `fetchGitHubData` integration, unified `<section>` container, and `relative z-10` positioning.
 - Add `src/app/not-found.tsx` to provide a custom 404 Not Found page, dynamically rendering `ZoroGame` or `StaticNotFound` based on user motion preferences with `main` element and `relative z-10` positioning.
@@ -236,10 +245,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `src/app/docs/page.tsx` to display documentation using `DocNav` and `MarkdownRenderer` components, 3rd-level subgroup breadcrumbs, `getAutoExpanded` for automatic expansion, and `useMemo` for performance.
 
 #### Global Styles and Middleware
+
 - Add `src/app/globals.css` to implement global styles including `.steam-scrollbar` styles for Steam-themed scrollbar.
 - Add `src/middleware.ts` to implement security and request handling logic.
 
 #### Core Components - Landing
+
 - Add `src/components/HeroSection.tsx` for displaying hero content.
 - Add `src/components/LetterReveal.tsx` for animated text reveals.
 - Add `src/components/ShipWheel.tsx` for displaying an animated ship wheel using `<img>` element with `Wheel.png`, featuring "Docs" navigation link, hidden on unknown/404 routes, fixed cardinal positions for labels, and `LABEL_SHIFT_UP` constant.
@@ -250,6 +261,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `src/components/landing/VoyageSail.tsx` as a standalone global component for background animation using `<img>` element with `ship.png`, manual scroll tracking with `useMotionValue`, `drop-shadow` and `voyage-ship-bob` animation.
 
 #### Core Components - About Page
+
 - Add `src/components/about/BioSections.tsx` to display biographical sections on the About page.
 - Add `src/components/about/BlogEntry.tsx` component for displaying dynamic Bluesky posts with `buildSegments` utility function for rich text parsing, using icons (`Heart`, `MessageCircle`, `Repeat2`, `CloudSun`), `Image` component, and `BlueskyPost`/`BlueskyFacet` types.
 - Add `src/components/about/ContactTable.tsx` component to display social media links (Instagram, X, Bluesky, YouTube, GitHub, Email) using `contactLinks` from personal.ts, `COLOR_MAP` for styling, and icons (`Instagram`, `CloudSun`, `XIcon`, `Youtube`, `Github`).
@@ -268,15 +280,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `src/components/about/VideoGallery.tsx` component for displaying a collection of YouTube videos.
 
 #### Core Components - Portfolio
+
 - Add `src/components/portfolio/CategorySection.tsx` to group and display projects by category.
 - Add `src/components/portfolio/ProjectCard.tsx` to display individual project details within the portfolio.
 
 #### Core Components - Documentation
+
 - Add `src/components/docs/DocNav.tsx` component to manage documentation navigation and file loading, handling `CHANGELOG.md` as a root-level file, collecting 3rd-level subgroups, and computing expanded sections/subsections.
 - Add `src/components/docs/MarkdownRenderer.tsx` component to handle rendering of markdown content with `rehypeRaw` and `MermaidDiagram` imports, custom rendering for `mermaid-diagram` HTML elements, and image src sanitization.
 - Add `src/components/docs/MermaidDiagram.tsx` component to render Mermaid diagrams client-side.
 
 #### Core Components - 404 Game
+
 - Add `src/components/404/DPad.tsx` component for game input controls.
 - Add `src/components/404/GameBoard.tsx` component to render the game board.
 - Add `src/components/404/GameHUD.tsx` component to display game-related information.
@@ -291,12 +306,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `src/components/404/useGameInput.ts` custom hook for handling game input with `disabled` parameter to conditionally prevent input handling.
 
 #### Library and Data
+
 - Add `src/lib/github.ts` utility file for fetching GitHub data including `avatarUrl` property in `GitHubProfile` type and `cache: "no-store"` for real-time data.
 - Add `src/lib/data/personal.ts` to manage and retrieve personal data with real values for "Status", "Pets", "Comfort Movie", "Zodiac Sign", "General" (including "D&D"), "Movies", "Television", "Books", static "Heroes" values, `BIRTHDATE` constant, `calculateAge` utility function, `SocialLinkType` excluding "twitch" and "linkedin", and `contactLinks` array with Instagram/X/Bluesky/YouTube/GitHub/Email.
 - Add `src/lib/data/projects.ts` to manage and retrieve project data, including `getProjectsByCategory`.
 - Add `src/lib/data/types.ts` to define project-related TypeScript types, including `ProjectCategory`.
 
 #### Test Files - API Routes
+
 - Add `tests/api/activity.test.ts` for testing the activity status API route.
 - Add `tests/api/bluesky.test.ts` for testing the Bluesky API endpoint.
 - Add `tests/api/docs.test.ts` for the documentation API route using virtual filesystem (`VIRTUAL_FILES` and `virtualReaddirSync`) for robust testing, asserting `<mermaid-diagram>` custom HTML elements with `data-chart` attributes.
@@ -308,6 +325,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `tests/api/youtube.test.ts` for the YouTube API route.
 
 #### Test Files - Components
+
 - Add `tests/components/CategorySection.test.tsx` for testing the `CategorySection` component.
 - Add `tests/components/ContributionHeatmap.test.tsx` for testing the `ContributionHeatmap` component.
 - Add `tests/components/CurrentlyBuilding.test.tsx` for testing the `CurrentlyBuilding` component.
@@ -337,12 +355,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `tests/components/docs/MarkdownRenderer.test.tsx` for testing the `MarkdownRenderer` component with rendering of `MermaidDiagram` from `mermaid-diagram` elements and handling missing `data-chart` attributes.
 
 #### Test Files - 404 Game Logic
+
 - Add `tests/404/grid.test.ts` for testing 404 game grid logic.
 - Add `tests/404/quotes.test.ts` for testing 404 game quotes.
 - Add `tests/404/reducer.test.ts` for testing 404 game reducer logic.
 - Add `tests/404/useGameInput.test.ts` for testing the `useGameInput` hook.
 
 #### Test Files - Pages and Library
+
 - Add `tests/pages/about.test.tsx` for testing the About page with view switching tests for profile/music gallery/video gallery/photo gallery and `global.fetch` mocking.
 - Add `tests/pages/not-found.test.tsx` for testing the 404 Not Found page.
 - Add `tests/pages/portfolio.test.tsx` for testing the Portfolio page.
@@ -350,6 +370,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `tests/lib/projects.test.ts` for testing project data utility functions.
 
 #### Test Files - Setup and Helpers
+
 - Add `tests/setup.ts` for Jest test environment setup with `TextEncoder` and `TextDecoder` polyfills for jsdom environment compatibility.
 - Add `tests/helpers/mocks.ts` to provide mock data and functions for testing.
 - Add `tests/helpers/__mocks__/mermaid.ts` to mock the `mermaid` library for testing purposes.

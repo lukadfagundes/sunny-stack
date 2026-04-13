@@ -27,15 +27,46 @@ function getLevel(count: number): number {
 }
 
 const MONTH_LABELS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 function CompassRose() {
   return (
-    <svg width={64} height={64} viewBox="0 0 64 64" fill="none" aria-hidden="true" className="w-10 h-10 sm:w-12 sm:h-12">
-      <circle cx="32" cy="32" r="28" stroke="rgba(184, 134, 11, 0.3)" strokeWidth="1" fill="none" />
-      <circle cx="32" cy="32" r="22" stroke="rgba(184, 134, 11, 0.15)" strokeWidth="0.5" fill="none" />
+    <svg
+      width={64}
+      height={64}
+      viewBox="0 0 64 64"
+      fill="none"
+      aria-hidden="true"
+      className="w-10 h-10 sm:w-12 sm:h-12"
+    >
+      <circle
+        cx="32"
+        cy="32"
+        r="28"
+        stroke="rgba(184, 134, 11, 0.3)"
+        strokeWidth="1"
+        fill="none"
+      />
+      <circle
+        cx="32"
+        cy="32"
+        r="22"
+        stroke="rgba(184, 134, 11, 0.15)"
+        strokeWidth="0.5"
+        fill="none"
+      />
       <path d="M32 4 L35 28 L32 20 L29 28 Z" fill="rgba(240, 180, 41, 0.8)" />
       <path d="M32 60 L29 36 L32 44 L35 36 Z" fill="rgba(184, 134, 11, 0.4)" />
       <path d="M60 32 L36 29 L44 32 L36 35 Z" fill="rgba(184, 134, 11, 0.4)" />
@@ -45,10 +76,46 @@ function CompassRose() {
       <path d="M50 50 L37 37 L37 34 L40 39 Z" fill="rgba(184, 134, 11, 0.2)" />
       <path d="M14 14 L27 27 L27 30 L24 25 Z" fill="rgba(184, 134, 11, 0.2)" />
       <circle cx="32" cy="32" r="2.5" fill="rgba(240, 180, 41, 0.7)" />
-      <text x="32" y="12" textAnchor="middle" fill="rgba(240, 180, 41, 0.6)" fontSize="5" fontFamily="serif">N</text>
-      <text x="32" y="58" textAnchor="middle" fill="rgba(184, 134, 11, 0.4)" fontSize="5" fontFamily="serif">S</text>
-      <text x="55" y="34" textAnchor="middle" fill="rgba(184, 134, 11, 0.4)" fontSize="5" fontFamily="serif">E</text>
-      <text x="9" y="34" textAnchor="middle" fill="rgba(184, 134, 11, 0.4)" fontSize="5" fontFamily="serif">W</text>
+      <text
+        x="32"
+        y="12"
+        textAnchor="middle"
+        fill="rgba(240, 180, 41, 0.6)"
+        fontSize="5"
+        fontFamily="serif"
+      >
+        N
+      </text>
+      <text
+        x="32"
+        y="58"
+        textAnchor="middle"
+        fill="rgba(184, 134, 11, 0.4)"
+        fontSize="5"
+        fontFamily="serif"
+      >
+        S
+      </text>
+      <text
+        x="55"
+        y="34"
+        textAnchor="middle"
+        fill="rgba(184, 134, 11, 0.4)"
+        fontSize="5"
+        fontFamily="serif"
+      >
+        E
+      </text>
+      <text
+        x="9"
+        y="34"
+        textAnchor="middle"
+        fill="rgba(184, 134, 11, 0.4)"
+        fontSize="5"
+        fontFamily="serif"
+      >
+        W
+      </text>
     </svg>
   );
 }
@@ -122,7 +189,7 @@ export default function ContributionHeatmap({
   function handleCellHover(
     e: React.MouseEvent<HTMLDivElement>,
     date: string,
-    count: number
+    count: number,
   ) {
     const gridRect = gridRef.current?.getBoundingClientRect();
     if (!gridRect) return;
@@ -155,7 +222,10 @@ export default function ContributionHeatmap({
       <div className="pb-2" ref={gridRef}>
         <div style={{ position: "relative", width: "100%" }}>
           {/* Month labels */}
-          <div className="flex mb-1.5" style={{ gap: 0, marginLeft: dayLabelWidth }}>
+          <div
+            className="flex mb-1.5"
+            style={{ gap: 0, marginLeft: dayLabelWidth }}
+          >
             {monthPositions.map(({ label, col }, i) => {
               const nextCol = monthPositions[i + 1]?.col ?? weeks.length;
               const span = nextCol - col;
@@ -181,14 +251,24 @@ export default function ContributionHeatmap({
               className="flex flex-col justify-between py-px shrink-0"
               style={{ height: 7 * STEP - GAP, width: dayLabelWidth }}
             >
-              <span className="text-[10px] text-sunny-cream-muted/30 leading-none font-serif italic">Mon</span>
-              <span className="text-[10px] text-sunny-cream-muted/30 leading-none font-serif italic">Wed</span>
-              <span className="text-[10px] text-sunny-cream-muted/30 leading-none font-serif italic">Fri</span>
+              <span className="text-[10px] text-sunny-cream-muted/30 leading-none font-serif italic">
+                Mon
+              </span>
+              <span className="text-[10px] text-sunny-cream-muted/30 leading-none font-serif italic">
+                Wed
+              </span>
+              <span className="text-[10px] text-sunny-cream-muted/30 leading-none font-serif italic">
+                Fri
+              </span>
             </div>
 
             <div className="flex" style={{ gap: GAP }}>
               {weeks.map((week, weekIdx) => (
-                <div key={weekIdx} className="flex flex-col" style={{ gap: GAP }}>
+                <div
+                  key={weekIdx}
+                  className="flex flex-col"
+                  style={{ gap: GAP }}
+                >
                   {week.contributionDays.map((day) => {
                     const level = getLevel(day.contributionCount);
                     return (
@@ -210,15 +290,18 @@ export default function ContributionHeatmap({
                                 ? "0 0 2px rgba(240, 180, 41, 0.2)"
                                 : "none",
                           cursor: "crosshair",
-                          transition: "transform 0.15s ease, box-shadow 0.15s ease",
+                          transition:
+                            "transform 0.15s ease, box-shadow 0.15s ease",
                         }}
                         onMouseOver={(e) => {
-                          (e.currentTarget as HTMLElement).style.transform = "scale(1.3)";
+                          (e.currentTarget as HTMLElement).style.transform =
+                            "scale(1.3)";
                           (e.currentTarget as HTMLElement).style.boxShadow =
                             "0 0 8px rgba(240, 180, 41, 0.6)";
                         }}
                         onMouseOut={(e) => {
-                          (e.currentTarget as HTMLElement).style.transform = "scale(1)";
+                          (e.currentTarget as HTMLElement).style.transform =
+                            "scale(1)";
                           (e.currentTarget as HTMLElement).style.boxShadow =
                             level >= 4
                               ? "0 0 4px rgba(240, 180, 41, 0.4)"
@@ -253,8 +336,10 @@ export default function ContributionHeatmap({
                   boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
                 }}
               >
-                <span className="text-sunny-gold font-bold">{tooltip.count}</span>
-                {" "}contribution{tooltip.count !== 1 ? "s" : ""} - {tooltip.date}
+                <span className="text-sunny-gold font-bold">
+                  {tooltip.count}
+                </span>{" "}
+                contribution{tooltip.count !== 1 ? "s" : ""} - {tooltip.date}
               </div>
             </div>
           )}
@@ -262,7 +347,9 @@ export default function ContributionHeatmap({
       </div>
 
       <div className="flex items-center justify-end gap-1.5 mt-3">
-        <span className="text-xs text-sunny-cream-muted/30 mr-1 font-serif italic">Uncharted</span>
+        <span className="text-xs text-sunny-cream-muted/30 mr-1 font-serif italic">
+          Uncharted
+        </span>
         {LEVEL_COLORS.map((color, i) => (
           <div
             key={i}
@@ -274,7 +361,9 @@ export default function ContributionHeatmap({
             }}
           />
         ))}
-        <span className="text-xs text-sunny-cream-muted/30 ml-1 font-serif italic">Gold Strike</span>
+        <span className="text-xs text-sunny-cream-muted/30 ml-1 font-serif italic">
+          Gold Strike
+        </span>
       </div>
     </div>
   );

@@ -53,8 +53,12 @@ export function createMarkdownComponents(
     ),
     a: ({ href, children }: { href?: string; children?: React.ReactNode }) => {
       // Internal doc link: relative .md file or docs/ directory
-      const isExternal = href?.startsWith("http") || href?.startsWith("mailto:");
-      const isDocLink = !isExternal && href && (href.endsWith(".md") || href.startsWith("docs/"));
+      const isExternal =
+        href?.startsWith("http") || href?.startsWith("mailto:");
+      const isDocLink =
+        !isExternal &&
+        href &&
+        (href.endsWith(".md") || href.startsWith("docs/"));
 
       if (isDocLink) {
         // Resolve relative path based on current file location
@@ -73,7 +77,10 @@ export function createMarkdownComponents(
         return (
           <a
             href="#"
-            onClick={(e) => { e.preventDefault(); loadFile(resolved); }}
+            onClick={(e) => {
+              e.preventDefault();
+              loadFile(resolved);
+            }}
             className="text-sunny-gold hover:text-sunny-gold-muted underline cursor-pointer"
           >
             {children}
@@ -110,20 +117,14 @@ export function createMarkdownComponents(
         {children}
       </blockquote>
     ),
-    hr: () => (
-      <hr className="border-sunny-surface-light my-6" />
-    ),
+    hr: () => <hr className="border-sunny-surface-light my-6" />,
     table: ({ children }: { children?: React.ReactNode }) => (
       <div className="overflow-x-auto my-4">
-        <table className="w-full text-sm border-collapse">
-          {children}
-        </table>
+        <table className="w-full text-sm border-collapse">{children}</table>
       </div>
     ),
     thead: ({ children }: { children?: React.ReactNode }) => (
-      <thead className="bg-sunny-surface-light">
-        {children}
-      </thead>
+      <thead className="bg-sunny-surface-light">{children}</thead>
     ),
     th: ({ children }: { children?: React.ReactNode }) => (
       <th className="text-left text-sunny-gold font-semibold px-3 py-2 border border-sunny-surface-light">
@@ -147,16 +148,18 @@ export function createMarkdownComponents(
       );
     },
     strong: ({ children }: { children?: React.ReactNode }) => (
-      <strong className="font-bold text-sunny-cream">
-        {children}
-      </strong>
+      <strong className="font-bold text-sunny-cream">{children}</strong>
     ),
     em: ({ children }: { children?: React.ReactNode }) => (
-      <em className="italic text-sunny-cream-muted">
-        {children}
-      </em>
+      <em className="italic text-sunny-cream-muted">{children}</em>
     ),
-    code: ({ className, children }: { className?: string; children?: React.ReactNode }) => {
+    code: ({
+      className,
+      children,
+    }: {
+      className?: string;
+      children?: React.ReactNode;
+    }) => {
       const match = /language-(\w+)/.exec(className ?? "");
       const lang = match?.[1];
 
@@ -186,7 +189,10 @@ export function createMarkdownComponents(
         return (
           <code
             className="block text-[13px] text-sunny-cream whitespace-pre"
-            style={{ fontFamily: "'Cascadia Code', Consolas, 'Courier New', monospace", lineHeight: 1.4 }}
+            style={{
+              fontFamily: "'Cascadia Code', Consolas, 'Courier New', monospace",
+              lineHeight: 1.4,
+            }}
           >
             {children}
           </code>
@@ -197,13 +203,21 @@ export function createMarkdownComponents(
       return (
         <code
           className="bg-sunny-surface-light text-sunny-gold px-1.5 py-0.5 rounded text-xs"
-          style={{ fontFamily: "'Cascadia Code', Consolas, 'Courier New', monospace" }}
+          style={{
+            fontFamily: "'Cascadia Code', Consolas, 'Courier New', monospace",
+          }}
         >
           {children}
         </code>
       );
     },
-    pre: ({ children, ...props }: { children?: React.ReactNode; className?: string }) => {
+    pre: ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      className?: string;
+    }) => {
       // Check if the child code element is plaintext (ASCII diagram)
       const child = Array.isArray(children) ? children[0] : children;
       const isPlaintext =
@@ -219,7 +233,9 @@ export function createMarkdownComponents(
           className="bg-sunny-bg border border-sunny-surface-light rounded-md p-4 my-3 overflow-x-auto"
           style={{
             fontFamily: "'Cascadia Code', Consolas, 'Courier New', monospace",
-            ...(isPlaintext ? { width: "fit-content", marginInline: "auto" } : {}),
+            ...(isPlaintext
+              ? { width: "fit-content", marginInline: "auto" }
+              : {}),
           }}
         >
           {children}

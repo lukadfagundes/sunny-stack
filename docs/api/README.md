@@ -80,12 +80,12 @@ null
 
 ## Status Codes
 
-| Code | Meaning | Description |
-|------|---------|-------------|
-| 200 | OK | Request succeeded. Returns data, `null`, or `[]` as graceful fallback when credentials are missing or external APIs fail. |
-| 400 | Bad Request | Missing or invalid parameters. Only returned by `/api/docs` for invalid path inputs. |
-| 404 | Not Found | File not found. Only returned by `/api/docs` when a requested markdown file does not exist. |
-| 429 | Too Many Requests | Rate limit exceeded. Includes `Retry-After` header with seconds until the limit resets. |
+| Code | Meaning           | Description                                                                                                               |
+| ---- | ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| 200  | OK                | Request succeeded. Returns data, `null`, or `[]` as graceful fallback when credentials are missing or external APIs fail. |
+| 400  | Bad Request       | Missing or invalid parameters. Only returned by `/api/docs` for invalid path inputs.                                      |
+| 404  | Not Found         | File not found. Only returned by `/api/docs` when a requested markdown file does not exist.                               |
+| 429  | Too Many Requests | Rate limit exceeded. Includes `Retry-After` header with seconds until the limit resets.                                   |
 
 ---
 
@@ -113,26 +113,26 @@ Retry-After: 45
 
 The following endpoints accept query parameters:
 
-| Endpoint | Parameter | Type | Description |
-|----------|-----------|------|-------------|
-| `GET /api/steam/achievements` | `appid` | number | Steam application ID (validated with `/^\d+$/` regex) |
-| `GET /api/docs` | `list` | string | Set to `"true"` to return the documentation file tree |
-| `GET /api/docs` | `path` | string | File path to a markdown document (e.g., `README.md` or `docs/guides/getting-started.md`) |
+| Endpoint                      | Parameter | Type   | Description                                                                              |
+| ----------------------------- | --------- | ------ | ---------------------------------------------------------------------------------------- |
+| `GET /api/steam/achievements` | `appid`   | number | Steam application ID (validated with `/^\d+$/` regex)                                    |
+| `GET /api/docs`               | `list`    | string | Set to `"true"` to return the documentation file tree                                    |
+| `GET /api/docs`               | `path`    | string | File path to a markdown document (e.g., `README.md` or `docs/guides/getting-started.md`) |
 
 ---
 
 ## API Resources
 
-| Resource | Endpoints | Description |
-|----------|-----------|-------------|
-| bluesky | 1 | Latest Bluesky social post |
-| youtube | 1 | Recent YouTube videos with statistics |
-| github | 1 | GitHub profile card data |
-| activity | 1 | Cross-platform activity status |
-| spotify | 2 | Top track and wrapped/yearly summary |
-| steam | 2 | Most-played games and achievements |
-| docs | 1 | Documentation file tree and content (2 modes) |
-| instagram | 1 | Recent image posts |
+| Resource  | Endpoints | Description                                   |
+| --------- | --------- | --------------------------------------------- |
+| bluesky   | 1         | Latest Bluesky social post                    |
+| youtube   | 1         | Recent YouTube videos with statistics         |
+| github    | 1         | GitHub profile card data                      |
+| activity  | 1         | Cross-platform activity status                |
+| spotify   | 2         | Top track and wrapped/yearly summary          |
+| steam     | 2         | Most-played games and achievements            |
+| docs      | 1         | Documentation file tree and content (2 modes) |
+| instagram | 1         | Recent image posts                            |
 
 ---
 
@@ -154,7 +154,12 @@ Returns the latest Bluesky post (excluding replies) for the configured handle.
   "facets": [
     {
       "index": { "byteStart": 0, "byteEnd": 10 },
-      "features": [{ "$type": "app.bsky.richtext.facet#link", "uri": "https://example.com" }]
+      "features": [
+        {
+          "$type": "app.bsky.richtext.facet#link",
+          "uri": "https://example.com"
+        }
+      ]
     }
   ],
   "embed": {
@@ -349,9 +354,9 @@ Returns achievement data for a specific Steam game, including earned achievement
 
 **Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `appid` | number | Yes | Steam application ID (must be numeric) |
+| Parameter | Type   | Required | Description                            |
+| --------- | ------ | -------- | -------------------------------------- |
+| `appid`   | number | Yes      | Steam application ID (must be numeric) |
 
 **Response:** `SteamAchievementData | null`
 
@@ -383,9 +388,9 @@ Returns the documentation file tree, including root-level files (`README.md`, `C
 
 **Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `list` | string | Yes | Must be `"true"` to return file tree |
+| Parameter | Type   | Required | Description                          |
+| --------- | ------ | -------- | ------------------------------------ |
+| `list`    | string | Yes      | Must be `"true"` to return file tree |
 
 **Response:** `{ files: DocFile[] }`
 
@@ -404,7 +409,11 @@ Returns the documentation file tree, including root-level files (`README.md`, `C
           "path": "docs/guides",
           "type": "directory",
           "children": [
-            { "name": "getting-started.md", "path": "docs/guides/getting-started.md", "type": "file" }
+            {
+              "name": "getting-started.md",
+              "path": "docs/guides/getting-started.md",
+              "type": "file"
+            }
           ]
         }
       ]
@@ -421,11 +430,12 @@ Returns the content of a specific markdown file. Mermaid code blocks are preproc
 
 **Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `path` | string | Yes | File path (e.g., `README.md` or `docs/guides/getting-started.md`) |
+| Parameter | Type   | Required | Description                                                       |
+| --------- | ------ | -------- | ----------------------------------------------------------------- |
+| `path`    | string | Yes      | File path (e.g., `README.md` or `docs/guides/getting-started.md`) |
 
 **Validation:**
+
 - Path must not contain `..` (path traversal blocked)
 - Path must be a root-level file (`README.md`, `CHANGELOG.md`) or start with `docs/`
 - Path must end with `.md`
@@ -485,13 +495,13 @@ Returns the 5 most recent Instagram image posts (filters out videos and carousel
 
 ### Common Errors
 
-| Code | Condition | Response |
-|------|-----------|----------|
-| 200 | Success (data returned) | Endpoint-specific JSON data |
-| 200 | Success (graceful fallback) | `null` or `[]` when credentials missing or external API fails |
-| 400 | Missing or invalid parameters | `{ "error": "..." }` (only from `/api/docs` and `/api/steam/achievements`) |
-| 404 | File not found | `{ "error": "File not found" }` (only from `/api/docs`) |
-| 429 | Rate limit exceeded | `{ "error": "Too many requests" }` with `Retry-After` header |
+| Code | Condition                     | Response                                                                   |
+| ---- | ----------------------------- | -------------------------------------------------------------------------- |
+| 200  | Success (data returned)       | Endpoint-specific JSON data                                                |
+| 200  | Success (graceful fallback)   | `null` or `[]` when credentials missing or external API fails              |
+| 400  | Missing or invalid parameters | `{ "error": "..." }` (only from `/api/docs` and `/api/steam/achievements`) |
+| 404  | File not found                | `{ "error": "File not found" }` (only from `/api/docs`)                    |
+| 429  | Rate limit exceeded           | `{ "error": "Too many requests" }` with `Retry-After` header               |
 
 ---
 
@@ -501,13 +511,13 @@ Returns the 5 most recent Instagram image posts (filters out videos and carousel
 
 ```javascript
 // Fetch GitHub profile data
-const response = await fetch('/api/github');
+const response = await fetch("/api/github");
 const profile = await response.json();
 
 if (profile) {
   console.log(profile.name, profile.bio);
 } else {
-  console.log('GitHub data unavailable');
+  console.log("GitHub data unavailable");
 }
 ```
 
@@ -516,14 +526,14 @@ if (profile) {
 ```javascript
 // Fetch data from multiple endpoints in parallel
 const [github, bluesky, youtube] = await Promise.all([
-  fetch('/api/github').then(r => r.json()),
-  fetch('/api/bluesky').then(r => r.json()),
-  fetch('/api/youtube').then(r => r.json()),
+  fetch("/api/github").then((r) => r.json()),
+  fetch("/api/bluesky").then((r) => r.json()),
+  fetch("/api/youtube").then((r) => r.json()),
 ]);
 
-console.log('GitHub:', github?.name);
-console.log('Bluesky:', bluesky?.text);
-console.log('Videos:', youtube?.length ?? 0);
+console.log("GitHub:", github?.name);
+console.log("Bluesky:", bluesky?.text);
+console.log("Videos:", youtube?.length ?? 0);
 ```
 
 ### cURL
@@ -585,10 +595,11 @@ See [CHANGELOG.md](../../CHANGELOG.md) in the project root.
 ## Support
 
 For API support:
+
 - **Documentation:** [Full documentation](../README.md)
 - **Issues:** Report bugs via [GitHub Issues](https://github.com/strawhatluka/sunny-stack/issues)
 - **Questions:** [GitHub Discussions](https://github.com/strawhatluka/sunny-stack/discussions)
 
 ---
 
-*Last updated: 2026-03-24*
+_Last updated: 2026-03-24_

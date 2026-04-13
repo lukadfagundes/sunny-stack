@@ -8,9 +8,9 @@ A client-side component that renders a YouTube-inspired video gallery. It fetche
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `onBack` | `() => void` | Yes | Callback invoked when the user clicks "Back to Profile". Used by the parent to switch back to the main profile view. |
+| Prop     | Type         | Required | Description                                                                                                          |
+| -------- | ------------ | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| `onBack` | `() => void` | Yes      | Callback invoked when the user clicks "Back to Profile". Used by the parent to switch back to the main profile view. |
 
 ### Props Interface
 
@@ -22,15 +22,16 @@ interface VideoGalleryProps {
 
 ## State Management
 
-| Hook | State Variable | Type | Initial Value | Purpose |
-|------|---------------|------|---------------|---------|
-| `useState` | `videos` | `YouTubeVideo[]` | `[]` | Stores the array of YouTube videos fetched from the API |
-| `useState` | `loading` | `boolean` | `true` | Tracks whether the API request is in progress |
-| `useState` | `error` | `boolean` | `false` | Tracks whether the API request failed |
+| Hook       | State Variable | Type             | Initial Value | Purpose                                                 |
+| ---------- | -------------- | ---------------- | ------------- | ------------------------------------------------------- |
+| `useState` | `videos`       | `YouTubeVideo[]` | `[]`          | Stores the array of YouTube videos fetched from the API |
+| `useState` | `loading`      | `boolean`        | `true`        | Tracks whether the API request is in progress           |
+| `useState` | `error`        | `boolean`        | `false`       | Tracks whether the API request failed                   |
 
 ## API Integration
 
 ### YouTube Videos (`/api/youtube`)
+
 - **Method:** `GET`
 - **Triggered:** On mount via `useEffect` (empty dependency array)
 - **Response Type:** `YouTubeVideo[]` (imported from `@/app/api/youtube/route`)
@@ -54,16 +55,16 @@ interface YouTubeVideo {
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
+| Handler  | Element                      | Description                                                |
+| -------- | ---------------------------- | ---------------------------------------------------------- |
 | `onBack` | "Back to Profile" `<button>` | Delegates to parent callback to return to the profile view |
 
 ## Child Components
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
-| `VideoCard` | `./VideoCard` | Renders individual YouTube video cards with embedded players |
-| `Youtube` | `lucide-react` | Used as the icon in the header, error state, and empty state |
+| Component   | Source         | Purpose                                                      |
+| ----------- | -------------- | ------------------------------------------------------------ |
+| `VideoCard` | `./VideoCard`  | Renders individual YouTube video cards with embedded players |
+| `Youtube`   | `lucide-react` | Used as the icon in the header, error state, and empty state |
 
 ## Conditional Rendering States
 

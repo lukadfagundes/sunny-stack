@@ -7,7 +7,11 @@ jest.mock("react-markdown", () => {
   return {
     __esModule: true,
     default: ({ children }: { children: string }) =>
-      React.createElement("div", { "data-testid": "markdown-content" }, children),
+      React.createElement(
+        "div",
+        { "data-testid": "markdown-content" },
+        children,
+      ),
   };
 });
 
@@ -27,7 +31,11 @@ jest.mock("unist-util-visit", () => ({
 jest.mock("react-syntax-highlighter", () => ({
   __esModule: true,
   Prism: ({ children }: { children: string }) =>
-    React.createElement("code", { "data-testid": "syntax-highlighter" }, children),
+    React.createElement(
+      "code",
+      { "data-testid": "syntax-highlighter" },
+      children,
+    ),
 }));
 jest.mock("react-syntax-highlighter/dist/esm/styles/prism", () => ({
   __esModule: true,
@@ -110,7 +118,9 @@ describe("DocsClient", () => {
   it("displays initial content from props", () => {
     renderDocsClient();
     expect(screen.getByTestId("markdown-content")).toBeInTheDocument();
-    expect(screen.getByTestId("markdown-content").textContent).toBe("# Hello World");
+    expect(screen.getByTestId("markdown-content").textContent).toBe(
+      "# Hello World",
+    );
   });
 
   it("fetches file content when a nav item is clicked", async () => {

@@ -13,6 +13,7 @@ Shared Spotify OAuth 2.0 token management module. Implements the refresh token f
 #### `hasSpotifyCredentials(): boolean`
 
 Returns `true` if all three Spotify environment variables are set:
+
 - `SPOTIFY_CLIENT_ID`
 - `SPOTIFY_CLIENT_SECRET`
 - `SPOTIFY_REFRESH_TOKEN`
@@ -37,6 +38,7 @@ Obtains a valid Spotify access token using the refresh token grant flow:
 ### Token Cache
 
 Module-level variable shared across requests within the same server process:
+
 ```typescript
 let cachedToken: { accessToken: string; expiresAt: number } | null = null;
 ```
@@ -44,24 +46,26 @@ let cachedToken: { accessToken: string; expiresAt: number } | null = null;
 ### Expiry Buffer
 
 The cached token is considered expired 60 seconds before the actual Spotify expiry time. This prevents edge cases where a token expires between validation and use:
+
 ```typescript
-expiresAt: Date.now() + (data.expires_in - 60) * 1000
+expiresAt: Date.now() + (data.expires_in - 60) * 1000;
 ```
 
 ### Client Credentials Encoding
 
 The `Authorization` header uses Base64-encoded `clientId:clientSecret`:
+
 ```typescript
-Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`
+Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
 ```
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| Missing credentials | `hasSpotifyCredentials()` returns `false`; `getSpotifyAccessToken()` returns `null` |
-| Token refresh HTTP error | Logs error text, returns `null` |
-| Network exception | Logs error, returns `null` |
+| Condition                | Behavior                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| Missing credentials      | `hasSpotifyCredentials()` returns `false`; `getSpotifyAccessToken()` returns `null` |
+| Token refresh HTTP error | Logs error text, returns `null`                                                     |
+| Network exception        | Logs error, returns `null`                                                          |
 
 ## Dependencies
 

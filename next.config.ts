@@ -39,11 +39,7 @@ const nextConfig: NextConfig = {
     "/api/docs": ["./docs/**/*", "./README.md", "./CHANGELOG.md"],
   },
   outputFileTracingExcludes: {
-    "/api/docs": [
-      "./src/**/*",
-      "./.git/**/*",
-      "./tests/**/*",
-    ],
+    "/api/docs": ["./src/**/*", "./.git/**/*", "./tests/**/*"],
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];

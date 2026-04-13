@@ -120,7 +120,9 @@ describe("fetchGitHubData", () => {
 
     const data = await fetchGitHubData();
 
-    expect(data.avatarUrl).toBe("https://avatars.githubusercontent.com/u/12345?s=200&v=4");
+    expect(data.avatarUrl).toBe(
+      "https://avatars.githubusercontent.com/u/12345?s=200&v=4",
+    );
     expect(data.pinnedRepos).toHaveLength(1);
     expect(data.pinnedRepos[0].name).toBe("test-repo");
     expect(data.publicRepos).toHaveLength(2);
@@ -196,7 +198,7 @@ describe("fetchGitHubData", () => {
         headers: expect.objectContaining({
           Authorization: "bearer my-secret-token",
         }),
-      })
+      }),
     );
   });
 

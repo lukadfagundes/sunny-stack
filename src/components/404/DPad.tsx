@@ -1,6 +1,11 @@
 "use client";
 
-import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import type { Direction } from "./types";
 
 interface DPadProps {
@@ -8,11 +13,36 @@ interface DPadProps {
   disabled?: boolean;
 }
 
-const BUTTONS: { dir: Direction; Icon: typeof ChevronUp; label: string; pos: string }[] = [
-  { dir: "up", Icon: ChevronUp, label: "Move up", pos: "col-start-2 row-start-1" },
-  { dir: "left", Icon: ChevronLeft, label: "Move left", pos: "col-start-1 row-start-2" },
-  { dir: "right", Icon: ChevronRight, label: "Move right", pos: "col-start-3 row-start-2" },
-  { dir: "down", Icon: ChevronDown, label: "Move down", pos: "col-start-2 row-start-3" },
+const BUTTONS: {
+  dir: Direction;
+  Icon: typeof ChevronUp;
+  label: string;
+  pos: string;
+}[] = [
+  {
+    dir: "up",
+    Icon: ChevronUp,
+    label: "Move up",
+    pos: "col-start-2 row-start-1",
+  },
+  {
+    dir: "left",
+    Icon: ChevronLeft,
+    label: "Move left",
+    pos: "col-start-1 row-start-2",
+  },
+  {
+    dir: "right",
+    Icon: ChevronRight,
+    label: "Move right",
+    pos: "col-start-3 row-start-2",
+  },
+  {
+    dir: "down",
+    Icon: ChevronDown,
+    label: "Move down",
+    pos: "col-start-2 row-start-3",
+  },
 ];
 
 export default function DPad({ onMove, disabled }: DPadProps) {

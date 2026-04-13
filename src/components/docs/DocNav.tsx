@@ -56,27 +56,35 @@ export function buildSections(files: DocFile[]): NavSection[] {
       id: "overview",
       label: "Overview",
       icon: <Home size={16} />,
-      items: rootFiles.map((f) => ({ path: f.path, label: formatName(f.name) })),
+      items: rootFiles.map((f) => ({
+        path: f.path,
+        label: formatName(f.name),
+      })),
     });
   }
 
   // Process docs directory
-  const docsDir = files.find((f) => f.type === "directory" && f.name === "docs");
+  const docsDir = files.find(
+    (f) => f.type === "directory" && f.name === "docs",
+  );
   if (!docsDir?.children) return sections;
 
   // Docs hub README
-  const docsReadme = docsDir.children.find((f) => f.type === "file" && f.name === "README.md");
+  const docsReadme = docsDir.children.find(
+    (f) => f.type === "file" && f.name === "README.md",
+  );
   if (docsReadme) {
     sections[0]?.items.push({ path: docsReadme.path, label: "Docs Hub" });
   }
 
-  const sectionMeta: Record<string, { label: string; icon: React.ReactNode }> = {
-    api: { label: "API", icon: <Code2 size={16} /> },
-    architecture: { label: "Architecture", icon: <Layers size={16} /> },
-    deployment: { label: "Deployment", icon: <Rocket size={16} /> },
-    guides: { label: "Guides", icon: <Compass size={16} /> },
-    reference: { label: "Reference", icon: <Library size={16} /> },
-  };
+  const sectionMeta: Record<string, { label: string; icon: React.ReactNode }> =
+    {
+      api: { label: "API", icon: <Code2 size={16} /> },
+      architecture: { label: "Architecture", icon: <Layers size={16} /> },
+      deployment: { label: "Deployment", icon: <Rocket size={16} /> },
+      guides: { label: "Guides", icon: <Compass size={16} /> },
+      reference: { label: "Reference", icon: <Library size={16} /> },
+    };
 
   for (const child of docsDir.children) {
     if (child.type !== "directory" || !child.children) continue;
@@ -148,7 +156,10 @@ export function buildSections(files: DocFile[]): NavSection[] {
 }
 
 /** Compute which sections/subsections/subgroups should be expanded for a given path */
-export function getAutoExpanded(sections: NavSection[], path: string): Set<string> {
+export function getAutoExpanded(
+  sections: NavSection[],
+  path: string,
+): Set<string> {
   const result = new Set<string>();
   for (const s of sections) {
     if (s.items.some((i) => i.path === path)) {
@@ -186,7 +197,10 @@ export default function DocNav({
   onSelect: (path: string) => void;
 }) {
   // Manual toggle overrides, keyed by path so they reset on navigation
-  const [overrides, setOverrides] = useState<{ path: string; toggled: Set<string> }>({
+  const [overrides, setOverrides] = useState<{
+    path: string;
+    toggled: Set<string>;
+  }>({
     path: currentPath,
     toggled: new Set(),
   });
@@ -222,9 +236,12 @@ export default function DocNav({
         const isOpen = expanded.has(section.id);
         const sectionActive =
           section.items.some((i) => i.path === currentPath) ||
-          section.subsections?.some((sub) =>
-            sub.items.some((i) => i.path === currentPath) ||
-            sub.subgroups?.some((sg) => sg.items.some((i) => i.path === currentPath))
+          section.subsections?.some(
+            (sub) =>
+              sub.items.some((i) => i.path === currentPath) ||
+              sub.subgroups?.some((sg) =>
+                sg.items.some((i) => i.path === currentPath),
+              ),
           );
 
         return (
@@ -237,14 +254,24 @@ export default function DocNav({
                   : "text-sunny-cream-muted hover:text-sunny-cream hover:bg-sunny-surface-light"
               }`}
             >
-              <span className={sectionActive ? "text-sunny-gold" : "text-sunny-cream-muted"}>
+              <span
+                className={
+                  sectionActive ? "text-sunny-gold" : "text-sunny-cream-muted"
+                }
+              >
                 {section.icon}
               </span>
               <span className="flex-1 text-left truncate">{section.label}</span>
               {isOpen ? (
-                <ChevronDown size={14} className="text-sunny-cream-muted flex-shrink-0" />
+                <ChevronDown
+                  size={14}
+                  className="text-sunny-cream-muted flex-shrink-0"
+                />
               ) : (
-                <ChevronRight size={14} className="text-sunny-cream-muted flex-shrink-0" />
+                <ChevronRight
+                  size={14}
+                  className="text-sunny-cream-muted flex-shrink-0"
+                />
               )}
             </button>
 
@@ -269,7 +296,9 @@ export default function DocNav({
                   const subOpen = expanded.has(sub.id);
                   const subActive =
                     sub.items.some((i) => i.path === currentPath) ||
-                    sub.subgroups?.some((sg) => sg.items.some((i) => i.path === currentPath));
+                    sub.subgroups?.some((sg) =>
+                      sg.items.some((i) => i.path === currentPath),
+                    );
 
                   return (
                     <div key={sub.id} className="mt-0.5">
@@ -282,9 +311,15 @@ export default function DocNav({
                         }`}
                       >
                         {subOpen ? (
-                          <ChevronDown size={12} className="flex-shrink-0 opacity-60" />
+                          <ChevronDown
+                            size={12}
+                            className="flex-shrink-0 opacity-60"
+                          />
                         ) : (
-                          <ChevronRight size={12} className="flex-shrink-0 opacity-60" />
+                          <ChevronRight
+                            size={12}
+                            className="flex-shrink-0 opacity-60"
+                          />
                         )}
                         <span className="truncate">{sub.label}</span>
                       </button>
@@ -301,14 +336,19 @@ export default function DocNav({
                                   : "text-sunny-cream-muted hover:text-sunny-cream hover:bg-sunny-surface-light/50"
                               }`}
                             >
-                              <FileText size={12} className="flex-shrink-0 opacity-60" />
+                              <FileText
+                                size={12}
+                                className="flex-shrink-0 opacity-60"
+                              />
                               <span className="truncate">{item.label}</span>
                             </button>
                           ))}
 
                           {sub.subgroups?.map((sg) => {
                             const sgOpen = expanded.has(sg.id);
-                            const sgActive = sg.items.some((i) => i.path === currentPath);
+                            const sgActive = sg.items.some(
+                              (i) => i.path === currentPath,
+                            );
 
                             return (
                               <div key={sg.id} className="mt-0.5">
@@ -321,9 +361,15 @@ export default function DocNav({
                                   }`}
                                 >
                                   {sgOpen ? (
-                                    <ChevronDown size={11} className="flex-shrink-0 opacity-60" />
+                                    <ChevronDown
+                                      size={11}
+                                      className="flex-shrink-0 opacity-60"
+                                    />
                                   ) : (
-                                    <ChevronRight size={11} className="flex-shrink-0 opacity-60" />
+                                    <ChevronRight
+                                      size={11}
+                                      className="flex-shrink-0 opacity-60"
+                                    />
                                   )}
                                   <span className="truncate">{sg.label}</span>
                                 </button>
@@ -340,8 +386,13 @@ export default function DocNav({
                                             : "text-sunny-cream-muted hover:text-sunny-cream hover:bg-sunny-surface-light/50"
                                         }`}
                                       >
-                                        <FileText size={11} className="flex-shrink-0 opacity-60" />
-                                        <span className="truncate">{item.label}</span>
+                                        <FileText
+                                          size={11}
+                                          className="flex-shrink-0 opacity-60"
+                                        />
+                                        <span className="truncate">
+                                          {item.label}
+                                        </span>
                                       </button>
                                     ))}
                                   </div>

@@ -34,19 +34,20 @@ Home (Server Component)
 
 ## Component Composition
 
-| Component | Source | Props Received |
-|-----------|--------|---------------|
-| `HeroSection` | `@/components/HeroSection` | None |
-| `ContributionHeatmap` | `@/components/landing/ContributionHeatmap` | `calendar` (contribution calendar with totalContributions and weeks) |
-| `StatsDashboard` | `@/components/landing/StatsDashboard` | `totalCommits`, `totalPRs`, `totalIssues`, `totalRepos`, `totalStars`, `totalContributions` |
-| `TechArsenal` | `@/components/landing/TechArsenal` | None |
-| `CurrentlyBuilding` | `@/components/landing/CurrentlyBuilding` | `repos` (public repos array: GitHubRepo[]) |
+| Component             | Source                                     | Props Received                                                                              |
+| --------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `HeroSection`         | `@/components/HeroSection`                 | None                                                                                        |
+| `ContributionHeatmap` | `@/components/landing/ContributionHeatmap` | `calendar` (contribution calendar with totalContributions and weeks)                        |
+| `StatsDashboard`      | `@/components/landing/StatsDashboard`      | `totalCommits`, `totalPRs`, `totalIssues`, `totalRepos`, `totalStars`, `totalContributions` |
+| `TechArsenal`         | `@/components/landing/TechArsenal`         | None                                                                                        |
+| `CurrentlyBuilding`   | `@/components/landing/CurrentlyBuilding`   | `repos` (public repos array: GitHubRepo[])                                                  |
 
 ## Key Logic
 
 ### Layout Structure ("The Ship's Deck")
 
 The main content area is a single unified panel with:
+
 - Radial gradient background (dark wood tones: rgba(52,38,24) to rgba(20,14,8))
 - Faint map grid overlay at 48px spacing with gold lines at 3% opacity
 - Burnt edge vignette via inset box shadows
@@ -75,6 +76,7 @@ The `HeroSection` wraps "Luka Fagundes" in a semantic `<h1>` tag for SEO. Below 
 ### TechArsenal Categories
 
 The Cargo Hold displays hardcoded tech items in 4 categories:
+
 - **Languages:** TypeScript, JavaScript, Python, Lua, HTML/CSS, SQL
 - **Frameworks:** React, Next.js, Node.js, Express, Tailwind CSS, Electron, Discord.js
 - **Tools:** Git, Docker, Jest, PostgreSQL, SQLite, Prisma, Framer Motion

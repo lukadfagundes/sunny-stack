@@ -50,7 +50,7 @@ export default function ProjectCard({
       const y = (e.clientY - rect.top) / rect.height - 0.5;
       setTilt({ x: y * -8, y: x * 8 });
     },
-    [isExpanded]
+    [isExpanded],
   );
 
   const handleMouseLeave = useCallback(() => {

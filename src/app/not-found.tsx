@@ -12,7 +12,7 @@ function useReducedMotion() {
   }, []);
   const getSnapshot = useCallback(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    []
+    [],
   );
   return useSyncExternalStore(subscribe, getSnapshot, () => false);
 }

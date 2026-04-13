@@ -6,7 +6,9 @@ import ShipWheel from "@/components/ShipWheel";
 describe("ShipWheel", () => {
   it("renders navigation on known routes", () => {
     render(<ShipWheel />);
-    const navs = screen.getAllByRole("navigation", { name: /Main navigation/i });
+    const navs = screen.getAllByRole("navigation", {
+      name: /Main navigation/i,
+    });
     expect(navs.length).toBeGreaterThan(0);
   });
 

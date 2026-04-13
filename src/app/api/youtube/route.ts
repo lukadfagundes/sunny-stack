@@ -69,7 +69,10 @@ export async function GET() {
     const playlistRes = await fetch(playlistUrl, { cache: "no-store" });
 
     if (!playlistRes.ok) {
-      console.error("YouTube playlistItems API error:", await playlistRes.text());
+      console.error(
+        "YouTube playlistItems API error:",
+        await playlistRes.text(),
+      );
       return NextResponse.json([], { status: 200 });
     }
 
@@ -81,7 +84,9 @@ export async function GET() {
     }
 
     // Step 3: Get statistics for each video
-    const videoIds = items.map((item) => item.snippet.resourceId.videoId).join(",");
+    const videoIds = items
+      .map((item) => item.snippet.resourceId.videoId)
+      .join(",");
     const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}&key=${apiKey}`;
     const statsRes = await fetch(statsUrl, { cache: "no-store" });
 

@@ -13,7 +13,9 @@ describe("getRandomDeadEndQuote", () => {
   });
 
   it("returns different quotes over multiple calls", () => {
-    const quotes = new Set(Array.from({ length: 50 }, () => getRandomDeadEndQuote()));
+    const quotes = new Set(
+      Array.from({ length: 50 }, () => getRandomDeadEndQuote()),
+    );
     expect(quotes.size).toBeGreaterThan(1);
   });
 });
@@ -26,7 +28,9 @@ describe("getRandomSakeQuote", () => {
   });
 
   it("returns different quotes over multiple calls", () => {
-    const quotes = new Set(Array.from({ length: 50 }, () => getRandomSakeQuote()));
+    const quotes = new Set(
+      Array.from({ length: 50 }, () => getRandomSakeQuote()),
+    );
     expect(quotes.size).toBeGreaterThan(1);
   });
 });

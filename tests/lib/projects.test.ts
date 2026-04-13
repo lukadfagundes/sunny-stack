@@ -17,7 +17,9 @@ describe("getAllProjects", () => {
       expect(p.title).toBeTruthy();
       expect(p.tagline).toBeTruthy();
       expect(p.description).toBeTruthy();
-      expect(["professional", "personal", "contribution"]).toContain(p.category);
+      expect(["professional", "personal", "contribution"]).toContain(
+        p.category,
+      );
       expect(Array.isArray(p.techStack)).toBe(true);
       expect(p.techStack.length).toBeGreaterThan(0);
       expect(Array.isArray(p.features)).toBe(true);

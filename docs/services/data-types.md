@@ -25,7 +25,7 @@ Union type representing the three project categories.
 ```typescript
 interface ProjectLink {
   label: string; // Display text (e.g., "GitHub", "Live App", "Download")
-  url: string;   // Full URL
+  url: string; // Full URL
 }
 ```
 
@@ -33,7 +33,7 @@ interface ProjectLink {
 
 ```typescript
 interface ProjectFeature {
-  label: string;       // Feature name/title
+  label: string; // Feature name/title
   description: string; // Feature description
 }
 ```
@@ -42,16 +42,16 @@ interface ProjectFeature {
 
 ```typescript
 interface ProjectData {
-  id: string;                                     // Unique project identifier (kebab-case)
-  title: string;                                  // Display title
-  tagline: string;                                // One-line summary
-  description: string;                            // Full description
-  category: ProjectCategory;                      // "professional" | "personal" | "contribution"
-  techStack: string[];                            // Technology names
-  features: ProjectFeature[];                     // Key features list
-  links: ProjectLink[];                           // External links
-  status: "active" | "archived" | "proprietary";  // Current project status
-  footer?: string;                                // Optional additional context
+  id: string; // Unique project identifier (kebab-case)
+  title: string; // Display title
+  tagline: string; // One-line summary
+  description: string; // Full description
+  category: ProjectCategory; // "professional" | "personal" | "contribution"
+  techStack: string[]; // Technology names
+  features: ProjectFeature[]; // Key features list
+  links: ProjectLink[]; // External links
+  status: "active" | "archived" | "proprietary"; // Current project status
+  footer?: string; // Optional additional context
 }
 ```
 
@@ -62,7 +62,12 @@ interface ProjectData {
 ## Usage
 
 ```typescript
-import type { ProjectData, ProjectCategory, ProjectLink, ProjectFeature } from "@/lib/data/types";
+import type {
+  ProjectData,
+  ProjectCategory,
+  ProjectLink,
+  ProjectFeature,
+} from "@/lib/data/types";
 ```
 
 ## Consumers

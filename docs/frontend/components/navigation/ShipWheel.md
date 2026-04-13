@@ -12,39 +12,39 @@ This component takes no props.
 
 ## State Management
 
-| Hook | Variable | Type | Initial | Description |
-|------|----------|------|---------|-------------|
-| `usePathname` | `pathname` | `string` | -- | Current route path from Next.js navigation. |
-| `useState` | `hovered` | `boolean` | `false` | Whether the desktop wheel is being hovered. |
-| `useState` | `mobileOpen` | `boolean` | `false` | Whether the mobile radial menu is expanded. |
+| Hook          | Variable     | Type      | Initial | Description                                 |
+| ------------- | ------------ | --------- | ------- | ------------------------------------------- |
+| `usePathname` | `pathname`   | `string`  | --      | Current route path from Next.js navigation. |
+| `useState`    | `hovered`    | `boolean` | `false` | Whether the desktop wheel is being hovered. |
+| `useState`    | `mobileOpen` | `boolean` | `false` | Whether the mobile radial menu is expanded. |
 
 ## Derived State
 
-| Variable | Calculation | Description |
-|----------|-------------|-------------|
-| `currentItem` | `NAV_ITEMS.find(item => item.href === pathname)` | The nav item matching the current route. |
-| `currentAngle` | `-currentItem.angle` or `0` | Negative of the matched item's angle, causing the wheel to rotate so the current page's spoke points up. |
-| `labelsAtPositions` | Computed from `currentAngle` | Maps each label position (top/right/bottom/left) to the nav item whose spoke visually points there after rotation. |
+| Variable            | Calculation                                      | Description                                                                                                        |
+| ------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `currentItem`       | `NAV_ITEMS.find(item => item.href === pathname)` | The nav item matching the current route.                                                                           |
+| `currentAngle`      | `-currentItem.angle` or `0`                      | Negative of the matched item's angle, causing the wheel to rotate so the current page's spoke points up.           |
+| `labelsAtPositions` | Computed from `currentAngle`                     | Maps each label position (top/right/bottom/left) to the nav item whose spoke visually points there after rotation. |
 
 ## Constants
 
 ### `NAV_ITEMS`
 
-| Label | Href | Angle |
-|-------|------|-------|
-| Home | `/` | 0 |
-| Portfolio | `/portfolio` | 90 |
-| About | `/about` | 180 |
-| Docs | `/docs` | 270 |
+| Label     | Href         | Angle |
+| --------- | ------------ | ----- |
+| Home      | `/`          | 0     |
+| Portfolio | `/portfolio` | 90    |
+| About     | `/about`     | 180   |
+| Docs      | `/docs`      | 270   |
 
 ### Layout Constants
 
-| Constant | Value | Description |
-|----------|-------|-------------|
-| `WHEEL_SIZE` | 110 | Width/height of the wheel image in pixels. |
-| `HUB_RADIUS` | 12 | Radius of the center hub clickable area. |
-| `LABEL_OFFSET` | 5 | Distance from wheel edge to navigation labels. |
-| `LABEL_SHIFT_UP` | 5 | Vertical offset to shift right/left/bottom labels upward. |
+| Constant         | Value | Description                                               |
+| ---------------- | ----- | --------------------------------------------------------- |
+| `WHEEL_SIZE`     | 110   | Width/height of the wheel image in pixels.                |
+| `HUB_RADIUS`     | 12    | Radius of the center hub clickable area.                  |
+| `LABEL_OFFSET`   | 5     | Distance from wheel edge to navigation labels.            |
+| `LABEL_SHIFT_UP` | 5     | Vertical offset to shift right/left/bottom labels upward. |
 
 ### `KNOWN_ROUTES`
 
@@ -52,13 +52,13 @@ A `Set` containing `"/"`, `"/portfolio"`, `"/about"`, `"/docs"`. The wheel retur
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
-| `onMouseEnter` | Desktop `<nav>` | Sets `hovered` to `true`, showing navigation labels. |
-| `onMouseLeave` | Desktop `<nav>` | Sets `hovered` to `false`, hiding navigation labels. |
-| `handleZoroClick` | Center hub button | Easter egg handler (currently empty `useCallback`). |
-| `onClick` | Mobile toggle button | Toggles `mobileOpen` state. |
-| `onClick` | Mobile nav links | Sets `mobileOpen` to `false` after clicking a link. |
+| Handler           | Element              | Description                                          |
+| ----------------- | -------------------- | ---------------------------------------------------- |
+| `onMouseEnter`    | Desktop `<nav>`      | Sets `hovered` to `true`, showing navigation labels. |
+| `onMouseLeave`    | Desktop `<nav>`      | Sets `hovered` to `false`, hiding navigation labels. |
+| `handleZoroClick` | Center hub button    | Easter egg handler (currently empty `useCallback`).  |
+| `onClick`         | Mobile toggle button | Toggles `mobileOpen` state.                          |
+| `onClick`         | Mobile nav links     | Sets `mobileOpen` to `false` after clicking a link.  |
 
 ## Internal Components
 
@@ -68,11 +68,12 @@ Renders the ship's wheel as a PNG image (`/wheel.png`) wrapped in a Framer Motio
 
 **Props:**
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop           | Type     | Description                                                                               |
+| -------------- | -------- | ----------------------------------------------------------------------------------------- |
 | `currentAngle` | `number` | Rotation angle applied via Framer Motion spring animation (`stiffness: 60, damping: 15`). |
 
 **Rendering:**
+
 - Displays `/wheel.png` at `WHEEL_SIZE` x `WHEEL_SIZE` (110x110) with `object-contain`.
 - Image is `aria-hidden="true"` and non-draggable.
 - Opacity transitions between 60% (idle) and 100% (hovered) via the parent wrapper div.
@@ -101,13 +102,13 @@ Renders the ship's wheel as a PNG image (`/wheel.png`) wrapped in a Framer Motio
 
 ## Child Components
 
-| Component | Source | Description |
-|-----------|--------|-------------|
-| `ShipWheelImage` | Internal | PNG image rendering of the ship's wheel (`/wheel.png`). |
-| `Link` | `next/link` | Next.js navigation links. |
-| `motion.*` | `framer-motion` | Animation wrappers for labels and mobile menu items. |
-| `AnimatePresence` | `framer-motion` | Manages enter/exit animations. |
-| `Anchor` | `lucide-react` | Anchor icon for mobile toggle button. |
+| Component         | Source          | Description                                             |
+| ----------------- | --------------- | ------------------------------------------------------- |
+| `ShipWheelImage`  | Internal        | PNG image rendering of the ship's wheel (`/wheel.png`). |
+| `Link`            | `next/link`     | Next.js navigation links.                               |
+| `motion.*`        | `framer-motion` | Animation wrappers for labels and mobile menu items.    |
+| `AnimatePresence` | `framer-motion` | Manages enter/exit animations.                          |
+| `Anchor`          | `lucide-react`  | Anchor icon for mobile toggle button.                   |
 
 ## Usage
 

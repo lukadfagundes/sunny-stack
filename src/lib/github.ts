@@ -212,12 +212,15 @@ export async function fetchGitHubData(): Promise<GitHubData> {
     const contributions = user.contributionsCollection;
 
     // Filter out PRs from private repos before returning
-    const publicMergedPRs = (user.pullRequests.nodes as GitHubPullRequest[]).filter(
-      (pr) => !pr.repository.isPrivate
-    );
+    const publicMergedPRs = (
+      user.pullRequests.nodes as GitHubPullRequest[]
+    ).filter((pr) => !pr.repository.isPrivate);
 
     const repos = user.repositories.nodes as GitHubRepo[];
-    const totalStars = repos.reduce((sum: number, r: GitHubRepo) => sum + r.stargazerCount, 0);
+    const totalStars = repos.reduce(
+      (sum: number, r: GitHubRepo) => sum + r.stargazerCount,
+      0,
+    );
 
     return {
       avatarUrl: user.avatarUrl ?? "",

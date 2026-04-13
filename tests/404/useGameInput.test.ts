@@ -36,10 +36,14 @@ describe("useGameInput", () => {
     renderHook(() => useGameInput(onMove));
 
     const keys: Array<[string, string]> = [
-      ["w", "up"], ["W", "up"],
-      ["a", "left"], ["A", "left"],
-      ["s", "down"], ["S", "down"],
-      ["d", "right"], ["D", "right"],
+      ["w", "up"],
+      ["W", "up"],
+      ["a", "left"],
+      ["A", "left"],
+      ["s", "down"],
+      ["S", "down"],
+      ["d", "right"],
+      ["D", "right"],
     ];
 
     for (const [key, dir] of keys) {

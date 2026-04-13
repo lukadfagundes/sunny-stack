@@ -57,19 +57,13 @@ export default function TopEight({ onViewGame }: TopEightProps) {
         style={{ backgroundColor: "#1b2838" }}
       >
         {loading && (
-          <p
-            className="text-sm italic"
-            style={{ color: "#8f98a0" }}
-          >
+          <p className="text-sm italic" style={{ color: "#8f98a0" }}>
             Loading...
           </p>
         )}
 
         {error && (
-          <p
-            className="text-sm italic"
-            style={{ color: "#8f98a0" }}
-          >
+          <p className="text-sm italic" style={{ color: "#8f98a0" }}>
             Unable to load Steam data
           </p>
         )}

@@ -68,6 +68,7 @@ Complete documentation is available in the [`docs/`](docs/) directory:
 - [Architecture Diagrams](docs/architecture/) - System architecture visualizations
 - [Deployment Guide](docs/guides/deployment.md) - Production deployment instructions
 - [API Development Guide](docs/guides/api-development.md) - Adding new API routes
+
 ---
 
 ## Architecture
@@ -80,6 +81,7 @@ sunny-stack follows a **Next.js App Router** architecture with Server Components
 - **Security:** Rate limiting (30 req/min/IP), CSP headers, HSTS, input validation
 
 For detailed diagrams, see:
+
 - [Component-API Flow](docs/architecture/mvc-flow.md)
 - [API Endpoint Map](docs/api/endpoint-map.md)
 - [Component Hierarchy](docs/architecture/component-hierarchy.md)
@@ -103,14 +105,14 @@ npm run test:watch
 
 ### Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm run typecheck` | Run TypeScript type checking |
-| `npm test` | Run test suite |
+| Command                 | Description                    |
+| ----------------------- | ------------------------------ |
+| `npm run dev`           | Start development server       |
+| `npm run build`         | Build for production           |
+| `npm start`             | Start production server        |
+| `npm run lint`          | Run ESLint                     |
+| `npm run typecheck`     | Run TypeScript type checking   |
+| `npm test`              | Run test suite                 |
 | `npm run test:coverage` | Run tests with coverage report |
 
 ### Project Structure

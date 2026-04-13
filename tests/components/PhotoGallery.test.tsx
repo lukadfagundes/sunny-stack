@@ -43,7 +43,7 @@ describe("PhotoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockPosts),
-      })
+      }),
     ) as jest.Mock;
 
     render(<PhotoGallery onBack={jest.fn()} />);
@@ -54,7 +54,10 @@ describe("PhotoGallery", () => {
 
     const images = document.querySelectorAll("img");
     expect(images).toHaveLength(2);
-    expect(images[0]).toHaveAttribute("src", "https://cdn.instagram.com/photo1.jpg");
+    expect(images[0]).toHaveAttribute(
+      "src",
+      "https://cdn.instagram.com/photo1.jpg",
+    );
   });
 
   it("renders Instagram-branded header", async () => {
@@ -62,7 +65,7 @@ describe("PhotoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockPosts),
-      })
+      }),
     ) as jest.Mock;
 
     render(<PhotoGallery onBack={jest.fn()} />);
@@ -71,13 +74,15 @@ describe("PhotoGallery", () => {
   });
 
   it("shows error message when fetch fails", async () => {
-    global.fetch = jest.fn(() => Promise.reject(new Error("fail"))) as jest.Mock;
+    global.fetch = jest.fn(() =>
+      Promise.reject(new Error("fail")),
+    ) as jest.Mock;
 
     render(<PhotoGallery onBack={jest.fn()} />);
 
     await waitFor(() => {
       expect(
-        screen.getByText("Could not load photos. Please try again later.")
+        screen.getByText("Could not load photos. Please try again later."),
       ).toBeInTheDocument();
     });
   });
@@ -87,7 +92,7 @@ describe("PhotoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      }),
     ) as jest.Mock;
 
     render(<PhotoGallery onBack={jest.fn()} />);
@@ -102,7 +107,7 @@ describe("PhotoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockPosts),
-      })
+      }),
     ) as jest.Mock;
 
     const onBack = jest.fn();
@@ -117,7 +122,7 @@ describe("PhotoGallery", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockPosts),
-      })
+      }),
     ) as jest.Mock;
 
     render(<PhotoGallery onBack={jest.fn()} />);
@@ -130,15 +135,13 @@ describe("PhotoGallery", () => {
   });
 
   it("shows error on non-ok response", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({ ok: false })
-    ) as jest.Mock;
+    global.fetch = jest.fn(() => Promise.resolve({ ok: false })) as jest.Mock;
 
     render(<PhotoGallery onBack={jest.fn()} />);
 
     await waitFor(() => {
       expect(
-        screen.getByText("Could not load photos. Please try again later.")
+        screen.getByText("Could not load photos. Please try again later."),
       ).toBeInTheDocument();
     });
   });

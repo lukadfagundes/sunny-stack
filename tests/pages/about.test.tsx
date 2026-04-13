@@ -9,7 +9,7 @@ beforeEach(() => {
     Promise.resolve({
       ok: true,
       json: () => Promise.resolve([]),
-    })
+    }),
   ) as jest.Mock;
 });
 
@@ -27,7 +27,7 @@ describe("AboutPage", () => {
   it("renders the network banner", () => {
     render(<AboutPage />);
     expect(
-      screen.getByText(/Self-taught full stack developer/)
+      screen.getByText(/Self-taught full stack developer/),
     ).toBeInTheDocument();
   });
 

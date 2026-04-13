@@ -38,14 +38,11 @@ export default function GameBoard({ state }: GameBoardProps) {
         >
           {state.grid.map((row, r) =>
             row.map((tile, c) => {
-              const isGoal =
-                r === state.goalPos.row && c === state.goalPos.col;
+              const isGoal = r === state.goalPos.row && c === state.goalPos.col;
               const isPlayer =
                 r === state.playerPos.row && c === state.playerPos.col;
-              const showObstacle =
-                !isPlayer && !isGoal && tile !== "empty";
-              const Icon =
-                tile !== "empty" ? TILE_ICONS[tile] : null;
+              const showObstacle = !isPlayer && !isGoal && tile !== "empty";
+              const Icon = tile !== "empty" ? TILE_ICONS[tile] : null;
 
               return (
                 <div
@@ -89,7 +86,7 @@ export default function GameBoard({ state }: GameBoardProps) {
                   )}
                 </div>
               );
-            })
+            }),
           )}
         </div>
 

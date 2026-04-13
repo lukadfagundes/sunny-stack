@@ -14,11 +14,11 @@ Generates a Spotify Wrapped-style summary containing the user's top 5 tracks, to
 
 Uses the shared Spotify token module (`src/app/api/spotify/token.ts`).
 
-| Environment Variable | Required | Description |
-|---------------------|----------|-------------|
-| `SPOTIFY_CLIENT_ID` | Yes | Spotify OAuth client ID |
-| `SPOTIFY_CLIENT_SECRET` | Yes | Spotify OAuth client secret |
-| `SPOTIFY_REFRESH_TOKEN` | Yes | Spotify OAuth refresh token |
+| Environment Variable    | Required | Description                 |
+| ----------------------- | -------- | --------------------------- |
+| `SPOTIFY_CLIENT_ID`     | Yes      | Spotify OAuth client ID     |
+| `SPOTIFY_CLIENT_SECRET` | Yes      | Spotify OAuth client secret |
+| `SPOTIFY_REFRESH_TOKEN` | Yes      | Spotify OAuth refresh token |
 
 ## Response Type
 
@@ -26,10 +26,10 @@ Uses the shared Spotify token module (`src/app/api/spotify/token.ts`).
 
 ```typescript
 interface SpotifyWrappedData {
-  tracks: SpotifyWrappedTrack[];   // Top 5 tracks
+  tracks: SpotifyWrappedTrack[]; // Top 5 tracks
   artists: SpotifyWrappedArtist[]; // Top 5 artists
-  topGenres: string[];             // Top 10 genres by frequency
-  year: number;                    // Current year (new Date().getFullYear())
+  topGenres: string[]; // Top 10 genres by frequency
+  year: number; // Current year (new Date().getFullYear())
 }
 ```
 
@@ -37,12 +37,12 @@ interface SpotifyWrappedData {
 
 ```typescript
 interface SpotifyWrappedTrack {
-  id: string;            // Spotify track ID
-  name: string;          // Track name
-  artist: string;        // Artist names joined with ", "
-  albumName: string;     // Album name
+  id: string; // Spotify track ID
+  name: string; // Track name
+  artist: string; // Artist names joined with ", "
+  albumName: string; // Album name
   albumImageUrl: string; // First album image URL
-  spotifyUrl: string;    // Direct Spotify URL
+  spotifyUrl: string; // Direct Spotify URL
 }
 ```
 
@@ -50,10 +50,10 @@ interface SpotifyWrappedTrack {
 
 ```typescript
 interface SpotifyWrappedArtist {
-  id: string;         // Spotify artist ID
-  name: string;       // Artist name
-  imageUrl: string;   // First artist image URL
-  genres: string[];   // Genre tags for this artist
+  id: string; // Spotify artist ID
+  name: string; // Artist name
+  imageUrl: string; // First artist image URL
+  genres: string[]; // Genre tags for this artist
   spotifyUrl: string; // Direct Spotify URL
 }
 ```
@@ -73,6 +73,7 @@ Raw Spotify artist object with `id`, `name`, `images[]`, `genres[]`, `external_u
 ### Parallel Fetch
 
 Tracks and artists are fetched simultaneously via `Promise.all`:
+
 - `https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=5`
 - `https://api.spotify.com/v1/me/top/artists?time_range=medium_term&limit=5`
 
@@ -89,12 +90,12 @@ The `year` field is set to `new Date().getFullYear()` at response time.
 
 ## Error Handling
 
-| Condition | Behavior |
-|-----------|----------|
-| Missing Spotify credentials | Returns `null` with HTTP 200 |
-| Token refresh failure | Returns `null` with HTTP 200 |
+| Condition                          | Behavior                                                  |
+| ---------------------------------- | --------------------------------------------------------- |
+| Missing Spotify credentials        | Returns `null` with HTTP 200                              |
+| Token refresh failure              | Returns `null` with HTTP 200                              |
 | Either tracks or artists API fails | Logs first failing response, returns `null` with HTTP 200 |
-| Network exception | Logs error, returns `null` with HTTP 200 |
+| Network exception                  | Logs error, returns `null` with HTTP 200                  |
 
 ## Dependencies
 

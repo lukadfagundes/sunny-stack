@@ -26,7 +26,11 @@ export default function MermaidDiagram({ code }: { code: string }) {
       // when ReactMarkdown wraps custom HTML elements in a paragraph.
       <span
         className="bg-sunny-bg border border-sunny-surface-light rounded-md p-4 my-3 min-h-[120px]"
-        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
         <span
           style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}

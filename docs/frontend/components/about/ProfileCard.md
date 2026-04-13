@@ -8,10 +8,10 @@ A client-side component that renders the user's profile card in a MySpace-inspir
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `onViewPics` | `() => void` | No | Callback invoked when the user clicks the "Pics" link. Used by the parent to switch to the PhotoGallery view. |
-| `onViewVideos` | `() => void` | No | Callback invoked when the user clicks the "Videos" link. Used by the parent to switch to the VideoGallery view. |
+| Prop           | Type         | Required | Description                                                                                                     |
+| -------------- | ------------ | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `onViewPics`   | `() => void` | No       | Callback invoked when the user clicks the "Pics" link. Used by the parent to switch to the PhotoGallery view.   |
+| `onViewVideos` | `() => void` | No       | Callback invoked when the user clicks the "Videos" link. Used by the parent to switch to the VideoGallery view. |
 
 ### Props Interface
 
@@ -24,14 +24,15 @@ interface ProfileCardProps {
 
 ## State Management
 
-| Hook | State Variable | Type | Initial Value | Purpose |
-|------|---------------|------|---------------|---------|
-| `useState` | `githubProfile` | `GitHubProfile \| null` | `null` | Stores the GitHub profile data (primarily `avatarUrl`) fetched from the API. |
-| `useState` | `activity` | `ActivityStatus \| null` | `null` | Stores the activity status data (`isOnline`, `lastActivityAt`) fetched from the API. |
+| Hook       | State Variable  | Type                     | Initial Value | Purpose                                                                              |
+| ---------- | --------------- | ------------------------ | ------------- | ------------------------------------------------------------------------------------ |
+| `useState` | `githubProfile` | `GitHubProfile \| null`  | `null`        | Stores the GitHub profile data (primarily `avatarUrl`) fetched from the API.         |
+| `useState` | `activity`      | `ActivityStatus \| null` | `null`        | Stores the activity status data (`isOnline`, `lastActivityAt`) fetched from the API. |
 
 ## API Integration
 
 ### 1. GitHub Profile (`/api/github`)
+
 - **Method:** `GET`
 - **Triggered:** On mount via `useEffect` (empty dependency array)
 - **Response Type:** `GitHubProfile` (imported from `@/app/api/github/route`)
@@ -40,6 +41,7 @@ interface ProfileCardProps {
 - **Validation:** Only sets state if `data` is truthy and `data.avatarUrl` exists
 
 ### 2. Activity Status (`/api/activity`)
+
 - **Method:** `GET`
 - **Triggered:** On mount via `useEffect` (empty dependency array)
 - **Response Type:** `ActivityStatus` (imported from `@/app/api/activity/route`)
@@ -48,9 +50,9 @@ interface ProfileCardProps {
 
 ## Event Handlers
 
-| Handler | Element | Description |
-|---------|---------|-------------|
-| `onViewPics` | "Pics" `<button>` | Delegates to parent callback to navigate to photo gallery |
+| Handler        | Element             | Description                                               |
+| -------------- | ------------------- | --------------------------------------------------------- |
+| `onViewPics`   | "Pics" `<button>`   | Delegates to parent callback to navigate to photo gallery |
 | `onViewVideos` | "Videos" `<button>` | Delegates to parent callback to navigate to video gallery |
 
 ## Child Components
@@ -60,13 +62,13 @@ interface ProfileCardProps {
 
 ## Data Sources
 
-| Source | Import Path | Fields Used |
-|--------|-------------|-------------|
-| `profile` | `@/lib/data/personal` | `name`, `tagline`, `gender`, `location`, `country`, `lastLogin` |
-| `BIRTHDATE` | `@/lib/data/personal` | Used with `calculateAge()` to compute current age |
-| `calculateAge` | `@/lib/data/personal` | Pure function that calculates age from a birthdate string |
-| `GitHubProfile` (type) | `@/app/api/github/route` | `avatarUrl`, `name`, `bio`, `location`, `lastPushedAt` |
-| `ActivityStatus` (type) | `@/app/api/activity/route` | `isOnline`, `lastActivityAt` |
+| Source                  | Import Path                | Fields Used                                                     |
+| ----------------------- | -------------------------- | --------------------------------------------------------------- |
+| `profile`               | `@/lib/data/personal`      | `name`, `tagline`, `gender`, `location`, `country`, `lastLogin` |
+| `BIRTHDATE`             | `@/lib/data/personal`      | Used with `calculateAge()` to compute current age               |
+| `calculateAge`          | `@/lib/data/personal`      | Pure function that calculates age from a birthdate string       |
+| `GitHubProfile` (type)  | `@/app/api/github/route`   | `avatarUrl`, `name`, `bio`, `location`, `lastPushedAt`          |
+| `ActivityStatus` (type) | `@/app/api/activity/route` | `isOnline`, `lastActivityAt`                                    |
 
 ## Derived Values
 
