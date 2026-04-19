@@ -3,9 +3,10 @@ name: Deploy
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 concurrency:
-  group: deploy-${{ github.event.release.tag_name }}
+  group: deploy-${{ github.event.release.tag_name || github.run_id }}
   cancel-in-progress: false
 
 jobs:
@@ -49,4 +50,4 @@ jobs:
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "### Deployed to Production" >> $GITHUB_STEP_SUMMARY
           echo "**URL:** $URL" >> $GITHUB_STEP_SUMMARY
-          echo "**Release:** ${{ github.event.release.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Release:** ${{ github.event.release.tag_name || github.ref_name }}" >> $GITHUB_STEP_SUMMARY
